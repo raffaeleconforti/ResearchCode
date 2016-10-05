@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>research-code</artifactId>
+        <groupId>com.raffaeleconforti</groupId>
+        <version>1.0</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>noisefiltering-event-commandline</artifactId>
+    <packaging>bundle</packaging>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <extensions>true</extensions>
+                <configuration>
+                    <instructions>
+                        <Bundle-ClassPath>.,{maven-dependencies},WEB-INF/classes</Bundle-ClassPath>
+                        <Bundle-Name>NoiseFiltering-Event CommandLine OSGI</Bundle-Name>
+                        <Bundle-SymbolicName>com.raffaeleconforti.noisefiltering-event-commandline</Bundle-SymbolicName>
+                        <Import-Package>
+                            *
+                        </Import-Package>
+                        <Export-Package>
+                            com.raffaeleconforti.noisefiltering.event
+                        </Export-Package>
+                    </instructions>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-dependencies</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/lib</outputDirectory>
+                            <overWriteIfNewer>true</overWriteIfNewer>
+                            <excludeTransitive>false</excludeTransitive>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>2.4.3</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <filters>
+                                <filter>
+                                    <artifact>com.raffaeleconforti:noisefiltering-event-logic</artifact>
+                                    <excludes>
+                                        <exclude>com/raffaeleconforti/noisefiltering/event/frequentbehaviour/automaton/**</exclude>
+                                        <exclude>com/raffaeleconforti/noisefiltering/event/FrequentBehaviourFilter</exclude>
+                                    </excludes>
+                                </filter>
+                            </filters>
+                            <minimizeJar>true</minimizeJar>
+                            <transformers>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <mainClass>com.raffaeleconforti.noisefiltering.event.commandline.InfrequentBehaviourFilterCommandLine</mainClass>
+                                </transformer>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.IncludeResourceTransformer">
+                                    <resource>liblpsolve55.jnilib</resource>
+                                    <file>${project.parent.basedir}/assembly/target/liblpsolve55.jnilib</file>
+                                </transformer>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.IncludeResourceTransformer">
+                                    <resource>liblpsolve55j.jnilib</resource>
+                                    <file>${project.parent.basedir}/assembly/target/liblpsolve55j.jnilib</file>
+                                </transformer>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.IncludeResourceTransformer">
+                                    <resource>lpsolve55.dll</resource>
+                                    <file>${project.parent.basedir}/assembly/target/lpsolve55.dll</file>
+                                </transformer>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.IncludeResourceTransformer">
+                                    <resource>lpsolve55j.dll</resource>
+                                    <file>${project.parent.basedir}/assembly/target/lpsolve55j.dll</file>
+                                </transformer>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.IncludeResourceTransformer">
+                                    <resource>lpsolve55.lib</resource>
+                                    <file>${project.parent.basedir}/assembly/target/lpsolve55.lib</file>
+                                </transformer>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.IncludeResourceTransformer">
+                                    <resource>liblpsolve55.lib</resource>
+                                    <file>${project.parent.basedir}/assembly/target/liblpsolve55.lib</file>
+                                </transformer>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.IncludeResourceTransformer">
+                                    <resource>liblpsolve55d.lib</resource>
+                                    <file>${project.parent.basedir}/assembly/target/liblpsolve55d.lib</file>
+                                </transformer>
+                            </transformers>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.raffaeleconforti</groupId>
+            <artifactId>noisefiltering-event-logic</artifactId>
+            <version>1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.4</version>
+        </dependency>
+    </dependencies>
+
+
+</project>

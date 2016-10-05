@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>research-code</artifactId>
+        <groupId>com.raffaeleconforti</groupId>
+        <version>1.0</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>efficient-log</artifactId>
+    <packaging>bundle</packaging>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <extensions>true</extensions>
+                <configuration>
+                    <instructions>
+                        <Bundle-ClassPath>.,{maven-dependencies},WEB-INF/classes</Bundle-ClassPath>
+                        <Bundle-Name>Efficient-Log OSGI</Bundle-Name>
+                        <Bundle-SymbolicName>com.raffaeleconforti.efficient-log</Bundle-SymbolicName>
+                        <Import-Package>
+                            *
+                        </Import-Package>
+                        <Export-Package>
+                            com.raffaeleconforti.efficient-log.*;
+                        </Export-Package>
+                    </instructions>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-dependencies</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/lib</outputDirectory>
+                            <overWriteIfNewer>true</overWriteIfNewer>
+                            <excludeTransitive>false</excludeTransitive>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.deckfour.xes</groupId>
+            <artifactId>OpenXES</artifactId>
+            <version>6.5</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>19.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.collections</groupId>
+            <artifactId>eclipse-collections</artifactId>
+            <version>8.0.0-M1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.processmining</groupId>
+            <artifactId>prom5-lib</artifactId>
+            <version>6.5</version>
+        </dependency>
+        <dependency>
+            <groupId>org.processmining</groupId>
+            <artifactId>prom6-contexts</artifactId>
+            <version>6.5</version>
+        </dependency>
+        <dependency>
+            <groupId>org.processmining</groupId>
+            <artifactId>prom6-framework</artifactId>
+            <version>6.5</version>
+        </dependency>
+        <dependency>
+            <groupId>org.processmining</groupId>
+            <artifactId>log</artifactId>
+            <version>6.5</version>
+        </dependency>
+        <dependency>
+            <groupId>org.xerial.snappy</groupId>
+            <artifactId>snappy-java</artifactId>
+            <version>1.1.2.6</version>
+        </dependency>
+    </dependencies>
+
+
+</project>

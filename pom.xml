@@ -1,0 +1,292 @@
+<!--<?xml version="1.0" encoding="UTF-8" standalone="no"?>-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.raffaeleconforti</groupId>
+    <artifactId>research-code</artifactId>
+    <version>1.0</version>
+    <packaging>pom</packaging>
+    <name>Research-Code</name>
+
+    <licenses>
+        <license>
+            <name>GNU Lesser General Public License, Version 3.0</name>
+            <url>http://www.gnu.org/licenses/lgpl-3.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <modules>
+        <module>libraries</module>
+
+        <module>efficient-log</module>
+        <module>fake-context</module>
+        <module>prom-util</module>
+
+        <module>log-util</module>
+        <module>graph-algorithms</module>
+        <!--<module>entropy</module>-->
+        <module>bpmn-util</module>
+        <module>conversion</module>
+        <module>logic-solver</module>
+
+        <module>outliers</module>
+        <module>foreignkey-discovery</module>
+        <module>data-structures</module>
+
+        <module>modified-miners</module>
+        <module>bpmnminer-logic</module>
+        <module>bpmnminer-commandline</module>
+        <module>bpmnminer-prom</module>
+
+        <module>wrappers</module>
+        <module>structuredminer</module>
+        <module>structuredminer-commandline</module>
+
+        <module>noisefiltering-event-logic</module>
+        <module>noisefiltering-event-commandline</module>
+        <module>noisefiltering-event-prom</module>
+        <module>measurements</module>
+
+        <!--<module>kernel-estimation</module>-->
+
+        <module>assembly</module>
+        <!--<module>noisefiltering-timestamp-logic</module>-->
+        <!--<module>noisefiltering-timestamp-commandline</module>-->
+        <!--<module>noisefiltering-timestamp-prom</module>-->
+
+        <!--<module>design-structure-matrix</module>-->
+        <module>prom6</module>
+    </modules>
+
+    <properties>
+
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <java.source.version>1.8</java.source.version>
+        <java.target.version>${java.source.version}</java.target.version>
+        <pmd.target.jdk>${java.target.version}</pmd.target.jdk>
+        <jdk.version>1.8.0</jdk.version>
+
+        <!-- **** Settings for the building of the projects **** -->
+        <!-- Plugins used by the Build process -->
+        <maven.assembly.plugin>2.4</maven.assembly.plugin>
+        <maven.bundle.plugin>2.4.0</maven.bundle.plugin>
+        <maven.compiler.plugin>3.0</maven.compiler.plugin>
+        <maven.dependency.plugin>2.8</maven.dependency.plugin>
+        <maven.install.plugin>2.4</maven.install.plugin>
+        <maven.jar.plugin>2.3.2</maven.jar.plugin>
+        <maven.javacc.plugin>2.6</maven.javacc.plugin>
+        <maven.resources.plugin>2.6</maven.resources.plugin>
+
+        <!-- Config locations -->
+        <surefire.jvm.args>-Xms512m -Xmx1024m -XX:MaxPermSize=1024m</surefire.jvm.args>
+
+        <!-- Toggles to turn off checks -->
+        <javadocs.skip>false</javadocs.skip>
+        <pmd.skip>false</pmd.skip>
+        <minimizejar>true</minimizejar>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.ops4j.pax.runner</groupId>
+                <artifactId>pax-runner</artifactId>
+                <version>${pax.runner.version}</version>
+            </dependency>
+
+        </dependencies>
+    </dependencyManagement>
+
+    <repositories>
+        <repository>
+            <id>ApromoreDev.mvn-repo</id>
+            <name>Maven repository for JARs specific to the Apromore project</name>
+            <url>https://raw.github.com/apromore/ApromoreDev/master/mvn-repo/</url>
+        </repository>
+        <repository>
+            <id>EclipseLink Repo</id>
+            <url>http://download.eclipse.org/rt/eclipselink/maven.repo</url>
+            <name>EclipseLink Repo</name>
+        </repository>
+        <repository>
+            <id>eclipse-gemini</id>
+            <name>Eclipse Gemini Maven repository</name>
+            <url>http://download.eclipse.org/gemini/mvn/</url>
+        </repository>
+        <repository>
+            <id>com.springsource.repository.bundles.snapshot</id>
+            <name>SpringSource Enterprise Bundle Repository - SpringSource Bundle Snapshot</name>
+            <url>http://repository.springsource.com/maven/bundles/snapshot</url>
+        </repository>
+        <repository>
+            <id>com.springsource.repository.bundles.release</id>
+            <name>SpringSource Enterprise Bundle Repository - SpringSource Bundle Releases</name>
+            <url>http://repository.springsource.com/maven/bundles/release</url>
+        </repository>
+        <repository>
+            <id>com.springsource.repository.bundle.external</id>
+            <name>SpringSource Enterprise Bundle Repository - External Bundle Releases</name>
+            <url>http://repository.springsource.com/maven/bundles/external</url>
+        </repository>
+        <repository>
+            <id>com.springsource.repository.bundle.milestone</id>
+            <name>SpringSource Enterprise Bundle Repository - SpringSource Bundle Milestones</name>
+            <url>http://repository.springsource.com/maven/bundles/milestone</url>
+        </repository>
+    </repositories>
+    <pluginRepositories>
+        <pluginRepository>
+            <id>com.springsource.repository.bundles.release</id>
+            <name>SpringSource Enterprise Bundle Repository - SpringSource Bundle Releases</name>
+            <url>http://repository.springsource.com/maven/bundles/release</url>
+        </pluginRepository>
+    </pluginRepositories>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-assembly-plugin</artifactId>
+                    <version>${maven.assembly.plugin}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-resources-plugin</artifactId>
+                    <version>${maven.resources.plugin}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-jar-plugin</artifactId>
+                    <version>${maven.jar.plugin}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-source-plugin</artifactId>
+                    <version>${maven.source.plugin}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-enforcer-plugin</artifactId>
+                    <version>${maven.enforcer.plugin}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>${maven.compiler.plugin}</version>
+                    <configuration>
+                        <source>${java.source.version}</source>
+                        <target>${java.target.version}</target>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>javacc-maven-plugin</artifactId>
+                    <version>${maven.javacc.plugin}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-release-plugin</artifactId>
+                    <version>${maven.release.plugin}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-dependency-plugin</artifactId>
+                    <version>${maven.dependency.plugin}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>build-helper-maven-plugin</artifactId>
+                    <version>${maven.build.helper.plugin}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.felix</groupId>
+                    <artifactId>maven-bundle-plugin</artifactId>
+                    <version>${maven.bundle.plugin}</version>
+                    <extensions>true</extensions>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-war-plugin</artifactId>
+                    <version>${maven.war.plugin}</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>sonar-maven-plugin</artifactId>
+                <version>2.2</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${maven.compiler.plugin}</version>
+                <configuration>
+                    <verbose>true</verbose>
+                    <fork>true</fork>
+                    <compilerVersion>${jdk.version}</compilerVersion>
+                    <source>${java.source.version}</source>
+                    <target>${java.target.version}</target>
+                    <meminitial>128m</meminitial>
+                    <maxmem>512m</maxmem>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-install-plugin</artifactId>
+                <version>${maven.install.plugin}</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>${maven.assembly.plugin}</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>${maven.resources.plugin}</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <version>${maven.bundle.plugin}</version>
+                <extensions>true</extensions>
+                <inherited>true</inherited>
+                <executions>
+                    <execution>
+                        <id>bundle-manifest</id>
+                        <phase>process-classes</phase>
+                        <goals>
+                            <goal>manifest</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <archive>
+                        <forced>true</forced>
+                    </archive>
+                    <supportedProjectTypes>
+                        <supportedProjectType>jar</supportedProjectType>
+                        <supportedProjectType>bundle</supportedProjectType>
+                        <supportedProjectType>war</supportedProjectType>
+                    </supportedProjectTypes>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>${maven.jar.plugin}</version>
+                <configuration>
+                    <archive>
+                        <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
+                    </archive>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

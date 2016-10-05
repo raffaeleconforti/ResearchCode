@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.raffaeleconforti</groupId>
+        <artifactId>research-code</artifactId>
+        <version>1.0</version>
+        <relativePath>../</relativePath>
+    </parent>
+
+    <artifactId>log-util</artifactId>
+    <packaging>bundle</packaging>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <extensions>true</extensions>
+                <configuration>
+                    <instructions>
+                        <Bundle-ClassPath>.,{maven-dependencies},WEB-INF/classes</Bundle-ClassPath>
+                        <Bundle-Name>Log-Util OSGI</Bundle-Name>
+                        <Bundle-SymbolicName>com.raffaeleconforti.log-util</Bundle-SymbolicName>
+                        <Import-Package>
+                            *
+                        </Import-Package>
+                        <Export-Package>
+                            com.raffaeleconforti.log.util.*
+                        </Export-Package>
+                    </instructions>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-dependencies</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/lib</outputDirectory>
+                            <overWriteIfNewer>true</overWriteIfNewer>
+                            <excludeTransitive>false</excludeTransitive>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    <dependencies>
+        <dependency>
+            <artifactId>efficient-log</artifactId>
+            <groupId>com.raffaeleconforti</groupId>
+            <version>1.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.deckfour.xes</groupId>
+            <artifactId>OpenXES</artifactId>
+            <version>6.5</version>
+        </dependency>
+        <dependency>
+            <groupId>org.deckfour.xes</groupId>
+            <artifactId>spex</artifactId>
+            <version>6.5</version>
+        </dependency>
+        <dependency>
+            <groupId>org.processmining</groupId>
+            <artifactId>prom5-lib</artifactId>
+            <version>6.5</version>
+        </dependency>
+        <dependency>
+            <groupId>net.sf.kxml</groupId>
+            <artifactId>kxml2</artifactId>
+            <version>2.3.0</version>
+        </dependency>
+        <dependency>
+            <groupId>net.sf.trove4j</groupId>
+            <artifactId>trove4j</artifactId>
+            <version>3.0.3</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.collections</groupId>
+            <artifactId>eclipse-collections</artifactId>
+            <version>8.0.0-M1</version>
+        </dependency>
+    </dependencies>
+</project>

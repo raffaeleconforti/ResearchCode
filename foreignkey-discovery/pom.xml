@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.raffaeleconforti</groupId>
+        <artifactId>research-code</artifactId>
+        <version>1.0</version>
+        <relativePath>../</relativePath>
+    </parent>
+
+    <artifactId>foreignkey-discovery</artifactId>
+    <packaging>bundle</packaging>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <extensions>true</extensions>
+                <configuration>
+                    <instructions>
+                        <Bundle-ClassPath>.,{maven-dependencies},WEB-INF/classes</Bundle-ClassPath>
+                        <Bundle-Name>ForeignKey-Discovery OSGI</Bundle-Name>
+                        <Bundle-SymbolicName>com.raffaeleconforti.foreignkey-discovery</Bundle-SymbolicName>
+                        <Import-Package>
+                            *
+                        </Import-Package>
+                        <Export-Package>
+                            com.raffaeleconforti.datastructures.*;
+                            com.raffaeleconforti.foreignkeydiscovery.*;
+                        </Export-Package>
+                    </instructions>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-dependencies</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/lib</outputDirectory>
+                            <overWriteIfNewer>true</overWriteIfNewer>
+                            <excludeTransitive>false</excludeTransitive>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>19.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.processmining</groupId>
+            <artifactId>prom6-models</artifactId>
+            <version>6.5</version>
+        </dependency>
+        <dependency>
+            <groupId>org.processmining</groupId>
+            <artifactId>prom6-framework</artifactId>
+            <version>6.5</version>
+        </dependency>
+
+
+        <dependency>
+            <groupId>com.raffaeleconforti</groupId>
+            <artifactId>log-util</artifactId>
+            <version>1.0</version>
+        </dependency>
+    </dependencies>
+</project>
