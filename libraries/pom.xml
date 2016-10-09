@@ -1044,9 +1044,9 @@
                         <configuration>
                             <groupId>com.gurobi</groupId>
                             <artifactId>gurobi</artifactId>
-                            <version>6.5</version>
+                            <version>6.52</version>
                             <packaging>jar</packaging>
-                            <file>${project.build.sourceDirectory}/gurobi.jar</file>
+                            <file>${project.build.sourceDirectory}/gurobi-652.jar</file>
                             <generatePom>true</generatePom>
                         </configuration>
                     </execution>

@@ -71,7 +71,7 @@
         <dependency>
             <groupId>com.gurobi</groupId>
             <artifactId>gurobi</artifactId>
-            <version>6.5</version>
+            <version>6.52</version>
         </dependency>
         <dependency>
             <groupId>net.sourceforge.lpsolve</groupId>
