@@ -50,11 +50,14 @@ public class AutomatonInfrequentBehaviourDetector {
         try {
             solver = new GurobiInfrequentBehaviourSolver<String>(automaton, infrequent, requiredStates);
             removable = solver.identifyRemovableEdges();
+            System.out.println("Optimized using GUROBI");
         } catch (NoClassDefFoundError ncdfe) {
+            ncdfe.printStackTrace();
             System.out.println("GUROBI not available, switching to LPSOLVE");
             solver = new LPSolveInfrequentBehaviourSolver<String>(automaton, infrequent, requiredStates);
             removable = solver.identifyRemovableEdges();
         } catch (UnsatisfiedLinkError ule) {
+            ule.printStackTrace();
             System.out.println("GUROBI not available, switching to LPSOLVE");
             solver = new LPSolveInfrequentBehaviourSolver<String>(automaton, infrequent, requiredStates);
             removable = solver.identifyRemovableEdges();
