@@ -106,26 +106,26 @@
             <artifactId>measurements</artifactId>
             <version>1.0</version>
         </dependency>
-        <dependency>
-            <groupId>com.raffaeleconforti</groupId>
-            <artifactId>kernel-estimation</artifactId>
-            <version>1.0</version>
-        </dependency>
-        <dependency>
-            <groupId>com.raffaeleconforti</groupId>
-            <artifactId>noisefiltering-timestamp-logic</artifactId>
-            <version>1.0</version>
-        </dependency>
-        <dependency>
-            <groupId>com.raffaeleconforti</groupId>
-            <artifactId>noisefiltering-timestamp-commandline</artifactId>
-            <version>1.0</version>
-        </dependency>
-        <dependency>
-            <groupId>com.raffaeleconforti</groupId>
-            <artifactId>noisefiltering-timestamp-prom</artifactId>
-            <version>1.0</version>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>com.raffaeleconforti</groupId>-->
+            <!--<artifactId>kernel-estimation</artifactId>-->
+            <!--<version>1.0</version>-->
+        <!--</dependency>-->
+        <!--<dependency>-->
+            <!--<groupId>com.raffaeleconforti</groupId>-->
+            <!--<artifactId>noisefiltering-timestamp-logic</artifactId>-->
+            <!--<version>1.0</version>-->
+        <!--</dependency>-->
+        <!--<dependency>-->
+            <!--<groupId>com.raffaeleconforti</groupId>-->
+            <!--<artifactId>noisefiltering-timestamp-commandline</artifactId>-->
+            <!--<version>1.0</version>-->
+        <!--</dependency>-->
+        <!--<dependency>-->
+            <!--<groupId>com.raffaeleconforti</groupId>-->
+            <!--<artifactId>noisefiltering-timestamp-prom</artifactId>-->
+            <!--<version>1.0</version>-->
+        <!--</dependency>-->
         <dependency>
             <groupId>com.raffaeleconforti</groupId>
             <artifactId>prom-util</artifactId>
