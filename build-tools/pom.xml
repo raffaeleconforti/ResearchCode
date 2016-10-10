@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.raffaeleconforti</groupId>
+        <artifactId>research-code</artifactId>
+        <version>1.0</version>
+        <relativePath>../</relativePath>
+    </parent>
+
+    <artifactId>build-tools</artifactId>
+    <version>1.0</version>
+    <packaging>pom</packaging>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-install-plugin</artifactId>
+                <version>2.5.2</version>
+
+                <executions>
+                    <execution>
+                        <id>install-hbc-maven-core</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                        <configuration>
+                            <groupId>org.hardisonbrewing</groupId>
+                            <artifactId>hbc-maven-core</artifactId>
+                            <version>1.0.8.7-SNAPSHOT</version>
+                            <packaging>jar</packaging>
+                            <file>${project.build.sourceDirectory}/hbc-maven-core-1.0.8.7-SNAPSHOT.jar</file>
+                            <pomFile>${project.build.sourceDirectory}/../resources/hbc-maven-core/pom.xml</pomFile>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>install-download-maven-plugin</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                        <configuration>
+                            <groupId>com.googlecode.maven-download-plugin</groupId>
+                            <artifactId>download-maven-plugin</artifactId>
+                            <version>1.2.2-SNAPSHOT</version>
+                            <packaging>jar</packaging>
+                            <file>${project.build.sourceDirectory}/download-maven-plugin-1.2.2-SNAPSHOT.jar</file>
+                            <pomFile>${project.build.sourceDirectory}/../resources/download-maven-plugin/pom.xml</pomFile>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>
