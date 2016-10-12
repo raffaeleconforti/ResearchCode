@@ -1,5 +1,6 @@
 package com.raffaeleconforti.structuredminer;
 
+import au.edu.qut.structuring.ui.iBPStructUIResult;
 import com.raffaeleconforti.context.FakePluginContext;
 import com.raffaeleconforti.log.util.LogImporter;
 import com.raffaeleconforti.structuredminer.miner.StructuredMiner;
@@ -20,30 +21,83 @@ public class StructuredMinerCommandline  {
 
     public static void main(String[] args) throws Exception {
         File logfile;
-        int miningAlgorithm = 0;
-        String name = "";
+        int miningAlgorithm;
+        String name;
+        int icmd = 0;
+
+        iBPStructUIResult settingStructuring = new iBPStructUIResult();
+        settingStructuring.setForceStructuring(false);
+        settingStructuring.setKeepBisimulation(true);
+        settingStructuring.setTimeBounded(true);
+        settingStructuring.setMaxMinutes(2);
+
+        int maxMinutes;
 
         try {
-            logfile = new File(args[0]);
-            if( !logfile.exists() ) throw new Exception("file not found.");
-            if( args[1].equals("HM") ) miningAlgorithm = SettingsStructuredMiner.HMPOS52;
-            else if( args[1].equals("FO") ) miningAlgorithm = SettingsStructuredMiner.FODINAPOS;
-            else throw new Exception("wrong usage.");
-            name = args[2];
+            /* first parameter
+             */
+            if( args[icmd].equalsIgnoreCase("-help") ) {
+                showHelp();
+                return;
+            }
+            else if( args[icmd].equalsIgnoreCase("HM") ) miningAlgorithm = SettingsStructuredMiner.HMPOS52;
+            else if( args[icmd].equalsIgnoreCase("FO") ) miningAlgorithm = SettingsStructuredMiner.FODINAPOS;
+            else throw new Exception("ERROR - specified mining algorithm not found.");
+            icmd++;
+
+            if( args[icmd].equalsIgnoreCase("p") ) {
+                settingStructuring.setKeepBisimulation(false);
+                icmd++;
+            }
+
+            if( args[icmd].equalsIgnoreCase("f") ) {
+                settingStructuring.setForceStructuring(true);
+                icmd++;
+            }
+
+            try {
+                maxMinutes = Integer.valueOf(args[icmd]);
+                if( maxMinutes == 0 ) settingStructuring.setTimeBounded(false);
+                settingStructuring.setMaxMinutes(maxMinutes);
+                icmd++;
+            } catch ( NumberFormatException nfe){}
+
+            logfile = new File(args[icmd]);
+            if( !logfile.exists() ) throw new Exception("ERROR - input log file not found.");
+            XLog log = LogImporter.importFromFile(new XFactoryMemoryImpl(), args[icmd]);
+            icmd++;
+            name = args[icmd];
+
+            SettingsStructuredMiner settingsStructuredMiner = new SettingsStructuredMiner(miningAlgorithm);
+            StructuredMiner structuredMiner = new StructuredMiner(new FakePluginContext(), log, settingsStructuredMiner, settingStructuring);
+            BPMNDiagram diagram = structuredMiner.mine();
+
+            BpmnExportPlugin bpmnExportPlugin = new BpmnExportPlugin();
+            UIContext context = new UIContext();
+            UIPluginContext uiPluginContext = context.getMainPluginContext();
+            bpmnExportPlugin.export(uiPluginContext, diagram, new File(name+".bpmn"));
+
         } catch (Exception e) {
             System.out.println("ERROR: " + e.getMessage());
-            System.out.println("TYPE: java -jar StructuredMiner logFileName.[mxml|xes] [HM|FO] bpmnFileName");
+            System.out.println("RUN: java -jar StructuredMiner [hm|fo] [p] [f] [minutes] logFileName.[mxml|xes] bpmnFileName");
+            System.out.println("HELP: java -jar StructuredMiner -help");
         }
 
-        XLog log = LogImporter.importFromFile(new XFactoryMemoryImpl(), args[0]);
-        SettingsStructuredMiner settingsStructuredMiner = new SettingsStructuredMiner(miningAlgorithm);
-        StructuredMiner structuredMiner = new StructuredMiner(new FakePluginContext(), log, settingsStructuredMiner);
-        BPMNDiagram diagram = structuredMiner.mine();
-
-        BpmnExportPlugin bpmnExportPlugin = new BpmnExportPlugin();
-        UIContext context = new UIContext();
-        UIPluginContext uiPluginContext = context.getMainPluginContext();
-        bpmnExportPlugin.export(uiPluginContext, diagram, new File(name+".bpmn"));
-
     }
+
+    private static void showHelp(){
+        System.out.println("COMMAND: java -jar StructuredMiner");
+        System.out.println("PARAM1 (mandatory) - mining algorithn: hm|fo");
+        System.out.println("\t- HM stands for Heuristics Miner");
+        System.out.println("\t- FO stands for Fodina Miner");
+        System.out.println("PARAM2 (optional) - pull-up rule flag: p");
+        System.out.println("\t- when present enable the pull-up rule and the output model may not be weakly bisimilar");
+        System.out.println("PARAM3 (optional) - force structuring flag: f");
+        System.out.println("\t- when present it forces the structuring, meaning the structured model may lose or gain behaviour");
+        System.out.println("PARAM4 (mandatory) - input log file name: logFileName.[mxml|xes]");
+        System.out.println("\t- accepted log files are in .mxml or .xes format");
+        System.out.println("PARAM5 (mandatory) - output model file name: bpmnFileName");
+        System.out.println("\t- this will be the name of the output .bpmn file containing the structured model");
+    }
+
 }
