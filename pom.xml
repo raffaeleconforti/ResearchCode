@@ -264,15 +264,6 @@
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-math3</artifactId>
                 <version>${commons-math3.version}</version>
-            </dependency><dependency>
-            <groupId>org.apromore</groupId>
-            <artifactId>bpstruct</artifactId>
-            <version>0.1.117</version>
-        </dependency>
-            <dependency>
-                <groupId>org.apromore</groupId>
-                <artifactId>jbpt</artifactId>
-                <version>0.2.77</version>
             </dependency>
             <dependency>
                 <groupId>net.stixar</groupId>

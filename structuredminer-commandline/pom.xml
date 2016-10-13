@@ -35,21 +35,6 @@
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <version>2.4</version>
-                <configuration>
-                    <archive>
-                        <manifest>
-                            <addClasspath>true</addClasspath>
-                            <classpathPrefix>lib/</classpathPrefix>
-                            <mainClass>com.raffaeleconforti.structuredminer.StructuredMinerCommandline</mainClass>
-                        </manifest>
-                    </archive>
-                </configuration>
-            </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
                 <version>2.4.3</version>
                 <executions>
@@ -59,33 +44,59 @@
                             <goal>shade</goal>
                         </goals>
                         <configuration>
+                            <artifactSet>
+                                <excludes>
+                                    <exclude>org.processmining:prom5:jar:${prom.version}</exclude>
+                                    <exclude>org.processmining:prom5-lib:jar:${prom.version}</exclude>
+                                    <exclude>org.processmining:prom5-models:jar:${prom.version}</exclude>
+                                    <exclude>org.processmining:prom5-plugins:jar:${prom.version}</exclude>
+                                </excludes>
+                            </artifactSet>
                             <filters>
+                                <filter>
+                                    <artifact>*:*</artifact>
+                                    <excludes>
+                                        <exclude>META-INF/*.SF</exclude>
+                                        <exclude>META-INF/*.DSA</exclude>
+                                        <exclude>META-INF/*.RSA</exclude>
+                                    </excludes>
+                                </filter>
                                 <filter>
                                     <artifact>org.processmining:prom5</artifact>
                                     <excludes>
-                                        <exclude>**</exclude>
+                                        <exclude>org/processmining/**</exclude>
                                     </excludes>
                                 </filter>
                                 <filter>
                                     <artifact>org.processmining:prom5-lib</artifact>
                                     <excludes>
-                                        <exclude>**</exclude>
+                                        <exclude>org/processmining/**</exclude>
                                     </excludes>
                                 </filter>
                                 <filter>
                                     <artifact>org.processmining:prom5-models</artifact>
                                     <excludes>
-                                        <exclude>**</exclude>
+                                        <exclude>org/processmining/**</exclude>
+                                        <exclude>att/grappa/**</exclude>
                                     </excludes>
                                 </filter>
                                 <filter>
-                                    <artifact>org.processmining:prom5-contexts</artifact>
+                                    <artifact>org.processmining:prom5-plugins</artifact>
                                     <excludes>
-                                        <exclude>**</exclude>
+                                        <exclude>org/processmining/**</exclude>
+                                        <exclude>LogReaderTest</exclude>
                                     </excludes>
                                 </filter>
                             </filters>
                             <minimizeJar>true</minimizeJar>
+                            <transformers>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <manifestEntries>
+                                        <Main-Class>com.raffaeleconforti.structuredminer.StructuredMinerCommandline</Main-Class>
+                                        <Class-Path>lib/</Class-Path>
+                                    </manifestEntries>
+                                </transformer>
+                            </transformers>
                         </configuration>
                     </execution>
                 </executions>
@@ -102,6 +113,28 @@
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
+        </dependency>
+
+
+        <dependency>
+            <groupId>org.processmining</groupId>
+            <artifactId>prom5</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.processmining</groupId>
+            <artifactId>prom5-lib</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.processmining</groupId>
+            <artifactId>prom5-models</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.processmining</groupId>
+            <artifactId>prom5-plugins</artifactId>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 

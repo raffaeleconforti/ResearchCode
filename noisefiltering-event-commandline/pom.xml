@@ -65,6 +65,14 @@
                         <configuration>
                             <filters>
                                 <filter>
+                                    <artifact>*:*</artifact>
+                                    <excludes>
+                                        <exclude>META-INF/*.SF</exclude>
+                                        <exclude>META-INF/*.DSA</exclude>
+                                        <exclude>META-INF/*.RSA</exclude>
+                                    </excludes>
+                                </filter>
+                                <filter>
                                     <artifact>com.raffaeleconforti:noisefiltering-event-logic</artifact>
                                     <excludes>
                                         <exclude>com/raffaeleconforti/noisefiltering/event/frequentbehaviour/automaton/**</exclude>

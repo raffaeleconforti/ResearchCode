@@ -26,6 +26,7 @@ public class StructuredMinerCommandline  {
         System.out.println("A. Augusto, R. Conforti, M. Dumas, M. La Rosa, and G. Bruno.");
         System.out.println("Automated Discovery of Structured Process Models: Discover Structured vs. Discover and Structure.");
         System.out.println("In proceedings of the 35th International Conference on Conceptual Modeling (ER 2016), 2016.");
+        System.out.println();
 
         File logfile;
         int miningAlgorithm;
