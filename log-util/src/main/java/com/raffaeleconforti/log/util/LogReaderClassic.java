@@ -352,12 +352,11 @@ public class LogReaderClassic extends LogReader {
             } else if(this.atStartTag("EventType")) {
                 String var6 = this.parser.getAttributeValue(null, "unknowntype");
                 var2 = this.parser.nextText();
-                var2 = var2 == null?"":var2.trim();
+                var2 = var2 == null ? "" : var2.trim();
                 if(var2.equals("unknown")) {
                     if(var6 == null) {
-                        throw new RuntimeException("Event type \'unknown\' not specified");
+                        var6 = "complete";
                     }
-
                     var2 = var2 + ":" + var6.trim();
                 }
             } else if(this.atStartTag("Timestamp")) {
