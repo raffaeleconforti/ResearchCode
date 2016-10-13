@@ -59,29 +59,20 @@
     <dependencies>
         <dependency>
             <groupId>org.processmining</groupId>
-            <artifactId>petrinets</artifactId>
-            <version>6.5</version>
-        </dependency>
-        <dependency>
-            <groupId>org.processmining</groupId>
             <artifactId>prom6-framework</artifactId>
-            <version>6.5</version>
         </dependency>
         <dependency>
             <groupId>org.processmining</groupId>
             <artifactId>prom5-models</artifactId>
-            <version>6.5</version>
         </dependency>
         <dependency>
             <groupId>org.processmining</groupId>
             <artifactId>prom5-lib</artifactId>
-            <version>6.5</version>
         </dependency>
 
         <dependency>
             <groupId>com.raffaeleconforti</groupId>
             <artifactId>bpmn-util</artifactId>
-            <version>1.0</version>
         </dependency>
 
     </dependencies>

@@ -20,6 +20,13 @@ import java.io.File;
 public class StructuredMinerCommandline  {
 
     public static void main(String[] args) throws Exception {
+
+        System.out.println("This is the stand alone version of the structured miner proposed in:");
+        System.out.println();
+        System.out.println("A. Augusto, R. Conforti, M. Dumas, M. La Rosa, and G. Bruno.");
+        System.out.println("Automated Discovery of Structured Process Models: Discover Structured vs. Discover and Structure.");
+        System.out.println("In proceedings of the 35th International Conference on Conceptual Modeling (ER 2016), 2016.");
+
         File logfile;
         int miningAlgorithm;
         String name;

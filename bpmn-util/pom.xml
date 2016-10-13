@@ -59,27 +59,18 @@
         <dependency>
             <groupId>com.raffaeleconforti</groupId>
             <artifactId>graph-algorithms</artifactId>
-            <version>1.0</version>
         </dependency>
         <dependency>
             <groupId>org.deckfour.xes</groupId>
             <artifactId>OpenXES</artifactId>
-            <version>6.5</version>
         </dependency>
         <dependency>
             <groupId>org.processmining</groupId>
             <artifactId>bpmn</artifactId>
-            <version>6.5</version>
         </dependency>
         <dependency>
             <groupId>org.processmining</groupId>
             <artifactId>jgraph</artifactId>
-            <version>6.5</version>
-        </dependency>
-        <dependency>
-            <groupId>org.processmining</groupId>
-            <artifactId>prom6-models</artifactId>
-            <version>6.5</version>
         </dependency>
     </dependencies>
 

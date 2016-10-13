@@ -60,34 +60,27 @@
         <dependency>
             <groupId>org.processmining</groupId>
             <artifactId>pnetreplayer</artifactId>
-            <version>6.5</version>
         </dependency>
         <dependency>
             <groupId>org.processmining</groupId>
             <artifactId>efficientstorage</artifactId>
-            <version>6.5</version>
         </dependency>
-
         <dependency>
             <groupId>com.gurobi</groupId>
             <artifactId>gurobi</artifactId>
-            <version>6.52</version>
         </dependency>
         <dependency>
             <groupId>net.sourceforge.lpsolve</groupId>
             <artifactId>lpsolve</artifactId>
-            <version>5.5.2</version>
         </dependency>
 
         <dependency>
             <groupId>com.raffaeleconforti</groupId>
             <artifactId>outliers</artifactId>
-            <version>1.0</version>
         </dependency>
         <dependency>
             <groupId>com.raffaeleconforti</groupId>
             <artifactId>bpmnminer-logic</artifactId>
-            <version>1.0</version>
         </dependency>
     </dependencies>
 </project>

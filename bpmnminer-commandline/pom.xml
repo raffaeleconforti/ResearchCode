@@ -83,93 +83,71 @@
         <dependency>
             <groupId>com.raffaeleconforti</groupId>
             <artifactId>bpmnminer-logic</artifactId>
-            <version>1.0</version>
         </dependency>
         <dependency>
             <groupId>org.apromore</groupId>
             <artifactId>bpmntk-osgi</artifactId>
-            <version>1.0</version>
         </dependency>
 
         <dependency>
             <groupId>org.processmining</groupId>
-            <artifactId>jgraph</artifactId>
-            <version>6.5</version>
-        </dependency>
-        <dependency>
-            <groupId>org.processmining</groupId>
             <artifactId>tableLayout</artifactId>
-            <version>6.5</version>
         </dependency>
         <dependency>
-            <groupId>ee.ut</groupId>
+            <groupId>org.apromore</groupId>
             <artifactId>bpstruct</artifactId>
-            <version>0.1.117</version>
         </dependency>
         <dependency>
-            <groupId>de.hpi.jbpt</groupId>
-            <artifactId>de-jbpt</artifactId>
-            <version>0.2.77</version>
+            <groupId>org.apromore</groupId>
+            <artifactId>jbpt</artifactId>
         </dependency>
         <dependency>
             <groupId>net.stixar</groupId>
             <artifactId>stixar-graph</artifactId>
-            <version>1.0</version>
         </dependency>
         <dependency>
             <groupId>net.stixar</groupId>
             <artifactId>stixar-util</artifactId>
-            <version>1.0</version>
         </dependency>
         <dependency>
             <groupId>hub.top.petrinet</groupId>
             <artifactId>hub-pn</artifactId>
-            <version>1.0</version>
         </dependency>
         <dependency>
             <groupId>org.antlr.runtime</groupId>
             <artifactId>antlr-rt</artifactId>
-            <version>3.2.0</version>
         </dependency>
         <dependency>
             <groupId>hub.top.uma</groupId>
             <artifactId>uma</artifactId>
-            <version>1.2.4</version>
         </dependency>
         <dependency>
             <groupId>de.bpt.hpi</groupId>
             <artifactId>rpst</artifactId>
-            <version>1.0</version>
         </dependency>
         <dependency>
             <groupId>org.jdom</groupId>
             <artifactId>jdom</artifactId>
-            <version>1.0</version>
         </dependency>
         <dependency>
             <groupId>org.kohsuke</groupId>
             <artifactId>kohsuke</artifactId>
-            <version>2.0.6</version>
         </dependency>
         <dependency>
             <groupId>org.apache.log4j</groupId>
             <artifactId>log4j</artifactId>
-            <version>1.2.17</version>
         </dependency>
         <dependency>
             <groupId>org.jgraph</groupId>
             <artifactId>jgraph</artifactId>
-            <version>1.6</version>
         </dependency>
         <dependency>
             <groupId>org.json</groupId>
             <artifactId>json</artifactId>
-            <version>20090211</version>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
-            <version>3.4</version>
         </dependency>
     </dependencies>
 </project>

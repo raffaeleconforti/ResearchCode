@@ -58,21 +58,8 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.processmining</groupId>
-            <artifactId>widgets</artifactId>
-            <version>6.5</version>
-        </dependency>
-        <dependency>
-            <groupId>org.processmining</groupId>
-            <artifactId>slickerbox1</artifactId>
-            <version>6.5</version>
-        </dependency>
-
-        <dependency>
             <groupId>com.raffaeleconforti</groupId>
             <artifactId>bpmnminer-logic</artifactId>
-            <version>1.0</version>
         </dependency>
-
     </dependencies>
 </project>

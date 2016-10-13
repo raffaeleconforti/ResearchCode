@@ -60,121 +60,41 @@
     <dependencies>
         <dependency>
             <groupId>org.processmining</groupId>
-            <artifactId>prom5-lib</artifactId>
-            <version>6.5</version>
-        </dependency>
-        <dependency>
-            <groupId>org.processmining</groupId>
             <artifactId>prom5</artifactId>
-            <version>6.5</version>
-        </dependency>
-        <dependency>
-            <groupId>org.processmining</groupId>
-            <artifactId>prom5-plugins</artifactId>
-            <version>6.5</version>
         </dependency>
         <dependency>
             <groupId>org.processmining</groupId>
             <artifactId>uitopia</artifactId>
-            <version>6.5</version>
         </dependency>
 
-        <dependency>
-            <groupId>org.processmining</groupId>
-            <artifactId>prom6-framework</artifactId>
-            <version>6.5</version>
-        </dependency>
-        <dependency>
-            <groupId>org.processmining</groupId>
-            <artifactId>prom6-contexts</artifactId>
-            <version>6.5</version>
-        </dependency>
-        <dependency>
-            <groupId>org.processmining</groupId>
-            <artifactId>prom6-plugins</artifactId>
-            <version>6.5</version>
-        </dependency>
-        <dependency>
-            <groupId>org.processmining</groupId>
-            <artifactId>colt</artifactId>
-            <version>6.5</version>
-        </dependency>
-        <dependency>
-            <groupId>org.processmining</groupId>
-            <artifactId>oplall</artifactId>
-            <version>6.5</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.processmining</groupId>
-            <artifactId>log</artifactId>
-            <version>6.5</version>
-        </dependency>
-        <dependency>
-            <groupId>org.processmining</groupId>
-            <artifactId>petrinets</artifactId>
-            <version>6.5</version>
-        </dependency>
         <dependency>
             <groupId>org.processmining</groupId>
             <artifactId>pnetreplayer</artifactId>
-            <version>6.5</version>
-        </dependency>
-        <dependency>
-            <groupId>org.processmining</groupId>
-            <artifactId>logabstractions</artifactId>
-            <version>6.5</version>
-        </dependency>
-        <dependency>
-            <groupId>org.processmining</groupId>
-            <artifactId>ilpminer</artifactId>
-            <version>6.5</version>
         </dependency>
         <dependency>
             <groupId>org.processmining</groupId>
             <artifactId>heuristicsminer</artifactId>
-            <version>6.5</version>
         </dependency>
         <dependency>
             <groupId>org.processmining</groupId>
             <artifactId>inductiveminer</artifactId>
-            <version>6.5</version>
         </dependency>
 
         <dependency>
             <groupId>com.raffaeleconforti</groupId>
-            <artifactId>foreignkey-discovery</artifactId>
-            <version>1.0</version>
-        </dependency>
-        <dependency>
-            <groupId>com.raffaeleconforti</groupId>
             <artifactId>conversion</artifactId>
-            <version>1.0</version>
-        </dependency>
-        <dependency>
-            <groupId>com.raffaeleconforti</groupId>
-            <artifactId>bpmn-util</artifactId>
-            <version>1.0</version>
-        </dependency>
-        <dependency>
-            <groupId>com.raffaeleconforti</groupId>
-            <artifactId>log-util</artifactId>
-            <version>1.0</version>
         </dependency>
         <dependency>
             <groupId>com.raffaeleconforti</groupId>
             <artifactId>data-structures</artifactId>
-            <version>1.0</version>
         </dependency>
         <dependency>
             <groupId>com.raffaeleconforti</groupId>
             <artifactId>fake-context</artifactId>
-            <version>1.0</version>
         </dependency>
         <dependency>
             <groupId>com.raffaeleconforti</groupId>
             <artifactId>modified-miners</artifactId>
-            <version>1.0</version>
         </dependency>
 
     </dependencies>

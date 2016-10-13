@@ -58,40 +58,21 @@
 
     <dependencies>
         <dependency>
-            <artifactId>efficient-log</artifactId>
-            <groupId>com.raffaeleconforti</groupId>
-            <version>1.0</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.deckfour.xes</groupId>
-            <artifactId>OpenXES</artifactId>
-            <version>6.5</version>
-        </dependency>
-        <dependency>
             <groupId>org.deckfour.xes</groupId>
             <artifactId>spex</artifactId>
-            <version>6.5</version>
-        </dependency>
-        <dependency>
-            <groupId>org.processmining</groupId>
-            <artifactId>prom5-lib</artifactId>
-            <version>6.5</version>
         </dependency>
         <dependency>
             <groupId>net.sf.kxml</groupId>
             <artifactId>kxml2</artifactId>
-            <version>2.3.0</version>
         </dependency>
         <dependency>
             <groupId>net.sf.trove4j</groupId>
             <artifactId>trove4j</artifactId>
-            <version>3.0.3</version>
         </dependency>
+
         <dependency>
-            <groupId>org.eclipse.collections</groupId>
-            <artifactId>eclipse-collections</artifactId>
-            <version>8.0.0-M1</version>
+            <groupId>com.raffaeleconforti</groupId>
+            <artifactId>efficient-log</artifactId>
         </dependency>
     </dependencies>
 </project>

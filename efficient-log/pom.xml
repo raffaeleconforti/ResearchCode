@@ -58,43 +58,35 @@
         <dependency>
             <groupId>org.deckfour.xes</groupId>
             <artifactId>OpenXES</artifactId>
-            <version>6.5</version>
         </dependency>
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>19.0</version>
         </dependency>
         <dependency>
             <groupId>org.eclipse.collections</groupId>
             <artifactId>eclipse-collections</artifactId>
-            <version>8.0.0-M1</version>
         </dependency>
 
         <dependency>
             <groupId>org.processmining</groupId>
             <artifactId>prom5-lib</artifactId>
-            <version>6.5</version>
         </dependency>
         <dependency>
             <groupId>org.processmining</groupId>
             <artifactId>prom6-contexts</artifactId>
-            <version>6.5</version>
         </dependency>
         <dependency>
             <groupId>org.processmining</groupId>
             <artifactId>prom6-framework</artifactId>
-            <version>6.5</version>
         </dependency>
         <dependency>
             <groupId>org.processmining</groupId>
             <artifactId>log</artifactId>
-            <version>6.5</version>
         </dependency>
         <dependency>
             <groupId>org.xerial.snappy</groupId>
             <artifactId>snappy-java</artifactId>
-            <version>1.1.2.6</version>
         </dependency>
     </dependencies>
 

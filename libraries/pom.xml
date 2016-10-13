@@ -507,7 +507,7 @@
                         <configuration>
                             <groupId>org.deckfour.xes</groupId>
                             <artifactId>OpenXES</artifactId>
-                            <version>6.5</version>
+                            <version>${prom.version}</version>
                             <packaging>jar</packaging>
                             <file>${project.build.directory}/openxes.jar</file>
                             <generatePom>true</generatePom>
@@ -523,7 +523,7 @@
                         <configuration>
                             <groupId>org.deckfour.xes</groupId>
                             <artifactId>spex</artifactId>
-                            <version>6.5</version>
+                            <version>${prom.version}</version>
                             <packaging>jar</packaging>
                             <file>${project.build.directory}/spex.jar</file>
                             <generatePom>true</generatePom>
@@ -539,7 +539,7 @@
                         <configuration>
                             <groupId>org.processmining</groupId>
                             <artifactId>bpmn</artifactId>
-                            <version>6.5</version>
+                            <version>${prom.version}</version>
                             <packaging>jar</packaging>
                             <file>${project.build.directory}/bpmn.jar</file>
                             <generatePom>true</generatePom>
@@ -555,7 +555,7 @@
                         <configuration>
                             <groupId>org.processmining</groupId>
                             <artifactId>colt</artifactId>
-                            <version>6.5</version>
+                            <version>${prom.version}</version>
                             <packaging>jar</packaging>
                             <file>${project.build.directory}/colt.jar</file>
                             <generatePom>true</generatePom>
@@ -571,7 +571,7 @@
                         <configuration>
                             <groupId>org.processmining</groupId>
                             <artifactId>efficientstorage</artifactId>
-                            <version>6.5</version>
+                            <version>${prom.version}</version>
                             <packaging>jar</packaging>
                             <file>${project.build.directory}/efficientstorage.jar</file>
                             <generatePom>true</generatePom>
@@ -587,7 +587,7 @@
                         <configuration>
                             <groupId>org.processmining</groupId>
                             <artifactId>etconformance</artifactId>
-                            <version>6.5</version>
+                            <version>${prom.version}</version>
                             <packaging>jar</packaging>
                             <file>${project.build.directory}/etconformance.jar</file>
                             <generatePom>true</generatePom>
@@ -603,7 +603,7 @@
                         <configuration>
                             <groupId>org.processmining</groupId>
                             <artifactId>evolutionarytreeminer</artifactId>
-                            <version>6.5</version>
+                            <version>${prom.version}</version>
                             <packaging>jar</packaging>
                             <file>${project.build.directory}/evolutionarytreeminer.jar</file>
                             <generatePom>true</generatePom>
@@ -619,7 +619,7 @@
                         <configuration>
                             <groupId>org.processmining</groupId>
                             <artifactId>heuristicsminer</artifactId>
-                            <version>6.5</version>
+                            <version>${prom.version}</version>
                             <packaging>jar</packaging>
                             <file>${project.build.directory}/heuristicsminer.jar</file>
                             <generatePom>true</generatePom>
@@ -635,7 +635,7 @@
                         <configuration>
                             <groupId>org.processmining</groupId>
                             <artifactId>ilpminer</artifactId>
-                            <version>6.5</version>
+                            <version>${prom.version}</version>
                             <packaging>jar</packaging>
                             <file>${project.build.directory}/ilpiner.jar</file>
                             <generatePom>true</generatePom>
@@ -651,7 +651,7 @@
                         <configuration>
                             <groupId>org.processmining</groupId>
                             <artifactId>inductiveminer</artifactId>
-                            <version>6.5</version>
+                            <version>${prom.version}</version>
                             <packaging>jar</packaging>
                             <file>${project.build.directory}/inductiveminer.jar</file>
                             <generatePom>true</generatePom>
@@ -667,7 +667,7 @@
                         <configuration>
                             <groupId>org.processmining</groupId>
                             <artifactId>log</artifactId>
-                            <version>6.5</version>
+                            <version>${prom.version}</version>
                             <packaging>jar</packaging>
                             <file>${project.build.directory}/log.jar</file>
                             <generatePom>true</generatePom>
@@ -683,7 +683,7 @@
                         <configuration>
                             <groupId>org.processmining</groupId>
                             <artifactId>logabstractions</artifactId>
-                            <version>6.5</version>
+                            <version>${prom.version}</version>
                             <packaging>jar</packaging>
                             <file>${project.build.directory}/logabstractions.jar</file>
                             <generatePom>true</generatePom>
@@ -715,7 +715,7 @@
                         <configuration>
                             <groupId>org.processmining</groupId>
                             <artifactId>oplall</artifactId>
-                            <version>6.5</version>
+                            <version>${prom.version}</version>
                             <packaging>jar</packaging>
                             <file>${project.build.directory}/oplall.jar</file>
                             <generatePom>true</generatePom>
@@ -731,7 +731,7 @@
                         <configuration>
                             <groupId>org.processmining</groupId>
                             <artifactId>petrinets</artifactId>
-                            <version>6.5</version>
+                            <version>${prom.version}</version>
                             <packaging>jar</packaging>
                             <file>${project.build.directory}/petrinets.jar</file>
                             <generatePom>true</generatePom>
@@ -747,7 +747,7 @@
                         <configuration>
                             <groupId>org.processmining</groupId>
                             <artifactId>pnetreplayer</artifactId>
-                            <version>6.5</version>
+                            <version>${prom.version}</version>
                             <packaging>jar</packaging>
                             <file>${project.build.directory}/pnetreplayer.jar</file>
                             <generatePom>true</generatePom>
@@ -763,7 +763,7 @@
                         <configuration>
                             <groupId>org.processmining</groupId>
                             <artifactId>processtree</artifactId>
-                            <version>6.5</version>
+                            <version>${prom.version}</version>
                             <packaging>jar</packaging>
                             <file>${project.build.directory}/processtree.jar</file>
                             <generatePom>true</generatePom>
@@ -779,7 +779,7 @@
                         <configuration>
                             <groupId>org.processmining</groupId>
                             <artifactId>prom5</artifactId>
-                            <version>6.5</version>
+                            <version>${prom.version}</version>
                             <packaging>jar</packaging>
                             <file>${project.build.directory}/prom5.jar</file>
                             <generatePom>true</generatePom>
@@ -795,7 +795,7 @@
                         <configuration>
                             <groupId>org.processmining</groupId>
                             <artifactId>prom5-lib</artifactId>
-                            <version>6.5</version>
+                            <version>${prom.version}</version>
                             <packaging>jar</packaging>
                             <file>${project.build.directory}/prom5-lib.jar</file>
                             <generatePom>true</generatePom>
@@ -811,7 +811,7 @@
                         <configuration>
                             <groupId>org.processmining</groupId>
                             <artifactId>prom5-models</artifactId>
-                            <version>6.5</version>
+                            <version>${prom.version}</version>
                             <packaging>jar</packaging>
                             <file>${project.build.directory}/prom5-models.jar</file>
                             <generatePom>true</generatePom>
@@ -827,7 +827,7 @@
                         <configuration>
                             <groupId>org.processmining</groupId>
                             <artifactId>prom5-plugins</artifactId>
-                            <version>6.5</version>
+                            <version>${prom.version}</version>
                             <packaging>jar</packaging>
                             <file>${project.build.directory}/prom5-plugins.jar</file>
                             <generatePom>true</generatePom>
@@ -843,7 +843,7 @@
                         <configuration>
                             <groupId>org.processmining</groupId>
                             <artifactId>grappa</artifactId>
-                            <version>6.5</version>
+                            <version>${prom.version}</version>
                             <packaging>jar</packaging>
                             <file>${project.build.directory}/grappa.jar</file>
                             <generatePom>true</generatePom>
@@ -859,7 +859,7 @@
                         <configuration>
                             <groupId>org.processmining</groupId>
                             <artifactId>prom6-contexts</artifactId>
-                            <version>6.5</version>
+                            <version>${prom.version}</version>
                             <packaging>jar</packaging>
                             <file>${project.build.directory}/prom6-contexts.jar</file>
                             <generatePom>true</generatePom>
@@ -875,7 +875,7 @@
                         <configuration>
                             <groupId>org.processmining</groupId>
                             <artifactId>prom6-framework</artifactId>
-                            <version>6.5</version>
+                            <version>${prom.version}</version>
                             <packaging>jar</packaging>
                             <file>${project.build.directory}/prom6-framework.jar</file>
                             <generatePom>true</generatePom>
@@ -891,7 +891,7 @@
                         <configuration>
                             <groupId>org.processmining</groupId>
                             <artifactId>prom6-models</artifactId>
-                            <version>6.5</version>
+                            <version>${prom.version}</version>
                             <packaging>jar</packaging>
                             <file>${project.build.directory}/prom6-models.jar</file>
                             <generatePom>true</generatePom>
@@ -907,7 +907,7 @@
                         <configuration>
                             <groupId>org.processmining</groupId>
                             <artifactId>prom6-plugins</artifactId>
-                            <version>6.5</version>
+                            <version>${prom.version}</version>
                             <packaging>jar</packaging>
                             <file>${project.build.directory}/prom6-plugins.jar</file>
                             <generatePom>true</generatePom>
@@ -923,7 +923,7 @@
                         <configuration>
                             <groupId>org.processmining</groupId>
                             <artifactId>jgraph</artifactId>
-                            <version>6.5</version>
+                            <version>${prom.version}</version>
                             <packaging>jar</packaging>
                             <file>${project.build.directory}/jgraph.jar</file>
                             <generatePom>true</generatePom>
@@ -939,7 +939,7 @@
                         <configuration>
                             <groupId>org.processmining</groupId>
                             <artifactId>tablelayout</artifactId>
-                            <version>6.5</version>
+                            <version>${prom.version}</version>
                             <packaging>jar</packaging>
                             <file>${project.build.directory}/tablelayout.jar</file>
                             <generatePom>true</generatePom>
@@ -955,7 +955,7 @@
                         <configuration>
                             <groupId>org.processmining</groupId>
                             <artifactId>slickerbox1</artifactId>
-                            <version>6.5</version>
+                            <version>${prom.version}</version>
                             <packaging>jar</packaging>
                             <file>${project.build.directory}/slickerbox1.jar</file>
                             <generatePom>true</generatePom>
@@ -971,7 +971,7 @@
                         <configuration>
                             <groupId>org.processmining</groupId>
                             <artifactId>uitopia</artifactId>
-                            <version>6.5</version>
+                            <version>${prom.version}</version>
                             <packaging>jar</packaging>
                             <file>${project.build.directory}/uitopia.jar</file>
                             <generatePom>true</generatePom>
@@ -987,7 +987,7 @@
                         <configuration>
                             <groupId>org.processmining</groupId>
                             <artifactId>widgets</artifactId>
-                            <version>6.5</version>
+                            <version>${prom.version}</version>
                             <packaging>jar</packaging>
                             <file>${project.build.directory}/widgets.jar</file>
                             <generatePom>true</generatePom>
@@ -1020,9 +1020,9 @@
                         <configuration>
                             <groupId>org.apromore</groupId>
                             <artifactId>bpmntk-osgi</artifactId>
-                            <version>1.0</version>
+                            <version>1.0-20161013</version>
                             <packaging>jar</packaging>
-                            <file>${project.build.sourceDirectory}/bpmntk-osgi-1.0.jar</file>
+                            <file>src/main/java/bpmntk-osgi-1.0-20161013.jar</file>
                             <generatePom>true</generatePom>
                         </configuration>
                     </execution>
@@ -1036,7 +1036,7 @@
                         <configuration>
                             <groupId>org.processmining</groupId>
                             <artifactId>fodina</artifactId>
-                            <version>6.5</version>
+                            <version>${prom.version}</version>
                             <packaging>jar</packaging>
                             <file>${project.build.sourceDirectory}/fodina-2013-01-02.jar</file>
                             <generatePom>true</generatePom>

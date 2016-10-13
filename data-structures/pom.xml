@@ -58,12 +58,10 @@
         <dependency>
             <groupId>com.raffaeleconforti</groupId>
             <artifactId>graph-algorithms</artifactId>
-            <version>1.0</version>
         </dependency>
         <dependency>
             <groupId>com.raffaeleconforti</groupId>
             <artifactId>foreignkey-discovery</artifactId>
-            <version>1.0</version>
         </dependency>
 
     </dependencies>

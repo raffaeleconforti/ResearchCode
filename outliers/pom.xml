@@ -58,7 +58,6 @@
         <dependency>
             <groupId>com.raffaeleconforti</groupId>
             <artifactId>log-util</artifactId>
-            <version>1.0</version>
         </dependency>
     </dependencies>
 
