@@ -168,7 +168,7 @@ public class ComputeMeasurment {
         this.validatingLog = validatingLog;
         numberTraces = trainingLog.size() / fold;
 
-        miningAlgorithms = new MiningAlgorithm[] {new BPMNMinerAlgorithmWrapper(), new InductiveAlgorithmWrapper(),
+        miningAlgorithms = new MiningAlgorithm[] {new BPMNMinerAlgorithmWrapper(), new InductiveMinerIMWrapper(),
                 new HeuristicsAlgorithmWrapper(), new FodinaAlgorithmWrapper(), new ILPAlgorithmWrapper(),
                 new AlphaAlgorithmWrapper(), new Heuristics52AlgorithmWrapper(), new EvolutionaryTreeMinerWrapper(),
                 new StructuredMinerAlgorithmWrapper()};
@@ -200,7 +200,7 @@ public class ComputeMeasurment {
         numberTraces = trainingLog.size() / fold;
 
 //        miningAlgorithms = new MiningAlgorithm[] {null};
-        miningAlgorithms = new MiningAlgorithm[] {new BPMNMinerAlgorithmWrapper(), new InductiveAlgorithmWrapper(),
+        miningAlgorithms = new MiningAlgorithm[] {new BPMNMinerAlgorithmWrapper(), new InductiveMinerIMWrapper(),
                 new HeuristicsAlgorithmWrapper(), new FodinaAlgorithmWrapper(), new ILPAlgorithmWrapper(),
                 new AlphaAlgorithmWrapper(), new Heuristics52AlgorithmWrapper(), new EvolutionaryTreeMinerWrapper(),
                 new StructuredMinerAlgorithmWrapper()};

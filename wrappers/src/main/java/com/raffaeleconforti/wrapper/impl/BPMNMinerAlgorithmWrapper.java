@@ -67,4 +67,9 @@ public class BPMNMinerAlgorithmWrapper implements MiningAlgorithm {
         PetrinetWithMarking petrinetWithMarking = minePetrinet(context, log, structure);
         return PetriNetToBPMNConverter.convert(petrinetWithMarking.getPetrinet(), petrinetWithMarking.getInitialMarking(), petrinetWithMarking.getFinalMarking(), true);
     }
+
+    @Override
+    public String getAlgorithmName() {
+        return "BPMNMiner";
+    }
 }

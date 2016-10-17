@@ -13,16 +13,16 @@ import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
 import org.processmining.models.graphbased.directed.petrinet.Petrinet;
 import org.processmining.models.semantics.petrinet.Marking;
 import org.processmining.plugins.InductiveMiner.mining.MiningParameters;
+import org.processmining.plugins.InductiveMiner.mining.MiningParametersIMfa;
 import org.processmining.plugins.InductiveMiner.plugins.IMPetriNet;
-import org.processmining.plugins.InductiveMiner.plugins.dialogs.IMMiningDialog;
 
 /**
  * Created by conforti on 20/02/15.
  */
-@Plugin(name = "Inductive Miner Wrapper", parameterLabels = {"Log"},
+@Plugin(name = "Inductive Miner IMfa Wrapper", parameterLabels = {"Log"},
         returnLabels = {"PetrinetWithMarking"},
         returnTypes = {PetrinetWithMarking.class})
-public class InductiveAlgorithmWrapper implements MiningAlgorithm {
+public class InductiveMinerIMfaWrapper implements MiningAlgorithm {
 
     MiningParameters miningParameters;
 
@@ -30,7 +30,7 @@ public class InductiveAlgorithmWrapper implements MiningAlgorithm {
             author = "Raffaele Conforti",
             email = "raffaele.conforti@qut.edu.au",
             pack = "Noise Filtering")
-    @PluginVariant(variantLabel = "Inductive Miner Wrapper", requiredParameterLabels = {0})
+    @PluginVariant(variantLabel = "Inductive Miner IMfa Wrapper", requiredParameterLabels = {0})
     public PetrinetWithMarking minePetrinet(UIPluginContext context, XLog log) {
         return minePetrinet(context, log, false);
     }
@@ -42,9 +42,7 @@ public class InductiveAlgorithmWrapper implements MiningAlgorithm {
 
         IMPetriNet miner = new IMPetriNet();
         if(miningParameters == null) {
-            IMMiningDialog miningDialog = new IMMiningDialog(log);
-            context.showWizard("Mine using Inductive Miner", true, true, miningDialog);
-            miningParameters = miningDialog.getMiningParameters();
+            miningParameters = new MiningParametersIMfa();
         }
         Object[] result = miner.minePetriNetParameters(context, log, miningParameters);
         logPreprocessing.removedAddedElements((Petrinet) result[0]);
@@ -56,6 +54,11 @@ public class InductiveAlgorithmWrapper implements MiningAlgorithm {
     public BPMNDiagram mineBPMNDiagram(UIPluginContext context, XLog log, boolean structure) {
         PetrinetWithMarking petrinetWithMarking = minePetrinet(context, log, structure);
         return PetriNetToBPMNConverter.convert(petrinetWithMarking.getPetrinet(), petrinetWithMarking.getInitialMarking(), petrinetWithMarking.getFinalMarking(), true);
+    }
+
+    @Override
+    public String getAlgorithmName() {
+        return "Inductive Miner IMfa";
     }
 
 }

@@ -67,4 +67,8 @@ public class AlphaAlgorithmWrapper implements MiningAlgorithm {
         return PetriNetToBPMNConverter.convert(petrinetWithMarking.getPetrinet(), petrinetWithMarking.getInitialMarking(), petrinetWithMarking.getFinalMarking(), true);
     }
 
+    @Override
+    public String getAlgorithmName() {
+        return "Alpha Algorithm";
+    }
 }

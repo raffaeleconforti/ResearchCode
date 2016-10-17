@@ -11,5 +11,6 @@ public interface MiningAlgorithm {
 
     PetrinetWithMarking minePetrinet(UIPluginContext context, XLog log, boolean structure);
     BPMNDiagram mineBPMNDiagram(UIPluginContext context, XLog log, boolean structure);
+    String getAlgorithmName();
 
 }

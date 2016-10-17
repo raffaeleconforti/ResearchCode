@@ -66,4 +66,9 @@ public class HeuristicsAlgorithmWrapper implements MiningAlgorithm {
         return PetriNetToBPMNConverter.convert(petrinetWithMarking.getPetrinet(), petrinetWithMarking.getInitialMarking(), petrinetWithMarking.getFinalMarking(), true);
     }
 
+    @Override
+    public String getAlgorithmName() {
+        return "Heuristics Miner ProM6";
+    }
+
 }

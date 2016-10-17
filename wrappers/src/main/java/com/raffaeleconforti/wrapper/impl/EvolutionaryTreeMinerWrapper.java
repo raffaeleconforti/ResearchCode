@@ -59,4 +59,8 @@ public class EvolutionaryTreeMinerWrapper implements MiningAlgorithm {
         return PetriNetToBPMNConverter.convert(petrinetWithMarking.getPetrinet(), petrinetWithMarking.getInitialMarking(), petrinetWithMarking.getFinalMarking(), true);
     }
 
+    @Override
+    public String getAlgorithmName() {
+        return "Evolutionary Tree Miner";
+    }
 }
