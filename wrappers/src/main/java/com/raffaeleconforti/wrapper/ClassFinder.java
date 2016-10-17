@@ -85,7 +85,7 @@ public class ClassFinder {
                 name = name.replace(".class", "");
                 name = name.replace("/", ".");
                 name = name.replace("\\", ".");
-                if(name.startsWith("com.raffaeleconforti.wrapper")) {
+                if(name.startsWith("com.raffaeleconforti")) {
                     Class clazz = Class.forName(name);
                     if (toFind.isAssignableFrom(clazz)) {
                         return clazz;
