@@ -1,6 +1,7 @@
 package com.raffaeleconforti.measurements.impl;
 
 import com.raffaeleconforti.measurements.MeasurementAlgorithm;
+import com.raffaeleconforti.wrapper.MiningAlgorithm;
 import com.raffaeleconforti.wrapper.PetrinetWithMarking;
 import nl.tue.astar.AStarException;
 import org.deckfour.xes.classification.XEventClass;
@@ -9,6 +10,7 @@ import org.deckfour.xes.info.XLogInfo;
 import org.deckfour.xes.info.XLogInfoFactory;
 import org.deckfour.xes.model.XLog;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
+import org.processmining.contexts.uitopia.UIPluginContext;
 import org.processmining.framework.plugin.PluginContext;
 import org.processmining.models.connections.petrinets.behavioral.FinalMarkingConnection;
 import org.processmining.models.graphbased.directed.petrinet.Petrinet;
@@ -29,7 +31,7 @@ import java.util.Map;
 public class AlignmentBasedFitness implements MeasurementAlgorithm {
 
     @Override
-    public double computeMeasurement(PluginContext pluginContext, XEventClassifier xEventClassifier, PetrinetWithMarking petrinetWithMarking, XLog log) {
+    public double computeMeasurement(UIPluginContext pluginContext, XEventClassifier xEventClassifier, PetrinetWithMarking petrinetWithMarking, MiningAlgorithm miningAlgorithm, XLog log) {
         return getAlignmentValue(computeAlignment(pluginContext, xEventClassifier, petrinetWithMarking, log));
     }
 

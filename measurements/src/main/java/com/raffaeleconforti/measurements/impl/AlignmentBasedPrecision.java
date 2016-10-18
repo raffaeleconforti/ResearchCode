@@ -1,11 +1,12 @@
 package com.raffaeleconforti.measurements.impl;
 
 import com.raffaeleconforti.measurements.MeasurementAlgorithm;
+import com.raffaeleconforti.wrapper.MiningAlgorithm;
 import com.raffaeleconforti.wrapper.PetrinetWithMarking;
 import org.deckfour.xes.classification.XEventClassifier;
 import org.deckfour.xes.model.XLog;
+import org.processmining.contexts.uitopia.UIPluginContext;
 import org.processmining.framework.connections.ConnectionCannotBeObtained;
-import org.processmining.framework.plugin.PluginContext;
 import org.processmining.plugins.multietc.plugins.MultiETCPlugin;
 import org.processmining.plugins.multietc.res.MultiETCResult;
 import org.processmining.plugins.multietc.sett.MultiETCSettings;
@@ -18,7 +19,7 @@ public class AlignmentBasedPrecision implements MeasurementAlgorithm {
 
 
     @Override
-    public double computeMeasurement(PluginContext pluginContext, XEventClassifier xEventClassifier, PetrinetWithMarking petrinetWithMarking, XLog log) {
+    public double computeMeasurement(UIPluginContext pluginContext, XEventClassifier xEventClassifier, PetrinetWithMarking petrinetWithMarking, MiningAlgorithm miningAlgorithm, XLog log) {
         MultiETCPlugin multiETCPlugin = new MultiETCPlugin();
 
         MultiETCSettings settings = new MultiETCSettings();
