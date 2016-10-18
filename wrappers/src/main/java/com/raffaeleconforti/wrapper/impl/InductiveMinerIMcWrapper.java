@@ -58,7 +58,7 @@ public class InductiveMinerIMcWrapper implements MiningAlgorithm {
 
     @Override
     public String getAlgorithmName() {
-        return "Inductive Miner IMc";
+        return "Inductive Miner - incompleteness (IMc)";
     }
 
 }

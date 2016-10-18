@@ -58,7 +58,7 @@ public class InductiveMinerIMfWrapper implements MiningAlgorithm {
 
     @Override
     public String getAlgorithmName() {
-        return "Inductive Miner IMf";
+        return "Inductive Miner - infrequent (IMf)";
     }
 
 }
