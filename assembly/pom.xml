@@ -18,6 +18,19 @@
     <dependencies>
         <dependency>
             <groupId>com.raffaeleconforti</groupId>
+            <artifactId>java-util</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.raffaeleconforti</groupId>
+            <artifactId>benchmark-logic</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.raffaeleconforti</groupId>
+            <artifactId>benchmark-commandline</artifactId>
+            <version>1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.raffaeleconforti</groupId>
             <artifactId>fake-context</artifactId>
         </dependency>
         <dependency>
