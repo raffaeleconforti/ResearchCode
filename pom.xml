@@ -44,6 +44,7 @@
         <module>wrappers</module>
         <module>structuredminer</module>
         <module>structuredminer-commandline</module>
+        <module>benchmark-commandline</module>
 
         <module>noisefiltering-event-logic</module>
         <module>noisefiltering-event-commandline</module>
