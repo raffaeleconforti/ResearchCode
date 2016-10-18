@@ -11,7 +11,11 @@ import org.processmining.contexts.uitopia.UIPluginContext;
  */
 public interface MeasurementAlgorithm {
 
-    double computeMeasurement(UIPluginContext pluginContext, XEventClassifier xEventClassifier, PetrinetWithMarking petrinetWithMarking, MiningAlgorithm miningAlgorithm, XLog log);
+    double computeMeasurement(UIPluginContext pluginContext,
+                              XEventClassifier xEventClassifier,
+                              PetrinetWithMarking petrinetWithMarking,
+                              MiningAlgorithm miningAlgorithm, XLog log);
+
     String getMeasurementName();
 
 }

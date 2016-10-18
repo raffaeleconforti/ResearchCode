@@ -23,6 +23,13 @@
             <groupId>com.raffaeleconforti</groupId>
             <artifactId>measurements</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi</artifactId>
+            <version>3.15</version>
+        </dependency>
+
     </dependencies>
 
 
