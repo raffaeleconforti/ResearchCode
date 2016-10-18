@@ -13,12 +13,12 @@ import java.util.Set;
  */
 public class MiningAlgorithmDiscoverer {
 
-    public List<MiningAlgorithm> discoverAlgorithms() {
+    public static List<MiningAlgorithm> discoverAlgorithms() {
         Set<String> packages = new UnifiedSet<>();
         return discoverAlgorithms(packages);
     }
 
-    public List<MiningAlgorithm> discoverAlgorithms(Set<String> packages) {
+    public static List<MiningAlgorithm> discoverAlgorithms(Set<String> packages) {
         packages.add("com.raffaeleconforti");
         List<Class<? extends MiningAlgorithm>> list = ClassFinder.findAllMatchingTypes(packages, MiningAlgorithm.class);
         List<MiningAlgorithm> algorithms = new ArrayList<>(list.size());
@@ -34,7 +34,7 @@ public class MiningAlgorithmDiscoverer {
         return algorithms;
     }
 
-    public List<String> discoverAlgorithmsNames(List<MiningAlgorithm> algorithms) {
+    public static List<String> discoverAlgorithmsNames(List<MiningAlgorithm> algorithms) {
         List<String> algorithmsNames = new ArrayList<>(algorithms.size());
         for(MiningAlgorithm miningAlgorithm : algorithms) {
             algorithmsNames.add(miningAlgorithm.getAlgorithmName());

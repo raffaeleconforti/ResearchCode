@@ -14,12 +14,12 @@ import java.util.Set;
  */
 public class MeasurementAlgorithmDiscoverer {
 
-    public List<MeasurementAlgorithm> discoverAlgorithms() {
+    public static List<MeasurementAlgorithm> discoverAlgorithms() {
         Set<String> packages = new UnifiedSet<>();
         return discoverAlgorithms(packages);
     }
 
-    public List<MeasurementAlgorithm> discoverAlgorithms(Set<String> packages) {
+    public static List<MeasurementAlgorithm> discoverAlgorithms(Set<String> packages) {
         packages.add("com.raffaeleconforti");
         List<Class<? extends MeasurementAlgorithm>> list = ClassFinder.findAllMatchingTypes(packages, MeasurementAlgorithm.class);
         List<MeasurementAlgorithm> algorithms = new ArrayList<>(list.size());
@@ -35,7 +35,7 @@ public class MeasurementAlgorithmDiscoverer {
         return algorithms;
     }
 
-    public List<String> discoverAlgorithmsNames(List<MeasurementAlgorithm> algorithms) {
+    public static List<String> discoverAlgorithmsNames(List<MeasurementAlgorithm> algorithms) {
         List<String> algorithmsNames = new ArrayList<>(algorithms.size());
         for(MeasurementAlgorithm measurementAlgorithm : algorithms) {
             algorithmsNames.add(measurementAlgorithm.getMeasurementName());
