@@ -1,13 +1,9 @@
-package com.raffaeleconforti.wrapper;
+package com.raffaeleconforti.classloading;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 
@@ -19,9 +15,9 @@ public class ClassFinder {
     public static final String JAVA_CLASS_PATH_PROPERTY = "java.class.path";
     public static final String CUSTOM_CLASS_PATH_PROPERTY = "custom.class.path";
 
-    static public <T> List<Class<? extends T>> findAllMatchingTypes(Class<T> toFind) {
+    public static <T> List<Class<? extends T>> findAllMatchingTypes(Set<String> packages, Class<T> toFind) {
         List<Class<? extends T>> returnedClasses = new ArrayList<>();
-        Set<Class> foundClasses = walkClassPath(toFind);
+        Set<Class> foundClasses = walkClassPath(packages, toFind);
         for (Class<?> clazz : foundClasses) {
             if (!clazz.isInterface()) {
                 returnedClasses.add((Class<? extends T>) clazz);
@@ -30,7 +26,7 @@ public class ClassFinder {
         return returnedClasses;
     }
 
-    static private Set<Class> walkClassPath(Class toFind) {
+    private static Set<Class> walkClassPath(Set<String> packages, Class toFind) {
         Set<Class> results = new HashSet<>();
         Set<String> classPathRoots = getClassPathRoots();
         for (String classpathEntry : classPathRoots) {
@@ -39,14 +35,14 @@ public class ClassFinder {
                 continue;
             }
             if (f.isDirectory()) {
-                traverse(f.getAbsolutePath(), f, toFind, results);
+                traverse(f.getAbsolutePath(), f, toFind, packages, results);
             } else {
                 File jar = new File(classpathEntry);
                 try {
                     JarInputStream is = new JarInputStream(new FileInputStream(jar));
                     JarEntry entry;
                     while ((entry = is.getNextJarEntry()) != null) {
-                        Class c = determine(entry.getName(), toFind);
+                        Class c = determine(entry.getName(), toFind, packages);
                         if (c != null) {
                             results.add(c);
                         }
@@ -76,7 +72,7 @@ public class ClassFinder {
         return s;
     }
 
-    static private Class determine(String name, Class toFind) {
+    static private Class determine(String name, Class toFind, Set<String> packages) {
         if (name.contains("$")) {
             return null;
         }
@@ -85,7 +81,14 @@ public class ClassFinder {
                 name = name.replace(".class", "");
                 name = name.replace("/", ".");
                 name = name.replace("\\", ".");
-                if(name.startsWith("com.raffaeleconforti")) {
+                boolean accepted = false;
+                for(String packageName : packages) {
+                    if(packageName.startsWith(name)) {
+                        accepted = true;
+                        break;
+                    }
+                }
+                if(accepted) {
                     Class clazz = Class.forName(name);
                     if (toFind.isAssignableFrom(clazz)) {
                         return clazz;
@@ -99,18 +102,18 @@ public class ClassFinder {
         return null;
     }
 
-    static private void traverse(String root, File current, Class toFind, Set<Class> result) {
+    static private void traverse(String root, File current, Class toFind, Set<String> packages, Set<Class> result) {
         File[] fs = current.listFiles();
         for (File f : fs) {
             if (f.isDirectory()) {
-                traverse(root, f, toFind, result);
+                traverse(root, f, toFind, packages, result);
             } else {
                 String ff = f.getAbsolutePath();
                 String name = ff.substring(root.length());
                 while (name.startsWith(File.separator)) {
                     name = name.substring(1);
                 }
-                Class c = determine(name, toFind);
+                Class c = determine(name, toFind, packages);
                 if (c != null) {
                     result.add(c);
                 }

@@ -20,6 +20,7 @@
     <modules>
         <module>build-tools</module>
         <module>libraries</module>
+        <module>java-util</module>
 
         <module>efficient-log</module>
         <module>fake-context</module>
@@ -60,6 +61,7 @@
 
         <!--<module>design-structure-matrix</module>-->
         <module>prom6</module>
+        <module>benchmark-logic</module>
     </modules>
 
     <properties>
@@ -89,6 +91,7 @@
         <pmd.skip>false</pmd.skip>
         <minimizejar>true</minimizejar>
 
+        <java-util.version>1.0</java-util.version>
         <fake-context.version>1.0</fake-context.version>
         <graph-algorithms.version>1.0</graph-algorithms.version>
         <bpmn-util.version>1.0</bpmn-util.version>
@@ -102,6 +105,7 @@
         <bpmnminer-commandline.version>1.0</bpmnminer-commandline.version>
         <bpmnminer-prom.version>1.0</bpmnminer-prom.version>
         <wrappers.version>1.0</wrappers.version>
+        <benchmark-logic.version>1.0</benchmark-logic.version>
         <structuredminer.version>1.0</structuredminer.version>
         <structuredminer-commandline.version>1.0</structuredminer-commandline.version>
         <outliers.version>1.0</outliers.version>
@@ -130,11 +134,10 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>org.ops4j.pax.runner</groupId>
-                <artifactId>pax-runner</artifactId>
-                <version>${pax.runner.version}</version>
+                <groupId>com.raffaeleconforti</groupId>
+                <artifactId>java-util</artifactId>
+                <version>${java-util.version}</version>
             </dependency>
-
             <dependency>
                 <groupId>com.raffaeleconforti</groupId>
                 <artifactId>fake-context</artifactId>
@@ -202,6 +205,11 @@
             </dependency>
             <dependency>
                 <groupId>com.raffaeleconforti</groupId>
+                <artifactId>benchmark-logic</artifactId>
+                <version>${benchmark-logic.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.raffaeleconforti</groupId>
                 <artifactId>structuredminer</artifactId>
                 <version>${structuredminer.version}</version>
             </dependency>
@@ -261,6 +269,12 @@
                 <version>${prom-util.version}</version>
             </dependency>
 
+
+            <dependency>
+                <groupId>org.ops4j.pax.runner</groupId>
+                <artifactId>pax-runner</artifactId>
+                <version>${pax.runner.version}</version>
+            </dependency>
             <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-math3</artifactId>
