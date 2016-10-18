@@ -8,6 +8,7 @@ import org.deckfour.xes.classification.XEventAndClassifier;
 import org.deckfour.xes.classification.XEventClassifier;
 import org.deckfour.xes.classification.XEventNameClassifier;
 import org.deckfour.xes.model.XLog;
+import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 
 import java.util.List;
 import java.util.Set;
@@ -16,6 +17,11 @@ import java.util.Set;
  * Created by Raffaele Conforti (conforti.raffaele@gmail.com) on 18/10/2016.
  */
 public class Benckmark {
+
+    public void performBenchmark(List<XLog> logs) {
+        Set<String> packages = new UnifiedSet<>();
+        performBenchmark(packages, logs);
+    }
 
     public void performBenchmark(Set<String> packages, List<XLog> logs) {
         XEventClassifier xEventClassifier = new XEventAndClassifier(new XEventNameClassifier());
