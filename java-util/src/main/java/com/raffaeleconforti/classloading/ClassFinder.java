@@ -83,7 +83,7 @@ public class ClassFinder {
                 name = name.replace("\\", ".");
                 boolean accepted = false;
                 for(String packageName : packages) {
-                    if(packageName.startsWith(name)) {
+                    if(name.startsWith(packageName)) {
                         accepted = true;
                         break;
                     }

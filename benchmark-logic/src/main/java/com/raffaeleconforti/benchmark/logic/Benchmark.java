@@ -13,6 +13,7 @@ import org.deckfour.xes.classification.XEventClassifier;
 import org.deckfour.xes.classification.XEventNameClassifier;
 import org.deckfour.xes.in.XesXmlParser;
 import org.deckfour.xes.model.XLog;
+import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -32,7 +33,7 @@ public class Benchmark {
     private String extLocation;
     private Map<String, XLog> logs;
 
-    private Set<String> packages;
+    private Set<String> packages = new UnifiedSet<>();
 
     /* this is a multidimensional cube containing all the measures.
     for each log, each mining algorithm and each metric we have a resulting metric value */
