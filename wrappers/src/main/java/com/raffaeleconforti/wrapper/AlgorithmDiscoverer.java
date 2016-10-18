@@ -1,8 +1,5 @@
 package com.raffaeleconforti.wrapper;
 
-import com.eztech.util.JavaClassFinder;
-import org.deckfour.xes.model.XLog;
-import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 import org.processmining.contexts.uitopia.UIPluginContext;
 import org.processmining.contexts.uitopia.annotations.UITopiaVariant;
 import org.processmining.framework.plugin.annotations.Plugin;
