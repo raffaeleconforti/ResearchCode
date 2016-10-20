@@ -11,6 +11,7 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.deckfour.xes.classification.XEventAndClassifier;
 import org.deckfour.xes.classification.XEventClassifier;
 import org.deckfour.xes.classification.XEventNameClassifier;
+import org.deckfour.xes.in.XesXmlGZIPParser;
 import org.deckfour.xes.in.XesXmlParser;
 import org.deckfour.xes.model.XLog;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
@@ -115,7 +116,7 @@ public class Benchmark {
                             System.out.println("DEBUG - name: " + logName);
                             in = classLoader.getResourceAsStream(logName);
                             System.out.println("DEBUG - stream size: " + in.available());
-                            log = importFromInputStream(in, new XesXmlParser(new XFactoryMemoryImpl()));
+                            log = importFromInputStream(in, new XesXmlGZIPParser(new XFactoryMemoryImpl()));
                             System.out.println("DEBUG - log size: " + log.size());
                             logs.put(logName.replaceAll(".*/", ""), log);
                         }
