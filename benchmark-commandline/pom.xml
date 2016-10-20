@@ -114,8 +114,14 @@
                                         <include>com/raffaeleconforti/**</include>
                                     </includes>
                                 </filter>
+                                <filter>
+                                    <artifact>org.processmining:log</artifact>
+                                    <includes>
+                                        <include>org/processmining/**</include>
+                                    </includes>
+                                </filter>
                             </filters>
-                            <minimizeJar>true</minimizeJar>
+                            <!--<minimizeJar>true</minimizeJar>-->
                             <transformers>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                                     <manifestEntries>

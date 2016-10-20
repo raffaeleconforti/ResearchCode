@@ -57,10 +57,22 @@ public class Benchmark {
 
         /* retrieving all the mining algorithms */
         List<MiningAlgorithm> miningAlgorithms = MiningAlgorithmDiscoverer.discoverAlgorithms(packages);
+        Collections.sort(miningAlgorithms, new Comparator<MiningAlgorithm>() {
+            @Override
+            public int compare(MiningAlgorithm o1, MiningAlgorithm o2) {
+                return o2.getAlgorithmName().compareTo(o1.getAlgorithmName());
+            }
+        });
         System.out.println("DEBUG - total miningAlgorithms: " + miningAlgorithms.size());
 
         /* retrieving all the measuring algorithms */
         List<MeasurementAlgorithm> measurementAlgorithms = MeasurementAlgorithmDiscoverer.discoverAlgorithms(packages);
+        Collections.sort(measurementAlgorithms, new Comparator<MeasurementAlgorithm>() {
+            @Override
+            public int compare(MeasurementAlgorithm o1, MeasurementAlgorithm o2) {
+                return o1.getMeasurementName().compareTo(o2.getMeasurementName());
+            }
+        });
         System.out.println("DEBUG - total measurementAlgorithms: " + measurementAlgorithms.size());
 
         measures = new HashMap<>();
