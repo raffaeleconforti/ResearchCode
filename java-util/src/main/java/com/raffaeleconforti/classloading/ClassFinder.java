@@ -97,7 +97,7 @@ public class ClassFinder {
             }
         } catch (Throwable ex) {
             //blacklisted classes
-            System.out.println(name);
+//            System.out.println(name);
         }
         return null;
     }

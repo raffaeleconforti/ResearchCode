@@ -56,9 +56,11 @@ public class Benchmark {
 
         /* retrieving all the mining algorithms */
         List<MiningAlgorithm> miningAlgorithms = MiningAlgorithmDiscoverer.discoverAlgorithms(packages);
+        System.out.println("DEBUG - total miningAlgorithm: " + miningAlgorithms.size());
 
         /* retrieving all the measuring algorithms */
         List<MeasurementAlgorithm> measurementAlgorithms = MeasurementAlgorithmDiscoverer.discoverAlgorithms(packages);
+        System.out.println("DEBUG - total measurementAlgorithms: " + measurementAlgorithms.size());
 
         measures = new HashMap<>();
 
