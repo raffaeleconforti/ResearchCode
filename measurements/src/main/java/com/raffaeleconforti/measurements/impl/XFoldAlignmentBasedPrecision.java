@@ -48,7 +48,7 @@ public class XFoldAlignmentBasedPrecision implements MeasurementAlgorithm {
 
     @Override
     public String getMeasurementName() {
-        return null;
+        return fold+"-Fold Alignment-Based ETC Precision";
     }
 
     private XLog[] createdXFolds() {

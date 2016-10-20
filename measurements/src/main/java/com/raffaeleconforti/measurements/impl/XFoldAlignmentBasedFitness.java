@@ -49,7 +49,7 @@ public class XFoldAlignmentBasedFitness implements MeasurementAlgorithm {
 
     @Override
     public String getMeasurementName() {
-        return null;
+        return fold+"-Fold Alignment-Based Fitness";
     }
 
     private XLog[] createdXFolds() {
