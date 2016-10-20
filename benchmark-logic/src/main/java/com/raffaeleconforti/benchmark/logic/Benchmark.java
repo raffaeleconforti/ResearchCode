@@ -76,16 +76,22 @@ public class Benchmark {
             System.out.println("DEBUG - measuring on log: " + logName);
 
             for( MiningAlgorithm miningAlgorithm : miningAlgorithms ) {
-                measures.get(logName).put(miningAlgorithm.getAlgorithmName(), new HashMap<>());
-                System.out.println("DEBUG - measuring on mining algorithm: " + miningAlgorithm.getAlgorithmName());
-                PetrinetWithMarking petrinetWithMarking = miningAlgorithm.minePetrinet(fakePluginContext, log, false);
-
-                for( MeasurementAlgorithm measurementAlgorithm : measurementAlgorithms ) {
-                    double measurement = measurementAlgorithm.computeMeasurement(fakePluginContext, xEventClassifier,
-                                                                                 petrinetWithMarking, miningAlgorithm, log);
-
-                    measures.get(logName).get(miningAlgorithm.getAlgorithmName()).put(measurementAlgorithm.getMeasurementName(), measurement);
-                    System.out.println("DEBUG - " + measurementAlgorithm.getMeasurementName() + " : " + measurement);
+                String miningAlgorithmName = miningAlgorithm.getAlgorithmName();
+                String measurementAlgorithmName = "NULL";
+                measures.get(logName).put(miningAlgorithmName, new HashMap<>());
+                try {
+                    System.out.println("DEBUG - measuring on mining algorithm: " + miningAlgorithmName);
+                    PetrinetWithMarking petrinetWithMarking = miningAlgorithm.minePetrinet(fakePluginContext, log, false);
+                    for( MeasurementAlgorithm measurementAlgorithm : measurementAlgorithms ) {
+                        measurementAlgorithmName = measurementAlgorithm.getMeasurementName();
+                        double measurement = measurementAlgorithm.computeMeasurement(fakePluginContext, xEventClassifier,
+                                                                                     petrinetWithMarking, miningAlgorithm, log);
+                        measures.get(logName).get(miningAlgorithmName).put(measurementAlgorithmName, measurement);
+                        System.out.println("DEBUG - " + measurementAlgorithmName + " : " + measurement);
+                    }
+                } catch(Exception e) {
+                    System.out.println("ERROR - [mining algorithm : measurement algorithm] > [" + miningAlgorithmName + " : " + measurementAlgorithmName + "]");
+                    measures.get(logName).remove(miningAlgorithmName);
                 }
             }
         }
