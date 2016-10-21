@@ -1,6 +1,5 @@
 package com.raffaeleconforti.ilpminer;
 
-import ilog.opl.IloOplFactory;
 import org.deckfour.xes.classification.XEventClass;
 import org.deckfour.xes.classification.XEventClasses;
 import org.deckfour.xes.extension.std.XConceptExtension;
@@ -20,22 +19,28 @@ import org.processmining.models.graphbased.directed.petrinet.elements.Place;
 import org.processmining.models.graphbased.directed.petrinet.elements.Transition;
 import org.processmining.models.graphbased.directed.petrinet.impl.PetrinetFactory;
 import org.processmining.models.semantics.petrinet.Marking;
+
 import org.processmining.plugins.ilpminer.*;
 import org.processmining.plugins.ilpminer.ILPMinerSettings.SolverSetting;
 import org.processmining.plugins.ilpminer.ILPMinerSettings.SolverType;
-import org.processmining.plugins.ilpminer.templates.PetriNetVariableFitnessILPModelSettings;
-import org.processmining.plugins.log.logabstraction.BasicLogRelations;
 import org.processmining.plugins.log.logabstraction.LogRelations;
 
 import java.lang.reflect.Constructor;
 import java.util.Collection;
-import org.eclipse.collections.impl.map.mutable.UnifiedMap;
+
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.prefs.Preferences;
 
+/**
+ * This plugin uses the Java-ILP library in order to execute ILP problems that
+ * will generate petrinet places.
+ *
+ * @author T. van der Wiel
+ *
+ */
 public class ILPMiner {
-
     /**
      * This method shows the GUI, in which the user can indicate which variant
      * of the ILP must be used and then tries to construct a petrinet.
@@ -45,6 +50,11 @@ public class ILPMiner {
      * @return Petrinet & Marking
      * @throws Exception
      */
+    public Object[] doILPMining(UIPluginContext context, XLog log) throws Exception {
+        ILPMinerSettings settings = generateSetting(context, log);
+        saveSettings(settings);
+        return doILPMiningWithSettings(context, log, XLogInfoFactory.createLogInfo(log), settings);
+    }
 
     public ILPMinerSettings generateSetting(UIPluginContext context, XLog log)
             throws Exception {
@@ -62,35 +72,11 @@ public class ILPMiner {
     }
 
     /**
-     * This method shows the GUI, in which the user can indicate which variant
-     * of the ILP must be used and then tries to construct a petrinet.
-     *
-     * @param context
-     * @param log
-     * @return Petrinet & Marking
-     * @throws Exception
-     */
-    public Object[] doILPMining(UIPluginContext context, XLog log)
-            throws Exception {
-        ILPMinerSettings settings = new ILPMinerSettings();
-        ILPModelSettings modelSettings = new PetriNetVariableFitnessILPModelSettings();
-        settings.setModelSettings(modelSettings);
-
-        saveSettings(settings);
-
-        XLogInfo summary = XLogInfoFactory.createLogInfo(log);
-        BasicLogRelations relations = new BasicLogRelations(log);
-
-        return doILPMiningPrivateWithRelations(context, summary, relations, settings);
-
-    }
-
-    /**
      * Stores the settings of the chosen ILP solver in the
      * (HKEY_Current_User/Software/JavaSoft/Prefs) registry
      *
-     * @param settings containing the user settings about the solver to use (and its
-     *                 components locations)
+     *            containing the user settings about the solver to use (and its
+     *            components locations)
      */
     private void saveSettings(ILPMinerSettings settings) {
         Preferences prefs = Preferences.userNodeForPackage(ILPMiner.class);
@@ -106,10 +92,10 @@ public class ILPMiner {
      *
      * @param context
      * @param log
-     * @param log      summary
-     * @param settings
+     * @param log
+     *            summary
      * @return Petrinet & Marking built using the ILP model variant provided in
-     * the settings
+     *         the settings
      * @throws Exception
      */
     public Object[] doILPMiningWithSettings(PluginContext context, XLog log,
@@ -156,7 +142,7 @@ public class ILPMiner {
         // Let's notify our lifecyclelisteners about the fact that we created a
         // new context. this is
         // optional, but if this is not done, then the user interface doesn't
-        // show it (if there is a ui).
+        // show it (if there is a UI).
         context.getPluginLifeCycleEventListeners().firePluginCreated(c2);
 
         // At this point, we execute the binding to get the LogRelations. For
@@ -172,12 +158,20 @@ public class ILPMiner {
         PluginExecutionResult pluginResult = plugin.getSecond().invoke(c2, log,
                 summary);
         pluginResult.synchronize();
-        LogRelations relations = pluginResult.getResult(plugin
+        LogRelations relations = pluginResult.<LogRelations> getResult(plugin
                 .getFirst());
 
         // Now we have the relations and we can continue with the mining.
         return doILPMiningPrivateWithRelations(context, relations.getSummary(),
                 relations, settings);
+    }
+
+    public Object[] doILPMiningWithLanguage(PluginContext context, XLog log,
+                                            XLogInfo summary, ILPMinerSettings settings, PrefixClosedLanguage l)
+            throws Exception {
+        // just do this as there has to be a plugin that recognizes mining with
+        // a pfcl. the pfcl will be detected later on anyway.
+        return doILPMiningWithSettings(context, log, summary, settings);
     }
 
     /**
@@ -191,7 +185,7 @@ public class ILPMiner {
      * @throws Exception
      */
     public Object[] doILPMiningPrivateWithRelations(PluginContext context,
-                                                    XLogInfo summary, LogRelations relations, ILPMinerSettings settings)
+                                                     XLogInfo summary, LogRelations relations, ILPMinerSettings settings)
             throws Exception {
         XLog log = relations.getLog();
         XEventClasses classes = summary.getEventClasses();
@@ -205,9 +199,9 @@ public class ILPMiner {
         // log it represents
         String extensions = " (";
         for (Class<?> c : settings.getExtensions()) {
-            extensions += c.getMethod("getName",
-                    new Class[]{Class.class}).invoke(null,
-                    c)
+            extensions += (String) c.getMethod("getName",
+                    new Class[] { Class.class }).invoke(null,
+                    new Object[] { c })
                     + ", ";
         }
         if (extensions.length() == 2) {
@@ -216,15 +210,18 @@ public class ILPMiner {
             extensions = extensions.substring(0, extensions.length() - 2) + ")";
         }
         Petrinet net = PetrinetFactory.newPetrinet(settings.getVariant()
-                .getMethod("getName", new Class[]{Class.class}).invoke(null,
-                        settings.getVariant())
+                .getMethod("getName", new Class[] { Class.class }).invoke(null,
+                        new Object[] { settings.getVariant() })
                 + extensions
                 + " from "
                 + XConceptExtension.instance().extractName(log)
                 + ", mined with ILP Miner");
+        context.getFutureResult(0).setLabel(net.getLabel());
+        context.getFutureResult(1).setLabel(
+                "Initial Marking of " + net.getLabel());
 
-        Map<XEventClass, Integer> indices = new UnifiedMap<XEventClass, Integer>();
-        Map<Integer, Transition> transitions = new UnifiedMap<Integer, Transition>();
+        Map<XEventClass, Integer> indices = new HashMap<XEventClass, Integer>();
+        Map<Integer, Transition> transitions = new HashMap<Integer, Transition>();
         int i = 0;
         // create the mapping between the eventclasses and an integer for a
         // smaller ILP model
@@ -246,6 +243,11 @@ public class ILPMiner {
                     .getObjectWithRole(LogPrefixclosedlanguageConnection.LANGUAGE);
         } catch (Exception e) {
             l = new PrefixClosedLanguage(log, indices, classes);
+            context.getProvidedObjectManager().createProvidedObject(
+                    "Prefix-closed language", l, PrefixClosedLanguage.class,
+                    context);
+            context
+                    .addConnection(new LogPrefixclosedlanguageConnection(log, l));
         }
         return doILPMiningPrivateWithRelationsAndLanguage(context, relations,
                 settings, l, indices, net, classes, transitions);
@@ -258,59 +260,25 @@ public class ILPMiner {
             XEventClasses classes, Map<Integer, Transition> transitions)
             throws Exception {
         Set<ILPMinerSolution> solutions;
-        switch ((SolverType) settings.getSolverSetting(SolverSetting.TYPE)) {
-            case CPLEX:
-                ILPModelCPLEX.loadLibraries();
-
-                IloOplFactory.setDebugMode(false);
-                IloOplFactory oplF = new IloOplFactory();
-
-                // create an instance of the ILP model variant indicated by the user
-                ILPModelCPLEX modelCPLEX;
-                try {
-                    Constructor<?> mc = settings.getVariant().getConstructor(
-                            IloOplFactory.class, Class[].class,
-                            Map.class, ILPModelSettings.class);
-                    modelCPLEX = (ILPModelCPLEX) mc.newInstance(oplF, settings.getExtensions(),
-                            settings.getSolverSettings(),
-                            settings.getModelSettings());
-                } catch (Exception e) {
-                    throw e;
-                }
-
-                // let the ILP model find all solutions (all: meaning the amount of
-                // places it is supposed to find)
-                modelCPLEX.findPetriNetPlaces(indices, l, relations, context);
-                if (context.getProgress().isCancelled()) {
-                    context.getFutureResult(0).cancel(true);
-                    return new Object[]{null, null};
-                }
-                solutions = modelCPLEX.getSolutions();
-
-                oplF.end();
-                break;
-            default: // JAVAILP_XXX
-                // create an instance of the ILP model variant indicated by the user
-                ILPModelJavaILP modelJavaILP;
-                try {
-                    Constructor<?> mc = settings.getVariant().getConstructor(
-                            Class[].class, Map.class,
-                            ILPModelSettings.class);
-                    modelJavaILP = (ILPModelJavaILP) mc.newInstance(settings.getExtensions(), settings.getSolverSettings(),
-                            settings.getModelSettings());
-                } catch (Exception e) {
-                    throw e;
-                }
-
-                // let the ILP model find all solutions (all: meaning the amount of
-                // places it is supposed to find)
-                modelJavaILP.findPetriNetPlaces(indices, l, relations, context);
-                if (context.getProgress().isCancelled()) {
-                    context.getFutureResult(0).cancel(true);
-                    return new Object[]{null, null};
-                }
-                solutions = modelJavaILP.getSolutions();
+        // create an instance of the ILP model variant indicated by the user
+        ILPModelJavaILP modelJavaILP;
+        try {
+            Constructor<?> mc = settings.getVariant().getConstructor(
+                    new Class[] { Class[].class, Map.class,
+                            ILPModelSettings.class });
+            modelJavaILP = new PetriNetILPModel(settings.getExtensions(), settings.getSolverSettings(), settings.getModelSettings());
+        } catch (Exception e) {
+            throw e;
         }
+
+        // let the ILP model find all solutions (all: meaning the amount of
+        // places it is supposed to find)
+        modelJavaILP.findPetriNetPlaces(indices, l, relations, context);
+        if (context.getProgress().isCancelled()) {
+            context.getFutureResult(0).cancel(true);
+            return new Object[] { null, null };
+        }
+        solutions = modelJavaILP.getSolutions();
 
         postProcessSolutions(solutions);
 
@@ -343,17 +311,29 @@ public class ILPMiner {
 
         // let the framework know that there is a connection between the event
         // classes in the log and the transitions in the Petri net.
+        Map<Transition, XEventClass> mapping = new HashMap<Transition, XEventClass>(
+                classes.size());
+        for (XEventClass clazz : indices.keySet()) {
+            if (clazz != null) {
+                mapping.put(transitions.get(indices.get(clazz)), clazz);
+            }
+        }
+        context.getProvidedObjectManager()
+                .createProvidedObject("ILP Miner settings", settings,
+                        ILPMinerSettings.class, context);
+        context.addConnection(new ILPMinerLogPetrinetConnection(relations
+                .getLog(), classes, net, mapping, settings));
 
         // return the net and the marking
-        return new Object[]{net, m};
+        return new Object[] { net, m };
     }
 
     private void postProcessSolutions(Set<ILPMinerSolution> solutions) {
-        ILPMinerSolution[] array = solutions.toArray(new ILPMinerSolution[solutions.size()]);
-        for (ILPMinerSolution anArray : array) {
+        ILPMinerSolution[] array = solutions.toArray(new ILPMinerSolution[0]);
+        for (int i = 0; i < array.length; i++) {
             for (ILPMinerSolution s : solutions) {
-                if (anArray.compareTo(s) < 0) {
-                    solutions.remove(anArray);
+                if (array[i].compareTo(s) < 0) {
+                    solutions.remove(array[i]);
                     break;
                 }
             }

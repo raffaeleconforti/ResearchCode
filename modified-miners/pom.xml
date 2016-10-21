@@ -127,6 +127,14 @@
             <groupId>org.eclipse.collections</groupId>
             <artifactId>eclipse-collections</artifactId>
         </dependency>
+        <dependency>
+            <groupId>net.sf</groupId>
+            <artifactId>javailp</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>net.sourceforge.lpsolve</groupId>
+            <artifactId>lpsolve</artifactId>
+        </dependency>
     </dependencies>
 
 </project>

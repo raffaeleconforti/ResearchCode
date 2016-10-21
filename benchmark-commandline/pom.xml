@@ -120,6 +120,12 @@
                                         <include>org/processmining/**</include>
                                     </includes>
                                 </filter>
+                                <filter>
+                                    <artifact>org.processmining:alphaminer</artifact>
+                                    <includes>
+                                        <include>org/processmining/**</include>
+                                    </includes>
+                                </filter>
                             </filters>
                             <!--<minimizeJar>true</minimizeJar>-->
                             <transformers>
@@ -128,6 +134,34 @@
                                         <Main-Class>com.raffaeleconforti.benchmark.BenchmarkCommandline</Main-Class>
                                         <Class-Path>lib/</Class-Path>
                                     </manifestEntries>
+                                </transformer>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.IncludeResourceTransformer">
+                                    <resource>liblpsolve55.jnilib</resource>
+                                    <file>${project.parent.basedir}/assembly/target/liblpsolve55.jnilib</file>
+                                </transformer>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.IncludeResourceTransformer">
+                                    <resource>liblpsolve55j.jnilib</resource>
+                                    <file>${project.parent.basedir}/assembly/target/liblpsolve55j.jnilib</file>
+                                </transformer>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.IncludeResourceTransformer">
+                                    <resource>lpsolve55.dll</resource>
+                                    <file>${project.parent.basedir}/assembly/target/lpsolve55.dll</file>
+                                </transformer>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.IncludeResourceTransformer">
+                                    <resource>lpsolve55j.dll</resource>
+                                    <file>${project.parent.basedir}/assembly/target/lpsolve55j.dll</file>
+                                </transformer>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.IncludeResourceTransformer">
+                                    <resource>lpsolve55.lib</resource>
+                                    <file>${project.parent.basedir}/assembly/target/lpsolve55.lib</file>
+                                </transformer>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.IncludeResourceTransformer">
+                                    <resource>liblpsolve55.lib</resource>
+                                    <file>${project.parent.basedir}/assembly/target/liblpsolve55.lib</file>
+                                </transformer>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.IncludeResourceTransformer">
+                                    <resource>liblpsolve55d.lib</resource>
+                                    <file>${project.parent.basedir}/assembly/target/liblpsolve55d.lib</file>
                                 </transformer>
                             </transformers>
                         </configuration>
@@ -151,6 +185,10 @@
         <dependency>
             <groupId>com.raffaeleconforti</groupId>
             <artifactId>benchmark-logic</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
         </dependency>
     </dependencies>
 

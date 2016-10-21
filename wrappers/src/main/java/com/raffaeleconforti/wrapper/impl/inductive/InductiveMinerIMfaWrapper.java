@@ -1,4 +1,4 @@
-package com.raffaeleconforti.wrapper.impl;
+package com.raffaeleconforti.wrapper.impl.inductive;
 
 import com.raffaeleconforti.conversion.petrinet.PetriNetToBPMNConverter;
 import com.raffaeleconforti.wrapper.LogPreprocessing;
@@ -13,16 +13,16 @@ import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
 import org.processmining.models.graphbased.directed.petrinet.Petrinet;
 import org.processmining.models.semantics.petrinet.Marking;
 import org.processmining.plugins.InductiveMiner.mining.MiningParameters;
-import org.processmining.plugins.InductiveMiner.mining.MiningParametersIMc;
+import org.processmining.plugins.InductiveMiner.mining.MiningParametersIMfa;
 import org.processmining.plugins.InductiveMiner.plugins.IMPetriNet;
 
 /**
  * Created by conforti on 20/02/15.
  */
-@Plugin(name = "Inductive Miner IMc Wrapper", parameterLabels = {"Log"},
+@Plugin(name = "Inductive Miner IMfa Wrapper", parameterLabels = {"Log"},
         returnLabels = {"PetrinetWithMarking"},
         returnTypes = {PetrinetWithMarking.class})
-public class InductiveMinerIMcWrapper implements MiningAlgorithm {
+public class InductiveMinerIMfaWrapper implements MiningAlgorithm {
 
     MiningParameters miningParameters;
 
@@ -30,7 +30,7 @@ public class InductiveMinerIMcWrapper implements MiningAlgorithm {
             author = "Raffaele Conforti",
             email = "raffaele.conforti@qut.edu.au",
             pack = "Noise Filtering")
-    @PluginVariant(variantLabel = "Inductive Miner IMc Wrapper", requiredParameterLabels = {0})
+    @PluginVariant(variantLabel = "Inductive Miner IMfa Wrapper", requiredParameterLabels = {0})
     public PetrinetWithMarking minePetrinet(UIPluginContext context, XLog log) {
         return minePetrinet(context, log, false);
     }
@@ -42,7 +42,7 @@ public class InductiveMinerIMcWrapper implements MiningAlgorithm {
 
         IMPetriNet miner = new IMPetriNet();
         if(miningParameters == null) {
-            miningParameters = new MiningParametersIMc();
+            miningParameters = new MiningParametersIMfa();
         }
         Object[] result = miner.minePetriNetParameters(context, log, miningParameters);
         logPreprocessing.removedAddedElements((Petrinet) result[0]);
@@ -58,7 +58,7 @@ public class InductiveMinerIMcWrapper implements MiningAlgorithm {
 
     @Override
     public String getAlgorithmName() {
-        return "Inductive Miner - incompleteness (IMc)";
+        return "Inductive Miner - infrequent - all operators (IMfa)";
     }
 
 }

@@ -1,10 +1,12 @@
-package com.raffaeleconforti.wrapper.impl;
+package com.raffaeleconforti.wrapper.impl.alpha;
 
-import com.raffaeleconforti.context.FakePluginContext;
+import com.raffaeleconforti.alphaminer.AlphaMiner;
 import com.raffaeleconforti.conversion.petrinet.PetriNetToBPMNConverter;
 import com.raffaeleconforti.wrapper.LogPreprocessing;
 import com.raffaeleconforti.wrapper.MiningAlgorithm;
 import com.raffaeleconforti.wrapper.PetrinetWithMarking;
+import org.deckfour.xes.info.XLogInfo;
+import org.deckfour.xes.info.XLogInfoFactory;
 import org.deckfour.xes.model.XLog;
 import org.processmining.contexts.uitopia.UIPluginContext;
 import org.processmining.contexts.uitopia.annotations.UITopiaVariant;
@@ -13,49 +15,50 @@ import org.processmining.framework.plugin.annotations.PluginVariant;
 import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
 import org.processmining.models.graphbased.directed.petrinet.Petrinet;
 import org.processmining.models.semantics.petrinet.Marking;
-import org.processmining.plugins.InductiveMiner.mining.MiningParameters;
-import org.processmining.plugins.InductiveMiner.mining.MiningParametersIM;
-import org.processmining.plugins.InductiveMiner.plugins.IMPetriNet;
-import org.processmining.plugins.InductiveMiner.plugins.dialogs.IMMiningDialog;
+import org.processmining.plugins.log.logabstraction.BasicLogRelations;
+
+import java.util.concurrent.ExecutionException;
 
 /**
  * Created by conforti on 20/02/15.
  */
-@Plugin(name = "Inductive Miner Wrapper", parameterLabels = {"Log"},
+@Plugin(name = "Alpha Algorithm Wrapper", parameterLabels = {"Log"},
         returnLabels = {"PetrinetWithMarking"},
         returnTypes = {PetrinetWithMarking.class})
-public class InductiveMinerIMWrapper implements MiningAlgorithm {
-
-    MiningParameters miningParameters;
+public class AlphaAlgorithmWrapper implements MiningAlgorithm {
 
     @UITopiaVariant(affiliation = UITopiaVariant.EHV,
             author = "Raffaele Conforti",
             email = "raffaele.conforti@qut.edu.au",
             pack = "Noise Filtering")
-    @PluginVariant(variantLabel = "Inductive Miner Wrapper", requiredParameterLabels = {0})
+    @PluginVariant(variantLabel = "Alpha Algorithm Wrapper", requiredParameterLabels = {0})
     public PetrinetWithMarking minePetrinet(UIPluginContext context, XLog log) {
         return minePetrinet(context, log, false);
     }
 
     @Override
     public PetrinetWithMarking minePetrinet(UIPluginContext context, XLog log, boolean structure) {
-        LogPreprocessing logPreprocessing = new LogPreprocessing();
-        log = logPreprocessing.preprocessLog(context, log);
+        try {
+            LogPreprocessing logPreprocessing = new LogPreprocessing();
+            log = logPreprocessing.preprocessLog(context, log);
 
-        IMPetriNet miner = new IMPetriNet();
-        if(miningParameters == null) {
-            IMMiningDialog miningDialog = new IMMiningDialog(log);
-            if(context instanceof FakePluginContext) {
-                miningParameters = new MiningParametersIM();
-            }else {
-                context.showWizard("Mine using Inductive Miner", true, true, miningDialog);
-                miningParameters = miningDialog.getMiningParameters();
-            }
+            // The following gathers information required by the Alpha miner
+            XLogInfo logInfo = XLogInfoFactory.createLogInfo(log);
+            BasicLogRelations basicLogRelations = new BasicLogRelations(log);
+
+            // Call the miner
+            Object[] result = new AlphaMiner().doAlphaMiningPrivateWithRelations(context, logInfo, basicLogRelations);
+            logPreprocessing.removedAddedElements((Petrinet) result[0]);
+
+            return new PetrinetWithMarking((Petrinet) result[0], (Marking) result[1]);
+
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
         }
-        Object[] result = miner.minePetriNetParameters(context, log, miningParameters);
-        logPreprocessing.removedAddedElements((Petrinet) result[0]);
 
-        return new PetrinetWithMarking((Petrinet) result[0], (Marking) result[1]);
+        return null;
     }
 
     @Override
@@ -66,7 +69,6 @@ public class InductiveMinerIMWrapper implements MiningAlgorithm {
 
     @Override
     public String getAlgorithmName() {
-        return "Inductive Miner IM";
+        return "Alpha Algorithm";
     }
-
 }

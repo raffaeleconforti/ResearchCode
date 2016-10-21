@@ -1,36 +1,47 @@
-package com.raffaeleconforti.wrapper.impl;
+package com.raffaeleconforti.wrapper.impl.alpha;
 
 import com.raffaeleconforti.conversion.petrinet.PetriNetToBPMNConverter;
 import com.raffaeleconforti.wrapper.LogPreprocessing;
 import com.raffaeleconforti.wrapper.MiningAlgorithm;
 import com.raffaeleconforti.wrapper.PetrinetWithMarking;
+import org.deckfour.xes.classification.XEventNameClassifier;
+import org.deckfour.xes.info.XLogInfo;
+import org.deckfour.xes.info.XLogInfoFactory;
 import org.deckfour.xes.model.XLog;
+import org.processmining.alphaminer.abstractions.AlphaAbstractionFactory;
+import org.processmining.alphaminer.abstractions.AlphaClassicAbstraction;
+import org.processmining.alphaminer.abstractions.impl.AlphaClassicAbstractionImpl;
+import org.processmining.alphaminer.algorithms.AlphaMinerFactory;
+import org.processmining.alphaminer.algorithms.AlphaPlusMinerImpl;
+import org.processmining.alphaminer.parameters.AlphaMinerParameters;
+import org.processmining.alphaminer.parameters.AlphaPlusMinerParameters;
+import org.processmining.alphaminer.parameters.AlphaVersion;
 import org.processmining.contexts.uitopia.UIPluginContext;
 import org.processmining.contexts.uitopia.annotations.UITopiaVariant;
+import org.processmining.framework.plugin.PluginContext;
 import org.processmining.framework.plugin.annotations.Plugin;
 import org.processmining.framework.plugin.annotations.PluginVariant;
+import org.processmining.framework.util.Pair;
 import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
 import org.processmining.models.graphbased.directed.petrinet.Petrinet;
 import org.processmining.models.semantics.petrinet.Marking;
-import org.processmining.plugins.InductiveMiner.mining.MiningParameters;
-import org.processmining.plugins.InductiveMiner.mining.MiningParametersIMflc;
-import org.processmining.plugins.InductiveMiner.plugins.IMPetriNet;
+import org.processmining.plugins.log.logabstraction.BasicLogRelations;
+
+import java.util.concurrent.ExecutionException;
 
 /**
  * Created by conforti on 20/02/15.
  */
-@Plugin(name = "Inductive Miner IMflc Wrapper", parameterLabels = {"Log"},
+@Plugin(name = "Alpha Plus Wrapper", parameterLabels = {"Log"},
         returnLabels = {"PetrinetWithMarking"},
         returnTypes = {PetrinetWithMarking.class})
-public class InductiveMinerIMflcWrapper implements MiningAlgorithm {
-
-    MiningParameters miningParameters;
+public class AlphaClassicWrapper implements MiningAlgorithm {
 
     @UITopiaVariant(affiliation = UITopiaVariant.EHV,
             author = "Raffaele Conforti",
             email = "raffaele.conforti@qut.edu.au",
             pack = "Noise Filtering")
-    @PluginVariant(variantLabel = "Inductive Miner IMflc Wrapper", requiredParameterLabels = {0})
+    @PluginVariant(requiredParameterLabels = {0})
     public PetrinetWithMarking minePetrinet(UIPluginContext context, XLog log) {
         return minePetrinet(context, log, false);
     }
@@ -40,14 +51,13 @@ public class InductiveMinerIMflcWrapper implements MiningAlgorithm {
         LogPreprocessing logPreprocessing = new LogPreprocessing();
         log = logPreprocessing.preprocessLog(context, log);
 
-        IMPetriNet miner = new IMPetriNet();
-        if(miningParameters == null) {
-            miningParameters = new MiningParametersIMflc();
-        }
-        Object[] result = miner.minePetriNetParameters(context, log, miningParameters);
-        logPreprocessing.removedAddedElements((Petrinet) result[0]);
+        // Call the miner
+        AlphaMinerParameters parameters = new AlphaMinerParameters(AlphaVersion.CLASSIC);
+        AlphaMinerFactory factory = new AlphaMinerFactory();
+        Pair<Petrinet, Marking> pair = factory.createAlphaMiner(log, new XEventNameClassifier(), parameters).run();
+        logPreprocessing.removedAddedElements(pair.getFirst());
 
-        return new PetrinetWithMarking((Petrinet) result[0], (Marking) result[1]);
+        return new PetrinetWithMarking(pair.getFirst(), pair.getSecond());
     }
 
     @Override
@@ -58,7 +68,6 @@ public class InductiveMinerIMflcWrapper implements MiningAlgorithm {
 
     @Override
     public String getAlgorithmName() {
-        return "Inductive Miner - infrequent - life cycle (IMflc)";
+        return "Alpha Miner Classic";
     }
-
 }

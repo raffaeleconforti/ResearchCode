@@ -1,4 +1,4 @@
-package com.raffaeleconforti.wrapper.impl;
+package com.raffaeleconforti.wrapper.impl.heuristics;
 
 import com.raffaeleconforti.conversion.petrinet.PetriNetToBPMNConverter;
 import com.raffaeleconforti.heuristicsdollarminer.HeuristicsDollarMiner;

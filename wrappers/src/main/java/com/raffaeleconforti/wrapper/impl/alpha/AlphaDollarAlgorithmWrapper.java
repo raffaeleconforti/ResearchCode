@@ -1,4 +1,4 @@
-package com.raffaeleconforti.wrapper.impl;
+package com.raffaeleconforti.wrapper.impl.alpha;
 
 import com.raffaeleconforti.alphadollar.AlphaMixMiner;
 import com.raffaeleconforti.conversion.petrinet.PetriNetToBPMNConverter;

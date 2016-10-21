@@ -390,6 +390,11 @@
                 <artifactId>jgoodies-common</artifactId>
                 <version>1.8.1</version>
             </dependency>
+            <dependency>
+                <groupId>net.sf</groupId>
+                <artifactId>javailp</artifactId>
+                <version>1.2a</version>
+            </dependency>
 
             <!-- Apromore -->
             <dependency>
@@ -411,7 +416,42 @@
             <!-- ProM6.5 -->
             <dependency>
                 <groupId>org.processmining</groupId>
+                <artifactId>uncommons-maths</artifactId>
+                <version>${prom.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.processmining</groupId>
+                <artifactId>collections-generic</artifactId>
+                <version>${prom.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.processmining</groupId>
+                <artifactId>alphaminer</artifactId>
+                <version>${prom.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.processmining</groupId>
+                <artifactId>acceptingpetrinet</artifactId>
+                <version>${prom.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.processmining</groupId>
+                <artifactId>basicutils</artifactId>
+                <version>${prom.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.processmining</groupId>
                 <artifactId>fodina</artifactId>
+                <version>${prom.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.processmining</groupId>
+                <artifactId>properties</artifactId>
+                <version>${prom.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.processmining</groupId>
+                <artifactId>murata</artifactId>
                 <version>${prom.version}</version>
             </dependency>
             <dependency>

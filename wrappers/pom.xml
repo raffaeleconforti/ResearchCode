@@ -62,6 +62,14 @@
 
         <dependency>
             <groupId>org.processmining</groupId>
+            <artifactId>acceptingpetrinet</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.processmining</groupId>
+            <artifactId>basicutils</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.processmining</groupId>
             <artifactId>evolutionarytreeminer</artifactId>
         </dependency>
         <dependency>
@@ -72,7 +80,43 @@
             <groupId>org.processmining</groupId>
             <artifactId>fodina</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.processmining</groupId>
+            <artifactId>properties</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.processmining</groupId>
+            <artifactId>murata</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.processmining</groupId>
+            <artifactId>logabstractions</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.processmining</groupId>
+            <artifactId>alphaminer</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.processmining</groupId>
+            <artifactId>collections-generic</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.processmining</groupId>
+            <artifactId>uncommons-maths</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.processmining</groupId>
+            <artifactId>ilpminer</artifactId>
+        </dependency>
 
+        <dependency>
+            <groupId>net.sourceforge.lpsolve</groupId>
+            <artifactId>lpsolve</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>net.sf</groupId>
+            <artifactId>javailp</artifactId>
+        </dependency>
         <dependency>
             <groupId>com.jgoodies</groupId>
             <artifactId>jgoodies-forms</artifactId>

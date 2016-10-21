@@ -1,13 +1,9 @@
-package com.raffaeleconforti.wrapper.impl;
+package com.raffaeleconforti.wrapper.impl.heuristics;
 
-import com.raffaeleconforti.context.FakePluginContext;
 import com.raffaeleconforti.conversion.petrinet.PetriNetToBPMNConverter;
-import com.raffaeleconforti.ilpminer.ILPMiner;
 import com.raffaeleconforti.wrapper.LogPreprocessing;
 import com.raffaeleconforti.wrapper.MiningAlgorithm;
 import com.raffaeleconforti.wrapper.PetrinetWithMarking;
-import org.deckfour.uitopia.api.event.TaskListener;
-import org.deckfour.xes.info.XLogInfoFactory;
 import org.deckfour.xes.model.XLog;
 import org.processmining.contexts.uitopia.UIPluginContext;
 import org.processmining.contexts.uitopia.annotations.UITopiaVariant;
@@ -15,27 +11,29 @@ import org.processmining.framework.plugin.annotations.Plugin;
 import org.processmining.framework.plugin.annotations.PluginVariant;
 import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
 import org.processmining.models.graphbased.directed.petrinet.Petrinet;
+import org.processmining.models.heuristics.HeuristicsNet;
 import org.processmining.models.semantics.petrinet.Marking;
-import org.processmining.plugins.ilpminer.ILPMinerSettings;
-import org.processmining.plugins.ilpminer.ILPMinerUI;
-import org.processmining.plugins.log.logabstraction.LogRelations;
-import org.processmining.plugins.log.logabstraction.implementations.AlphaLogRelationsImpl;
+import org.processmining.plugins.heuristicsnet.miner.heuristics.converter.HeuristicsNetToPetriNetConverter;
+import org.processmining.plugins.heuristicsnet.miner.heuristics.miner.FlexibleHeuristicsMinerPlugin;
+import org.processmining.plugins.heuristicsnet.miner.heuristics.miner.LogUtility;
+import org.processmining.plugins.heuristicsnet.miner.heuristics.miner.gui.ParametersPanel;
+import org.processmining.plugins.heuristicsnet.miner.heuristics.miner.settings.HeuristicsMinerSettings;
 
 /**
  * Created by conforti on 20/02/15.
  */
-@Plugin(name = "ILP Miner Wrapper", parameterLabels = {"Log"},
+@Plugin(name = "Heuristics Miner Wrapper", parameterLabels = {"Log"},
         returnLabels = {"PetrinetWithMarking"},
         returnTypes = {PetrinetWithMarking.class})
-public class ILPAlgorithmWrapper implements MiningAlgorithm {
+public class HeuristicsAlgorithmWrapper implements MiningAlgorithm {
 
-    ILPMinerSettings settings;
+    HeuristicsMinerSettings settings;
 
     @UITopiaVariant(affiliation = UITopiaVariant.EHV,
             author = "Raffaele Conforti",
             email = "raffaele.conforti@qut.edu.au",
             pack = "Noise Filtering")
-    @PluginVariant(variantLabel = "ILP Miner Wrapper", requiredParameterLabels = {0})
+    @PluginVariant(variantLabel = "Heuristics Miner Wrapper", requiredParameterLabels = {0})
     public PetrinetWithMarking minePetrinet(UIPluginContext context, XLog log) {
         return minePetrinet(context, log, false);
     }
@@ -45,28 +43,21 @@ public class ILPAlgorithmWrapper implements MiningAlgorithm {
         LogPreprocessing logPreprocessing = new LogPreprocessing();
         log = logPreprocessing.preprocessLog(context, log);
 
-        try {
-            ILPMiner miner = new ILPMiner();
-            Object[] result = null;
-            if(settings == null) {
-                if (context instanceof FakePluginContext) {
-                    settings = new ILPMinerSettings();
-                    LogRelations relations = new AlphaLogRelationsImpl(log);
-                    result = miner.doILPMiningPrivateWithRelations(context, relations.getSummary(), relations, settings);
-                } else {
-                    ILPMinerUI ui = new ILPMinerUI();
-                    TaskListener.InteractionResult r = context.showWizard("Configure the ILP Mining Algorithm", true, true, ui.initComponents());
-                    settings = ui.getSettings();
-                    result = miner.doILPMiningWithSettings(context, log, XLogInfoFactory.createLogInfo(log), settings);
-                }
-            }
-            logPreprocessing.removedAddedElements((Petrinet) result[0]);
+        if(settings == null) {
+            ParametersPanel parameters = new ParametersPanel(LogUtility.getEventClassifiers(log));
+            parameters.removeAndThreshold();
 
-            return new PetrinetWithMarking((Petrinet) result[0], (Marking) result[1]);
-        } catch (Exception e) {
-            e.printStackTrace();
+            context.showConfiguration("Heuristics Miner Parameters", parameters);
+            settings = parameters.getSettings();
         }
-        return null;
+        HeuristicsNet heuristicsNet = FlexibleHeuristicsMinerPlugin.run(context, log, settings);
+        Object[] result = HeuristicsNetToPetriNetConverter.converter(context, heuristicsNet);
+        logPreprocessing.removedAddedElements((Petrinet) result[0]);
+
+        if(result[1] == null) result[1] = PetriNetToBPMNConverter.guessInitialMarking((Petrinet) result[0]);
+        Marking finalMarking = PetriNetToBPMNConverter.guessFinalMarking((Petrinet) result[0]);
+
+        return new PetrinetWithMarking((Petrinet) result[0], (Marking) result[1], finalMarking);
     }
 
     @Override
@@ -77,7 +68,7 @@ public class ILPAlgorithmWrapper implements MiningAlgorithm {
 
     @Override
     public String getAlgorithmName() {
-        return "ILP Miner";
+        return "Heuristics Miner ProM6";
     }
 
 }
