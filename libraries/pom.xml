@@ -263,7 +263,7 @@
                             <goal>wget</goal>
                         </goals>
                         <configuration>
-                            <url>https://svn.win.tue.nl/repos/prom/Releases/Packages/ILPMiner/lib/oplall.jar</url>
+                            <url>https://svn.win.tue.nl/repos/prom/Libraries/oplall/6.3/oplall-6.3.jar</url>
                             <outputFileName>oplall.jar</outputFileName>
                             <outputDirectory>${project.build.directory}</outputDirectory>
                         </configuration>
