@@ -580,6 +580,32 @@
                             <outputDirectory>${project.build.directory}</outputDirectory>
                         </configuration>
                     </execution>
+
+                    <execution>
+                        <id>download-jung-api</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>wget</goal>
+                        </goals>
+                        <configuration>
+                            <url>https://svn.win.tue.nl/repos/prom/Releases/Regular/ProM66_lib/jung-api-2.0.jar</url>
+                            <outputFileName>jung-api-2.0.jar</outputFileName>
+                            <outputDirectory>${project.build.directory}</outputDirectory>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>download-jung-graph-impl</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>wget</goal>
+                        </goals>
+                        <configuration>
+                            <url>https://svn.win.tue.nl/repos/prom/Releases/Regular/ProM66_lib/jung-graph-impl-2.0.jar</url>
+                            <outputFileName>jung-graph-impl-2.0.jar</outputFileName>
+                            <outputDirectory>${project.build.directory}</outputDirectory>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
 
@@ -1408,6 +1434,38 @@
                             <version>${prom.version}</version>
                             <packaging>jar</packaging>
                             <file>${project.build.directory}/uncommons-maths-1.2.3.jar</file>
+                            <generatePom>true</generatePom>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>install-jung-api</id>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                        <configuration>
+                            <groupId>org.processmining</groupId>
+                            <artifactId>jung-api</artifactId>
+                            <version>${prom.version}</version>
+                            <packaging>jar</packaging>
+                            <file>${project.build.directory}/jung-api-2.0.jar</file>
+                            <generatePom>true</generatePom>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>install-jung-graph-impl</id>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                        <configuration>
+                            <groupId>org.processmining</groupId>
+                            <artifactId>jung-graph-impl</artifactId>
+                            <version>${prom.version}</version>
+                            <packaging>jar</packaging>
+                            <file>${project.build.directory}/jung-graph-impl-2.0.jar</file>
                             <generatePom>true</generatePom>
                         </configuration>
                     </execution>

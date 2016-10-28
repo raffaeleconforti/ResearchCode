@@ -55,7 +55,7 @@ public class InductiveMinerIMWrapper implements MiningAlgorithm {
         Object[] result = miner.minePetriNetParameters(context, log, miningParameters);
         logPreprocessing.removedAddedElements((Petrinet) result[0]);
 
-        return new PetrinetWithMarking((Petrinet) result[0], (Marking) result[1]);
+        return new PetrinetWithMarking((Petrinet) result[0], (Marking) result[1], (Marking)result[2]);
     }
 
     @Override

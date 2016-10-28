@@ -11,6 +11,7 @@ import com.raffaeleconforti.wrapper.impl.ILPAlgorithmWrapper;
 import com.raffaeleconforti.wrapper.impl.alpha.AlphaAlgorithmWrapper;
 import com.raffaeleconforti.wrapper.impl.BPMNMinerAlgorithmWrapper;
 import com.raffaeleconforti.wrapper.impl.heuristics.HeuristicsDollarAlgorithmWrapper;
+import com.raffaeleconforti.wrapper.impl.inductive.InductiveMinerIMWrapper;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -91,7 +92,7 @@ public class Benchmark {
         XLog log;
         LogCloner logCloner = new LogCloner();
         for( String logName : logsInput.keySet() ) {
-//            if(logName.equals("ArtificialLess.xes.gz")) {
+            if(logName.equals("ArtificialLess.xes.gz")) {
                 XLog rawlog = loadLog(logsInput.get(logName));
                 measures.put(logName, new HashMap<>());
                 System.out.println("DEBUG - measuring on log: " + logName);
@@ -99,10 +100,11 @@ public class Benchmark {
                 for (MiningAlgorithm miningAlgorithm : miningAlgorithms) {
                     log = logCloner.cloneLog(rawlog);
                     String miningAlgorithmName = miningAlgorithm.getAlgorithmName();
-                    if(!(miningAlgorithm instanceof HeuristicsDollarAlgorithmWrapper)
-                            && !(miningAlgorithm instanceof BPMNMinerAlgorithmWrapper)
-                            && !(miningAlgorithm instanceof AlphaAlgorithmWrapper)
-                            && !(miningAlgorithm instanceof EvolutionaryTreeMinerWrapper)) {
+                    if(miningAlgorithm instanceof InductiveMinerIMWrapper) {
+//                    if(!(miningAlgorithm instanceof HeuristicsDollarAlgorithmWrapper)
+//                            && !(miningAlgorithm instanceof BPMNMinerAlgorithmWrapper)
+//                            && !(miningAlgorithm instanceof AlphaAlgorithmWrapper)
+//                            && !(miningAlgorithm instanceof EvolutionaryTreeMinerWrapper)) {
                         String measurementAlgorithmName = "NULL";
                         measures.get(logName).put(miningAlgorithmName, new HashMap<>());
 //                        try {
@@ -122,7 +124,7 @@ public class Benchmark {
 //                        }
                     }
                 }
-//            }
+            }
         }
 
         publishResults();

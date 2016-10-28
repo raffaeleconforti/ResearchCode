@@ -416,6 +416,16 @@
             <!-- ProM6.5 -->
             <dependency>
                 <groupId>org.processmining</groupId>
+                <artifactId>jung-graph-impl</artifactId>
+                <version>${prom.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.processmining</groupId>
+                <artifactId>jung-api</artifactId>
+                <version>${prom.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.processmining</groupId>
                 <artifactId>uncommons-maths</artifactId>
                 <version>${prom.version}</version>
             </dependency>

@@ -57,6 +57,14 @@
     <dependencies>
         <dependency>
             <groupId>org.processmining</groupId>
+            <artifactId>jung-graph-impl</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.processmining</groupId>
+            <artifactId>jung-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.processmining</groupId>
             <artifactId>etconformance</artifactId>
         </dependency>
         <dependency>
