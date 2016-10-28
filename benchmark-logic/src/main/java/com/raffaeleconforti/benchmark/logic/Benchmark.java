@@ -92,7 +92,7 @@ public class Benchmark {
         XLog log;
         LogCloner logCloner = new LogCloner();
         for( String logName : logsInput.keySet() ) {
-            if(logName.equals("ArtificialLess.xes.gz")) {
+//            if(logName.equals("ArtificialLess.xes.gz")) {
                 XLog rawlog = loadLog(logsInput.get(logName));
                 measures.put(logName, new HashMap<>());
                 System.out.println("DEBUG - measuring on log: " + logName);
@@ -123,7 +123,7 @@ public class Benchmark {
 //                        }
                     }
                 }
-            }
+//            }
         }
 
         publishResults();
