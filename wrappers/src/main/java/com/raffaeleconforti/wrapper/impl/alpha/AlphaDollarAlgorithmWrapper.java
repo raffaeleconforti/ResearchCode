@@ -23,6 +23,8 @@ import org.processmining.models.graphbased.directed.petrinet.impl.PetrinetImpl;
 
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 
+import java.io.*;
+
 /**
  * Created by conforti on 20/02/15.
  */
@@ -45,6 +47,11 @@ public class AlphaDollarAlgorithmWrapper implements MiningAlgorithm {
         LogPreprocessing logPreprocessing = new LogPreprocessing();
         log = logPreprocessing.preprocessLog(context, log);
 
+        System.setOut(new PrintStream(new OutputStream() {
+            @Override
+            public void write(int b) throws IOException {}
+        }));
+
         try {
             LogImporter.exportToFile("", "tmpLog.mxml.gz", log);
         } catch (Exception e) {
@@ -55,6 +62,8 @@ public class AlphaDollarAlgorithmWrapper implements MiningAlgorithm {
         PetriNet result = new AlphaMixMiner().mine(LogReaderClassic.createInstance(null, lf));
         Petrinet petrinet = getPetrinet(result);
         logPreprocessing.removedAddedElements(petrinet);
+
+        System.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out)));
 
         return new PetrinetWithMarking(petrinet, MarkingDiscoverer.constructInitialMarking(context, petrinet), MarkingDiscoverer.constructFinalMarking(context, petrinet));
     }

@@ -190,11 +190,6 @@ public class ILPMiner {
         XLog log = relations.getLog();
         XEventClasses classes = summary.getEventClasses();
 
-        // since the ILP model chosen by the user may require a different amount
-        // of steps, we can't use a progressbar
-        context.getProgress().setIndeterminate(true);
-        context.getProgress().setCaption("Calculating ILP problem");
-
         // give the petrinet a name that describes which ILP model variant and
         // log it represents
         String extensions = " (";
@@ -263,9 +258,6 @@ public class ILPMiner {
         // create an instance of the ILP model variant indicated by the user
         ILPModelJavaILP modelJavaILP;
         try {
-            Constructor<?> mc = settings.getVariant().getConstructor(
-                    new Class[] { Class[].class, Map.class,
-                            ILPModelSettings.class });
             modelJavaILP = new PetriNetILPModel(settings.getExtensions(), settings.getSolverSettings(), settings.getModelSettings());
         } catch (Exception e) {
             throw e;
@@ -274,10 +266,6 @@ public class ILPMiner {
         // let the ILP model find all solutions (all: meaning the amount of
         // places it is supposed to find)
         modelJavaILP.findPetriNetPlaces(indices, l, relations, context);
-        if (context.getProgress().isCancelled()) {
-            context.getFutureResult(0).cancel(true);
-            return new Object[] { null, null };
-        }
         solutions = modelJavaILP.getSolutions();
 
         postProcessSolutions(solutions);

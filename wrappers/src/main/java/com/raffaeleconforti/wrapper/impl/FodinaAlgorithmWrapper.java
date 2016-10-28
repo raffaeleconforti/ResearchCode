@@ -19,6 +19,8 @@ import org.processmining.plugins.bpmnminer.plugins.BPMNMinerPlugin;
 import org.processmining.plugins.bpmnminer.types.MinerSettings;
 import org.processmining.plugins.bpmnminer.ui.FullParameterPanel;
 
+import java.io.*;
+
 /**
  * Created by conforti on 20/02/15.
  */
@@ -42,6 +44,11 @@ public class FodinaAlgorithmWrapper implements MiningAlgorithm {
     public PetrinetWithMarking minePetrinet(UIPluginContext context, XLog log, boolean structure) {
         LogPreprocessing logPreprocessing = new LogPreprocessing();
         log = logPreprocessing.preprocessLog(context, log);
+
+        System.setOut(new PrintStream(new OutputStream() {
+            @Override
+            public void write(int b) throws IOException {}
+        }));
 
         if(minerSettings == null) {
             minerSettings = new MinerSettings();
@@ -68,6 +75,8 @@ public class FodinaAlgorithmWrapper implements MiningAlgorithm {
         logPreprocessing.removedAddedElements((Petrinet) result[0]);
 
         MarkingDiscoverer.createInitialMarkingConnection(context, (Petrinet) result[0], (Marking) result[1]);
+
+        System.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out)));
 
         return new PetrinetWithMarking((Petrinet) result[0], (Marking) result[1], MarkingDiscoverer.constructFinalMarking(context, (Petrinet) result[0]));
 

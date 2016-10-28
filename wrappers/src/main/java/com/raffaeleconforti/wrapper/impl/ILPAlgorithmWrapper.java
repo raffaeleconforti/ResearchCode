@@ -60,7 +60,15 @@ public class ILPAlgorithmWrapper implements MiningAlgorithm {
                     settings = ui.getSettings();
                     result = miner.doILPMiningWithSettings(context, log, XLogInfoFactory.createLogInfo(log), settings);
                 }
+            }else {
+                if (context instanceof FakePluginContext) {
+                    LogRelations relations = new AlphaLogRelationsImpl(log);
+                    result = miner.doILPMiningPrivateWithRelations(context, relations.getSummary(), relations, settings);
+                } else {
+                    result = miner.doILPMiningWithSettings(context, log, XLogInfoFactory.createLogInfo(log), settings);
+                }
             }
+
             logPreprocessing.removedAddedElements((Petrinet) result[0]);
 
             MarkingDiscoverer.createInitialMarkingConnection(context, (Petrinet) result[0], (Marking) result[1]);

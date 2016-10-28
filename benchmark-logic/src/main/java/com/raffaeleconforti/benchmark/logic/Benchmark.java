@@ -100,7 +100,7 @@ public class Benchmark {
                 for (MiningAlgorithm miningAlgorithm : miningAlgorithms) {
                     log = logCloner.cloneLog(rawlog);
                     String miningAlgorithmName = miningAlgorithm.getAlgorithmName();
-//                    if(miningAlgorithm instanceof InductiveMinerIMWrapper) {
+//                    if(miningAlgorithm instanceof ILPAlgorithmWrapper) {
                     if(!(miningAlgorithm instanceof HeuristicsDollarAlgorithmWrapper)
                             && !(miningAlgorithm instanceof BPMNMinerAlgorithmWrapper)
                             && !(miningAlgorithm instanceof AlphaAlgorithmWrapper)

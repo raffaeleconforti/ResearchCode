@@ -20,6 +20,8 @@ import org.processmining.plugins.heuristicsnet.miner.heuristics.miner.LogUtility
 import org.processmining.plugins.heuristicsnet.miner.heuristics.miner.gui.ParametersPanel;
 import org.processmining.plugins.heuristicsnet.miner.heuristics.miner.settings.HeuristicsMinerSettings;
 
+import java.io.*;
+
 /**
  * Created by conforti on 20/02/15.
  */
@@ -44,6 +46,11 @@ public class HeuristicsAlgorithmWrapper implements MiningAlgorithm {
         LogPreprocessing logPreprocessing = new LogPreprocessing();
         log = logPreprocessing.preprocessLog(context, log);
 
+        System.setOut(new PrintStream(new OutputStream() {
+            @Override
+            public void write(int b) throws IOException {}
+        }));
+
         if(settings == null) {
             ParametersPanel parameters = new ParametersPanel(LogUtility.getEventClassifiers(log));
             parameters.removeAndThreshold();
@@ -59,6 +66,8 @@ public class HeuristicsAlgorithmWrapper implements MiningAlgorithm {
         else MarkingDiscoverer.createInitialMarkingConnection(context, (Petrinet) result[0], (Marking) result[1]);
 
         Marking finalMarking = MarkingDiscoverer.constructFinalMarking(context, (Petrinet) result[0]);
+
+        System.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out)));
 
         return new PetrinetWithMarking((Petrinet) result[0], (Marking) result[1], finalMarking);
     }

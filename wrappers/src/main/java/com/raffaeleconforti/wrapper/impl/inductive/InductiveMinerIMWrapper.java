@@ -18,6 +18,8 @@ import org.processmining.plugins.InductiveMiner.mining.MiningParametersIM;
 import org.processmining.plugins.InductiveMiner.plugins.IMPetriNet;
 import org.processmining.plugins.InductiveMiner.plugins.dialogs.IMMiningDialog;
 
+import java.io.*;
+
 /**
  * Created by conforti on 20/02/15.
  */
@@ -42,6 +44,11 @@ public class InductiveMinerIMWrapper implements MiningAlgorithm {
         LogPreprocessing logPreprocessing = new LogPreprocessing();
         log = logPreprocessing.preprocessLog(context, log);
 
+        System.setOut(new PrintStream(new OutputStream() {
+            @Override
+            public void write(int b) throws IOException {}
+        }));
+
         IMPetriNet miner = new IMPetriNet();
         if(miningParameters == null) {
             IMMiningDialog miningDialog = new IMMiningDialog(log);
@@ -54,6 +61,8 @@ public class InductiveMinerIMWrapper implements MiningAlgorithm {
         }
         Object[] result = miner.minePetriNetParameters(context, log, miningParameters);
         logPreprocessing.removedAddedElements((Petrinet) result[0]);
+
+        System.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out)));
 
         return new PetrinetWithMarking((Petrinet) result[0], (Marking) result[1], (Marking)result[2]);
     }

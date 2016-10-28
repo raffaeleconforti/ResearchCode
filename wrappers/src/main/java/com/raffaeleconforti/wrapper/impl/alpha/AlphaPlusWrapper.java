@@ -48,6 +48,7 @@ public class AlphaPlusWrapper implements MiningAlgorithm {
         Pair<Petrinet, Marking> pair = factory.createAlphaMiner(log, new XEventNameClassifier(), parameters).run();
         logPreprocessing.removedAddedElements(pair.getFirst());
 
+        MarkingDiscoverer.createInitialMarkingConnection(context, pair.getFirst(), pair.getSecond());
         return new PetrinetWithMarking(pair.getFirst(), pair.getSecond(), MarkingDiscoverer.constructFinalMarking(context, pair.getFirst()));
     }
 

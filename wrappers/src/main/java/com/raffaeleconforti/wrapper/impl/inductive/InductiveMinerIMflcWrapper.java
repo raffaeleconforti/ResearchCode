@@ -16,6 +16,8 @@ import org.processmining.plugins.InductiveMiner.mining.MiningParameters;
 import org.processmining.plugins.InductiveMiner.mining.MiningParametersIMflc;
 import org.processmining.plugins.InductiveMiner.plugins.IMPetriNet;
 
+import java.io.*;
+
 /**
  * Created by conforti on 20/02/15.
  */
@@ -40,12 +42,19 @@ public class InductiveMinerIMflcWrapper implements MiningAlgorithm {
         LogPreprocessing logPreprocessing = new LogPreprocessing();
         log = logPreprocessing.preprocessLog(context, log);
 
+        System.setOut(new PrintStream(new OutputStream() {
+            @Override
+            public void write(int b) throws IOException {}
+        }));
+
         IMPetriNet miner = new IMPetriNet();
         if(miningParameters == null) {
             miningParameters = new MiningParametersIMflc();
         }
         Object[] result = miner.minePetriNetParameters(context, log, miningParameters);
         logPreprocessing.removedAddedElements((Petrinet) result[0]);
+
+        System.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out)));
 
         return new PetrinetWithMarking((Petrinet) result[0], (Marking) result[1], (Marking)result[2]);
     }
