@@ -100,11 +100,10 @@ public class Benchmark {
                 for (MiningAlgorithm miningAlgorithm : miningAlgorithms) {
                     log = logCloner.cloneLog(rawlog);
                     String miningAlgorithmName = miningAlgorithm.getAlgorithmName();
-                    if(miningAlgorithm instanceof EvolutionaryTreeMinerWrapper) {
-//                    if(!(miningAlgorithm instanceof HeuristicsDollarAlgorithmWrapper)
-//                            && !(miningAlgorithm instanceof BPMNMinerAlgorithmWrapper)
-//                            && !(miningAlgorithm instanceof AlphaAlgorithmWrapper)
-//                            && !(miningAlgorithm instanceof EvolutionaryTreeMinerWrapper)) {
+                    if(!(miningAlgorithm instanceof HeuristicsDollarAlgorithmWrapper)
+                            && !(miningAlgorithm instanceof BPMNMinerAlgorithmWrapper)
+                            && !(miningAlgorithm instanceof AlphaAlgorithmWrapper)
+                            && !(miningAlgorithm instanceof EvolutionaryTreeMinerWrapper)) {
                         String measurementAlgorithmName = "NULL";
                         measures.get(logName).put(miningAlgorithmName, new HashMap<>());
 //                        try {
