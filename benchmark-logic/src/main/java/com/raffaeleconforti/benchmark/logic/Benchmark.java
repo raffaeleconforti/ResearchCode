@@ -105,7 +105,7 @@ public class Benchmark {
                             && !(miningAlgorithm instanceof AlphaAlgorithmWrapper)) {
                         String measurementAlgorithmName = "NULL";
                         measures.get(logName).put(miningAlgorithmName, new HashMap<>());
-//                        try {
+                        try {
                             System.out.println("DEBUG - measuring on mining algorithm: " + miningAlgorithmName);
                             PetrinetWithMarking petrinetWithMarking = miningAlgorithm.minePetrinet(fakePluginContext, log, false);
                             for (MeasurementAlgorithm measurementAlgorithm : measurementAlgorithms) {
@@ -115,11 +115,11 @@ public class Benchmark {
                                 measures.get(logName).get(miningAlgorithmName).put(measurementAlgorithmName, measurement);
                                 System.out.println("DEBUG - " + measurementAlgorithmName + " : " + measurement);
                             }
-//                        } catch (Exception e) {
-//                            System.out.println("ERROR - [mining algorithm : measurement algorithm] > [" + miningAlgorithmName + " : " + measurementAlgorithmName + "]");
-//                            e.printStackTrace();
-//                            measures.get(logName).remove(miningAlgorithmName);
-//                        }
+                        } catch (Exception e) {
+                            System.out.println("ERROR - [mining algorithm : measurement algorithm] > [" + miningAlgorithmName + " : " + measurementAlgorithmName + "]");
+                            e.printStackTrace();
+                            measures.get(logName).remove(miningAlgorithmName);
+                        }
                     }
                 }
 //            }
