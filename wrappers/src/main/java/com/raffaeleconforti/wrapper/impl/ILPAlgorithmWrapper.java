@@ -6,6 +6,7 @@ import com.raffaeleconforti.ilpminer.ILPMiner;
 import com.raffaeleconforti.wrapper.LogPreprocessing;
 import com.raffaeleconforti.wrapper.MiningAlgorithm;
 import com.raffaeleconforti.wrapper.PetrinetWithMarking;
+import com.raffaeleconforti.wrapper.marking.MarkingDiscoverer;
 import org.deckfour.uitopia.api.event.TaskListener;
 import org.deckfour.xes.info.XLogInfoFactory;
 import org.deckfour.xes.model.XLog;
@@ -62,7 +63,9 @@ public class ILPAlgorithmWrapper implements MiningAlgorithm {
             }
             logPreprocessing.removedAddedElements((Petrinet) result[0]);
 
-            return new PetrinetWithMarking((Petrinet) result[0], (Marking) result[1]);
+            MarkingDiscoverer.createInitialMarkingConnection(context, (Petrinet) result[0], (Marking) result[1]);
+
+            return new PetrinetWithMarking((Petrinet) result[0], (Marking) result[1], MarkingDiscoverer.constructFinalMarking(context, (Petrinet) result[0]));
         } catch (Exception e) {
             e.printStackTrace();
         }

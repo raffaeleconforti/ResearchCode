@@ -7,6 +7,7 @@ import com.raffaeleconforti.log.util.LogReaderClassic;
 import com.raffaeleconforti.wrapper.LogPreprocessing;
 import com.raffaeleconforti.wrapper.MiningAlgorithm;
 import com.raffaeleconforti.wrapper.PetrinetWithMarking;
+import com.raffaeleconforti.wrapper.marking.MarkingDiscoverer;
 import org.deckfour.xes.model.XLog;
 import org.processmining.contexts.uitopia.UIPluginContext;
 import org.processmining.contexts.uitopia.annotations.UITopiaVariant;
@@ -55,7 +56,7 @@ public class AlphaDollarAlgorithmWrapper implements MiningAlgorithm {
         Petrinet petrinet = getPetrinet(result);
         logPreprocessing.removedAddedElements(petrinet);
 
-        return new PetrinetWithMarking(petrinet, PetriNetToBPMNConverter.guessInitialMarking(petrinet), PetriNetToBPMNConverter.guessFinalMarking(petrinet));
+        return new PetrinetWithMarking(petrinet, MarkingDiscoverer.constructInitialMarking(context, petrinet), MarkingDiscoverer.constructFinalMarking(context, petrinet));
     }
 
     @Override

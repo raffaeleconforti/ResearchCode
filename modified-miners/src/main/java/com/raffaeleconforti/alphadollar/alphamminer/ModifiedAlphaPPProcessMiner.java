@@ -1876,13 +1876,13 @@ public class ModifiedAlphaPPProcessMiner {
 	    Date d1 = new Date();
 	    findL1L();	    
 	    Date d2 = new Date();
-	    System.out.println("findL1L"+(d2.getTime() - d1.getTime()));
+//	    System.out.println("findL1L"+(d2.getTime() - d1.getTime()));
 	    computeL_W();
 	    Date d3 = new Date();
-	    System.out.println("computeL_W"+(d3.getTime() - d2.getTime()));
+//	    System.out.println("computeL_W"+(d3.getTime() - d2.getTime()));
 	    eliminateL1L();
 	    Date d4 = new Date();
-	    System.out.println("eliminateL1Lv"+(d4.getTime() - d3.getTime()));
+//	    System.out.println("eliminateL1Lv"+(d4.getTime() - d3.getTime()));
 	    //在L1L中，因为	    
 	    //induce >> from log
         
@@ -1890,64 +1890,64 @@ public class ModifiedAlphaPPProcessMiner {
         induceReachable(log);        
         
         Date d5 = new Date();
-        System.out.println("induceReachable"+(d5.getTime() - d4.getTime()));
+//        System.out.println("induceReachable"+(d5.getTime() - d4.getTime()));
         //apply Theorem 1 (step 8)
        
         applyingTheoremOne();
         Date d6 = new Date();
-        System.out.println("applyingTheoremOne"+(d6.getTime() - d5.getTime()));
+//        System.out.println("applyingTheoremOne"+(d6.getTime() - d5.getTime()));
         //mining WF-net using alpha algorithm (step 9)
         
         miningUsingAlpha();
         Date d7 = new Date();
-        System.out.println("miningUsingAlpha"+(d7.getTime() - d6.getTime()));
+//        System.out.println("miningUsingAlpha"+(d7.getTime() - d6.getTime()));
         //patch places for these tasks in ID_W1
        
         patchIDW1();
         Date d8 = new Date();
-        System.out.println("patchIDW1"+(d8.getTime() - d7.getTime()));
+//        System.out.println("patchIDW1"+(d8.getTime() - d7.getTime()));
         //apply theorem 2 (step 10)
         
         applyingTheoremTwo();
         		        
         Date d9 = new Date();
-        System.out.println("applyingTheoremTwo"+(d9.getTime() - d8.getTime()));
+//        System.out.println("applyingTheoremTwo"+(d9.getTime() - d8.getTime()));
         //eliminate redundant dependency by rule 1 (step 11)
         
         eliminateRDByRule1();
         Date d10 = new Date();
-        System.out.println("eliminateRDByRule1"+(d10.getTime() - d9.getTime()));
+//        System.out.println("eliminateRDByRule1"+(d10.getTime() - d9.getTime()));
         //derive places involving implicit dependency two (steps 12 and 13)
         
         derivePlacesForIDTwo();
         Date d11 = new Date();
-        System.out.println("derivePlacesForIDTwo"+(d11.getTime() - d10.getTime()));
+//        System.out.println("derivePlacesForIDTwo"+(d11.getTime() - d10.getTime()));
         //apply theorem 3 (step 14)
         
         applyingTheoremThree();
         Date d12 = new Date();
-        System.out.println("applyingTheoremThree"+(d12.getTime() - d11.getTime()));
+//        System.out.println("applyingTheoremThree"+(d12.getTime() - d11.getTime()));
         //eliminate redundant implicit dependency (step 15)
         
         eliminateRDByRule2();
         Date d13 = new Date();
-        System.out.println("eliminateRDByRule2"+(d13.getTime() - d12.getTime()));
+//        System.out.println("eliminateRDByRule2"+(d13.getTime() - d12.getTime()));
         //derive places involving implicit dependency three (steps 16 and 17)
         
         derivePlacesForIDThree();
         Date d14 = new Date();
-        System.out.println("derivePlacesForIDThree"+(d14.getTime() - d13.getTime()));
+//        System.out.println("derivePlacesForIDThree"+(d14.getTime() - d13.getTime()));
         //gather all the places of the mined WF-net (step 18)
         
         addShortLoopPlaces();
         
         Date d15 = new Date();
-        //System.out.println("addShortLoopPlaces"+(d15.getTime() - d14.getTime()));
+//        System.out.println("addShortLoopPlaces"+(d15.getTime() - d14.getTime()));
         //return the final result (steps 19-21)
 
         PetriNet mr = constructWFNet(log);
         Date d16 = new Date();
-        System.out.println("constructWFNet"+(d16.getTime() - d15.getTime()));
+//        System.out.println("constructWFNet"+(d16.getTime() - d15.getTime()));
         return mr;		
 	}
 

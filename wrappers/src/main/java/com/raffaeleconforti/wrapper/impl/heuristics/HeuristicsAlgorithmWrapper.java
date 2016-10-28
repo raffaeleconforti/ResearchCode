@@ -4,6 +4,7 @@ import com.raffaeleconforti.conversion.petrinet.PetriNetToBPMNConverter;
 import com.raffaeleconforti.wrapper.LogPreprocessing;
 import com.raffaeleconforti.wrapper.MiningAlgorithm;
 import com.raffaeleconforti.wrapper.PetrinetWithMarking;
+import com.raffaeleconforti.wrapper.marking.MarkingDiscoverer;
 import org.deckfour.xes.model.XLog;
 import org.processmining.contexts.uitopia.UIPluginContext;
 import org.processmining.contexts.uitopia.annotations.UITopiaVariant;
@@ -54,8 +55,10 @@ public class HeuristicsAlgorithmWrapper implements MiningAlgorithm {
         Object[] result = HeuristicsNetToPetriNetConverter.converter(context, heuristicsNet);
         logPreprocessing.removedAddedElements((Petrinet) result[0]);
 
-        if(result[1] == null) result[1] = PetriNetToBPMNConverter.guessInitialMarking((Petrinet) result[0]);
-        Marking finalMarking = PetriNetToBPMNConverter.guessFinalMarking((Petrinet) result[0]);
+        if(result[1] == null) result[1] = MarkingDiscoverer.constructInitialMarking(context, (Petrinet) result[0]);
+        else MarkingDiscoverer.createInitialMarkingConnection(context, (Petrinet) result[0], (Marking) result[1]);
+
+        Marking finalMarking = MarkingDiscoverer.constructFinalMarking(context, (Petrinet) result[0]);
 
         return new PetrinetWithMarking((Petrinet) result[0], (Marking) result[1], finalMarking);
     }

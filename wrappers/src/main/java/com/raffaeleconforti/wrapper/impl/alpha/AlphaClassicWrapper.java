@@ -4,6 +4,7 @@ import com.raffaeleconforti.conversion.petrinet.PetriNetToBPMNConverter;
 import com.raffaeleconforti.wrapper.LogPreprocessing;
 import com.raffaeleconforti.wrapper.MiningAlgorithm;
 import com.raffaeleconforti.wrapper.PetrinetWithMarking;
+import com.raffaeleconforti.wrapper.marking.MarkingDiscoverer;
 import org.deckfour.xes.classification.XEventNameClassifier;
 import org.deckfour.xes.info.XLogInfo;
 import org.deckfour.xes.info.XLogInfoFactory;
@@ -57,7 +58,8 @@ public class AlphaClassicWrapper implements MiningAlgorithm {
         Pair<Petrinet, Marking> pair = factory.createAlphaMiner(log, new XEventNameClassifier(), parameters).run();
         logPreprocessing.removedAddedElements(pair.getFirst());
 
-        return new PetrinetWithMarking(pair.getFirst(), pair.getSecond());
+        MarkingDiscoverer.createInitialMarkingConnection(context, pair.getFirst(), pair.getSecond());
+        return new PetrinetWithMarking(pair.getFirst(), pair.getSecond(), MarkingDiscoverer.constructFinalMarking(context, pair.getFirst()));
     }
 
     @Override

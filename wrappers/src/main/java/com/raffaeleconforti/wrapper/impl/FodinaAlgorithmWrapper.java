@@ -4,6 +4,7 @@ import com.raffaeleconforti.conversion.petrinet.PetriNetToBPMNConverter;
 import com.raffaeleconforti.wrapper.LogPreprocessing;
 import com.raffaeleconforti.wrapper.MiningAlgorithm;
 import com.raffaeleconforti.wrapper.PetrinetWithMarking;
+import com.raffaeleconforti.wrapper.marking.MarkingDiscoverer;
 import org.deckfour.xes.model.XLog;
 import org.processmining.contexts.uitopia.UIPluginContext;
 import org.processmining.contexts.uitopia.annotations.UITopiaVariant;
@@ -66,7 +67,9 @@ public class FodinaAlgorithmWrapper implements MiningAlgorithm {
         Object[] result = CausalNetToPetrinet.convert(context, net);
         logPreprocessing.removedAddedElements((Petrinet) result[0]);
 
-        return new PetrinetWithMarking((Petrinet) result[0], (Marking) result[1]);
+        MarkingDiscoverer.createInitialMarkingConnection(context, (Petrinet) result[0], (Marking) result[1]);
+
+        return new PetrinetWithMarking((Petrinet) result[0], (Marking) result[1], MarkingDiscoverer.constructFinalMarking(context, (Petrinet) result[0]));
 
     }
 
