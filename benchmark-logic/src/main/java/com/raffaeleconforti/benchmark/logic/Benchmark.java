@@ -102,8 +102,7 @@ public class Benchmark {
                     String miningAlgorithmName = miningAlgorithm.getAlgorithmName();
                     if(!(miningAlgorithm instanceof HeuristicsDollarAlgorithmWrapper)
                             && !(miningAlgorithm instanceof BPMNMinerAlgorithmWrapper)
-                            && !(miningAlgorithm instanceof AlphaAlgorithmWrapper)
-                            && !(miningAlgorithm instanceof EvolutionaryTreeMinerWrapper)) {
+                            && !(miningAlgorithm instanceof AlphaAlgorithmWrapper)) {
                         String measurementAlgorithmName = "NULL";
                         measures.get(logName).put(miningAlgorithmName, new HashMap<>());
 //                        try {

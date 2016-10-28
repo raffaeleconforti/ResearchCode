@@ -6,9 +6,12 @@ import com.raffaeleconforti.wrapper.LogPreprocessing;
 import com.raffaeleconforti.wrapper.MiningAlgorithm;
 import com.raffaeleconforti.wrapper.PetrinetWithMarking;
 import com.raffaeleconforti.wrapper.marking.MarkingDiscoverer;
+import org.deckfour.xes.classification.XEventClassifier;
+import org.deckfour.xes.classification.XEventNameClassifier;
 import org.deckfour.xes.model.XLog;
 import org.processmining.contexts.uitopia.UIPluginContext;
 import org.processmining.contexts.uitopia.annotations.UITopiaVariant;
+import org.processmining.framework.plugin.PluginContext;
 import org.processmining.framework.plugin.annotations.Plugin;
 import org.processmining.framework.plugin.annotations.PluginVariant;
 import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
@@ -21,6 +24,7 @@ import org.processmining.plugins.etm.model.narytree.conversion.NAryTreeToProcess
 import org.processmining.plugins.etm.parameters.ETMParam;
 import org.processmining.plugins.etm.parameters.ETMParamFactory;
 import org.processmining.plugins.etm.ui.plugins.ETMPlugin;
+import org.processmining.plugins.etm.ui.plugins.ETMwithoutGUI;
 import org.processmining.processtree.ProcessTree;
 import org.processmining.processtree.conversion.ProcessTree2Petrinet;
 import org.uncommonseditedbyjoosbuijs.watchmaker.framework.TerminationCondition;
@@ -59,11 +63,12 @@ public class EvolutionaryTreeMinerWrapper implements MiningAlgorithm {
 
             ProcessTree processTree;
             if(context instanceof FakePluginContext) {
-                ETMParam params = ETMParamFactory.buildStandardParamConfigurable(context, new XLog[] {log});
-                ETM etm = new ETM(params);
-                etm.run();
-                NAryTree tree1 = etm.getResult();
-                processTree = NAryTreeToProcessTree.convert(params.getCentralRegistry().getEventClasses(), tree1, "Process tree discovered by the ETM algorithm");
+//                ETMParam params = ETMParamFactory.buildStandardParamConfigurable(context, new XLog[] {log});
+//                ETM etm = new ETM(params);
+//                etm.run();
+//                NAryTree tree1 = etm.getResult();
+//                processTree = NAryTreeToProcessTree.convert(params.getCentralRegistry().getEventClasses(), tree1, "Process tree discovered by the ETM algorithm");
+                processTree = ETMwithoutGUI.minePTWithClassifier(context, log, new XEventNameClassifier());
             }else {
                 ETMPlugin etmPlugin = new ETMPlugin();
                 processTree = etmPlugin.withoutSeed(context, log);
