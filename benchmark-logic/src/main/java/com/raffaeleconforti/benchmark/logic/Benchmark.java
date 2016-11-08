@@ -71,7 +71,8 @@ public class Benchmark {
                 return o1.getAlgorithmName().compareTo(o2.getAlgorithmName());
             }
         });
-        System.out.println("DEBUG - total miningAlgorithms: " + (miningAlgorithms.size() - 3));
+        System.out.println("DEBUG - total mining algorithms: " + (miningAlgorithms.size() - 3));
+        for (MiningAlgorithm miningAlgorithm : miningAlgorithms) System.out.println("DEBUG - mining algorithm: " + miningAlgorithm.getAlgorithmName());
 
         /* retrieving all the measuring algorithms */
         List<MeasurementAlgorithm> measurementAlgorithms = MeasurementAlgorithmDiscoverer.discoverAlgorithms(packages);
@@ -81,7 +82,8 @@ public class Benchmark {
                 return o1.getMeasurementName().compareTo(o2.getMeasurementName());
             }
         });
-        System.out.println("DEBUG - total measurementAlgorithms: " + measurementAlgorithms.size());
+        System.out.println("DEBUG - total measurements: " + measurementAlgorithms.size());
+        for (MeasurementAlgorithm measurementAlgorithm : measurementAlgorithms) System.out.println("DEBUG - measurement: " + measurementAlgorithm.getMeasurementName());
 
         measures = new HashMap<>();
 
@@ -107,7 +109,10 @@ public class Benchmark {
                         measures.get(logName).put(miningAlgorithmName, new HashMap<>());
                         try {
                             System.out.println("DEBUG - measuring on mining algorithm: " + miningAlgorithmName);
+                            long sTime = System.currentTimeMillis();
                             PetrinetWithMarking petrinetWithMarking = miningAlgorithm.minePetrinet(fakePluginContext, log, false);
+                            long execTime = System.currentTimeMillis() - sTime;
+                            measures.get(logName).get(miningAlgorithmName).put("ExecTime", new Double(execTime));
                             for (MeasurementAlgorithm measurementAlgorithm : measurementAlgorithms) {
                                 measurementAlgorithmName = measurementAlgorithm.getMeasurementName();
                                 double measurement = measurementAlgorithm.computeMeasurement(fakePluginContext, xEventClassifier,
