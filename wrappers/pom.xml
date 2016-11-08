@@ -5,7 +5,8 @@
     <parent>
         <artifactId>research-code</artifactId>
         <groupId>com.raffaeleconforti</groupId>
-        <version>1.0</version>
+        <version>${code.version}</version>
+        <relativePath>..</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -102,13 +103,13 @@
         </dependency>
         <dependency>
             <groupId>org.processmining</groupId>
-            <artifactId>uncommons-maths</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.processmining</groupId>
             <artifactId>ilpminer</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>io.gatling.uncommons.maths</groupId>
+            <artifactId>uncommons-maths</artifactId>
+        </dependency>
         <dependency>
             <groupId>net.sourceforge.lpsolve</groupId>
             <artifactId>lpsolve</artifactId>

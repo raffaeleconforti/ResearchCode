@@ -5,10 +5,10 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>com.raffaeleconforti</groupId>
         <artifactId>research-code</artifactId>
-        <version>1.0</version>
-        <relativePath>../</relativePath>
+        <groupId>com.raffaeleconforti</groupId>
+        <version>${code.version}</version>
+        <relativePath>..</relativePath>
     </parent>
 
     <artifactId>libraries</artifactId>
@@ -564,19 +564,6 @@
                         <configuration>
                             <url>https://svn.win.tue.nl/repos/prom/Releases/Regular/ProM66_lib/collections-generic-4.01.jar</url>
                             <outputFileName>collections-generic-4.01.jar</outputFileName>
-                            <outputDirectory>${project.build.directory}</outputDirectory>
-                        </configuration>
-                    </execution>
-
-                    <execution>
-                        <id>download-uncommons-maths</id>
-                        <phase>process-resources</phase>
-                        <goals>
-                            <goal>wget</goal>
-                        </goals>
-                        <configuration>
-                            <url>https://svn.win.tue.nl/repos/prom/Releases/Packages/ApacheUtils/lib/uncommons-maths-1.2.3.jar</url>
-                            <outputFileName>uncommons-maths-1.2.3.jar</outputFileName>
                             <outputDirectory>${project.build.directory}</outputDirectory>
                         </configuration>
                     </execution>
@@ -1143,9 +1130,9 @@
                         <configuration>
                             <groupId>org.apromore</groupId>
                             <artifactId>bpmntk-osgi</artifactId>
-                            <version>1.0-20161013</version>
+                            <version>1.0-20161108</version>
                             <packaging>jar</packaging>
-                            <file>src/main/java/bpmntk-osgi-1.0-20161013.jar</file>
+                            <file>src/main/java/bpmntk-osgi-1.0-20161108.jar</file>
                             <generatePom>true</generatePom>
                         </configuration>
                     </execution>
@@ -1418,22 +1405,6 @@
                             <version>${prom.version}</version>
                             <packaging>jar</packaging>
                             <file>${project.build.directory}/collections-generic-4.01.jar</file>
-                            <generatePom>true</generatePom>
-                        </configuration>
-                    </execution>
-
-                    <execution>
-                        <id>install-uncommons-maths</id>
-                        <phase>install</phase>
-                        <goals>
-                            <goal>install-file</goal>
-                        </goals>
-                        <configuration>
-                            <groupId>org.processmining</groupId>
-                            <artifactId>uncommons-maths</artifactId>
-                            <version>${prom.version}</version>
-                            <packaging>jar</packaging>
-                            <file>${project.build.directory}/uncommons-maths-1.2.3.jar</file>
                             <generatePom>true</generatePom>
                         </configuration>
                     </execution>

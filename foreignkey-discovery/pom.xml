@@ -5,10 +5,10 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>com.raffaeleconforti</groupId>
         <artifactId>research-code</artifactId>
-        <version>1.0</version>
-        <relativePath>../</relativePath>
+        <groupId>com.raffaeleconforti</groupId>
+        <version>${code.version}</version>
+        <relativePath>..</relativePath>
     </parent>
 
     <artifactId>foreignkey-discovery</artifactId>

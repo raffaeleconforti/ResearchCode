@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.raffaeleconforti</groupId>
     <artifactId>research-code</artifactId>
-    <version>1.0</version>
+    <version>1.0-20161108</version>
     <packaging>pom</packaging>
     <name>Research-Code</name>
 
@@ -66,6 +66,8 @@
 
     <properties>
 
+        <code.version>1.0-20161108</code.version>
+
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.source.version>1.8</java.source.version>
         <java.target.version>${java.source.version}</java.target.version>
@@ -121,10 +123,10 @@
 
         <!-- ProM6.5 -->
         <openxes.version>6.5</openxes.version>
-        <prom.version>6.5</prom.version>
+        <prom.version>6.5.20161108</prom.version>
 
         <commons-math3.version>3.6</commons-math3.version>
-        <bpmntk-osgi.version>1.0-20161013</bpmntk-osgi.version>
+        <bpmntk-osgi.version>1.0-20161108</bpmntk-osgi.version>
         <bpstruct.version>0.1.117</bpstruct.version>
         <jbpt.version>0.2.77</jbpt.version>
 
@@ -395,6 +397,11 @@
                 <artifactId>javailp</artifactId>
                 <version>1.2a</version>
             </dependency>
+            <dependency>
+                <groupId>io.gatling.uncommons.maths</groupId>
+                <artifactId>uncommons-maths</artifactId>
+                <version>1.2.3</version>
+            </dependency>
 
             <!-- Apromore -->
             <dependency>
@@ -422,11 +429,6 @@
             <dependency>
                 <groupId>org.processmining</groupId>
                 <artifactId>jung-api</artifactId>
-                <version>${prom.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.processmining</groupId>
-                <artifactId>uncommons-maths</artifactId>
                 <version>${prom.version}</version>
             </dependency>
             <dependency>
