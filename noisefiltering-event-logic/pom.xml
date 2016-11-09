@@ -7,9 +7,10 @@
     <parent>
         <artifactId>research-code</artifactId>
         <groupId>com.raffaeleconforti</groupId>
-        <version>${code.version}</version>
+        <version>[1.0,99.0)</version>
         <relativePath>../</relativePath>
     </parent>
+    <modelVersion>4.0.0</modelVersion>
 
     <artifactId>noisefiltering-event-logic</artifactId>
     <packaging>bundle</packaging>

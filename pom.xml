@@ -2,12 +2,12 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-
     <groupId>com.raffaeleconforti</groupId>
     <artifactId>research-code</artifactId>
-    <version>${code.version}</version>
+    <version>1.0.20161109</version>
     <packaging>pom</packaging>
     <name>Research-Code</name>
+    <modelVersion>4.0.0</modelVersion>
 
     <licenses>
         <license>
@@ -66,7 +66,7 @@
 
     <properties>
 
-        <code.version>1.0-20161108</code.version>
+        <code.version>1.0.20161109</code.version>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.source.version>1.8</java.source.version>
@@ -110,147 +110,147 @@
             <dependency>
                 <groupId>com.raffaeleconforti</groupId>
                 <artifactId>java-util</artifactId>
-                <version>${code.version}</version>
+                <version>[1.0,99.0)</version>
             </dependency>
             <dependency>
                 <groupId>com.raffaeleconforti</groupId>
                 <artifactId>fake-context</artifactId>
-                <version>${code.version}</version>
+                <version>[1.0,99.0)</version>
             </dependency>
             <dependency>
                 <groupId>com.raffaeleconforti</groupId>
                 <artifactId>graph-algorithms</artifactId>
-                <version>${code.version}</version>
+                <version>[1.0,99.0)</version>
             </dependency>
             <dependency>
                 <groupId>com.raffaeleconforti</groupId>
                 <artifactId>bpmn-util</artifactId>
-                <version>${code.version}</version>
+                <version>[1.0,99.0)</version>
             </dependency>
             <dependency>
                 <groupId>com.raffaeleconforti</groupId>
                 <artifactId>conversion</artifactId>
-                <version>${code.version}</version>
+                <version>[1.0,99.0)</version>
             </dependency>
             <dependency>
                 <groupId>com.raffaeleconforti</groupId>
                 <artifactId>efficient-log</artifactId>
-                <version>${code.version}</version>
+                <version>[1.0,99.0)</version>
             </dependency>
             <dependency>
                 <groupId>com.raffaeleconforti</groupId>
                 <artifactId>log-util</artifactId>
-                <version>${code.version}</version>
+                <version>[1.0,99.0)</version>
             </dependency>
             <dependency>
                 <groupId>com.raffaeleconforti</groupId>
                 <artifactId>foreignkey-discovery</artifactId>
-                <version>${code.version}</version>
+                <version>[1.0,99.0)</version>
             </dependency>
             <dependency>
                 <groupId>com.raffaeleconforti</groupId>
                 <artifactId>data-structures</artifactId>
-                <version>${code.version}</version>
+                <version>[1.0,99.0)</version>
             </dependency>
             <dependency>
                 <groupId>com.raffaeleconforti</groupId>
                 <artifactId>modified-miners</artifactId>
-                <version>${code.version}</version>
+                <version>[1.0,99.0)</version>
             </dependency>
             <dependency>
                 <groupId>com.raffaeleconforti</groupId>
                 <artifactId>bpmnminer-logic</artifactId>
-                <version>${code.version}</version>
+                <version>[1.0,99.0)</version>
             </dependency>
             <dependency>
                 <groupId>com.raffaeleconforti</groupId>
                 <artifactId>bpmnminer-commandline</artifactId>
-                <version>${code.version}</version>
+                <version>[1.0,99.0)</version>
             </dependency>
             <dependency>
                 <groupId>com.raffaeleconforti</groupId>
                 <artifactId>bpmnminer-prom</artifactId>
-                <version>${code.version}</version>
+                <version>[1.0,99.0)</version>
             </dependency>
             <dependency>
                 <groupId>com.raffaeleconforti</groupId>
                 <artifactId>wrappers</artifactId>
-                <version>${code.version}</version>
+                <version>[1.0,99.0)</version>
             </dependency>
             <dependency>
                 <groupId>com.raffaeleconforti</groupId>
                 <artifactId>benchmark-logic</artifactId>
-                <version>${code.version}</version>
+                <version>[1.0,99.0)</version>
             </dependency>
             <dependency>
                 <groupId>com.raffaeleconforti</groupId>
                 <artifactId>structuredminer</artifactId>
-                <version>${code.version}</version>
+                <version>[1.0,99.0)</version>
             </dependency>
             <dependency>
                 <groupId>com.raffaeleconforti</groupId>
                 <artifactId>outliers</artifactId>
-                <version>${code.version}</version>
+                <version>[1.0,99.0)</version>
             </dependency>
             <dependency>
                 <groupId>com.raffaeleconforti</groupId>
                 <artifactId>structuredminer-commandline</artifactId>
-                <version>${code.version}</version>
+                <version>[1.0,99.0)</version>
             </dependency>
             <dependency>
                 <groupId>com.raffaeleconforti</groupId>
                 <artifactId>noisefiltering-event-logic</artifactId>
-                <version>${code.version}</version>
+                <version>[1.0,99.0)</version>
             </dependency>
             <dependency>
                 <groupId>com.raffaeleconforti</groupId>
                 <artifactId>noisefiltering-event-commandline</artifactId>
-                <version>${code.version}</version>
+                <version>[1.0,99.0)</version>
             </dependency>
             <dependency>
                 <groupId>com.raffaeleconforti</groupId>
                 <artifactId>noisefiltering-event-prom</artifactId>
-                <version>${code.version}</version>
+                <version>[1.0,99.0)</version>
             </dependency>
             <dependency>
                 <groupId>com.raffaeleconforti</groupId>
                 <artifactId>measurements</artifactId>
-                <version>${code.version}</version>
+                <version>[1.0,99.0)</version>
             </dependency>
             <dependency>
                 <groupId>com.raffaeleconforti</groupId>
                 <artifactId>kernel-estimation</artifactId>
-                <version>${code.version}</version>
+                <version>[1.0,99.0)</version>
             </dependency>
             <dependency>
                 <groupId>com.raffaeleconforti</groupId>
                 <artifactId>noisefiltering-timestamp-logic</artifactId>
-                <version>${code.version}</version>
+                <version>[1.0,99.0)</version>
             </dependency>
             <dependency>
                 <groupId>com.raffaeleconforti</groupId>
                 <artifactId>noisefiltering-timestamp-commandline</artifactId>
-                <version>${code.version}</version>
+                <version>[1.0,99.0)</version>
             </dependency>
             <dependency>
                 <groupId>com.raffaeleconforti</groupId>
                 <artifactId>noisefiltering-timestamp-prom</artifactId>
-                <version>${code.version}</version>
+                <version>[1.0,99.0)</version>
             </dependency>
             <dependency>
                 <groupId>com.raffaeleconforti</groupId>
                 <artifactId>prom-util</artifactId>
-                <version>${code.version}</version>
+                <version>[1.0,99.0)</version>
             </dependency>
             <dependency>
                 <groupId>com.raffaeleconforti</groupId>
                 <artifactId>benchmark-logic</artifactId>
-                <version>${code.version}</version>
+                <version>[1.0,99.0)</version>
             </dependency>
             <dependency>
                 <groupId>com.raffaeleconforti</groupId>
                 <artifactId>benchmark-commandline</artifactId>
-                <version>${code.version}</version>
+                <version>[1.0,99.0)</version>
             </dependency>
 
 
