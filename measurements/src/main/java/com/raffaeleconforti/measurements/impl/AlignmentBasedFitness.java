@@ -41,6 +41,8 @@ public class AlignmentBasedFitness implements MeasurementAlgorithm {
     }
 
     public PNRepResult computeAlignment(PluginContext pluginContext, XEventClassifier xEventClassifier, PetrinetWithMarking petrinetWithMarking, XLog log) {
+        if(petrinetWithMarking == null) return null;
+
         Petrinet petrinet = petrinetWithMarking.getPetrinet();
         Marking initialMarking = petrinetWithMarking.getInitialMarking();
         Marking finalMarking = petrinetWithMarking.getFinalMarking();
@@ -140,14 +142,14 @@ public class AlignmentBasedFitness implements MeasurementAlgorithm {
 
     private double getAlignmentValue(PNRepResult pnRepResult) {
         int unreliable = 0;
-        if(pnRepResult == null) return -1.0;
+        if(pnRepResult == null) return Double.NaN;
         for(SyncReplayResult srp : pnRepResult) {
             if(!srp.isReliable()) {
                 unreliable += srp.getTraceIndex().size();
             }
         }
         if(unreliable > pnRepResult.size() / 2) {
-            return -1.0;
+            return Double.NaN;
         }else {
             return (Double) pnRepResult.getInfo().get(PNRepResult.TRACEFITNESS);
         }

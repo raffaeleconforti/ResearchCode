@@ -17,12 +17,14 @@ public class SizeComplexity  implements MeasurementAlgorithm {
 
     @Override
     public double computeMeasurement(UIPluginContext pluginContext, XEventClassifier xEventClassifier, PetrinetWithMarking petrinetWithMarking, MiningAlgorithm miningAlgorithm, XLog log) {
+        if(petrinetWithMarking == null) return Double.NaN;
+
         try {
             BPMNDiagram bpmn = PetriNetToBPMNConverter.convert(petrinetWithMarking.getPetrinet(), petrinetWithMarking.getInitialMarking(), petrinetWithMarking.getFinalMarking(), false);
             ComplexityCalculator cc = new ComplexityCalculator(bpmn);
             String size = cc.computeSize();
             return Double.valueOf(size);
-        } catch( Exception e ) { return -1; }
+        } catch( Exception e ) { return Double.NaN; }
     }
 
     @Override

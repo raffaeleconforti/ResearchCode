@@ -2,8 +2,10 @@ package com.raffaeleconforti.benchmark.logic;
 
 import com.raffaeleconforti.context.FakePluginContext;
 import com.raffaeleconforti.log.util.LogCloner;
+import com.raffaeleconforti.measurements.InterruptingMeasurementAlgorithm;
 import com.raffaeleconforti.measurements.MeasurementAlgorithm;
 import com.raffaeleconforti.memorylog.XFactoryMemoryImpl;
+import com.raffaeleconforti.wrapper.InterruptingMiningAlgorithm;
 import com.raffaeleconforti.wrapper.MiningAlgorithm;
 import com.raffaeleconforti.wrapper.PetrinetWithMarking;
 import com.raffaeleconforti.wrapper.impl.EvolutionaryTreeMinerWrapper;
@@ -56,10 +58,10 @@ public class Benchmark {
 
     public void performBenchmark() {
         loadLogs();
-        performBenchmarkFromLogInput(packages, logsInput);
+        performBenchmarkFromLogInput(packages, logsInput, 6000, 6000);
     }
 
-    private void performBenchmarkFromLogInput(Set<String> packages, Map<String, Object> logsInput) {
+    private void performBenchmarkFromLogInput(Set<String> packages, Map<String, Object> logsInput, long miningTimeout, long measurementTimeout) {
         XEventClassifier xEventClassifier = new XEventAndClassifier(new XEventNameClassifier());
         FakePluginContext fakePluginContext = new FakePluginContext();
 
@@ -94,7 +96,7 @@ public class Benchmark {
         XLog log;
         LogCloner logCloner = new LogCloner();
         for( String logName : logsInput.keySet() ) {
-//            if(logName.equals("ArtificialLess.xes.gz")) {
+            if(logName.equals("ArtificialLess.xes.gz")) {
                 XLog rawlog = loadLog(logsInput.get(logName));
                 measures.put(logName, new HashMap<>());
                 System.out.println("DEBUG - measuring on log: " + logName);
@@ -107,19 +109,28 @@ public class Benchmark {
                             && !(miningAlgorithm instanceof AlphaAlgorithmWrapper)) {
                         String measurementAlgorithmName = "NULL";
                         measures.get(logName).put(miningAlgorithmName, new HashMap<>());
+
                         try {
                             System.out.println("DEBUG - measuring on mining algorithm: " + miningAlgorithmName);
                             long sTime = System.currentTimeMillis();
-                            PetrinetWithMarking petrinetWithMarking = miningAlgorithm.minePetrinet(fakePluginContext, log, false);
+
+                            InterruptingMiningAlgorithm interruptingMiningAlgorithm = new InterruptingMiningAlgorithm(miningAlgorithm, miningTimeout);
+                            PetrinetWithMarking petrinetWithMarking = interruptingMiningAlgorithm.minePetrinet(fakePluginContext, log, false);
+
                             long execTime = System.currentTimeMillis() - sTime;
                             measures.get(logName).get(miningAlgorithmName).put("ExecTime", new Double(execTime));
+
                             for (MeasurementAlgorithm measurementAlgorithm : measurementAlgorithms) {
                                 measurementAlgorithmName = measurementAlgorithm.getMeasurementName();
-                                double measurement = measurementAlgorithm.computeMeasurement(fakePluginContext, xEventClassifier,
+
+                                InterruptingMeasurementAlgorithm interruptingMeasurementAlgorithm = new InterruptingMeasurementAlgorithm(measurementAlgorithm, measurementTimeout);
+                                double measurement = interruptingMeasurementAlgorithm.computeMeasurement(fakePluginContext, xEventClassifier,
                                         petrinetWithMarking, miningAlgorithm, log);
+
                                 measures.get(logName).get(miningAlgorithmName).put(measurementAlgorithmName, measurement);
                                 System.out.println("DEBUG - " + measurementAlgorithmName + " : " + measurement);
                             }
+
                         } catch (Exception e) {
                             System.out.println("ERROR - [mining algorithm : measurement algorithm] > [" + miningAlgorithmName + " : " + measurementAlgorithmName + "]");
                             e.printStackTrace();
@@ -127,7 +138,7 @@ public class Benchmark {
                         }
                     }
                 }
-//            }
+            }
         }
 
         publishResults();

@@ -17,12 +17,14 @@ public class StructurednessComplexity implements MeasurementAlgorithm {
 
     @Override
     public double computeMeasurement(UIPluginContext pluginContext, XEventClassifier xEventClassifier, PetrinetWithMarking petrinetWithMarking, MiningAlgorithm miningAlgorithm, XLog log) {
+        if(petrinetWithMarking == null) return Double.NaN;
+
         try {
             BPMNDiagram bpmn = PetriNetToBPMNConverter.convert(petrinetWithMarking.getPetrinet(), petrinetWithMarking.getInitialMarking(), petrinetWithMarking.getFinalMarking(), false);
             ComplexityCalculator cc = new ComplexityCalculator(bpmn);
             String structuredness = cc.computeStructuredness();
             return Double.valueOf(structuredness);
-        } catch (Exception e) { return -1; }
+        } catch (Exception e) { return Double.NaN; }
     }
 
     @Override

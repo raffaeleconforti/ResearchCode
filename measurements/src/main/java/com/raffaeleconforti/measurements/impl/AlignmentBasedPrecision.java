@@ -20,6 +20,8 @@ public class AlignmentBasedPrecision implements MeasurementAlgorithm {
 
     @Override
     public double computeMeasurement(UIPluginContext pluginContext, XEventClassifier xEventClassifier, PetrinetWithMarking petrinetWithMarking, MiningAlgorithm miningAlgorithm, XLog log) {
+        if(petrinetWithMarking == null) return Double.NaN;
+
         MultiETCPlugin multiETCPlugin = new MultiETCPlugin();
 
         MultiETCSettings settings = new MultiETCSettings();
@@ -36,7 +38,7 @@ public class AlignmentBasedPrecision implements MeasurementAlgorithm {
         } catch (ConnectionCannotBeObtained connectionCannotBeObtained) {
             connectionCannotBeObtained.printStackTrace();
         }
-        return 0.0;
+        return Double.NaN;
     }
 
     @Override
