@@ -42,11 +42,12 @@ public class InterruptingMiningAlgorithm {
         try {
             while(time < timeout && t.isAlive()) {
                 Thread.currentThread().sleep(100);
+                System.out.println("DEBUG - sleeping: " + getAlgorithmName());
                 time += 100;
             }
             if (t.isAlive()) {
                 t.interrupt();
-                System.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out)));
+//                System.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out)));
                 System.out.println(getAlgorithmName() + " - Timeout Reached!");
             }
         } catch (InterruptedException e) {

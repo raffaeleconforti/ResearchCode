@@ -102,7 +102,7 @@ public class BenchmarkCommandline {
             icmd++;
         }
 
-        if( (icmd < args.length) && !args[icmd].equalsIgnoreCase("-p") ) {
+        if( (icmd < args.length) && !args[icmd].equalsIgnoreCase("-p") && !args[icmd].equalsIgnoreCase("-timeout")) {
             extLoc = args[icmd];
             icmd++;
         }
@@ -115,6 +115,7 @@ public class BenchmarkCommandline {
         }
 
         if( (icmd < args.length) && args[icmd].equalsIgnoreCase("-timeout") ) {
+            icmd++;
             miningTimeout = Long.valueOf(args[icmd]);
             icmd++;
             measurementTimeout = Long.valueOf(args[icmd]);

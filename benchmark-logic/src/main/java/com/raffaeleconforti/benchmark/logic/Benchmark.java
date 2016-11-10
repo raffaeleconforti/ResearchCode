@@ -73,7 +73,7 @@ public class Benchmark {
         Collections.sort(miningAlgorithms, new Comparator<MiningAlgorithm>() {
             @Override
             public int compare(MiningAlgorithm o1, MiningAlgorithm o2) {
-                return o1.getAlgorithmName().compareTo(o2.getAlgorithmName());
+                return o2.getAlgorithmName().compareTo(o1.getAlgorithmName());
             }
         });
         System.out.println("DEBUG - total mining algorithms: " + (miningAlgorithms.size() - 3));
@@ -84,7 +84,7 @@ public class Benchmark {
         Collections.sort(measurementAlgorithms, new Comparator<MeasurementAlgorithm>() {
             @Override
             public int compare(MeasurementAlgorithm o1, MeasurementAlgorithm o2) {
-                return o1.getMeasurementName().compareTo(o2.getMeasurementName());
+                return o2.getMeasurementName().compareTo(o1.getMeasurementName());
             }
         });
         System.out.println("DEBUG - total measurements: " + measurementAlgorithms.size());
