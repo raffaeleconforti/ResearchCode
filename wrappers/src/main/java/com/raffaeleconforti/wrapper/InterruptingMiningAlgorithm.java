@@ -49,7 +49,8 @@ public class InterruptingMiningAlgorithm {
                 System.out.println(getAlgorithmName() + " - Timeout Reached!");
             }
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            System.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out)));
+            System.out.println(getAlgorithmName() + " - Timeout Reached!");
         }
 
         return petrinetWithMarking[0];
