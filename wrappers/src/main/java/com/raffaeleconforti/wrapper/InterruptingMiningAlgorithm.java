@@ -30,7 +30,8 @@ public class InterruptingMiningAlgorithm {
                 try {
                     petrinetWithMarking[0] = miningAlgorithm.minePetrinet(context, log, structure);
                 } catch (Exception e) {
-
+                    System.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out)));
+                    System.out.println(getAlgorithmName() + " - Timeout Reached!");
                 }
             }
         };
@@ -49,7 +50,8 @@ public class InterruptingMiningAlgorithm {
                 System.out.println(getAlgorithmName() + " - Timeout Reached!");
             }
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            System.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out)));
+            System.out.println(getAlgorithmName() + " - Timeout Reached!");
         }
 
         return petrinetWithMarking[0];
