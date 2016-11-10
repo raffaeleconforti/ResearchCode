@@ -471,15 +471,25 @@ public class BPMNToPetriNetConverter {
         }
 
         Place newFinalPlace = petrinet.addPlace("END");
-        Transition newFinalTransition = petrinet.addTransition("t" + counter[1]++);
-        newFinalTransition.setInvisible(true);
-        connectTransitionToPlace(petrinet, newFinalTransition, newFinalPlace);
-        connectPlaceToTransition(petrinet, finalPlace, newFinalTransition);
-        for (Place p : setPEnable) {
-            connectPlaceToTransition(petrinet, p, newFinalTransition);
+        if(!setPEnable.isEmpty()) {
+            Transition newFinalTransition = petrinet.addTransition("t" + counter[1]++);
+            newFinalTransition.setInvisible(true);
+            connectTransitionToPlace(petrinet, newFinalTransition, newFinalPlace);
+            connectPlaceToTransition(petrinet, finalPlace, newFinalTransition);
+            for (Place p : setPEnable) {
+                connectPlaceToTransition(petrinet, p, newFinalTransition);
+            }
+            finalMarking.clear();
+            finalMarking.add(newFinalPlace);
+        }else {
+            for(Transition t : petrinet.getTransitions()) {
+                if(t.getVisibleSuccessors().isEmpty()) {
+                    connectTransitionToPlace(petrinet, t, newFinalPlace);
+                    finalMarking.clear();
+                    finalMarking.add(newFinalPlace);
+                }
+            }
         }
-        finalMarking.clear();
-        finalMarking.add(newFinalPlace);
 
         boolean modified = true;
         boolean modified2 = true;

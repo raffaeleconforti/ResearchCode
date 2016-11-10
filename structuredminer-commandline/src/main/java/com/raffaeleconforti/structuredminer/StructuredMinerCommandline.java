@@ -6,6 +6,7 @@ import com.raffaeleconforti.log.util.LogImporter;
 import com.raffaeleconforti.structuredminer.miner.StructuredMiner;
 import com.raffaeleconforti.structuredminer.ui.SettingsStructuredMiner;
 import com.raffaeleconforti.memorylog.XFactoryMemoryImpl;
+import org.deckfour.xes.factory.XFactoryNaiveImpl;
 import org.deckfour.xes.model.XLog;
 import org.processmining.contexts.uitopia.UIContext;
 import org.processmining.contexts.uitopia.UIPluginContext;
@@ -72,7 +73,7 @@ public class StructuredMinerCommandline  {
 
             logfile = new File(args[icmd]);
             if( !logfile.exists() ) throw new Exception("ERROR - input log file not found.");
-            XLog log = LogImporter.importFromFile(new XFactoryMemoryImpl(), args[icmd]);
+            XLog log = LogImporter.importFromFile(new XFactoryNaiveImpl(), args[icmd]);
             icmd++;
             name = args[icmd];
 
@@ -86,6 +87,7 @@ public class StructuredMinerCommandline  {
             bpmnExportPlugin.export(uiPluginContext, diagram, new File(name+".bpmn"));
 
         } catch (Exception e) {
+            e.printStackTrace();
             System.out.println("ERROR: " + e.getMessage());
             System.out.println("RUN: java -jar StructuredMiner [hm|fo] [p] [f] [minutes] logFileName.[mxml|xes] bpmnFileName");
             System.out.println("HELP: java -jar StructuredMiner -help");
