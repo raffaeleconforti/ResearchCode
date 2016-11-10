@@ -32,7 +32,8 @@ public class InterruptingMeasurementAlgorithm {
                 try {
                     result[0] = measurementAlgorithm.computeMeasurement(pluginContext, xEventClassifier, petrinetWithMarking, miningAlgorithm, log);
                 } catch (Exception e) {
-
+                    System.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out)));
+                    System.out.println(getMeasurementName() + " - Timeout Reached!");
                 }
             }
         };
