@@ -56,9 +56,12 @@ public class Benchmark {
         this.packages = packages;
     }
 
-    public void performBenchmark() {
+    public void performBenchmark(long miningTimeout, long measurementTimeout) {
+        System.out.println("DEBUG - running benchmark ...");
+        System.out.println("DEBUG - mining timeout: " + miningTimeout/60000 + " minutes");
+        System.out.println("DEBUG - measurement timeout: " + miningTimeout/60000 + " minutes");
         loadLogs();
-        performBenchmarkFromLogInput(packages, logsInput, 6000, 6000);
+        performBenchmarkFromLogInput(packages, logsInput, miningTimeout, measurementTimeout);
     }
 
     private void performBenchmarkFromLogInput(Set<String> packages, Map<String, Object> logsInput, long miningTimeout, long measurementTimeout) {
@@ -96,7 +99,7 @@ public class Benchmark {
         XLog log;
         LogCloner logCloner = new LogCloner();
         for( String logName : logsInput.keySet() ) {
-            if(logName.equals("ArtificialLess.xes.gz")) {
+//            if(logName.equals("ArtificialLess.xes.gz")) {
                 XLog rawlog = loadLog(logsInput.get(logName));
                 measures.put(logName, new HashMap<>());
                 System.out.println("DEBUG - measuring on log: " + logName);
@@ -138,7 +141,7 @@ public class Benchmark {
                         }
                     }
                 }
-            }
+//            }
         }
 
         publishResults();

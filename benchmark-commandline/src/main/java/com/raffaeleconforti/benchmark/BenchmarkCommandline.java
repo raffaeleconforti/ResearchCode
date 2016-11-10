@@ -87,6 +87,9 @@ public class BenchmarkCommandline {
         Set<String> packages = new UnifiedSet<>();
         Benchmark benchmark;
 
+        long miningTimeout = 3600000;
+        long measurementTimeout = 3600000;
+
         int icmd = 0;
 
         if( (args.length != 0) && (args[icmd].equalsIgnoreCase("-help"))) {
@@ -104,14 +107,22 @@ public class BenchmarkCommandline {
             icmd++;
         }
 
-        if( (icmd < args.length) && args[icmd].equalsIgnoreCase("-p") )
+        if( (icmd < args.length) && args[icmd].equalsIgnoreCase("-p") ) {
             do {
                 icmd++;
                 packages.add(args[icmd]);
-            } while( icmd < args.length );
+            } while (icmd < args.length);
+        }
+
+        if( (icmd < args.length) && args[icmd].equalsIgnoreCase("-timeout") ) {
+            miningTimeout = Long.valueOf(args[icmd]);
+            icmd++;
+            measurementTimeout = Long.valueOf(args[icmd]);
+            icmd++;
+        }
 
         benchmark = new Benchmark(defaultLogs, extLoc, packages);
-        benchmark.performBenchmark();
+        benchmark.performBenchmark(miningTimeout, measurementTimeout);
 
     }
 
