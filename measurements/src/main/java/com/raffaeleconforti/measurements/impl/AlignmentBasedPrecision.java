@@ -12,6 +12,8 @@ import org.processmining.plugins.multietc.res.MultiETCResult;
 import org.processmining.plugins.multietc.sett.MultiETCSettings;
 import org.processmining.plugins.petrinet.replayresult.PNRepResult;
 
+import java.io.*;
+
 /**
  * Created by Raffaele Conforti (conforti.raffaele@gmail.com) on 18/10/2016.
  */
@@ -21,6 +23,11 @@ public class AlignmentBasedPrecision implements MeasurementAlgorithm {
     @Override
     public double computeMeasurement(UIPluginContext pluginContext, XEventClassifier xEventClassifier, PetrinetWithMarking petrinetWithMarking, MiningAlgorithm miningAlgorithm, XLog log) {
         if(petrinetWithMarking == null) return Double.NaN;
+
+        System.setOut(new PrintStream(new OutputStream() {
+            @Override
+            public void write(int b) throws IOException {}
+        }));
 
         MultiETCPlugin multiETCPlugin = new MultiETCPlugin();
 
@@ -33,11 +40,15 @@ public class AlignmentBasedPrecision implements MeasurementAlgorithm {
             PNRepResult pnRepResult = alignmentBasedFitness.computeAlignment(pluginContext, xEventClassifier, petrinetWithMarking, log);
             Object[] res = multiETCPlugin.checkMultiETCAlign1(pluginContext, log, petrinetWithMarking.getPetrinet(), settings, pnRepResult);
             MultiETCResult multiETCResult = (MultiETCResult) res[0];
+
+            System.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out)));
             return (Double) (multiETCResult).getAttribute(MultiETCResult.PRECISION);
 
         } catch (ConnectionCannotBeObtained connectionCannotBeObtained) {
             connectionCannotBeObtained.printStackTrace();
         }
+
+        System.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out)));
         return Double.NaN;
     }
 

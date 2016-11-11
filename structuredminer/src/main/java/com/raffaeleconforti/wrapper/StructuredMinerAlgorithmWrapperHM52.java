@@ -15,6 +15,8 @@ import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
 import org.processmining.models.graphbased.directed.petrinet.Petrinet;
 import org.processmining.models.semantics.petrinet.Marking;
 
+import java.io.*;
+
 /**
  * Created by conforti on 20/02/15.
  */
@@ -34,6 +36,11 @@ public class StructuredMinerAlgorithmWrapperHM52 implements MiningAlgorithm {
 
     @Override
     public PetrinetWithMarking minePetrinet(UIPluginContext context, XLog log, boolean structure) {
+        System.setOut(new PrintStream(new OutputStream() {
+            @Override
+            public void write(int b) throws IOException {}
+        }));
+
         SettingsStructuredMinerUI settingsStructuredMinerUI = new SettingsStructuredMinerUI();
         SettingsStructuredMiner settings;
         if(context instanceof FakePluginContext) {
@@ -48,6 +55,8 @@ public class StructuredMinerAlgorithmWrapperHM52 implements MiningAlgorithm {
 
         if(result[1] == null) result[1] = PetriNetToBPMNConverter.guessInitialMarking((Petrinet) result[0]);
         if(result[2] == null) result[2] = PetriNetToBPMNConverter.guessFinalMarking((Petrinet) result[0]);
+
+        System.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out)));
 
         return new PetrinetWithMarking((Petrinet) result[0], (Marking) result[1], (Marking) result[2]);
     }

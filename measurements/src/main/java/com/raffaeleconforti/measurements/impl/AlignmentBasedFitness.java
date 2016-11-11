@@ -23,6 +23,7 @@ import org.processmining.plugins.petrinet.replayer.algorithms.costbasedcomplete.
 import org.processmining.plugins.petrinet.replayresult.PNRepResult;
 import org.processmining.plugins.replayer.replayresult.SyncReplayResult;
 
+import java.io.*;
 import java.util.Map;
 
 /**
@@ -43,6 +44,11 @@ public class AlignmentBasedFitness implements MeasurementAlgorithm {
     public PNRepResult computeAlignment(PluginContext pluginContext, XEventClassifier xEventClassifier, PetrinetWithMarking petrinetWithMarking, XLog log) {
         if(petrinetWithMarking == null) return null;
 
+        System.setOut(new PrintStream(new OutputStream() {
+            @Override
+            public void write(int b) throws IOException {}
+        }));
+
         Petrinet petrinet = petrinetWithMarking.getPetrinet();
         Marking initialMarking = petrinetWithMarking.getInitialMarking();
         Marking finalMarking = petrinetWithMarking.getFinalMarking();
@@ -60,10 +66,13 @@ public class AlignmentBasedFitness implements MeasurementAlgorithm {
         TransEvClassMapping mapping = constructMapping(petrinet, xEventClassifier, log, dummyEvClass);
 
         try {
+            System.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out)));
             return replayer.replayLog(pluginContext, petrinet, log, mapping, parameters);
         } catch (AStarException | ArrayIndexOutOfBoundsException e) {
             e.printStackTrace();
         }
+
+        System.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out)));
         return null;
     }
 

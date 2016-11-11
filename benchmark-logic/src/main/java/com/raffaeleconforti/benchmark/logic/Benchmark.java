@@ -58,8 +58,8 @@ public class Benchmark {
 
     public void performBenchmark(long miningTimeout, long measurementTimeout) {
         System.out.println("DEBUG - running benchmark ...");
-        System.out.println("DEBUG - mining timeout: " + miningTimeout/60000 + " minutes");
-        System.out.println("DEBUG - measurement timeout: " + miningTimeout/60000 + " minutes");
+        System.out.println("DEBUG - mining timeout: " + (double) miningTimeout / 60000 + " minutes");
+        System.out.println("DEBUG - measurement timeout: " + (double) miningTimeout/60000 + " minutes");
         loadLogs();
         performBenchmarkFromLogInput(packages, logsInput, miningTimeout, measurementTimeout);
     }

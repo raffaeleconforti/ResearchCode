@@ -4,9 +4,7 @@ import org.deckfour.xes.model.XLog;
 import org.processmining.contexts.uitopia.UIPluginContext;
 import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
 
-import java.io.FileDescriptor;
-import java.io.FileOutputStream;
-import java.io.PrintStream;
+import java.io.*;
 
 /**
  * Created by Raffaele Conforti (conforti.raffaele@gmail.com) on 9/11/16.
@@ -27,18 +25,25 @@ public class InterruptingMiningAlgorithm {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
+                System.setOut(new PrintStream(new OutputStream() {
+                    @Override
+                    public void write(int b) throws IOException {}
+                }));
+
                 try {
                     petrinetWithMarking[0] = miningAlgorithm.minePetrinet(context, log, structure);
                 } catch (Exception e) {
-                    System.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out)));
-                    System.out.println(getAlgorithmName() + " - Timeout Reached!");
+
                 }
+
+                System.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out)));
             }
         };
         Thread t = new Thread(runnable);
         t.start();
 
         long time = 0;
+        boolean reached = false;
         try {
             while(time < timeout && t.isAlive()) {
                 Thread.currentThread().sleep(100);
@@ -47,10 +52,15 @@ public class InterruptingMiningAlgorithm {
             }
             if (t.isAlive()) {
                 t.interrupt();
-//                System.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out)));
-                System.out.println(getAlgorithmName() + " - Timeout Reached!");
+                reached = true;
+            }
+            if (t.isAlive()) {
+                t.stop();
             }
         } catch (InterruptedException e) {
+
+        }
+        if(reached) {
             System.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out)));
             System.out.println(getAlgorithmName() + " - Timeout Reached!");
         }
