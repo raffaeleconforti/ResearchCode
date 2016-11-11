@@ -6,9 +6,11 @@ import com.raffaeleconforti.conversion.petrinet.PetriNetToBPMNConverter;
 import com.raffaeleconforti.structuredminer.miner.StructuredMiner;
 import com.raffaeleconforti.structuredminer.ui.SettingsStructuredMiner;
 import com.raffaeleconforti.structuredminer.ui.SettingsStructuredMinerUI;
+import com.raffaeleconforti.wrapper.marking.MarkingDiscoverer;
 import org.deckfour.xes.model.XLog;
 import org.processmining.contexts.uitopia.UIPluginContext;
 import org.processmining.contexts.uitopia.annotations.UITopiaVariant;
+import org.processmining.framework.models.petrinet.PetriNet;
 import org.processmining.framework.plugin.annotations.Plugin;
 import org.processmining.framework.plugin.annotations.PluginVariant;
 import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
@@ -55,6 +57,12 @@ public class StructuredMinerAlgorithmWrapper implements MiningAlgorithm {
 
         if(result[1] == null) result[1] = PetriNetToBPMNConverter.guessInitialMarking((Petrinet) result[0]);
         if(result[2] == null) result[2] = PetriNetToBPMNConverter.guessFinalMarking((Petrinet) result[0]);
+
+        if(result[1] == null) result[1] = MarkingDiscoverer.constructInitialMarking(context, (Petrinet) result[0]);
+        else MarkingDiscoverer.createInitialMarkingConnection(context, (Petrinet) result[0], (Marking) result[1]);
+
+        if(result[2] == null) result[2] = MarkingDiscoverer.constructFinalMarking(context, (Petrinet) result[0]);
+        else MarkingDiscoverer.createFinalMarkingConnection(context, (Petrinet) result[0], (Marking) result[1]);
 
         System.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out)));
 

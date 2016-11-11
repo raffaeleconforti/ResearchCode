@@ -47,7 +47,9 @@ public class InterruptingMiningAlgorithm {
         try {
             while(time < timeout && t.isAlive()) {
                 Thread.currentThread().sleep(100);
-                System.out.println("DEBUG - sleeping: " + getAlgorithmName());
+                if(time % 300000 == 0) {
+                    System.out.println("DEBUG - sleeping: " + getAlgorithmName());
+                }
                 time += 100;
             }
             if (t.isAlive()) {

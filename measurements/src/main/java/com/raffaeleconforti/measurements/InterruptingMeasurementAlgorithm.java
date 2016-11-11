@@ -49,7 +49,9 @@ public class InterruptingMeasurementAlgorithm {
         try {
             while(time < timeout && t.isAlive()) {
                 Thread.currentThread().sleep(100);
-                System.out.println("DEBUG - sleeping: " + getMeasurementName());
+                if(time % 300000 == 0) {
+                    System.out.println("DEBUG - sleeping: " + getMeasurementName());
+                }
                 time += 100;
             }
             if (t.isAlive()) {
