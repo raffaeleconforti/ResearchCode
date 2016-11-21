@@ -180,84 +180,6 @@
                     </execution>
 
                     <execution>
-                        <id>download-lpsolve</id>
-                        <phase>process-resources</phase>
-                        <goals>
-                            <goal>wget</goal>
-                        </goals>
-                        <configuration>
-                            <url>https://svn.win.tue.nl/repos/prom/Releases/Packages/LpSolve/LpSolve_mac/lpsolve55j.jar</url>
-                            <outputFileName>lpsolve55j.jar</outputFileName>
-                            <outputDirectory>${project.build.directory}</outputDirectory>
-                        </configuration>
-                    </execution>
-
-                    <execution>
-                        <id>download-liblpsolve-win64-1</id>
-                        <phase>process-resources</phase>
-                        <goals>
-                            <goal>wget</goal>
-                        </goals>
-                        <configuration>
-                            <url>https://svn.win.tue.nl/repos/prom/Releases/Packages/LpSolve/LpSolve_win64/win64/liblpsolve55.lib</url>
-                            <outputFileName>liblpsolve55.lib</outputFileName>
-                            <outputDirectory>${project.build.directory}</outputDirectory>
-                        </configuration>
-                    </execution>
-
-                    <execution>
-                        <id>download-liblpsolve-win64-2</id>
-                        <phase>process-resources</phase>
-                        <goals>
-                            <goal>wget</goal>
-                        </goals>
-                        <configuration>
-                            <url>https://svn.win.tue.nl/repos/prom/Releases/Packages/LpSolve/LpSolve_win64/win64/liblpsolve55d.lib</url>
-                            <outputFileName>liblpsolve55d.lib</outputFileName>
-                            <outputDirectory>${project.build.directory}</outputDirectory>
-                        </configuration>
-                    </execution>
-
-                    <execution>
-                        <id>download-liblpsolve-win64-3</id>
-                        <phase>process-resources</phase>
-                        <goals>
-                            <goal>wget</goal>
-                        </goals>
-                        <configuration>
-                            <url>https://svn.win.tue.nl/repos/prom/Releases/Packages/LpSolve/LpSolve_win64/win64/lpsolve55.lib</url>
-                            <outputFileName>lpsolve55.lib</outputFileName>
-                            <outputDirectory>${project.build.directory}</outputDirectory>
-                        </configuration>
-                    </execution>
-
-                    <execution>
-                        <id>download-liblpsolve-win64-4</id>
-                        <phase>process-resources</phase>
-                        <goals>
-                            <goal>wget</goal>
-                        </goals>
-                        <configuration>
-                            <url>https://svn.win.tue.nl/repos/prom/Releases/Packages/LpSolve/LpSolve_win64/win64/lpsolve55.dll</url>
-                            <outputFileName>lpsolve55.dll</outputFileName>
-                            <outputDirectory>${project.build.directory}</outputDirectory>
-                        </configuration>
-                    </execution>
-
-                    <execution>
-                        <id>download-liblpsolve-win64-5</id>
-                        <phase>process-resources</phase>
-                        <goals>
-                            <goal>wget</goal>
-                        </goals>
-                        <configuration>
-                            <url>https://svn.win.tue.nl/repos/prom/Releases/Packages/LpSolve/LpSolve_win64/win64/lpsolve55j.dll</url>
-                            <outputFileName>lpsolve55j.dll</outputFileName>
-                            <outputDirectory>${project.build.directory}</outputDirectory>
-                        </configuration>
-                    </execution>
-
-                    <execution>
                         <id>download-oplall</id>
                         <phase>process-resources</phase>
                         <goals>
@@ -812,7 +734,7 @@
                             <artifactId>lpsolve</artifactId>
                             <version>5.5.2</version>
                             <packaging>jar</packaging>
-                            <file>${project.build.directory}/lpsolve55j.jar</file>
+                            <file>${project.build.sourceDirectory}/lpsolve55j.jar</file>
                             <generatePom>true</generatePom>
                         </configuration>
                     </execution>
@@ -1245,7 +1167,7 @@
                             <artifactId>liblpsolve55</artifactId>
                             <version>55</version>
                             <packaging>lib</packaging>
-                            <file>${project.build.directory}/liblpsolve55.lib</file>
+                            <file>${project.build.sourceDirectory}/liblpsolve55.lib</file>
                             <generatePom>true</generatePom>
                         </configuration>
                     </execution>
@@ -1261,7 +1183,7 @@
                             <artifactId>liblpsolve55d</artifactId>
                             <version>55d</version>
                             <packaging>lib</packaging>
-                            <file>${project.build.directory}/liblpsolve55d.lib</file>
+                            <file>${project.build.sourceDirectory}/liblpsolve55d.lib</file>
                             <generatePom>true</generatePom>
                         </configuration>
                     </execution>
@@ -1277,7 +1199,7 @@
                             <artifactId>lpsolve55</artifactId>
                             <version>55</version>
                             <packaging>lib</packaging>
-                            <file>${project.build.directory}/lpsolve55.lib</file>
+                            <file>${project.build.sourceDirectory}/lpsolve55.lib</file>
                             <generatePom>true</generatePom>
                         </configuration>
                     </execution>
@@ -1293,7 +1215,7 @@
                             <artifactId>lpsolve55</artifactId>
                             <version>55</version>
                             <packaging>dll</packaging>
-                            <file>${project.build.directory}/lpsolve55.dll</file>
+                            <file>${project.build.sourceDirectory}/lpsolve55.dll</file>
                             <generatePom>true</generatePom>
                         </configuration>
                     </execution>
@@ -1309,7 +1231,7 @@
                             <artifactId>lpsolve55j</artifactId>
                             <version>55j</version>
                             <packaging>dll</packaging>
-                            <file>${project.build.directory}/lpsolve55j.dll</file>
+                            <file>${project.build.sourceDirectory}/lpsolve55j.dll</file>
                             <generatePom>true</generatePom>
                         </configuration>
                     </execution>

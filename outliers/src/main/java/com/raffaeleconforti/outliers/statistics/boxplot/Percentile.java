@@ -11,10 +11,7 @@ public class Percentile {
             if(pos < 0) pos = 0;
             return values[pos];
         }catch (ArrayIndexOutOfBoundsException e) {
-//            if(values.length == 0) {
-//                System.out.println("CIAO");
-//            }
-//            e.printStackTrace();
+
         }
         return 0;
     }

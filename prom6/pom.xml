@@ -525,22 +525,22 @@
                 </configuration>
 
                 <executions>
-                    <execution>
-                        <id>property</id>
-                        <phase>install</phase>
-                        <configuration>
-                            <exportAntProperties>true</exportAntProperties>
-                            <target>
-                                <exec executable="/bin/bash" outputproperty="libs">
-                                    <arg value="-c" />
-                                    <arg value="find ~/.ProM -name *.jar -maxdepth 3 | tr &quot;\n&quot; &quot;:&quot;" />
-                                </exec>
-                            </target>
-                        </configuration>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                    </execution>
+                    <!--<execution>-->
+                        <!--<id>property</id>-->
+                        <!--<phase>install</phase>-->
+                        <!--<configuration>-->
+                            <!--<exportAntProperties>true</exportAntProperties>-->
+                            <!--<target>-->
+                                <!--<exec executable="/bin/bash" outputproperty="libs">-->
+                                    <!--<arg value="-c" />-->
+                                    <!--<arg value="find ~/.ProM -name *.jar -maxdepth 3 | tr &quot;\n&quot; &quot;:&quot;" />-->
+                                <!--</exec>-->
+                            <!--</target>-->
+                        <!--</configuration>-->
+                        <!--<goals>-->
+                            <!--<goal>run</goal>-->
+                        <!--</goals>-->
+                    <!--</execution>-->
 
                     <execution>
                         <id>start</id>

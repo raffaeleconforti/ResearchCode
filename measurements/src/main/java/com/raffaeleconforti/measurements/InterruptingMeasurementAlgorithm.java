@@ -58,10 +58,11 @@ public class InterruptingMeasurementAlgorithm {
                 t.interrupt();
                 reached = true;
             }
+            Thread.currentThread().sleep(1000);
             if (t.isAlive()) {
                 t.stop();
             }
-        } catch (InterruptedException e) {
+        } catch (Exception e) {
 
         }
         if(reached) {

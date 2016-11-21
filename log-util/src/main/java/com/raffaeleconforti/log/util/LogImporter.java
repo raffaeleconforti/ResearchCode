@@ -28,6 +28,20 @@ public class LogImporter {
         return null;
     }
 
+    public static void exportToFile(String name, XLog log) throws Exception {
+        if(name.endsWith("mxml.gz")) {
+            exportToInputStream(log, name, new XMxmlGZIPSerializer());
+        }else if(name.endsWith("mxml")) {
+            exportToInputStream(log, name, new XMxmlSerializer());
+        }else if(name.endsWith("xes.gz")) {
+            exportToInputStream(log, name, new XesXmlGZIPSerializer());
+        }else if(name.endsWith("xes")) {
+            exportToInputStream(log, name, new XesXmlSerializer());
+        }else {
+            exportToInputStream(log, name, new XesXmlGZIPSerializer());
+        }
+    }
+
     public static void exportToFile(String path, String name, XLog log) throws Exception {
         if(name.endsWith("mxml.gz")) {
             exportToInputStream(log, path + name, new XMxmlGZIPSerializer());
