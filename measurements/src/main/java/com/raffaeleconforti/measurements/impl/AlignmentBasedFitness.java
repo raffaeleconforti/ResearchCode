@@ -1,5 +1,6 @@
 package com.raffaeleconforti.measurements.impl;
 
+import com.raffaeleconforti.measurements.Measure;
 import com.raffaeleconforti.measurements.MeasurementAlgorithm;
 import com.raffaeleconforti.wrapper.MiningAlgorithm;
 import com.raffaeleconforti.wrapper.PetrinetWithMarking;
@@ -32,8 +33,11 @@ import java.util.Map;
 public class AlignmentBasedFitness implements MeasurementAlgorithm {
 
     @Override
-    public double computeMeasurement(UIPluginContext pluginContext, XEventClassifier xEventClassifier, PetrinetWithMarking petrinetWithMarking, MiningAlgorithm miningAlgorithm, XLog log) {
-        return getAlignmentValue(computeAlignment(pluginContext, xEventClassifier, petrinetWithMarking, log));
+    public boolean isMultimetrics() { return false; }
+
+    @Override
+    public Measure computeMeasurement(UIPluginContext pluginContext, XEventClassifier xEventClassifier, PetrinetWithMarking petrinetWithMarking, MiningAlgorithm miningAlgorithm, XLog log) {
+        return new Measure(getAlignmentValue(computeAlignment(pluginContext, xEventClassifier, petrinetWithMarking, log)));
     }
 
     @Override

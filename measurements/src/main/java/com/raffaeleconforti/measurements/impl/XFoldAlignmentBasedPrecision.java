@@ -1,5 +1,6 @@
 package com.raffaeleconforti.measurements.impl;
 
+import com.raffaeleconforti.measurements.Measure;
 import com.raffaeleconforti.measurements.MeasurementAlgorithm;
 import com.raffaeleconforti.wrapper.MiningAlgorithm;
 import com.raffaeleconforti.wrapper.PetrinetWithMarking;
@@ -23,8 +24,12 @@ public class XFoldAlignmentBasedPrecision implements MeasurementAlgorithm {
     private Random r = new Random(123456789);
 
     @Override
-    public double computeMeasurement(UIPluginContext pluginContext, XEventClassifier xEventClassifier, PetrinetWithMarking petrinetWithMarking, MiningAlgorithm miningAlgorithm, XLog log) {
-        double fitness = 0.0;
+    public boolean isMultimetrics() { return false; }
+
+    @Override
+    public Measure computeMeasurement(UIPluginContext pluginContext, XEventClassifier xEventClassifier, PetrinetWithMarking petrinetWithMarking, MiningAlgorithm miningAlgorithm, XLog log) {
+        Measure measure = new Measure();
+        double precision = 0.0;
         this.log = log;
         XLog[] logs = createdXFolds();
 
@@ -38,12 +43,15 @@ public class XFoldAlignmentBasedPrecision implements MeasurementAlgorithm {
                 }
             }
 
-            petrinetWithMarking = miningAlgorithm.minePetrinet(pluginContext, logs[i], false);
-
-            Double f = alignmentBasedPrecision.computeMeasurement(pluginContext, xEventClassifier, petrinetWithMarking, miningAlgorithm, log1);
-            fitness += (f != null)?f:0.0;
+            try {
+                petrinetWithMarking = miningAlgorithm.minePetrinet(pluginContext, logs[i], false);
+                Double p = alignmentBasedPrecision.computeMeasurement(pluginContext, xEventClassifier, petrinetWithMarking, miningAlgorithm, log1).getValue();
+                precision += (p != null)?p:0.0;
+            } catch( Exception e ) { return measure; }
         }
-        return fitness / (double) fold;
+
+        measure.setValue(precision / (double) fold);
+        return measure;
     }
 
     @Override

@@ -2,6 +2,7 @@ package com.raffaeleconforti.measurements.impl;
 
 import au.edu.qut.metrics.ComplexityCalculator;
 import com.raffaeleconforti.conversion.petrinet.PetriNetToBPMNConverter;
+import com.raffaeleconforti.measurements.Measure;
 import com.raffaeleconforti.measurements.MeasurementAlgorithm;
 import com.raffaeleconforti.wrapper.MiningAlgorithm;
 import com.raffaeleconforti.wrapper.PetrinetWithMarking;
@@ -16,15 +17,20 @@ import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
 public class SizeComplexity  implements MeasurementAlgorithm {
 
     @Override
-    public double computeMeasurement(UIPluginContext pluginContext, XEventClassifier xEventClassifier, PetrinetWithMarking petrinetWithMarking, MiningAlgorithm miningAlgorithm, XLog log) {
-        if(petrinetWithMarking == null) return Double.NaN;
+    public boolean isMultimetrics() { return false; }
+
+    @Override
+    public Measure computeMeasurement(UIPluginContext pluginContext, XEventClassifier xEventClassifier, PetrinetWithMarking petrinetWithMarking, MiningAlgorithm miningAlgorithm, XLog log) {
+        Measure measure = new Measure();
+
+        if(petrinetWithMarking == null) return measure;
 
         try {
             BPMNDiagram bpmn = PetriNetToBPMNConverter.convert(petrinetWithMarking.getPetrinet(), petrinetWithMarking.getInitialMarking(), petrinetWithMarking.getFinalMarking(), false);
             ComplexityCalculator cc = new ComplexityCalculator(bpmn);
-            String size = cc.computeSize();
-            return Double.valueOf(size);
-        } catch( Exception e ) { return Double.NaN; }
+            measure.addMeasure(getMeasurementName(), cc.computeSize());
+            return measure;
+        } catch( Exception e ) { return measure; }
     }
 
     @Override

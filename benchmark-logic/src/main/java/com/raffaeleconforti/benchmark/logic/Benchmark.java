@@ -3,6 +3,7 @@ package com.raffaeleconforti.benchmark.logic;
 import com.raffaeleconforti.context.FakePluginContext;
 import com.raffaeleconforti.log.util.LogCloner;
 import com.raffaeleconforti.measurements.InterruptingMeasurementAlgorithm;
+import com.raffaeleconforti.measurements.Measure;
 import com.raffaeleconforti.measurements.MeasurementAlgorithm;
 import com.raffaeleconforti.memorylog.XFactoryMemoryImpl;
 import com.raffaeleconforti.wrapper.InterruptingMiningAlgorithm;
@@ -48,7 +49,7 @@ public class Benchmark {
 
     /* this is a multidimensional cube containing all the measures.
     for each log, each mining algorithm and each metric we have a resulting metric value */
-    private HashMap<String, HashMap<String, HashMap<String, Double>>> measures;
+    private HashMap<String, HashMap<String, HashMap<String, String>>> measures;
 
     public Benchmark(boolean defaultLogs, String extLocation, Set<String> packages) {
         this.defaultLogs = defaultLogs;
@@ -122,7 +123,7 @@ public class Benchmark {
                             PetrinetWithMarking petrinetWithMarking = interruptingMiningAlgorithm.minePetrinet(fakePluginContext, log, false);
 
                             long execTime = System.currentTimeMillis() - sTime;
-                            measures.get(logName).get(miningAlgorithmName).put("ExecTime", new Double(execTime));
+                            measures.get(logName).get(miningAlgorithmName).put("ExecTime", Long.toString(execTime));
 
                             for (MeasurementAlgorithm measurementAlgorithm : measurementAlgorithms) {
                                 measurementAlgorithmName = measurementAlgorithm.getMeasurementName();
@@ -131,7 +132,7 @@ public class Benchmark {
                                 double measurement = interruptingMeasurementAlgorithm.computeMeasurement(fakePluginContext, xEventClassifier,
                                         petrinetWithMarking, miningAlgorithm, log);
 
-                                measures.get(logName).get(miningAlgorithmName).put(measurementAlgorithmName, measurement);
+                                measures.get(logName).get(miningAlgorithmName).put(measurementAlgorithmName, Double.toString(measurement));
                                 System.out.println("DEBUG - " + measurementAlgorithmName + " : " + measurement);
                             }
 
@@ -215,14 +216,25 @@ public class Benchmark {
                         System.out.println("DEBUG - measuring on mining algorithm: " + miningAlgorithmName);
 
                         // mining the petrinet
+                        long sTime = System.currentTimeMillis();
                         PetrinetWithMarking petrinetWithMarking = miningAlgorithm.minePetrinet(fakePluginContext, log, false);
+                        long execTime = System.currentTimeMillis() - sTime;
+                        measures.get(logName).get(miningAlgorithmName).put("exec-time", Long.toString(execTime));
 
                         // computing metrics on the output petrinet
                         for( MeasurementAlgorithm measurementAlgorithm : measurementAlgorithms ) {
                                 measurementAlgorithmName = measurementAlgorithm.getMeasurementName();
-                                double measurement = measurementAlgorithm.computeMeasurement(fakePluginContext, xEventClassifier, petrinetWithMarking, miningAlgorithm, log);
-                                measures.get(logName).get(miningAlgorithmName).put(measurementAlgorithmName, measurement);
-                                System.out.println("DEBUG - " + measurementAlgorithmName + " : " + measurement);
+                                Measure measure = measurementAlgorithm.computeMeasurement(fakePluginContext, xEventClassifier, petrinetWithMarking, miningAlgorithm, log);
+
+                                if( measurementAlgorithm.isMultimetrics() ) {
+                                    for(String metric : measure.getMeasures().keySet() ) {
+                                        measures.get(logName).get(miningAlgorithmName).put(metric, measure.getMeasures().get(metric));
+                                        System.out.println("DEBUG - " + metric + " : " + measure.getMeasures().get(metric));
+                                    }
+                                } else {
+                                    measures.get(logName).get(miningAlgorithmName).put(measurementAlgorithmName, Double.toString(measure.getValue()));
+                                    System.out.println("DEBUG - " + measurementAlgorithmName + " : " + measure.getValue());
+                                }
                         }
                     } catch(Exception e) {
                         System.out.println("ERROR - for: " + miningAlgorithmName + " - " + measurementAlgorithmName);
