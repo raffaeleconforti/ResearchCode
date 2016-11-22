@@ -52,7 +52,7 @@
         <module>noisefiltering-event-prom</module>
         <module>measurements</module>
 
-        <!--<module>kernel-estimation</module>-->
+        <!--<module>kernel-sn</module>-->
 
         <module>assembly</module>
         <!--<module>noisefiltering-timestamp-logic</module>-->
@@ -62,6 +62,7 @@
         <!--<module>design-structure-matrix</module>-->
         <module>prom6</module>
         <module>benchmark-logic</module>
+        <module>noisefiltering-label-logic</module>
     </modules>
 
     <properties>
@@ -96,6 +97,7 @@
         <!-- ProM6.5 -->
         <openxes.version>6.5</openxes.version>
         <prom.version>6.5.20161108</prom.version>
+        <flanagan.version>20151114</flanagan.version>
 
         <commons-math3.version>3.6</commons-math3.version>
         <bpmntk-osgi.version>1.0-20161108</bpmntk-osgi.version>
@@ -383,6 +385,11 @@
                 <groupId>io.gatling.uncommons.maths</groupId>
                 <artifactId>uncommons-maths</artifactId>
                 <version>1.2.3</version>
+            </dependency>
+            <dependency>
+                <groupId>ucl.flanagan</groupId>
+                <artifactId>flanagan</artifactId>
+                <version>${flanagan.version}</version>
             </dependency>
 
             <!-- Apromore -->

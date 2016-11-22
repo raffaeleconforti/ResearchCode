@@ -103,7 +103,7 @@
         </dependency>
         <!--<dependency>-->
             <!--<groupId>com.raffaeleconforti</groupId>-->
-            <!--<artifactId>kernel-estimation</artifactId>-->
+            <!--<artifactId>kernel-sn</artifactId>-->
         <!--</dependency>-->
         <!--<dependency>-->
             <!--<groupId>com.raffaeleconforti</groupId>-->

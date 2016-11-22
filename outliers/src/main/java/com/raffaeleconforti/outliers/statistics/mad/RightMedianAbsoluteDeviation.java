@@ -1,4 +1,6 @@
-package com.raffaeleconforti.outliers.statistics.median;
+package com.raffaeleconforti.outliers.statistics.mad;
+
+import com.raffaeleconforti.outliers.statistics.median.Median;
 
 /**
  * Created by Raffaele Conforti (conforti.raffaele@gmail.com) on 14/11/16.
@@ -14,7 +16,7 @@ public class RightMedianAbsoluteDeviation {
                 vals[pos] = Math.abs(values[i] - median);
                 pos++;
             }
-            return Median.evaluate(vals);
+            return 1.4826 * Median.evaluate(vals);
         }catch (ArrayIndexOutOfBoundsException e) {
 
         }

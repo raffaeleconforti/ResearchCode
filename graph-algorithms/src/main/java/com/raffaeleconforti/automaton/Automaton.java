@@ -142,12 +142,7 @@ public class Automaton<T> implements Cloneable{
     }
 
     public void removeEdge(Edge<T> edge) {
-        removeEdge(edge.getSource(), edge.getTarget());
-    }
-
-    public void removeEdge(Node<T> source, Node<T> target) {
-        Edge<T> edge = new Edge<T>(source, target);
-
+//        removeEdge(edge.getSource(), edge.getTarget());
         Double val;
         if((val = edges.get(edge)) == null) {
             return;
@@ -155,22 +150,52 @@ public class Automaton<T> implements Cloneable{
         val--;
         if(val <= 0.0) {
             for(Node<T> n : nodes.keySet()) {
-                if(n.equals(source)) {
+//                if(n.equals(source)) {
+                if(n.equals(edge.getSource())) {
                     break;
                 }
             }
 
             for(Node<T> n : nodes.keySet()) {
-                if(n.equals(target)) {
+//                if(n.equals(target)) {
+                if(n.equals(edge.getTarget())) {
                     break;
                 }
             }
             edges.remove(edge);
+            if(directedGraph != null) directedGraph.removeEdge(edge.getSource(), edge.getTarget());
             return;
         }
         edges.put(edge, val);
-        if(directedGraph != null) directedGraph.removeEdge(source, target);
+//        if(directedGraph != null) directedGraph.removeEdge(source, target);
+        if(directedGraph != null) directedGraph.removeEdge(edge.getSource(), edge.getTarget());
+    }
 
+    public void removeEdge(Node<T> source, Node<T> target) {
+        Edge<T> edge = new Edge<T>(source, target);
+        removeEdge(edge);
+//        Double val;
+//        if((val = edges.get(edge)) == null) {
+//            return;
+//        }
+//        val--;
+//        if(val <= 0.0) {
+//            for(Node<T> n : nodes.keySet()) {
+//                if(n.equals(source)) {
+//                    break;
+//                }
+//            }
+//
+//            for(Node<T> n : nodes.keySet()) {
+//                if(n.equals(target)) {
+//                    break;
+//                }
+//            }
+//            edges.remove(edge);
+//            return;
+//        }
+//        edges.put(edge, val);
+//        if(directedGraph != null) directedGraph.removeEdge(source, target);
     }
 
     public Double removeNodeTotal(Node<T> node) {
@@ -182,7 +207,8 @@ public class Automaton<T> implements Cloneable{
     }
 
     public Double removeEdgeTotal(Node<T> source, Node<T> target) {
-        Edge<T> edge = new Edge<T>(source, target);for(Node<T> n : nodes.keySet()) {
+        Edge<T> edge = new Edge<T>(source, target);
+        for(Node<T> n : nodes.keySet()) {
             if(n.equals(source)) {
                 source = n;
                 break;
@@ -282,10 +308,34 @@ public class Automaton<T> implements Cloneable{
         }
     }
 
+    public DirectedGraph createDirectedGraph(Set<Node<T>> exclusion) {
+        DirectedGraph directedGraph = new DirectedGraph();
+
+        for (Node<T> node : nodes.keySet()) {
+            if(!exclusion.contains(node)) {
+                directedGraph.addNode(node);
+            }
+        }
+
+        for (Edge<T> edge : edges.keySet()) {
+            if(!exclusion.contains(edge.getSource()) && !exclusion.contains(edge.getTarget())) {
+                directedGraph.addEdge(edge.getSource(), edge.getTarget(), 1);
+            }
+        }
+        return directedGraph;
+    }
+
     public boolean reachable(Node<T> source, Node<T> target) {
         if(directedGraph == null) {
             createDirectedGraph();
         }
+
+        Map<Node<T>, Double> paths = Dijkstra.shortestPaths(directedGraph, source);
+        return (paths.get(target) < Double.POSITIVE_INFINITY);
+    }
+
+    public boolean reachable(Node<T> source, Node<T> target, Set<Node<T>> exclusion) {
+        DirectedGraph directedGraph = createDirectedGraph(exclusion);
 
         Map<Node<T>, Double> paths = Dijkstra.shortestPaths(directedGraph, source);
         return (paths.get(target) < Double.POSITIVE_INFINITY);
