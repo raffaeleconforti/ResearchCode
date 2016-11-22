@@ -2,7 +2,6 @@ package com.raffaeleconforti.measurements.impl;
 
 import com.raffaeleconforti.measurements.Measure;
 import com.raffaeleconforti.measurements.MeasurementAlgorithm;
-import com.raffaeleconforti.noisefiltering.event.prom.InfrequentBehaviourFilterPlugin;
 import com.raffaeleconforti.wrapper.MiningAlgorithm;
 import com.raffaeleconforti.wrapper.PetrinetWithMarking;
 import org.deckfour.xes.classification.XEventClassifier;
@@ -15,9 +14,9 @@ import org.processmining.contexts.uitopia.UIPluginContext;
 import java.util.Random;
 
 /**
- * Created by Raffaele Conforti (conforti.raffaele@gmail.com) on 18/10/2016.
+ * Created by Adriano on 23/11/2016.
  */
-public class XFoldAlignmentBasedFitness implements MeasurementAlgorithm {
+public class XFoldAlignmentBasedFMeasure implements MeasurementAlgorithm {
 
     private int fold = 3;
     private XFactory factory = new XFactoryNaiveImpl();
@@ -25,16 +24,19 @@ public class XFoldAlignmentBasedFitness implements MeasurementAlgorithm {
     private Random r = new Random(123456789);
 
     @Override
-    public boolean isMultimetrics() { return false; }
+    public boolean isMultimetrics() { return true; }
 
     @Override
     public Measure computeMeasurement(UIPluginContext pluginContext, XEventClassifier xEventClassifier, PetrinetWithMarking petrinetWithMarking, MiningAlgorithm miningAlgorithm, XLog log) {
         Measure measure = new Measure();
+        double precision = 0.0;
         double fitness = 0.0;
+        double f_measure;
         this.log = log;
         XLog[] logs = createdXFolds();
 
         AlignmentBasedFitness alignmentBasedFitness = new AlignmentBasedFitness();
+        AlignmentBasedPrecision alignmentBasedPrecision = new AlignmentBasedPrecision();
 
         for(int i = 0; i < fold; i++) {
             XLog log1 = factory.createLog(log.getAttributes());
@@ -46,18 +48,29 @@ public class XFoldAlignmentBasedFitness implements MeasurementAlgorithm {
 
             try {
                 petrinetWithMarking = miningAlgorithm.minePetrinet(pluginContext, logs[i], false);
-                Double f = alignmentBasedFitness.computeMeasurement(pluginContext, xEventClassifier, petrinetWithMarking, miningAlgorithm, log1).getValue();
+
+                Double f = (alignmentBasedFitness.computeMeasurement(pluginContext, xEventClassifier, petrinetWithMarking, miningAlgorithm, log1)).getValue();
                 fitness += (f != null)?f:0.0;
+
+                Double p = (alignmentBasedPrecision.computeMeasurement(pluginContext, xEventClassifier, petrinetWithMarking, miningAlgorithm, log1)).getValue();
+                precision += (p != null)?p:0.0;
             } catch( Exception e ) { return measure; }
         }
 
-        measure.setValue(fitness / (double) fold);
+        fitness = fitness / (double) fold;
+        precision = precision / (double) fold;
+        f_measure = 2*(fitness*precision)/(fitness+precision);
+
+        measure.addMeasure(getMeasurementName(), f_measure);
+        measure.addMeasure(alignmentBasedFitness.getMeasurementName(), fitness);
+        measure.addMeasure(alignmentBasedPrecision.getMeasurementName(), precision);
+
         return measure;
     }
 
     @Override
     public String getMeasurementName() {
-        return fold+"-Fold Alignment-Based Fitness";
+        return fold+"-Fold Alignment-Based f-Measure";
     }
 
     private XLog[] createdXFolds() {

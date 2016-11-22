@@ -3,11 +3,14 @@ package com.raffaeleconforti.benchmark;
 import java.io.File;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.Date;
-import java.util.Set;
+import java.util.*;
 
 import com.raffaeleconforti.benchmark.logic.Benchmark;
+import com.raffaeleconforti.benchmark.logic.MeasurementAlgorithmDiscoverer;
+import com.raffaeleconforti.benchmark.logic.MiningAlgorithmDiscoverer;
+import com.raffaeleconforti.measurements.MeasurementAlgorithm;
 import com.raffaeleconforti.noisefiltering.event.InfrequentBehaviourFilter;
+import com.raffaeleconforti.wrapper.MiningAlgorithm;
 import org.apache.commons.io.FileUtils;
 import org.apache.poi.util.IOUtils;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
@@ -85,7 +88,10 @@ public class BenchmarkCommandline {
         boolean defaultLogs = true;
         String extLoc = null;
         Set<String> packages = new UnifiedSet<>();
+        Set<Integer> selectedMiners = null;
+        Set<Integer> selectedMetrics = null;
         Benchmark benchmark;
+        boolean timeout = false;
 
         long miningTimeout = 3600000;
         long measurementTimeout = 3600000;
@@ -97,33 +103,68 @@ public class BenchmarkCommandline {
             return;
         }
 
+        if( (args.length != 0) && (args[icmd].equalsIgnoreCase("-algorithms"))) {
+            icmd++;
+
+            if( (icmd < args.length) && args[icmd].equalsIgnoreCase("-p") ) {
+                icmd++;
+                do{
+                    packages.add(args[icmd]);
+                    icmd++;
+                }while( icmd < args.length );
+            }
+
+            showMiningAlgorithms(packages);
+            return;
+        }
+
         if( (args.length != 0) && args[icmd].equalsIgnoreCase("-ext") ) {
             defaultLogs = false;
             icmd++;
-        }
-
-        if( (icmd < args.length) && !args[icmd].equalsIgnoreCase("-p") && !args[icmd].equalsIgnoreCase("-timeout")) {
             extLoc = args[icmd];
             icmd++;
-        }
 
-        if( (icmd < args.length) && args[icmd].equalsIgnoreCase("-p") ) {
-            do {
+            if( (icmd < args.length) && args[icmd].equalsIgnoreCase("-timeout") ) {
+                timeout = true;
                 icmd++;
-                packages.add(args[icmd]);
-            } while (icmd < args.length);
-        }
+                miningTimeout = Long.valueOf(args[icmd]);
+                icmd++;
+                measurementTimeout = Long.valueOf(args[icmd]);
+                icmd++;
+            }
 
-        if( (icmd < args.length) && args[icmd].equalsIgnoreCase("-timeout") ) {
-            icmd++;
-            miningTimeout = Long.valueOf(args[icmd]);
-            icmd++;
-            measurementTimeout = Long.valueOf(args[icmd]);
-            icmd++;
+            if( (icmd < args.length) && args[icmd].equalsIgnoreCase("-miners") ) {
+                selectedMiners = new HashSet<>();
+                icmd++;
+                do{
+                    try { selectedMiners.add(Integer.valueOf(args[icmd])); }
+                    catch( NumberFormatException nfe ) { break; }
+                    icmd++;
+                }while( icmd < args.length );
+            }
+
+            if( (icmd < args.length) && args[icmd].equalsIgnoreCase("-metrics") ) {
+                selectedMetrics = new HashSet<>();
+                icmd++;
+                do{
+                    try { selectedMetrics.add(Integer.valueOf(args[icmd])); }
+                    catch( NumberFormatException nfe ) { break; }
+                    icmd++;
+                }while( icmd < args.length );
+            }
+
+            if( (icmd < args.length) && args[icmd].equalsIgnoreCase("-p") ) {
+                icmd++;
+                do{
+                    packages.add(args[icmd]);
+                    icmd++;
+                }while( icmd < args.length );
+            }
         }
 
         benchmark = new Benchmark(defaultLogs, extLoc, packages);
-        benchmark.performBenchmark(miningTimeout, measurementTimeout);
+        if(timeout) benchmark.performBenchmark(miningTimeout, measurementTimeout);
+        else benchmark.performBenchmark(new ArrayList<Integer>(selectedMiners), new ArrayList<Integer>(selectedMetrics));
 
     }
 
@@ -136,5 +177,36 @@ public class BenchmarkCommandline {
         System.out.println("PARAM3 (optional) - list of packages containing mining algorithms");
         System.out.println("\t- external mining algorithms not yet embedded in this benchmark can be loaded specifying their package as a string");
     }
+
+    private static void showMiningAlgorithms(Set<String> packages) {
+        List<MiningAlgorithm> miningAlgorithms = MiningAlgorithmDiscoverer.discoverAlgorithms(packages);
+        List<MeasurementAlgorithm> measurementAlgorithms = MeasurementAlgorithmDiscoverer.discoverAlgorithms(packages);
+        int index;
+
+        Collections.sort(miningAlgorithms, new Comparator<MiningAlgorithm>() {
+            @Override
+            public int compare(MiningAlgorithm o1, MiningAlgorithm o2) {
+                return o2.getAlgorithmName().compareTo(o1.getAlgorithmName());
+            }
+        });
+
+        Collections.sort(measurementAlgorithms, new Comparator<MeasurementAlgorithm>() {
+            @Override
+            public int compare(MeasurementAlgorithm o1, MeasurementAlgorithm o2) {
+                return o2.getMeasurementName().compareTo(o1.getMeasurementName());
+            }
+        });
+
+        index = 0;
+        System.out.println("Mining algorithms available: ");
+        for(MiningAlgorithm ma : miningAlgorithms) System.out.println(index++ + " - " + ma.getAlgorithmName());
+        System.out.println();
+
+        index = 0;
+        System.out.println("Measurement algorithms available: ");
+        for(MeasurementAlgorithm ma : measurementAlgorithms) System.out.println(index++ + " - " + ma.getMeasurementName());
+
+    }
+
 
 }

@@ -33,7 +33,7 @@ public class InterruptingMeasurementAlgorithm {
                 }));
 
                 try {
-                    result[0] = measurementAlgorithm.computeMeasurement(pluginContext, xEventClassifier, petrinetWithMarking, miningAlgorithm, log);
+                    result[0] = measurementAlgorithm.computeMeasurement(pluginContext, xEventClassifier, petrinetWithMarking, miningAlgorithm, log).getValue();
                 } catch (Exception e) {
 
                 }

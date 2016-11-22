@@ -1,5 +1,6 @@
 package com.raffaeleconforti.measurements.impl;
 
+import com.raffaeleconforti.measurements.Measure;
 import com.raffaeleconforti.measurements.MeasurementAlgorithm;
 import com.raffaeleconforti.wrapper.MiningAlgorithm;
 import com.raffaeleconforti.wrapper.PetrinetWithMarking;
@@ -21,8 +22,13 @@ public class AlignmentBasedPrecision implements MeasurementAlgorithm {
 
 
     @Override
-    public double computeMeasurement(UIPluginContext pluginContext, XEventClassifier xEventClassifier, PetrinetWithMarking petrinetWithMarking, MiningAlgorithm miningAlgorithm, XLog log) {
-        if(petrinetWithMarking == null) return Double.NaN;
+    public boolean isMultimetrics() { return false; }
+
+    @Override
+    public Measure computeMeasurement(UIPluginContext pluginContext, XEventClassifier xEventClassifier, PetrinetWithMarking petrinetWithMarking, MiningAlgorithm miningAlgorithm, XLog log) {
+        Measure measure = new Measure();
+
+        if(petrinetWithMarking == null) return measure;
 
         System.setOut(new PrintStream(new OutputStream() {
             @Override
@@ -42,14 +48,15 @@ public class AlignmentBasedPrecision implements MeasurementAlgorithm {
             MultiETCResult multiETCResult = (MultiETCResult) res[0];
 
             System.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out)));
-            return (Double) (multiETCResult).getAttribute(MultiETCResult.PRECISION);
+            measure.setValue((Double) (multiETCResult).getAttribute(MultiETCResult.PRECISION));
+            return measure;
 
         } catch (ConnectionCannotBeObtained connectionCannotBeObtained) {
             connectionCannotBeObtained.printStackTrace();
         }
 
         System.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out)));
-        return Double.NaN;
+        return measure;
     }
 
     @Override
