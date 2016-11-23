@@ -2,14 +2,13 @@ package com.raffaeleconforti.outliers.statistics.mad;
 
 import com.raffaeleconforti.outliers.statistics.StatisticsMeasure;
 import com.raffaeleconforti.outliers.statistics.median.Median;
-import org.eclipse.collections.impl.list.mutable.primitive.DoubleArrayList;
 
 import java.util.Arrays;
 
 /**
  * Created by Raffaele Conforti (conforti.raffaele@gmail.com) on 14/11/16.
  */
-public class RightMedianAbsoluteDeviation implements StatisticsMeasure {
+public class MedianAbsoluteDeviation implements StatisticsMeasure {
 
     private Median median = new Median();
 
@@ -19,17 +18,14 @@ public class RightMedianAbsoluteDeviation implements StatisticsMeasure {
             values = Arrays.copyOf(values, values.length);
             Arrays.sort(values);
             double med = median.evaluate(null, values);
-            DoubleArrayList vals = new DoubleArrayList();
-            for(int i = 0; i < values.length; i++) {
-                if(values[i] >= val) {
-                    vals.add(Math.abs(values[i] - med));
-                }
+            double[] vals = new double[values.length];
+            for(int i = 0; i < vals.length; i++) {
+                vals[i] = Math.abs(values[i] - med);
             }
-            return 1.4826 * median.evaluate(null, vals.toArray());
+            return 1.4826 * median.evaluate(null, vals);
         }catch (ArrayIndexOutOfBoundsException e) {
 
         }
         return 0;
     }
-
 }

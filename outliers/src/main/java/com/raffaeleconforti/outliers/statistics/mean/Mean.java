@@ -1,11 +1,14 @@
 package com.raffaeleconforti.outliers.statistics.mean;
 
+import com.raffaeleconforti.outliers.statistics.StatisticsMeasure;
+
 /**
  * Created by Raffaele Conforti (conforti.raffaele@gmail.com) on 14/11/16.
  */
-public class Mean {
+public class Mean implements StatisticsMeasure {
 
-    public static double evaluate(double... values) {
+    @Override
+    public double evaluate(Double val, double... values) {
         try {
             double mean = 0;
             for(double v : values) {

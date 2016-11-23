@@ -1,23 +1,32 @@
 package com.raffaeleconforti.outliers.statistics.sn;
 
+import com.raffaeleconforti.outliers.statistics.StatisticsMeasure;
 import com.raffaeleconforti.outliers.statistics.median.Median;
+
+import java.util.Arrays;
 
 /**
  * Created by Raffaele Conforti (conforti.raffaele@gmail.com) on 22/11/16.
  */
-public class Sn {
+public class Sn implements StatisticsMeasure {
 
-    public static double evaluate(double... values) {
+    private Median median = new Median();
+
+    @Override
+    public double evaluate(Double val, double... values) {
         try {
+            values = Arrays.copyOf(values, values.length);
+            Arrays.sort(values);
+
             double[] v = new double[values.length];
             for(int i = 0; i < values.length; i++) {
                 double[] v1 = new double[values.length];
                 for(int j = 0; j < values.length; j++) {
                     v1[i] = Math.abs(values[i] - values[j]);
                 }
-                v[i] = Median.evaluate(v1);
+                v[i] = median.evaluate(null, v1);
             }
-            return 1.1925 * Median.evaluate(v);
+            return 1.1925 * median.evaluate(null, v);
         }catch (ArrayIndexOutOfBoundsException e) {
 
         }

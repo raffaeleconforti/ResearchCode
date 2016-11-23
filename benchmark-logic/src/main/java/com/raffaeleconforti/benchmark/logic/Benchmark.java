@@ -5,6 +5,8 @@ import com.raffaeleconforti.log.util.LogCloner;
 import com.raffaeleconforti.measurements.InterruptingMeasurementAlgorithm;
 import com.raffaeleconforti.measurements.Measure;
 import com.raffaeleconforti.measurements.MeasurementAlgorithm;
+import com.raffaeleconforti.measurements.impl.AlignmentBasedFitness;
+import com.raffaeleconforti.measurements.impl.AlignmentBasedPrecision;
 import com.raffaeleconforti.memorylog.XFactoryMemoryImpl;
 import com.raffaeleconforti.wrapper.InterruptingMiningAlgorithm;
 import com.raffaeleconforti.wrapper.MiningAlgorithm;
@@ -55,7 +57,7 @@ public class Benchmark {
         this.defaultLogs = defaultLogs;
         this.extLocation = extLocation;
         this.packages = packages;
-        loadLogs2();
+//        loadLogs2();
     }
 
 
@@ -63,6 +65,7 @@ public class Benchmark {
         System.out.println("DEBUG - running benchmark ...");
         System.out.println("DEBUG - mining timeout: " + (double) miningTimeout / 60000 + " minutes");
         System.out.println("DEBUG - measurement timeout: " + (double) miningTimeout/60000 + " minutes");
+        loadLogs();
         performBenchmarkFromLogInput(packages, logsInput, miningTimeout, measurementTimeout);
     }
 
