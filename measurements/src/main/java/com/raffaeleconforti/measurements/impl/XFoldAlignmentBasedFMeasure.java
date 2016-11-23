@@ -35,8 +35,7 @@ public class XFoldAlignmentBasedFMeasure implements MeasurementAlgorithm {
         this.log = log;
         XLog[] logs = createdXFolds();
 
-        AlignmentBasedFitness alignmentBasedFitness = new AlignmentBasedFitness();
-        AlignmentBasedPrecision alignmentBasedPrecision = new AlignmentBasedPrecision();
+        AlignmentBasedFMeasure alignmentBasedFMeasure = new AlignmentBasedFMeasure();
 
         for(int i = 0; i < fold; i++) {
             XLog log1 = factory.createLog(log.getAttributes());
@@ -49,10 +48,11 @@ public class XFoldAlignmentBasedFMeasure implements MeasurementAlgorithm {
             try {
                 petrinetWithMarking = miningAlgorithm.minePetrinet(pluginContext, logs[i], false);
 
-                Double f = (alignmentBasedFitness.computeMeasurement(pluginContext, xEventClassifier, petrinetWithMarking, miningAlgorithm, log1)).getValue();
+                Measure measures = alignmentBasedFMeasure.computeMeasurement(pluginContext, xEventClassifier, petrinetWithMarking, miningAlgorithm, log1);
+                Double f = Double.parseDouble(measures.getMeasures().get("Alignment-Based Fitness"));
                 fitness += (f != null)?f:0.0;
 
-                Double p = (alignmentBasedPrecision.computeMeasurement(pluginContext, xEventClassifier, petrinetWithMarking, miningAlgorithm, log1)).getValue();
+                Double p = Double.parseDouble(measures.getMeasures().get("Alignment-Based ETC Precision"));
                 precision += (p != null)?p:0.0;
             } catch( Exception e ) { return measure; }
         }
@@ -62,8 +62,10 @@ public class XFoldAlignmentBasedFMeasure implements MeasurementAlgorithm {
         f_measure = 2*(fitness*precision)/(fitness+precision);
 
         measure.addMeasure(getMeasurementName(), f_measure);
-        measure.addMeasure(alignmentBasedFitness.getMeasurementName(), fitness);
-        measure.addMeasure(alignmentBasedPrecision.getMeasurementName(), precision);
+        measure.addMeasure("Alignment-Based Fitness", fitness);
+        measure.addMeasure("Alignment-Based ETC Precision", precision);
+
+        measure.setValue(f_measure);
 
         return measure;
     }

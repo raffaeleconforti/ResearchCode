@@ -51,6 +51,15 @@ public class Measure {
     }
 
     public double getValue() { return this.value; }
+
+    public String toString() {
+        String s = "";
+        for(String k : measures.keySet()) {
+            s += k + " : " + measures.get(k) + "\n";
+        }
+        return s;
+    }
+
     public Map<String, String> getMeasures() { return measures; }
 
 }
