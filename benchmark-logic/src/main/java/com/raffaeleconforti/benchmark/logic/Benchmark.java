@@ -1,22 +1,11 @@
 package com.raffaeleconforti.benchmark.logic;
 
 import com.raffaeleconforti.context.FakePluginContext;
-import com.raffaeleconforti.log.util.LogCloner;
-import com.raffaeleconforti.measurements.InterruptingMeasurementAlgorithm;
 import com.raffaeleconforti.measurements.Measure;
 import com.raffaeleconforti.measurements.MeasurementAlgorithm;
-import com.raffaeleconforti.measurements.impl.AlignmentBasedFitness;
-import com.raffaeleconforti.measurements.impl.AlignmentBasedPrecision;
 import com.raffaeleconforti.memorylog.XFactoryMemoryImpl;
-import com.raffaeleconforti.wrapper.InterruptingMiningAlgorithm;
 import com.raffaeleconforti.wrapper.MiningAlgorithm;
 import com.raffaeleconforti.wrapper.PetrinetWithMarking;
-import com.raffaeleconforti.wrapper.impl.EvolutionaryTreeMinerWrapper;
-import com.raffaeleconforti.wrapper.impl.ILPAlgorithmWrapper;
-import com.raffaeleconforti.wrapper.impl.alpha.AlphaAlgorithmWrapper;
-import com.raffaeleconforti.wrapper.impl.BPMNMinerAlgorithmWrapper;
-import com.raffaeleconforti.wrapper.impl.heuristics.HeuristicsDollarAlgorithmWrapper;
-import com.raffaeleconforti.wrapper.impl.inductive.InductiveMinerIMWrapper;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -44,8 +33,7 @@ import static com.raffaeleconforti.log.util.LogImporter.importFromInputStream;
 public class Benchmark {
     private boolean defaultLogs;
     private String extLocation;
-    private Map<String, XLog> logs;
-    private Map<String, Object> logsInput;
+    private Map<String, Object> inputLogs;
 
     private Set<String> packages = new UnifiedSet<>();
 
@@ -106,12 +94,12 @@ public class Benchmark {
         System.out.println("DEBUG - total metrics: " + measurementAlgorithms.size());
 
         measures = new HashMap<>();
-        System.out.println("DEBUG - total logs: " + logs.keySet().size());
+        System.out.println("DEBUG - total logs: " + inputLogs.keySet().size());
 
         /* populating measurements results */
         XLog log;
-        for( String logName : logsInput.keySet() ) {
-            log = loadLog(logsInput.get(logName));
+        for( String logName : inputLogs.keySet() ) {
+            log = loadLog(inputLogs.get(logName));
             measures.put(logName, new HashMap<>());
             System.out.println("DEBUG - measuring on log: " + logName);
 
@@ -157,7 +145,7 @@ public class Benchmark {
     }
 
     private void loadLogs() {
-        logsInput = new UnifiedMap<>();
+        inputLogs = new UnifiedMap<>();
         String logName;
         InputStream in;
 
@@ -178,7 +166,7 @@ public class Benchmark {
                             System.out.println("DEBUG - name: " + logName);
                             in = classLoader.getResourceAsStream(logName);
                             System.out.println("DEBUG - stream size: " + in.available());
-                            logsInput.put(logName.replaceAll(".*/", ""), in);
+                            inputLogs.put(logName.replaceAll(".*/", ""), in);
                         }
                     }
                     jar.close();
@@ -195,7 +183,7 @@ public class Benchmark {
                         if( file.isFile() ) {
                             logName = file.getPath();
                             System.out.println("DEBUG - name: " + logName);
-                            logsInput.put(file.getName(), logName);
+                            inputLogs.put(file.getName(), logName);
                         }
                 } else {
                     System.out.println("ERROR - external logs loading failed, input path is not a folder.");
