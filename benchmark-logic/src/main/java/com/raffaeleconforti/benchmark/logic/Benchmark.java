@@ -57,101 +57,8 @@ public class Benchmark {
         this.defaultLogs = defaultLogs;
         this.extLocation = extLocation;
         this.packages = packages;
-//        loadLogs2();
-    }
-
-
-    public void performBenchmark(long miningTimeout, long measurementTimeout) {
-        System.out.println("DEBUG - running benchmark ...");
-        System.out.println("DEBUG - mining timeout: " + (double) miningTimeout / 60000 + " minutes");
-        System.out.println("DEBUG - measurement timeout: " + (double) miningTimeout/60000 + " minutes");
         loadLogs();
-        performBenchmarkFromLogInput(packages, logsInput, miningTimeout, measurementTimeout);
     }
-
-    private void performBenchmarkFromLogInput(Set<String> packages, Map<String, Object> logsInput, long miningTimeout, long measurementTimeout) {
-        XEventClassifier xEventClassifier = new XEventAndClassifier(new XEventNameClassifier());
-        FakePluginContext fakePluginContext = new FakePluginContext();
-
-        /* retrieving all the mining algorithms */
-        List<MiningAlgorithm> miningAlgorithms = MiningAlgorithmDiscoverer.discoverAlgorithms(packages);
-        Collections.sort(miningAlgorithms, new Comparator<MiningAlgorithm>() {
-            @Override
-            public int compare(MiningAlgorithm o1, MiningAlgorithm o2) {
-                return o2.getAlgorithmName().compareTo(o1.getAlgorithmName());
-            }
-        });
-        System.out.println("DEBUG - total mining algorithms: " + (miningAlgorithms.size() - 3));
-        for (MiningAlgorithm miningAlgorithm : miningAlgorithms) System.out.println("DEBUG - mining algorithm: " + miningAlgorithm.getAlgorithmName());
-
-        /* retrieving all the measuring algorithms */
-        List<MeasurementAlgorithm> measurementAlgorithms = MeasurementAlgorithmDiscoverer.discoverAlgorithms(packages);
-        Collections.sort(measurementAlgorithms, new Comparator<MeasurementAlgorithm>() {
-            @Override
-            public int compare(MeasurementAlgorithm o1, MeasurementAlgorithm o2) {
-                return o2.getMeasurementName().compareTo(o1.getMeasurementName());
-            }
-        });
-        System.out.println("DEBUG - total measurements: " + measurementAlgorithms.size());
-        for (MeasurementAlgorithm measurementAlgorithm : measurementAlgorithms) System.out.println("DEBUG - measurement: " + measurementAlgorithm.getMeasurementName());
-
-        measures = new HashMap<>();
-
-        System.out.println("DEBUG - total logs: " + logsInput.keySet().size());
-
-
-        /* populating measurements results */
-        XLog log;
-        LogCloner logCloner = new LogCloner();
-        for( String logName : logsInput.keySet() ) {
-//            if(logName.equals("ArtificialLess.xes.gz")) {
-                XLog rawlog = loadLog(logsInput.get(logName));
-                measures.put(logName, new HashMap<>());
-                System.out.println("DEBUG - measuring on log: " + logName);
-
-                for (MiningAlgorithm miningAlgorithm : miningAlgorithms) {
-                    log = logCloner.cloneLog(rawlog);
-                    String miningAlgorithmName = miningAlgorithm.getAlgorithmName();
-                    if(!(miningAlgorithm instanceof HeuristicsDollarAlgorithmWrapper)
-                            && !(miningAlgorithm instanceof BPMNMinerAlgorithmWrapper)
-                            && !(miningAlgorithm instanceof AlphaAlgorithmWrapper)) {
-                        String measurementAlgorithmName = "NULL";
-                        measures.get(logName).put(miningAlgorithmName, new HashMap<>());
-
-                        try {
-                            System.out.println("DEBUG - measuring on mining algorithm: " + miningAlgorithmName);
-                            long sTime = System.currentTimeMillis();
-
-                            InterruptingMiningAlgorithm interruptingMiningAlgorithm = new InterruptingMiningAlgorithm(miningAlgorithm, miningTimeout);
-                            PetrinetWithMarking petrinetWithMarking = interruptingMiningAlgorithm.minePetrinet(fakePluginContext, log, false);
-
-                            long execTime = System.currentTimeMillis() - sTime;
-                            measures.get(logName).get(miningAlgorithmName).put("ExecTime", Long.toString(execTime));
-
-                            for (MeasurementAlgorithm measurementAlgorithm : measurementAlgorithms) {
-                                measurementAlgorithmName = measurementAlgorithm.getMeasurementName();
-
-                                InterruptingMeasurementAlgorithm interruptingMeasurementAlgorithm = new InterruptingMeasurementAlgorithm(measurementAlgorithm, measurementTimeout);
-                                double measurement = interruptingMeasurementAlgorithm.computeMeasurement(fakePluginContext, xEventClassifier,
-                                        petrinetWithMarking, miningAlgorithm, log);
-
-                                measures.get(logName).get(miningAlgorithmName).put(measurementAlgorithmName, Double.toString(measurement));
-                                System.out.println("DEBUG - " + measurementAlgorithmName + " : " + measurement);
-                            }
-
-                        } catch (Exception e) {
-                            System.out.println("ERROR - [mining algorithm : measurement algorithm] > [" + miningAlgorithmName + " : " + measurementAlgorithmName + "]");
-                            e.printStackTrace();
-                            measures.get(logName).remove(miningAlgorithmName);
-                        }
-                    }
-                }
-//            }
-        }
-
-        publishResults();
-    }
-
 
     public void performBenchmark(ArrayList<Integer> selectedMiners, ArrayList<Integer> selectedMetrics) {
         XEventClassifier xEventClassifier = new XEventAndClassifier(new XEventNameClassifier());
@@ -186,7 +93,6 @@ public class Benchmark {
             }
         });
 
-
         // pruning the list of metrics
         if( selectedMetrics != null && !selectedMetrics.isEmpty() ) {
             Collections.sort(selectedMetrics);
@@ -204,47 +110,47 @@ public class Benchmark {
 
         /* populating measurements results */
         XLog log;
-        for( String logName : logs.keySet() ) {
-                log = logs.get(logName);
-                measures.put(logName, new HashMap<>());
-                System.out.println("DEBUG - measuring on log: " + logName);
+        for( String logName : logsInput.keySet() ) {
+            log = loadLog(logsInput.get(logName));
+            measures.put(logName, new HashMap<>());
+            System.out.println("DEBUG - measuring on log: " + logName);
 
-                for( MiningAlgorithm miningAlgorithm : miningAlgorithms ) {
-                    // adding an entry on the measures table for this miner
-                    String miningAlgorithmName = miningAlgorithm.getAlgorithmName();
-                    String measurementAlgorithmName = "NULL";
-                    measures.get(logName).put(miningAlgorithmName, new HashMap<>());
+            for( MiningAlgorithm miningAlgorithm : miningAlgorithms ) {
+                // adding an entry on the measures table for this miner
+                String miningAlgorithmName = miningAlgorithm.getAlgorithmName();
+                String measurementAlgorithmName = "NULL";
+                measures.get(logName).put(miningAlgorithmName, new HashMap<>());
 
-                    try {
-                        System.out.println("DEBUG - measuring on mining algorithm: " + miningAlgorithmName);
+                try {
+                    System.out.println("DEBUG - measuring on mining algorithm: " + miningAlgorithmName);
 
-                        // mining the petrinet
-                        long sTime = System.currentTimeMillis();
-                        PetrinetWithMarking petrinetWithMarking = miningAlgorithm.minePetrinet(fakePluginContext, log, false);
-                        long execTime = System.currentTimeMillis() - sTime;
-                        measures.get(logName).get(miningAlgorithmName).put("exec-time", Long.toString(execTime));
+                    // mining the petrinet
+                    long sTime = System.currentTimeMillis();
+                    PetrinetWithMarking petrinetWithMarking = miningAlgorithm.minePetrinet(fakePluginContext, log, false);
+                    long execTime = System.currentTimeMillis() - sTime;
+                    measures.get(logName).get(miningAlgorithmName).put("exec-time", Long.toString(execTime));
 
-                        // computing metrics on the output petrinet
-                        for( MeasurementAlgorithm measurementAlgorithm : measurementAlgorithms ) {
-                                measurementAlgorithmName = measurementAlgorithm.getMeasurementName();
-                                Measure measure = measurementAlgorithm.computeMeasurement(fakePluginContext, xEventClassifier, petrinetWithMarking, miningAlgorithm, log);
+                    // computing metrics on the output petrinet
+                    for( MeasurementAlgorithm measurementAlgorithm : measurementAlgorithms ) {
+                            measurementAlgorithmName = measurementAlgorithm.getMeasurementName();
+                            Measure measure = measurementAlgorithm.computeMeasurement(fakePluginContext, xEventClassifier, petrinetWithMarking, miningAlgorithm, log);
 
-                                if( measurementAlgorithm.isMultimetrics() ) {
-                                    for(String metric : measure.getMeasures().keySet() ) {
-                                        measures.get(logName).get(miningAlgorithmName).put(metric, measure.getMeasures().get(metric));
-                                        System.out.println("DEBUG - " + metric + " : " + measure.getMeasures().get(metric));
-                                    }
-                                } else {
-                                    measures.get(logName).get(miningAlgorithmName).put(measurementAlgorithmName, Double.toString(measure.getValue()));
-                                    System.out.println("DEBUG - " + measurementAlgorithmName + " : " + measure.getValue());
+                            if( measurementAlgorithm.isMultimetrics() ) {
+                                for(String metric : measure.getMetrics() ) {
+                                    measures.get(logName).get(miningAlgorithmName).put(metric, measure.getMetricValue(metric));
+                                    System.out.println("DEBUG - " + metric + " : " + measure.getMetricValue(metric));
                                 }
-                        }
-                    } catch(Exception e) {
-                        System.out.println("ERROR - for: " + miningAlgorithmName + " - " + measurementAlgorithmName);
-                        e.printStackTrace();
-                        measures.get(logName).remove(miningAlgorithmName);
+                            } else {
+                                measures.get(logName).get(miningAlgorithmName).put(measurementAlgorithmName, Double.toString(measure.getValue()));
+                                System.out.println("DEBUG - " + measurementAlgorithmName + " : " + measure.getValue());
+                            }
                     }
+                } catch(Exception e) {
+                    System.out.println("ERROR - for: " + miningAlgorithmName + " - " + measurementAlgorithmName);
+                    e.printStackTrace();
+                    measures.get(logName).remove(miningAlgorithmName);
                 }
+            }
         }
 
         publishResults();
@@ -312,62 +218,6 @@ public class Benchmark {
             e.printStackTrace();
         }
         return null;
-    }
-
-    private void loadLogs2() {
-        logs = new HashMap<>();
-        String logName;
-        InputStream in;
-        XLog log;
-
-        try {
-            /* Loading first the logs inside the resources folder (default logs) */
-            if( defaultLogs ) {
-                System.out.println("DEBUG - importing internal logs.");
-                ClassLoader classLoader = getClass().getClassLoader();
-                String path = "logs/";
-                File jarFile = new File(getClass().getProtectionDomain().getCodeSource().getLocation().getPath());
-
-                if( jarFile.isFile() ) {
-                    JarFile jar = new JarFile(jarFile);
-                    Enumeration<JarEntry> entries = jar.entries();
-                    while( entries.hasMoreElements() ) {
-                        logName = entries.nextElement().getName();
-                        if( logName.startsWith(path) && !logName.equalsIgnoreCase(path) ) {
-                            System.out.println("DEBUG - name: " + logName);
-                            in = classLoader.getResourceAsStream(logName);
-                            System.out.println("DEBUG - stream size: " + in.available());
-                            log = importFromInputStream(in, new XesXmlGZIPParser(new XFactoryMemoryImpl()));
-                            System.out.println("DEBUG - log size: " + log.size());
-                            logs.put(logName.replaceAll(".*/", ""), log);
-                        }
-                    }
-                    jar.close();
-                }
-            }
-
-            /* checking if the user wants to upload also external logs */
-            if( extLocation != null ) {
-                System.out.println("DEBUG - importing external logs.");
-                File folder = new File(extLocation);
-                File[] listOfFiles = folder.listFiles();
-                if( folder.isDirectory() ) {
-                    for( File file : listOfFiles )
-                        if( file.isFile() ) {
-                            logName = file.getPath();
-                            System.out.println("DEBUG - name: " + logName);
-                            log = importFromFile(new XFactoryMemoryImpl(), logName);
-                            System.out.println("DEBUG - log size: " + log.size());
-                            logs.put(file.getName(), log);
-                        }
-                } else {
-                    System.out.println("ERROR - external logs loading failed, input path is not a folder.");
-                }
-            }
-        } catch( Exception e ) {
-            System.out.println("ERROR - something went wrong reading the resource folder: " + e.getMessage());
-            e.printStackTrace();
-        }
     }
 
     private void publishResults() {

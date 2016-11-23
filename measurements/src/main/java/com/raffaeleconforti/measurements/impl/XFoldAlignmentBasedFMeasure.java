@@ -49,10 +49,10 @@ public class XFoldAlignmentBasedFMeasure implements MeasurementAlgorithm {
                 petrinetWithMarking = miningAlgorithm.minePetrinet(pluginContext, logs[i], false);
 
                 Measure measures = alignmentBasedFMeasure.computeMeasurement(pluginContext, xEventClassifier, petrinetWithMarking, miningAlgorithm, log1);
-                Double f = Double.parseDouble(measures.getMeasures().get("Alignment-Based Fitness"));
+                Double f = Double.parseDouble(measures.getMetricValue("Alignment-Based Fitness"));
                 fitness += (f != null)?f:0.0;
 
-                Double p = Double.parseDouble(measures.getMeasures().get("Alignment-Based ETC Precision"));
+                Double p = Double.parseDouble(measures.getMetricValue("Alignment-Based ETC Precision"));
                 precision += (p != null)?p:0.0;
             } catch( Exception e ) { return measure; }
         }

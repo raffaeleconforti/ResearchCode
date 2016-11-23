@@ -3,6 +3,7 @@ package com.raffaeleconforti.measurements;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by Adriano on 22/11/2016.
@@ -60,7 +61,11 @@ public class Measure {
         return s;
     }
 
-    public Map<String, String> getMeasures() { return measures; }
+//    public Map<String, String> getMeasures() { return measures; }
+
+    public Set<String> getMetrics() { return measures.keySet(); }
+
+    public String getMetricValue(String metric) { return measures.get(metric); }
 
 }
 

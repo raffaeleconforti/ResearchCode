@@ -163,8 +163,9 @@ public class BenchmarkCommandline {
         }
 
         benchmark = new Benchmark(defaultLogs, extLoc, packages);
-        if(timeout) benchmark.performBenchmark(miningTimeout, measurementTimeout);
-        else benchmark.performBenchmark(new ArrayList<Integer>(selectedMiners), new ArrayList<Integer>(selectedMetrics));
+//        if(timeout) benchmark.performBenchmark(miningTimeout, measurementTimeout);
+//        else
+            benchmark.performBenchmark(new ArrayList<Integer>(selectedMiners), new ArrayList<Integer>(selectedMetrics));
 
     }
 
