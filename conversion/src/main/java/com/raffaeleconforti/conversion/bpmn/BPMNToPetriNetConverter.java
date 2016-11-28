@@ -1,10 +1,12 @@
 package com.raffaeleconforti.conversion.bpmn;
 
+import com.raffaeleconforti.context.FakePluginContext;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 import org.processmining.models.graphbased.AttributeMap;
 import org.processmining.models.graphbased.directed.DirectedGraph;
 import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
+import org.processmining.models.graphbased.directed.bpmn.BPMNDiagramFactory;
 import org.processmining.models.graphbased.directed.bpmn.BPMNDiagramImpl;
 import org.processmining.models.graphbased.directed.bpmn.BPMNNode;
 import org.processmining.models.graphbased.directed.bpmn.elements.*;
@@ -15,7 +17,13 @@ import org.processmining.models.graphbased.directed.petrinet.elements.Place;
 import org.processmining.models.graphbased.directed.petrinet.elements.Transition;
 import org.processmining.models.graphbased.directed.petrinet.impl.PetrinetImpl;
 import org.processmining.models.semantics.petrinet.Marking;
+import org.processmining.plugins.bpmn.Bpmn;
+import org.processmining.plugins.bpmn.dialogs.BpmnSelectDiagramDialog;
+import org.processmining.plugins.bpmn.parameters.BpmnSelectDiagramParameters;
+import org.processmining.plugins.bpmn.plugins.BpmnImportPlugin;
+import org.processmining.plugins.pnml.exporting.PnmlExportNetToPNML;
 
+import java.io.File;
 import java.util.*;
 
 /**
@@ -23,6 +31,28 @@ import java.util.*;
  */
 
 public class BPMNToPetriNetConverter {
+
+    public static void main(String[] args) throws Exception {
+        String fileName = "/Users/conforti/Downloads/bp.bpmn";
+        FakePluginContext context = new FakePluginContext();
+        Bpmn bpmn = (Bpmn) new BpmnImportPlugin().importFile(context, fileName);
+
+        BpmnSelectDiagramParameters parameters = new BpmnSelectDiagramParameters();
+        BpmnSelectDiagramDialog dialog = new BpmnSelectDiagramDialog(bpmn.getDiagrams(), parameters);
+        BPMNDiagram newDiagram = BPMNDiagramFactory.newBPMNDiagram("");
+        Map<String, BPMNNode> id2node = new HashMap<String, BPMNNode>();
+        Map<String, Swimlane> id2lane = new HashMap<String, Swimlane>();
+        if (parameters.getDiagram() == BpmnSelectDiagramParameters.NODIAGRAM) {
+            bpmn.unmarshall(newDiagram, id2node, id2lane);
+        } else {
+            Collection<String> elements = parameters.getDiagram().getElements();
+            bpmn.unmarshall(newDiagram, elements, id2node, id2lane);
+        }
+        Object[] object = BPMNToPetriNetConverter.convert(newDiagram);
+        Petrinet pnet = (Petrinet) object[0];
+        //Marking marking = (Marking) object[1];
+        new PnmlExportNetToPNML().exportPetriNetToPNMLFile(context, pnet, new File("/Users/conforti/Downloads/bp.pnml"));
+    }
 
     /**
      * Convert the given Petri net into an EPC.
@@ -471,25 +501,15 @@ public class BPMNToPetriNetConverter {
         }
 
         Place newFinalPlace = petrinet.addPlace("END");
-        if(!setPEnable.isEmpty()) {
-            Transition newFinalTransition = petrinet.addTransition("t" + counter[1]++);
-            newFinalTransition.setInvisible(true);
-            connectTransitionToPlace(petrinet, newFinalTransition, newFinalPlace);
-            connectPlaceToTransition(petrinet, finalPlace, newFinalTransition);
-            for (Place p : setPEnable) {
-                connectPlaceToTransition(petrinet, p, newFinalTransition);
-            }
-            finalMarking.clear();
-            finalMarking.add(newFinalPlace);
-        }else {
-            for(Transition t : petrinet.getTransitions()) {
-                if(t.getVisibleSuccessors().isEmpty()) {
-                    connectTransitionToPlace(petrinet, t, newFinalPlace);
-                    finalMarking.clear();
-                    finalMarking.add(newFinalPlace);
-                }
-            }
+        Transition newFinalTransition = petrinet.addTransition("t" + counter[1]++);
+        newFinalTransition.setInvisible(true);
+        connectTransitionToPlace(petrinet, newFinalTransition, newFinalPlace);
+        connectPlaceToTransition(petrinet, finalPlace, newFinalTransition);
+        for (Place p : setPEnable) {
+            connectPlaceToTransition(petrinet, p, newFinalTransition);
         }
+        finalMarking.clear();
+        finalMarking.add(newFinalPlace);
 
         boolean modified = true;
         boolean modified2 = true;
