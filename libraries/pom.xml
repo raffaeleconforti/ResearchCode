@@ -1363,6 +1363,22 @@
                             <generatePom>true</generatePom>
                         </configuration>
                     </execution>
+
+                    <execution>
+                        <id>install-pntk</id>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                        <configuration>
+                            <groupId>org.processmining</groupId>
+                            <artifactId>jung-pntk</artifactId>
+                            <version>${prom.version}</version>
+                            <packaging>jar</packaging>
+                            <file>${project.build.sourceDirectory}/pntk-1.0.jar</file>
+                            <generatePom>true</generatePom>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
         </plugins>
