@@ -387,6 +387,11 @@
                 <version>1.2.3</version>
             </dependency>
             <dependency>
+                <groupId>au.edu.qut</groupId>
+                <artifactId>pntk</artifactId>
+                <version>1.0</version>
+            </dependency>
+            <dependency>
                 <groupId>ucl.flanagan</groupId>
                 <artifactId>flanagan</artifactId>
                 <version>${flanagan.version}</version>

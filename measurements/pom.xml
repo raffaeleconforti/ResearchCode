@@ -73,6 +73,10 @@
             <groupId>org.apromore</groupId>
             <artifactId>bpmntk-osgi</artifactId>
         </dependency>
+        <dependency>
+            <groupId>au.edu.qut</groupId>
+            <artifactId>pntk</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>com.raffaeleconforti</groupId>

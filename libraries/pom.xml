@@ -1371,9 +1371,9 @@
                             <goal>install-file</goal>
                         </goals>
                         <configuration>
-                            <groupId>org.processmining</groupId>
+                            <groupId>au.edu.qut</groupId>
                             <artifactId>pntk</artifactId>
-                            <version>${prom.version}</version>
+                            <version>1.0</version>
                             <packaging>jar</packaging>
                             <file>${project.build.sourceDirectory}/pntk-1.0.jar</file>
                             <generatePom>true</generatePom>
