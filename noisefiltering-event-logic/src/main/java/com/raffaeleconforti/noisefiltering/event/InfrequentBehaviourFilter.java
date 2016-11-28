@@ -183,7 +183,7 @@ public class InfrequentBehaviourFilter {
         return log2;
     }
 
-    private Automaton<String> getFilteredAutomaton(Automaton<String> automatonOriginal, Set<Node<String>> requiredStates, double threshold) {
+    public Automaton<String> getFilteredAutomaton(Automaton<String> automatonOriginal, Set<Node<String>> requiredStates, double threshold) {
         Automaton<String> automaton = (Automaton<String>) automatonOriginal.clone();
         return automatonInfrequentBehaviourDetector.removeInfrequentBehaviour(automaton, requiredStates, threshold);
     }

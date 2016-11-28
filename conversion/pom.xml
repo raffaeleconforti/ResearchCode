@@ -60,6 +60,10 @@
     <dependencies>
         <dependency>
             <groupId>org.processmining</groupId>
+            <artifactId>tableLayout</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.processmining</groupId>
             <artifactId>prom6-framework</artifactId>
         </dependency>
         <dependency>
@@ -74,6 +78,10 @@
         <dependency>
             <groupId>com.raffaeleconforti</groupId>
             <artifactId>bpmn-util</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.raffaeleconforti</groupId>
+            <artifactId>fake-context</artifactId>
         </dependency>
 
     </dependencies>

@@ -32,27 +32,27 @@ import java.util.*;
 
 public class BPMNToPetriNetConverter {
 
-    public static void main(String[] args) throws Exception {
-        String fileName = "/Users/conforti/Downloads/bp.bpmn";
-        FakePluginContext context = new FakePluginContext();
-        Bpmn bpmn = (Bpmn) new BpmnImportPlugin().importFile(context, fileName);
-
-        BpmnSelectDiagramParameters parameters = new BpmnSelectDiagramParameters();
-        BpmnSelectDiagramDialog dialog = new BpmnSelectDiagramDialog(bpmn.getDiagrams(), parameters);
-        BPMNDiagram newDiagram = BPMNDiagramFactory.newBPMNDiagram("");
-        Map<String, BPMNNode> id2node = new HashMap<String, BPMNNode>();
-        Map<String, Swimlane> id2lane = new HashMap<String, Swimlane>();
-        if (parameters.getDiagram() == BpmnSelectDiagramParameters.NODIAGRAM) {
-            bpmn.unmarshall(newDiagram, id2node, id2lane);
-        } else {
-            Collection<String> elements = parameters.getDiagram().getElements();
-            bpmn.unmarshall(newDiagram, elements, id2node, id2lane);
-        }
-        Object[] object = BPMNToPetriNetConverter.convert(newDiagram);
-        Petrinet pnet = (Petrinet) object[0];
-        //Marking marking = (Marking) object[1];
-        new PnmlExportNetToPNML().exportPetriNetToPNMLFile(context, pnet, new File("/Users/conforti/Downloads/bp.pnml"));
-    }
+//    public static void main(String[] args) throws Exception {
+//        String fileName = "/Users/conforti/Downloads/bp.bpmn";
+//        FakePluginContext context = new FakePluginContext();
+//        Bpmn bpmn = (Bpmn) new BpmnImportPlugin().importFile(context, fileName);
+//
+//        BpmnSelectDiagramParameters parameters = new BpmnSelectDiagramParameters();
+//        BpmnSelectDiagramDialog dialog = new BpmnSelectDiagramDialog(bpmn.getDiagrams(), parameters);
+//        BPMNDiagram newDiagram = BPMNDiagramFactory.newBPMNDiagram("");
+//        Map<String, BPMNNode> id2node = new HashMap<String, BPMNNode>();
+//        Map<String, Swimlane> id2lane = new HashMap<String, Swimlane>();
+//        if (parameters.getDiagram() == BpmnSelectDiagramParameters.NODIAGRAM) {
+//            bpmn.unmarshall(newDiagram, id2node, id2lane);
+//        } else {
+//            Collection<String> elements = parameters.getDiagram().getElements();
+//            bpmn.unmarshall(newDiagram, elements, id2node, id2lane);
+//        }
+//        Object[] object = BPMNToPetriNetConverter.convert(newDiagram);
+//        Petrinet pnet = (Petrinet) object[0];
+//        //Marking marking = (Marking) object[1];
+//        new PnmlExportNetToPNML().exportPetriNetToPNMLFile(context, pnet, new File("/Users/conforti/Downloads/bp.pnml"));
+//    }
 
     /**
      * Convert the given Petri net into an EPC.
