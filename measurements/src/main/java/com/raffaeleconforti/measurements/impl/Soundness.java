@@ -1,5 +1,6 @@
 package com.raffaeleconforti.measurements.impl;
 
+import au.edu.qut.petrinet.tools.SoundnessChecker;
 import com.raffaeleconforti.measurements.Measure;
 import com.raffaeleconforti.measurements.MeasurementAlgorithm;
 import com.raffaeleconforti.wrapper.MiningAlgorithm;
@@ -7,6 +8,7 @@ import com.raffaeleconforti.wrapper.PetrinetWithMarking;
 import org.deckfour.xes.classification.XEventClassifier;
 import org.deckfour.xes.model.XLog;
 import org.processmining.contexts.uitopia.UIPluginContext;
+import org.processmining.models.graphbased.directed.petrinet.Petrinet;
 
 
 /**
@@ -20,13 +22,22 @@ public class Soundness implements MeasurementAlgorithm {
         if(petrinetWithMarking == null) return measure;
 
         try {
+            Petrinet petrinet = petrinetWithMarking.getPetrinet();
+            SoundnessChecker checker = new SoundnessChecker(petrinet);
+
+            if( checker.isSound() ) measure.addMeasure("Sound", "yes");
+            else measure.addMeasure("Sound", "no");
+
+            if( checker.isDead() ) measure.addMeasure("deadlock", "yes");
+            if( !checker.isSafe() ) measure.addMeasure("safe", "no");
+
             return measure;
         } catch( Exception e ) { return measure; }
     }
 
     @Override
     public String getMeasurementName() {
-        return "Soudness";
+        return "Soundness";
     }
 
     @Override
