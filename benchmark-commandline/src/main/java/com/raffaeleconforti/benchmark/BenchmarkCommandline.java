@@ -133,8 +133,8 @@ public class BenchmarkCommandline {
                 icmd++;
             }
 
+            selectedMiners = new HashSet<>();
             if( (icmd < args.length) && args[icmd].equalsIgnoreCase("-miners") ) {
-                selectedMiners = new HashSet<>();
                 icmd++;
                 do{
                     try { selectedMiners.add(Integer.valueOf(args[icmd])); }
@@ -143,8 +143,8 @@ public class BenchmarkCommandline {
                 }while( icmd < args.length );
             }
 
+            selectedMetrics = new HashSet<>();
             if( (icmd < args.length) && args[icmd].equalsIgnoreCase("-metrics") ) {
-                selectedMetrics = new HashSet<>();
                 icmd++;
                 do{
                     try { selectedMetrics.add(Integer.valueOf(args[icmd])); }
@@ -163,9 +163,7 @@ public class BenchmarkCommandline {
         }
 
         benchmark = new Benchmark(defaultLogs, extLoc, packages);
-//        if(timeout) benchmark.performBenchmark(miningTimeout, measurementTimeout);
-//        else
-            benchmark.performBenchmark(new ArrayList<Integer>(selectedMiners), new ArrayList<Integer>(selectedMetrics));
+        benchmark.performBenchmark(new ArrayList<Integer>(selectedMiners), new ArrayList<Integer>(selectedMetrics));
 
     }
 

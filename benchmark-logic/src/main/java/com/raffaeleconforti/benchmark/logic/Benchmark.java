@@ -63,6 +63,7 @@ public class Benchmark {
 
         // pruning the list of miners
         if( selectedMiners != null && !selectedMiners.isEmpty() ) {
+            System.out.println("DEBUG - pruning miners");
             Collections.sort(selectedMiners);
             Collections.reverse(selectedMiners);
             for(int i = miningAlgorithms.size()-1; i >= 0; i--) {
@@ -83,6 +84,7 @@ public class Benchmark {
 
         // pruning the list of metrics
         if( selectedMetrics != null && !selectedMetrics.isEmpty() ) {
+            System.out.println("DEBUG - pruning metrics");
             Collections.sort(selectedMetrics);
             Collections.reverse(selectedMetrics);
             for(int i = measurementAlgorithms.size()-1; i >= 0; i--) {
