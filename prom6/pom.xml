@@ -547,7 +547,7 @@
                         <phase>install</phase>
                         <configuration>
                             <target>
-                                <exec executable="/bin/bash">
+                                <exec executable="/bin/bash" osfamily="unix">
                                     <arg value="-c" />
                                     <arg value="
                                     java
@@ -575,6 +575,35 @@
                                     -XX:MaxGCPauseMillis=500
                                     -Djava.library.path=/Users/conforti/.ProM/packages/lpsolve-5.5.2/LpSolve_mac/mac:/Library/gurobi652/mac64/lib:.//lib:.//stdlib:.//packagelib:${project.build.directory}/lib:${project.build.directory}/../../assembly/target
                                     -cp ${libs}:${project.build.directory}/*:${project.build.directory}/lib/*:${project.build.directory}/../../assembly/target/* org.processmining.contexts.uitopia.UI" />
+                                </exec>
+                                <exec executable="cmd" osfamily="windows">
+                                    <arg value="/c" />
+                                    <arg value="
+                                    java
+                                    -ea
+                                    -Xmx40G
+                                    -XX:-UseGCOverheadLimit
+                                    -XX:+UseCompressedOops
+                                    -Xss4096m
+                                    -Xms4G
+                                    -XX:MaxPermSize=512m
+                                    -XX:-HeapDumpOnOutOfMemoryError
+                                    -Xmaxf1
+                                    -XX:+DisableExplicitGC
+                                    -XX:+AggressiveOpts
+                                    -XX:+ScavengeBeforeFullGC
+                                    -XX:CMSFullGCsBeforeCompaction=10
+                                    -XX:CMSInitiatingOccupancyFraction=80
+                                    -XX:+UseParNewGC
+                                    -XX:+UseConcMarkSweepGC
+                                    -XX:+CMSIncrementalMode
+                                    -XX:+CMSIncrementalPacing
+                                    -XX:+CMSParallelRemarkEnabled
+                                    -XX:GCTimeRatio=19
+                                    -XX:+UseAdaptiveSizePolicy
+                                    -XX:MaxGCPauseMillis=500
+                                    -Djava.library.path=${project.build.directory}/lib;${project.build.directory}/../../assembly/target
+                                    -cp ${project.build.directory}/*;${project.build.directory}/lib/*;${project.build.directory}/../../assembly/target/* org.processmining.contexts.uitopia.UI" />
                                 </exec>
                             </target>
                         </configuration>

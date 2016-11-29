@@ -1,10 +1,15 @@
 package com.raffaeleconforti.outliers.statistics;
 
-import com.raffaeleconforti.outliers.statistics.mad.LeftMedianAbsoluteDeviation;
-import com.raffaeleconforti.outliers.statistics.mad.MedianAbsoluteDeviation;
-import com.raffaeleconforti.outliers.statistics.mad.RightMedianAbsoluteDeviation;
+import com.raffaeleconforti.outliers.statistics.percentile.Percentile;
+import com.raffaeleconforti.outliers.statistics.medianabsolutedeviation.LeftMedianAbsoluteDeviation;
+import com.raffaeleconforti.outliers.statistics.medianabsolutedeviation.MedianAbsoluteDeviation;
+import com.raffaeleconforti.outliers.statistics.medianabsolutedeviation.RightMedianAbsoluteDeviation;
 import com.raffaeleconforti.outliers.statistics.mean.Mean;
 import com.raffaeleconforti.outliers.statistics.median.Median;
+import com.raffaeleconforti.outliers.statistics.mode.Mode;
+import com.raffaeleconforti.outliers.statistics.modeabsolutedeviation.LeftModeAbsoluteDeviation;
+import com.raffaeleconforti.outliers.statistics.modeabsolutedeviation.ModeAbsoluteDeviation;
+import com.raffaeleconforti.outliers.statistics.modeabsolutedeviation.RightModeAbsoluteDeviation;
 import com.raffaeleconforti.outliers.statistics.qn.LeftQn;
 import com.raffaeleconforti.outliers.statistics.qn.Qn;
 import com.raffaeleconforti.outliers.statistics.qn.RightQn;
@@ -20,10 +25,12 @@ import com.raffaeleconforti.outliers.statistics.standarddeviation.StandardDeviat
  */
 public class StatisticsSelector {
 
-    public enum StatisticsMeasures {MEAN, MEDIAN, SD, LEFT_SD, RIGHT_SD, MAD, LEFT_MAD, RIGHT_MAD, SN, LEFT_SN, RIGHT_SN, QN, LEFT_QN, RIGHT_QN}
+    public enum StatisticsMeasures {MEAN, MEDIAN, MODE, PERCENTILE, SD, LEFT_SD, RIGHT_SD, MAD, LEFT_MAD, RIGHT_MAD, MoAD, LEFT_MoAD, RIGHT_MoAD, SN, LEFT_SN, RIGHT_SN, QN, LEFT_QN, RIGHT_QN}
 
     private final Mean mean = new Mean();
     private final Median median = new Median();
+    private final Mode mode = new Mode();
+    private final Percentile percentile = new Percentile();
 
     private final StandardDeviation sd = new StandardDeviation();
     private final LeftStandardDeviation lsd = new LeftStandardDeviation();
@@ -32,6 +39,10 @@ public class StatisticsSelector {
     private final MedianAbsoluteDeviation mad = new MedianAbsoluteDeviation();
     private final LeftMedianAbsoluteDeviation lmad = new LeftMedianAbsoluteDeviation();
     private final RightMedianAbsoluteDeviation rmad = new RightMedianAbsoluteDeviation();
+
+    private final ModeAbsoluteDeviation moad = new ModeAbsoluteDeviation();
+    private final LeftModeAbsoluteDeviation lmoad = new LeftModeAbsoluteDeviation();
+    private final RightModeAbsoluteDeviation rmoad = new RightModeAbsoluteDeviation();
 
     private final Sn sn = new Sn();
     private final LeftSn lsn = new LeftSn();
@@ -48,6 +59,12 @@ public class StatisticsSelector {
                             break;
 
             case MEDIAN     : statisticsMeasure = median;
+                            break;
+
+            case MODE       : statisticsMeasure = mode;
+                            break;
+
+            case PERCENTILE : statisticsMeasure = percentile;
                             break;
 
             case SD         : statisticsMeasure = sd;
@@ -67,6 +84,15 @@ public class StatisticsSelector {
 
             case RIGHT_MAD  : statisticsMeasure = rmad;
                             break;
+
+            case MoAD        : statisticsMeasure = moad;
+                break;
+
+            case LEFT_MoAD   : statisticsMeasure = lmoad;
+                break;
+
+            case RIGHT_MoAD  : statisticsMeasure = rmoad;
+                break;
 
             case SN         : statisticsMeasure = sn;
                             break;

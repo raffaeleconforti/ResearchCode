@@ -1,9 +1,6 @@
 package com.raffaeleconforti.outliers.statistics.qn;
 
 import com.raffaeleconforti.outliers.statistics.StatisticsMeasure;
-import com.raffaeleconforti.outliers.statistics.boxplot.Percentile;
-import com.raffaeleconforti.outliers.statistics.median.Median;
-import org.eclipse.collections.impl.list.mutable.primitive.DoubleArrayList;
 import org.eclipse.collections.impl.map.mutable.primitive.DoubleIntHashMap;
 
 import java.util.Arrays;

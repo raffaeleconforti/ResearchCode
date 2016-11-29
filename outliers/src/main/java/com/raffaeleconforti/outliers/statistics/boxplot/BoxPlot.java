@@ -1,11 +1,15 @@
 package com.raffaeleconforti.outliers.statistics.boxplot;
 
+import com.raffaeleconforti.outliers.statistics.percentile.Percentile;
+
 import java.util.ArrayList;
 
 /**
  * Created by conforti on 11/02/15.
  */
 public class BoxPlot {
+
+    private Percentile percentile = new Percentile();
 
     public int[] discoverOutlier(double[] values, double significance) {
         ArrayList<Integer> result = new ArrayList<Integer>();
@@ -31,14 +35,14 @@ public class BoxPlot {
     }
 
     private double computeIQR(double[] values) {
-        return (Percentile.evaluate(0.75, values) - Percentile.evaluate(0.25, values));
+        return (percentile.evaluate(0.75, values) - percentile.evaluate(0.25, values));
     }
 
     public double computeLowerBound(double[] values, double IQR) {
-        return (Percentile.evaluate(0.25, values) - (1.5 * IQR));
+        return (percentile.evaluate(0.25, values) - (1.5 * IQR));
     }
 
     public double computeUpperBound(double[] values, double IQR) {
-        return (Percentile.evaluate(0.75, values) + (1.5 * IQR));
+        return (percentile.evaluate(0.75, values) + (1.5 * IQR));
     }
 }
