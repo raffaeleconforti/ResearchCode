@@ -70,6 +70,10 @@
             <artifactId>etconformance</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.processmining</groupId>
+            <artifactId>projectedrecallandprecision</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.apromore</groupId>
             <artifactId>bpmntk-osgi</artifactId>
         </dependency>
