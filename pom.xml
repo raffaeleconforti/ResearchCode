@@ -610,6 +610,26 @@
                 <artifactId>processtree</artifactId>
                 <version>${prom.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.processmining</groupId>
+                <artifactId>projectedrecallandprecision</artifactId>
+                <version>${prom.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.processmining</groupId>
+                <artifactId>transitionsystems</artifactId>
+                <version>${prom.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.processmining</groupId>
+                <artifactId>inductivevisualminer</artifactId>
+                <version>${prom.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.processmining</groupId>
+                <artifactId>pnanalysis</artifactId>
+                <version>${prom.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 

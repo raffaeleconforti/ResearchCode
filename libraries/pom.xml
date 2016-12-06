@@ -516,6 +516,58 @@
                             <outputDirectory>${project.build.directory}</outputDirectory>
                         </configuration>
                     </execution>
+
+                    <execution>
+                        <id>download-projectedrecallandprecision</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>wget</goal>
+                        </goals>
+                        <configuration>
+                            <url>https://svn.win.tue.nl/repos/prom/Releases/Packages/ProjectedRecallAndPrecision/ProjectedRecallAndPrecision.jar</url>
+                            <outputFileName>projectedrecallandprecision.jar</outputFileName>
+                            <outputDirectory>${project.build.directory}</outputDirectory>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>download-transitionsystems</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>wget</goal>
+                        </goals>
+                        <configuration>
+                            <url>https://svn.win.tue.nl/repos/prom/Releases/Packages/TransitionSystems/TransitionSystems.jar</url>
+                            <outputFileName>TransitionSystems.jar</outputFileName>
+                            <outputDirectory>${project.build.directory}</outputDirectory>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>download-inductivevisualminer</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>wget</goal>
+                        </goals>
+                        <configuration>
+                            <url>https://svn.win.tue.nl/repos/prom/Releases/Packages/InductiveVisualMiner/InductiveVisualMiner.jar</url>
+                            <outputFileName>InductiveVisualMiner.jar</outputFileName>
+                            <outputDirectory>${project.build.directory}</outputDirectory>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>download-pnanalysis</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>wget</goal>
+                        </goals>
+                        <configuration>
+                            <url>https://svn.win.tue.nl/repos/prom/Releases/Packages/PNAnalysis/PNAnalysis.jar</url>
+                            <outputFileName>PNAnalysis.jar</outputFileName>
+                            <outputDirectory>${project.build.directory}</outputDirectory>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
 
@@ -1376,6 +1428,70 @@
                             <version>1.0</version>
                             <packaging>jar</packaging>
                             <file>${project.build.sourceDirectory}/pntk-1.0.jar</file>
+                            <generatePom>true</generatePom>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>install-projectedrecallandprecision</id>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                        <configuration>
+                            <groupId>org.processmining</groupId>
+                            <artifactId>projectedrecallandprecision</artifactId>
+                            <version>${prom.version}</version>
+                            <packaging>jar</packaging>
+                            <file>${project.build.directory}/projectedrecallandprecision.jar</file>
+                            <generatePom>true</generatePom>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>install-transitionsystems</id>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                        <configuration>
+                            <groupId>org.processmining</groupId>
+                            <artifactId>transitionsystems</artifactId>
+                            <version>${prom.version}</version>
+                            <packaging>jar</packaging>
+                            <file>${project.build.directory}/transitionsystems.jar</file>
+                            <generatePom>true</generatePom>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>install-inductivevisualminer</id>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                        <configuration>
+                            <groupId>org.processmining</groupId>
+                            <artifactId>inductivevisualminer</artifactId>
+                            <version>${prom.version}</version>
+                            <packaging>jar</packaging>
+                            <file>${project.build.directory}/inductivevisualminer.jar</file>
+                            <generatePom>true</generatePom>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>install-pnanalysis</id>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                        <configuration>
+                            <groupId>org.processmining</groupId>
+                            <artifactId>pnanalysis</artifactId>
+                            <version>${prom.version}</version>
+                            <packaging>jar</packaging>
+                            <file>${project.build.directory}/pnanalysis.jar</file>
                             <generatePom>true</generatePom>
                         </configuration>
                     </execution>

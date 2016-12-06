@@ -3,15 +3,16 @@ package com.raffaeleconforti.benchmark.logic;
 import com.raffaeleconforti.context.FakePluginContext;
 import com.raffaeleconforti.measurements.Measure;
 import com.raffaeleconforti.measurements.MeasurementAlgorithm;
-import com.raffaeleconforti.memorylog.XFactoryMemoryImpl;
 import com.raffaeleconforti.wrapper.MiningAlgorithm;
 import com.raffaeleconforti.wrapper.PetrinetWithMarking;
+import hub.top.petrinet.PetriNet;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.deckfour.xes.classification.XEventAndClassifier;
 import org.deckfour.xes.classification.XEventClassifier;
 import org.deckfour.xes.classification.XEventNameClassifier;
+import org.deckfour.xes.factory.XFactoryNaiveImpl;
 import org.deckfour.xes.in.XesXmlGZIPParser;
 import org.deckfour.xes.model.XLog;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
@@ -49,6 +50,10 @@ public class Benchmark {
     }
 
     public void performBenchmark(ArrayList<Integer> selectedMiners, ArrayList<Integer> selectedMetrics) {
+
+        hub.top.petrinet.PetriNet petriNet = new PetriNet();
+        petriNet.getPlaces();
+
         XEventClassifier xEventClassifier = new XEventAndClassifier(new XEventNameClassifier());
         FakePluginContext fakePluginContext = new FakePluginContext();
 
@@ -101,6 +106,7 @@ public class Benchmark {
         /* populating measurements results */
         XLog log;
         for( String logName : inputLogs.keySet() ) {
+            if(!logName.contains("Artificial")) continue;
             log = loadLog(inputLogs.get(logName));
             System.out.println("DEBUG - measuring on log: " + logName);
 
@@ -201,9 +207,9 @@ public class Benchmark {
     private XLog loadLog(Object o) {
         try {
             if(o instanceof String) {
-                return importFromFile(new XFactoryMemoryImpl(), (String) o);
+                return importFromFile(new XFactoryNaiveImpl(), (String) o);
             }else if(o instanceof InputStream){
-                return importFromInputStream((InputStream) o, new XesXmlGZIPParser(new XFactoryMemoryImpl()));
+                return importFromInputStream((InputStream) o, new XesXmlGZIPParser(new XFactoryNaiveImpl()));
             }
         } catch (Exception e) {
             e.printStackTrace();

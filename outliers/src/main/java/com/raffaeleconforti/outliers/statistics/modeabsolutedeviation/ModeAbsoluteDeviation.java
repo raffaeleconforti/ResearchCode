@@ -1,28 +1,28 @@
-package com.raffaeleconforti.outliers.statistics.mad;
+package com.raffaeleconforti.outliers.statistics.modeabsolutedeviation;
 
 import com.raffaeleconforti.outliers.statistics.StatisticsMeasure;
-import com.raffaeleconforti.outliers.statistics.median.Median;
+import com.raffaeleconforti.outliers.statistics.mode.Mode;
 
 import java.util.Arrays;
 
 /**
  * Created by Raffaele Conforti (conforti.raffaele@gmail.com) on 14/11/16.
  */
-public class MedianAbsoluteDeviation implements StatisticsMeasure {
+public class ModeAbsoluteDeviation implements StatisticsMeasure {
 
-    private Median median = new Median();
+    private Mode mode = new Mode();
 
     @Override
     public double evaluate(Double val, double... values) {
         try {
             values = Arrays.copyOf(values, values.length);
             Arrays.sort(values);
-            double med = median.evaluate(null, values);
+            double med = mode.evaluate(null, values);
             double[] vals = new double[values.length];
             for(int i = 0; i < vals.length; i++) {
                 vals[i] = Math.abs(values[i] - med);
             }
-            return 1.4826 * median.evaluate(null, vals);
+            return 1.4826 * mode.evaluate(null, vals);
         }catch (ArrayIndexOutOfBoundsException e) {
 
         }

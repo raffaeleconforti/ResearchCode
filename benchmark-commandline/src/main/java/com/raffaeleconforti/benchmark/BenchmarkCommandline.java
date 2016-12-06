@@ -26,19 +26,19 @@ public class BenchmarkCommandline {
     private final static String LIBLPSOLVE55 = "liblpsolve55";
     private final static String LIBLPSOLVE55J = "liblpsolve55j";
 
-    static {
-        try {
-            if(System.getProperty("os.name").startsWith("Windows")) {
-                System.loadLibrary(LPSOLVE55);
-                System.loadLibrary(LPSOLVE55J);
-            }else {
-                System.loadLibrary(LIBLPSOLVE55);
-                System.loadLibrary(LIBLPSOLVE55J);
-            }
-        } catch (UnsatisfiedLinkError e) {
-            loadFromJar();
-        }
-    }
+//    static {
+//        try {
+//            if(System.getProperty("os.name").startsWith("Windows")) {
+//                System.loadLibrary(LPSOLVE55);
+//                System.loadLibrary(LPSOLVE55J);
+//            }else {
+//                System.loadLibrary(LIBLPSOLVE55);
+//                System.loadLibrary(LIBLPSOLVE55J);
+//            }
+//        } catch (UnsatisfiedLinkError e) {
+//            loadFromJar();
+//        }
+//    }
 
     private static void loadFromJar() {
         // we need to put both DLLs to temp dir
@@ -123,6 +123,7 @@ public class BenchmarkCommandline {
             icmd++;
             extLoc = args[icmd];
             icmd++;
+        }
 
             if( (icmd < args.length) && args[icmd].equalsIgnoreCase("-timeout") ) {
                 timeout = true;
@@ -160,7 +161,7 @@ public class BenchmarkCommandline {
                     icmd++;
                 }while( icmd < args.length );
             }
-        }
+//        }
 
         benchmark = new Benchmark(defaultLogs, extLoc, packages);
         benchmark.performBenchmark(new ArrayList<Integer>(selectedMiners), new ArrayList<Integer>(selectedMetrics));
