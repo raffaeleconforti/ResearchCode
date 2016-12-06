@@ -102,14 +102,14 @@ public class Benchmark {
         XLog log;
         for( String logName : inputLogs.keySet() ) {
             log = loadLog(inputLogs.get(logName));
-            measures.put(logName, new HashMap<>());
             System.out.println("DEBUG - measuring on log: " + logName);
 
             for( MiningAlgorithm miningAlgorithm : miningAlgorithms ) {
                 // adding an entry on the measures table for this miner
                 String miningAlgorithmName = miningAlgorithm.getAlgorithmName();
                 String measurementAlgorithmName = "NULL";
-                measures.get(logName).put(miningAlgorithmName, new HashMap<>());
+                if( !measures.containsKey(miningAlgorithmName) )measures.put(miningAlgorithmName, new HashMap<>());
+                measures.get(miningAlgorithmName).put(logName, new HashMap<>());
 
                 try {
                     System.out.println("DEBUG - measuring on mining algorithm: " + miningAlgorithmName);
@@ -118,7 +118,7 @@ public class Benchmark {
                     long sTime = System.currentTimeMillis();
                     PetrinetWithMarking petrinetWithMarking = miningAlgorithm.minePetrinet(fakePluginContext, log, false);
                     long execTime = System.currentTimeMillis() - sTime;
-                    measures.get(logName).get(miningAlgorithmName).put("exec-time", Long.toString(execTime));
+                    measures.get(miningAlgorithmName).get(logName).put("exec-time", Long.toString(execTime));
 
                     // computing metrics on the output petrinet
                     for( MeasurementAlgorithm measurementAlgorithm : measurementAlgorithms ) {
@@ -127,18 +127,19 @@ public class Benchmark {
 
                             if( measurementAlgorithm.isMultimetrics() ) {
                                 for(String metric : measure.getMetrics() ) {
-                                    measures.get(logName).get(miningAlgorithmName).put(metric, measure.getMetricValue(metric));
+                                    measures.get(miningAlgorithmName).get(logName).put(metric, measure.getMetricValue(metric));
                                     System.out.println("DEBUG - " + metric + " : " + measure.getMetricValue(metric));
                                 }
                             } else {
-                                measures.get(logName).get(miningAlgorithmName).put(measurementAlgorithmName, Double.toString(measure.getValue()));
+                                measures.get(miningAlgorithmName).get(logName).put(measurementAlgorithmName, Double.toString(measure.getValue()));
                                 System.out.println("DEBUG - " + measurementAlgorithmName + " : " + measure.getValue());
                             }
                     }
+
                 } catch(Exception e) {
                     System.out.println("ERROR - for: " + miningAlgorithmName + " - " + measurementAlgorithmName);
                     e.printStackTrace();
-                    measures.get(logName).remove(miningAlgorithmName);
+                    measures.get(miningAlgorithmName).remove(logName);
                 }
             }
         }
@@ -220,26 +221,26 @@ public class Benchmark {
             boolean generateHead = true;
 
             /* generating one sheet for each log */
-            for( String logName : measures.keySet() ) {
+            for( String miningAlgorithmName : measures.keySet() ) {
                 rowCounter = 0;
 
-                HSSFSheet sheet = workbook.createSheet(logName);
+                HSSFSheet sheet = workbook.createSheet(miningAlgorithmName);
                 HSSFRow rowhead = sheet.createRow((short) rowCounter);
                 rowCounter++;
 
-                for( String miningAlgorithmName : measures.get(logName).keySet() ) {
+                for( String logName : measures.get(miningAlgorithmName).keySet() ) {
                     /* creating the row for this mining algorithm */
                     HSSFRow row = sheet.createRow((short) rowCounter);
                     rowCounter++;
 
                     cellCounter = 0;
-                    if( generateHead ) rowhead.createCell(cellCounter).setCellValue("Mining Algorithm");
-                    row.createCell(cellCounter).setCellValue(miningAlgorithmName);
+                    if( generateHead ) rowhead.createCell(cellCounter).setCellValue("Log");
+                    row.createCell(cellCounter).setCellValue(logName);
                     cellCounter++;
 
-                    for( String metricName : measures.get(logName).get(miningAlgorithmName).keySet() ) {
+                    for( String metricName : measures.get(miningAlgorithmName).get(logName).keySet() ) {
                         if( generateHead ) rowhead.createCell(cellCounter).setCellValue(metricName);
-                        row.createCell(cellCounter).setCellValue(measures.get(logName).get(miningAlgorithmName).get(metricName));
+                        row.createCell(cellCounter).setCellValue(measures.get(miningAlgorithmName).get(logName).get(metricName));
                         cellCounter++;
                     }
                     generateHead = false;
