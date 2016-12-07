@@ -135,8 +135,10 @@ public class Benchmark {
 
                     // computing metrics on the output petrinet
                     for( MeasurementAlgorithm measurementAlgorithm : measurementAlgorithms ) {
+                            sTime = System.currentTimeMillis();
                             measurementAlgorithmName = measurementAlgorithm.getMeasurementName();
                             Measure measure = measurementAlgorithm.computeMeasurement(fakePluginContext, xEventClassifier, petrinetWithMarking, miningAlgorithm, log);
+                            execTime = System.currentTimeMillis() - sTime;
 
                             if( measurementAlgorithm.isMultimetrics() ) {
                                 for(String metric : measure.getMetrics() ) {
@@ -147,6 +149,8 @@ public class Benchmark {
                                 measures.get(miningAlgorithmName).get(logName).put(measurementAlgorithmName, Double.toString(measure.getValue()));
                                 System.out.println("DEBUG - " + measurementAlgorithmName + " : " + measure.getValue());
                             }
+
+                        measures.get(miningAlgorithmName).get(logName).put(measurementAlgorithmName + ":et", Long.toString(execTime));
                     }
 
                 } catch(Exception e) {
@@ -154,9 +158,10 @@ public class Benchmark {
                     e.printStackTrace();
                     measures.get(miningAlgorithmName).remove(logName);
                 }
+
+                publishResults();
             }
         }
-
         publishResults();
     }
 
@@ -231,10 +236,11 @@ public class Benchmark {
             HSSFWorkbook workbook = new HSSFWorkbook();
             int rowCounter;
             int cellCounter;
-            boolean generateHead = true;
+            boolean generateHead;
 
             /* generating one sheet for each log */
             for( String miningAlgorithmName : measures.keySet() ) {
+                generateHead = true;
                 rowCounter = 0;
 
                 HSSFSheet sheet = workbook.createSheet(miningAlgorithmName);
