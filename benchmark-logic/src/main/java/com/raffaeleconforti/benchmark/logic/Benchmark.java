@@ -17,6 +17,8 @@ import org.deckfour.xes.in.XesXmlGZIPParser;
 import org.deckfour.xes.model.XLog;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
+import org.processmining.acceptingpetrinet.models.impl.AcceptingPetriNetImpl;
+import org.processmining.acceptingpetrinet.plugins.ExportAcceptingPetriNetPlugin;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -105,26 +107,31 @@ public class Benchmark {
 
         /* populating measurements results */
         XLog log;
-        for( String logName : inputLogs.keySet() ) {
-            if(!logName.contains("Artificial")) continue;
-            log = loadLog(inputLogs.get(logName));
-            System.out.println("DEBUG - measuring on log: " + logName);
+        for( MiningAlgorithm miningAlgorithm : miningAlgorithms ) {
 
-            for( MiningAlgorithm miningAlgorithm : miningAlgorithms ) {
+            String miningAlgorithmName = miningAlgorithm.getAlgorithmName();
+            String measurementAlgorithmName = "NULL";
+            System.out.println("DEBUG - measuring on mining algorithm: " + miningAlgorithmName);
+
+            for( String logName : inputLogs.keySet() ) {
+                log = loadLog(inputLogs.get(logName));
+                System.out.println("DEBUG - measuring on log: " + logName);
                 // adding an entry on the measures table for this miner
-                String miningAlgorithmName = miningAlgorithm.getAlgorithmName();
-                String measurementAlgorithmName = "NULL";
                 if( !measures.containsKey(miningAlgorithmName) )measures.put(miningAlgorithmName, new HashMap<>());
                 measures.get(miningAlgorithmName).put(logName, new HashMap<>());
 
                 try {
-                    System.out.println("DEBUG - measuring on mining algorithm: " + miningAlgorithmName);
-
                     // mining the petrinet
                     long sTime = System.currentTimeMillis();
                     PetrinetWithMarking petrinetWithMarking = miningAlgorithm.minePetrinet(fakePluginContext, log, false);
                     long execTime = System.currentTimeMillis() - sTime;
                     measures.get(miningAlgorithmName).get(logName).put("exec-time", Long.toString(execTime));
+
+                    ExportAcceptingPetriNetPlugin exportAcceptingPetriNetPlugin = new ExportAcceptingPetriNetPlugin();
+                    exportAcceptingPetriNetPlugin.export(
+                            fakePluginContext,
+                            new AcceptingPetriNetImpl(petrinetWithMarking.getPetrinet(), petrinetWithMarking.getInitialMarking(), petrinetWithMarking.getFinalMarking()),
+                            new File("./" + logName + "_" + miningAlgorithmName + ".pnml"));
 
                     // computing metrics on the output petrinet
                     for( MeasurementAlgorithm measurementAlgorithm : measurementAlgorithms ) {

@@ -568,6 +568,50 @@
                             <outputDirectory>${project.build.directory}</outputDirectory>
                         </configuration>
                     </execution>
+
+
+                    <!-- BEGIN - stuff added for the benchmark -->
+
+                    <execution>
+                        <id>download-hybridilpminer</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>wget</goal>
+                        </goals>
+                        <configuration>
+                            <url>https://svn.win.tue.nl/repos/prom/Releases/Packages/HybridILPMiner/HybridILPMiner.jar</url>
+                            <outputFileName>HybridILPMiner.jar</outputFileName>
+                            <outputDirectory>${project.build.directory}</outputDirectory>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>download-flexreplayer</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>wget</goal>
+                        </goals>
+                        <configuration>
+                            <url>https://svn.win.tue.nl/repos/prom/Releases/Packages/FlexReplayer/FlexReplayer.jar</url>
+                            <outputFileName>FlexReplayer.jar</outputFileName>
+                            <outputDirectory>${project.build.directory}</outputDirectory>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>download-flex</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>wget</goal>
+                        </goals>
+                        <configuration>
+                            <url>https://svn.win.tue.nl/repos/prom/Releases/Packages/Flex/Flex.jar</url>
+                            <outputFileName>Flex.jar</outputFileName>
+                            <outputDirectory>${project.build.directory}</outputDirectory>
+                        </configuration>
+                    </execution>
+
+                    <!-- END - stuff added for the benchmark -->
                 </executions>
             </plugin>
 
@@ -583,6 +627,59 @@
                 <version>2.5.2</version>
 
                 <executions>
+
+                    <!-- BEGIN - stuff added for the benchmark -->
+
+                    <execution>
+                        <id>install-hybridilpminer</id>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                        <configuration>
+                            <groupId>org.processmining</groupId>
+                            <artifactId>hybridilpminer</artifactId>
+                            <version>${prom.version}</version>
+                            <packaging>jar</packaging>
+                            <file>${project.build.directory}/HybridILPMiner.jar</file>
+                            <generatePom>true</generatePom>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>install-flexreplayer</id>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                        <configuration>
+                            <groupId>org.processmining</groupId>
+                            <artifactId>flexreplayer</artifactId>
+                            <version>${prom.version}</version>
+                            <packaging>jar</packaging>
+                            <file>${project.build.directory}/FlexReplayer.jar</file>
+                            <generatePom>true</generatePom>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>install-flex</id>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                        <configuration>
+                            <groupId>org.processmining</groupId>
+                            <artifactId>flex</artifactId>
+                            <version>${prom.version}</version>
+                            <packaging>jar</packaging>
+                            <file>${project.build.directory}/Flex.jar</file>
+                            <generatePom>true</generatePom>
+                        </configuration>
+                    </execution>
+
+                    <!-- END - stuff added for the benchmark -->
+
                     <execution>
                         <id>install-openxes</id>
                         <phase>install</phase>
@@ -1428,6 +1525,22 @@
                             <version>1.0</version>
                             <packaging>jar</packaging>
                             <file>${project.build.sourceDirectory}/pntk-1.0.jar</file>
+                            <generatePom>true</generatePom>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>install-cnminer</id>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                        <configuration>
+                            <groupId>it.unical</groupId>
+                            <artifactId>cnminer</artifactId>
+                            <version>1.0</version>
+                            <packaging>jar</packaging>
+                            <file>${project.build.sourceDirectory}/cnminer.jar</file>
                             <generatePom>true</generatePom>
                         </configuration>
                     </execution>

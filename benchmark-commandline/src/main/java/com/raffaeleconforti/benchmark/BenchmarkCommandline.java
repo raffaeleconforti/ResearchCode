@@ -169,13 +169,21 @@ public class BenchmarkCommandline {
     }
 
     private static void showHelp() {
-        System.out.println("COMMAND: java -jar BenchmarkCommandline");
-        System.out.println("PARAM1 (optional) - disabling default logs loading: -ext");
-        System.out.println("\t- when this flag is present, only external logs are loaded for the benchmarking. Therefore it is mandatory declare param2");
-        System.out.println("PARAM2 (optional or mandatory) - path to an external folder (containing additional logs to be used for the benchmark)");
-        System.out.println("\t- when this param is present, a set of external logs (contained in the specified folder path) is loaded");
-        System.out.println("PARAM3 (optional) - list of packages containing mining algorithms");
-        System.out.println("\t- external mining algorithms not yet embedded in this benchmark can be loaded specifying their package as a string");
+        System.out.println("");
+        System.out.println("\tCOMMAND: java -jar BenchmarkCommandline");
+        System.out.println("\tPARAMS: when using any of these parameters listed below their order has to be respected");
+        System.out.println("");
+        System.out.println("\t-algorithms\nthis shows the list of available mining and measurement algorithms along with their reference indexes");
+        System.out.println("");
+        System.out.println("\t-ext 'external log location path'\nthis allows to load external logs instead of using the internal ones, a folder containing the logs file has to be specified.");
+        System.out.println("");
+        System.out.println("\t-miners 'list of indexes of the mining algorithms to use for the benchmark'");
+        System.out.println("this parameter allows to select the mining algorithms to use for the benchmark, the indexes are shown with the command:\t java -jar BenchmarkCommandline -algorithms");
+        System.out.println("");
+        System.out.println("\t-metrics 'list of indexes of the measurement algorithms to use for the benchmark'");
+        System.out.println("this parameter allows to select the measurement algorithms to use for the benchmark, the indexes are shown with the command:\t java -jar BenchmarkCommandline -algorithms");
+        System.out.println("");
+        System.out.println("\t-p 'list of external packages'\nexternal mining or measurement algorithms not yet embedded in this benchmark can be loaded specifying their package as a string");
     }
 
     private static void showMiningAlgorithms(Set<String> packages) {

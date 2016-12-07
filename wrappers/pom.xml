@@ -131,6 +131,25 @@
             <groupId>com.raffaeleconforti</groupId>
             <artifactId>bpmnminer-prom</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>it.unical</groupId>
+            <artifactId>cnminer</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.processmining</groupId>
+            <artifactId>flex</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.processmining</groupId>
+            <artifactId>flexreplayer</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.processmining</groupId>
+            <artifactId>hybridilpminer</artifactId>
+        </dependency>
     </dependencies>
 
 </project>

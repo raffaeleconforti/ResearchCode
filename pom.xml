@@ -392,6 +392,11 @@
                 <version>1.0</version>
             </dependency>
             <dependency>
+                <groupId>it.unical</groupId>
+                <artifactId>cnminer</artifactId>
+                <version>1.0</version>
+            </dependency>
+            <dependency>
                 <groupId>ucl.flanagan</groupId>
                 <artifactId>flanagan</artifactId>
                 <version>${flanagan.version}</version>
@@ -630,6 +635,29 @@
                 <artifactId>pnanalysis</artifactId>
                 <version>${prom.version}</version>
             </dependency>
+
+            <!-- BEGIN - stuff added for the benchmark -->
+
+            <dependency>
+                <groupId>org.processmining</groupId>
+                <artifactId>hybridilpminer</artifactId>
+                <version>${prom.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.processmining</groupId>
+                <artifactId>flex</artifactId>
+                <version>${prom.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.processmining</groupId>
+                <artifactId>flexreplayer</artifactId>
+                <version>${prom.version}</version>
+            </dependency>
+
+            <!-- END - stuff added for the benchmark -->
+
         </dependencies>
     </dependencyManagement>
 

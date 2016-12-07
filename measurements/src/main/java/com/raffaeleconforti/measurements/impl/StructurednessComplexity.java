@@ -17,7 +17,7 @@ import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
 public class StructurednessComplexity implements MeasurementAlgorithm {
 
     @Override
-    public boolean isMultimetrics() { return false; }
+    public boolean isMultimetrics() { return true; }
 
     @Override
     public Measure computeMeasurement(UIPluginContext pluginContext, XEventClassifier xEventClassifier, PetrinetWithMarking petrinetWithMarking, MiningAlgorithm miningAlgorithm, XLog log) {

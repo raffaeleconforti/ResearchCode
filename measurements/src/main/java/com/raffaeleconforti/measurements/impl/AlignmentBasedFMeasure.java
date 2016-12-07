@@ -59,8 +59,6 @@ public class AlignmentBasedFMeasure implements MeasurementAlgorithm {
             measure.addMeasure(alignmentBasedFitness.getMeasurementName(), fitness);
             measure.addMeasure(alignmentBasedPrecision.getMeasurementName(), precision);
 
-            measure.setValue(f_measure);
-
             return measure;
 
         } catch (ConnectionCannotBeObtained connectionCannotBeObtained) {
