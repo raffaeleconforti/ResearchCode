@@ -159,10 +159,10 @@ public class Benchmark {
                     measures.get(miningAlgorithmName).remove(logName);
                 }
 
-                publishResults();
+                publishResults("./" + logName + "_" + miningAlgorithmName + ".xls");
             }
         }
-        publishResults();
+        publishResults("./benchmark_result_" + Long.toString(System.currentTimeMillis()) + ".xls");
     }
 
     private void loadLogs() {
@@ -229,10 +229,9 @@ public class Benchmark {
         return null;
     }
 
-    private void publishResults() {
+    private void publishResults(String filename) {
         System.out.println("DEBUG - starting generation of the excel file.");
         try {
-            String filename = "./benchmark_result_" + Long.toString(System.currentTimeMillis()) + ".xls" ;
             HSSFWorkbook workbook = new HSSFWorkbook();
             int rowCounter;
             int cellCounter;

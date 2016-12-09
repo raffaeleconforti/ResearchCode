@@ -150,6 +150,38 @@
             <groupId>org.processmining</groupId>
             <artifactId>hybridilpminer</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.processmining</groupId>
+            <artifactId>lpengine</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.processmining</groupId>
+            <artifactId>causalgraph</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.processmining</groupId>
+            <artifactId>causalgraphcreator</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.processmining</groupId>
+            <artifactId>cnet</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.processmining</groupId>
+            <artifactId>causalmatrix</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.processmining</groupId>
+            <artifactId>causalmatrixcreator</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.processmining</groupId>
+            <artifactId>causalmatrixminer</artifactId>
+        </dependency>
     </dependencies>
 
 </project>

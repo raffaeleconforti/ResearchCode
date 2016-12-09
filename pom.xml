@@ -62,7 +62,7 @@
         <!--<module>design-structure-matrix</module>-->
         <module>prom6</module>
         <module>benchmark-logic</module>
-        <module>noisefiltering-label-logic</module>
+        <!--<module>noisefiltering-label-logic</module>-->
     </modules>
 
     <properties>
@@ -637,6 +637,48 @@
             </dependency>
 
             <!-- BEGIN - stuff added for the benchmark -->
+
+            <dependency>
+                <groupId>org.processmining</groupId>
+                <artifactId>causalmatrix</artifactId>
+                <version>${prom.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.processmining</groupId>
+                <artifactId>causalmatrixcreator</artifactId>
+                <version>${prom.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.processmining</groupId>
+                <artifactId>causalmatrixminer</artifactId>
+                <version>${prom.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.processmining</groupId>
+                <artifactId>causalgraphcreator</artifactId>
+                <version>${prom.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.processmining</groupId>
+                <artifactId>cnet</artifactId>
+                <version>${prom.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.processmining</groupId>
+                <artifactId>causalgraph</artifactId>
+                <version>${prom.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.processmining</groupId>
+                <artifactId>lpengine</artifactId>
+                <version>${prom.version}</version>
+            </dependency>
 
             <dependency>
                 <groupId>org.processmining</groupId>
