@@ -573,6 +573,32 @@
                     <!-- BEGIN - stuff added for the benchmark -->
 
                     <execution>
+                        <id>download-causalgraph</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>wget</goal>
+                        </goals>
+                        <configuration>
+                            <url>https://svn.win.tue.nl/repos/prom/Releases/Packages/CausalActivityGraph/CausalActivityGraph.jar</url>
+                            <outputFileName>CausalActivityGraph.jar</outputFileName>
+                            <outputDirectory>${project.build.directory}</outputDirectory>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>download-lpengine</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>wget</goal>
+                        </goals>
+                        <configuration>
+                            <url>https://svn.win.tue.nl/repos/prom/Releases/Packages/LPEngine/LPEngine.jar</url>
+                            <outputFileName>LPEngine.jar</outputFileName>
+                            <outputDirectory>${project.build.directory}</outputDirectory>
+                        </configuration>
+                    </execution>
+
+                    <execution>
                         <id>download-hybridilpminer</id>
                         <phase>process-resources</phase>
                         <goals>
@@ -611,6 +637,71 @@
                         </configuration>
                     </execution>
 
+                    <execution>
+                        <id>download-cnet</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>wget</goal>
+                        </goals>
+                        <configuration>
+                            <url>https://svn.win.tue.nl/repos/prom/Releases/Packages/CNet/CNet.jar</url>
+                            <outputFileName>CNet.jar</outputFileName>
+                            <outputDirectory>${project.build.directory}</outputDirectory>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>download-causalgraphcreator</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>wget</goal>
+                        </goals>
+                        <configuration>
+                            <url>https://svn.win.tue.nl/repos/prom/Releases/Packages/CausalActivityGraphCreator/CausalActivityGraphCreator.jar</url>
+                            <outputFileName>CausalActivityGraphCreator.jar</outputFileName>
+                            <outputDirectory>${project.build.directory}</outputDirectory>
+                        </configuration>
+                    </execution>
+
+
+                    <execution>
+                        <id>download-causalmatrix</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>wget</goal>
+                        </goals>
+                        <configuration>
+                            <url>https://svn.win.tue.nl/repos/prom/Releases/Packages/CausalActivityMatrix/CausalActivityMatrix.jar</url>
+                            <outputFileName>CausalActivityMatrix.jar</outputFileName>
+                            <outputDirectory>${project.build.directory}</outputDirectory>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>download-causalmatrixcreator</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>wget</goal>
+                        </goals>
+                        <configuration>
+                            <url>https://svn.win.tue.nl/repos/prom/Releases/Packages/CausalActivityMatrixCreator/CausalActivityMatrixCreator.jar</url>
+                            <outputFileName>CausalActivityMatrixCreator.jar</outputFileName>
+                            <outputDirectory>${project.build.directory}</outputDirectory>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>download-causalmatrixminer</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>wget</goal>
+                        </goals>
+                        <configuration>
+                            <url>https://svn.win.tue.nl/repos/prom/Releases/Packages/CausalActivityMatrixMiner/CausalActivityMatrixMiner.jar</url>
+                            <outputFileName>CausalActivityMatrixMiner.jar</outputFileName>
+                            <outputDirectory>${project.build.directory}</outputDirectory>
+                        </configuration>
+                    </execution>
                     <!-- END - stuff added for the benchmark -->
                 </executions>
             </plugin>
@@ -629,6 +720,116 @@
                 <executions>
 
                     <!-- BEGIN - stuff added for the benchmark -->
+
+                    <execution>
+                        <id>install-causalmatrixminer</id>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                        <configuration>
+                            <groupId>org.processmining</groupId>
+                            <artifactId>causalmatrixminer</artifactId>
+                            <version>${prom.version}</version>
+                            <packaging>jar</packaging>
+                            <file>${project.build.directory}/CausalActivityMatrixMiner.jar</file>
+                            <generatePom>true</generatePom>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>install-causalmatrixcreator</id>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                        <configuration>
+                            <groupId>org.processmining</groupId>
+                            <artifactId>causalmatrixcreator</artifactId>
+                            <version>${prom.version}</version>
+                            <packaging>jar</packaging>
+                            <file>${project.build.directory}/CausalActivityMatrixCreator.jar</file>
+                            <generatePom>true</generatePom>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>install-causalmatrix</id>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                        <configuration>
+                            <groupId>org.processmining</groupId>
+                            <artifactId>causalmatrix</artifactId>
+                            <version>${prom.version}</version>
+                            <packaging>jar</packaging>
+                            <file>${project.build.directory}/CausalActivityMatrix.jar</file>
+                            <generatePom>true</generatePom>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>install-causalgraphcreator</id>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                        <configuration>
+                            <groupId>org.processmining</groupId>
+                            <artifactId>causalgraphcreator</artifactId>
+                            <version>${prom.version}</version>
+                            <packaging>jar</packaging>
+                            <file>${project.build.directory}/CausalActivityGraphCreator.jar</file>
+                            <generatePom>true</generatePom>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>install-cnet</id>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                        <configuration>
+                            <groupId>org.processmining</groupId>
+                            <artifactId>cnet</artifactId>
+                            <version>${prom.version}</version>
+                            <packaging>jar</packaging>
+                            <file>${project.build.directory}/CNet.jar</file>
+                            <generatePom>true</generatePom>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>install-causalgraph</id>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                        <configuration>
+                            <groupId>org.processmining</groupId>
+                            <artifactId>causalgraph</artifactId>
+                            <version>${prom.version}</version>
+                            <packaging>jar</packaging>
+                            <file>${project.build.directory}/CausalActivityGraph.jar</file>
+                            <generatePom>true</generatePom>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>install-lpengine</id>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                        <configuration>
+                            <groupId>org.processmining</groupId>
+                            <artifactId>lpengine</artifactId>
+                            <version>${prom.version}</version>
+                            <packaging>jar</packaging>
+                            <file>${project.build.directory}/LPEngine.jar</file>
+                            <generatePom>true</generatePom>
+                        </configuration>
+                    </execution>
 
                     <execution>
                         <id>install-hybridilpminer</id>
