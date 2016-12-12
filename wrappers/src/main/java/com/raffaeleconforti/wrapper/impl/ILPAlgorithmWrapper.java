@@ -91,4 +91,7 @@ public class ILPAlgorithmWrapper implements MiningAlgorithm {
         return "ILP Miner";
     }
 
+    @Override
+    public String getAcronym() { return "ILP";}
+
 }

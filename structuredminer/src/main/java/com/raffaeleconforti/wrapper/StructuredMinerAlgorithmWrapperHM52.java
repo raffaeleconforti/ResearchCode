@@ -78,4 +78,7 @@ public class StructuredMinerAlgorithmWrapperHM52 implements MiningAlgorithm {
         return "Structured Miner using Heuristics Miner ProM5.2";
     }
 
+    @Override
+    public String getAcronym() { return "SMhm";}
+
 }

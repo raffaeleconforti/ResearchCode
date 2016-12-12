@@ -18,6 +18,8 @@ public interface MeasurementAlgorithm {
 
     String getMeasurementName();
 
+    String getAcronym();
+
     boolean isMultimetrics();
 
 }

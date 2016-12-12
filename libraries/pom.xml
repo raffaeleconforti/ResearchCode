@@ -1405,7 +1405,7 @@
                             <artifactId>bpmntk-osgi</artifactId>
                             <version>1.0-20161108</version>
                             <packaging>jar</packaging>
-                            <file>src/main/java/bpmntk-osgi-1.0-20161108.jar</file>
+                            <file>src/main/java/bpmntk-osgi-1.0.jar</file>
                             <generatePom>true</generatePom>
                         </configuration>
                     </execution>

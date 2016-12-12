@@ -1,6 +1,6 @@
 package com.raffaeleconforti.measurements.impl;
 
-import au.edu.qut.metrics.ComplexityCalculator;
+import au.edu.qut.bpmn.metrics.ComplexityCalculator;
 import com.raffaeleconforti.conversion.petrinet.PetriNetToBPMNConverter;
 import com.raffaeleconforti.measurements.Measure;
 import com.raffaeleconforti.measurements.MeasurementAlgorithm;
@@ -54,4 +54,7 @@ public class ProjectedRecall implements MeasurementAlgorithm {
     public String getMeasurementName() {
         return "Projected Recall";
     }
+
+    @Override
+    public String getAcronym() {return "recall(p)";}
 }

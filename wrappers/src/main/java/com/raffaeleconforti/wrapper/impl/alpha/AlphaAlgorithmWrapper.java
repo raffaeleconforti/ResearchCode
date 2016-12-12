@@ -71,4 +71,7 @@ public class AlphaAlgorithmWrapper implements MiningAlgorithm {
     public String getAlgorithmName() {
         return "Alpha Algorithm";
     }
+
+    @Override
+    public String getAcronym() { return "AA";}
 }

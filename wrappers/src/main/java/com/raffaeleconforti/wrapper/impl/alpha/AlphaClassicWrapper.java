@@ -72,4 +72,7 @@ public class AlphaClassicWrapper implements MiningAlgorithm {
     public String getAlgorithmName() {
         return "Alpha Miner Classic";
     }
+
+    @Override
+    public String getAcronym() { return "AM";}
 }

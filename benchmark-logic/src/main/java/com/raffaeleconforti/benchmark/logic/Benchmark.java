@@ -34,6 +34,9 @@ import static com.raffaeleconforti.log.util.LogImporter.importFromInputStream;
  * Created by Raffaele Conforti (conforti.raffaele@gmail.com) on 18/10/2016.
  */
 public class Benchmark {
+
+    private static final long MAX_TIME = 3600000;
+
     private boolean defaultLogs;
     private String extLocation;
     private Map<String, Object> inputLogs;
@@ -105,13 +108,25 @@ public class Benchmark {
         measures = new HashMap<>();
         System.out.println("DEBUG - total logs: " + inputLogs.keySet().size());
 
+        /* creating the directory for the results*/
+        File resultDir = new File("./results");
+        if( !resultDir.exists() && resultDir.mkdir() );
+
+
         /* populating measurements results */
         XLog log;
+        File old;
+        String pathname;
         for( MiningAlgorithm miningAlgorithm : miningAlgorithms ) {
+            old = null;
 
-            String miningAlgorithmName = miningAlgorithm.getAlgorithmName();
+            String miningAlgorithmName = miningAlgorithm.getAcronym();
             String measurementAlgorithmName = "NULL";
             System.out.println("DEBUG - measuring on mining algorithm: " + miningAlgorithmName);
+
+            /* creating the directory for the results*/
+            File maDir = new File("./results/" + miningAlgorithmName);
+            if( !maDir.exists() && maDir.mkdir() );
 
             for( String logName : inputLogs.keySet() ) {
                 log = loadLog(inputLogs.get(logName));
@@ -125,23 +140,23 @@ public class Benchmark {
                     long sTime = System.currentTimeMillis();
                     PetrinetWithMarking petrinetWithMarking = miningAlgorithm.minePetrinet(fakePluginContext, log, false);
                     long execTime = System.currentTimeMillis() - sTime;
-                    measures.get(miningAlgorithmName).get(logName).put("exec-time", Long.toString(execTime));
+                    measures.get(miningAlgorithmName).get(logName).put("ex-t", Long.toString(execTime));
 
                     ExportAcceptingPetriNetPlugin exportAcceptingPetriNetPlugin = new ExportAcceptingPetriNetPlugin();
                     exportAcceptingPetriNetPlugin.export(
                             fakePluginContext,
                             new AcceptingPetriNetImpl(petrinetWithMarking.getPetrinet(), petrinetWithMarking.getInitialMarking(), petrinetWithMarking.getFinalMarking()),
-                            new File("./" + logName + "_" + miningAlgorithmName + ".pnml"));
+                            new File("./results/" + miningAlgorithmName + "/" + logName + "_" + Long.toString(System.currentTimeMillis()) + ".pnml"));
 
                     // computing metrics on the output petrinet
                     for( MeasurementAlgorithm measurementAlgorithm : measurementAlgorithms ) {
+                        measurementAlgorithmName = measurementAlgorithm.getAcronym();
+                        try {
                             sTime = System.currentTimeMillis();
-                            measurementAlgorithmName = measurementAlgorithm.getMeasurementName();
                             Measure measure = measurementAlgorithm.computeMeasurement(fakePluginContext, xEventClassifier, petrinetWithMarking, miningAlgorithm, log);
                             execTime = System.currentTimeMillis() - sTime;
-
-                            if( measurementAlgorithm.isMultimetrics() ) {
-                                for(String metric : measure.getMetrics() ) {
+                            if (measurementAlgorithm.isMultimetrics()) {
+                                for (String metric : measure.getMetrics()) {
                                     measures.get(miningAlgorithmName).get(logName).put(metric, measure.getMetricValue(metric));
                                     System.out.println("DEBUG - " + metric + " : " + measure.getMetricValue(metric));
                                 }
@@ -150,19 +165,34 @@ public class Benchmark {
                                 System.out.println("DEBUG - " + measurementAlgorithmName + " : " + measure.getValue());
                             }
 
-                        measures.get(miningAlgorithmName).get(logName).put(measurementAlgorithmName + ":et", Long.toString(execTime));
+                            if( execTime > MAX_TIME)
+                                measures.get(miningAlgorithmName).get(logName).put(measurementAlgorithmName + ":et", Long.toString(execTime));
+                        } catch (Error e) {
+                            measures.get(miningAlgorithmName).get(logName).put(measurementAlgorithmName, "-ERR");
+                            System.out.println("ERROR - measuring: " + miningAlgorithmName + " : " + logName + " : " + measurementAlgorithmName);
+                        } catch(Exception e) {
+                            System.out.println("ERROR - mining: " + miningAlgorithmName + " - " + measurementAlgorithmName);
+                            measures.get(miningAlgorithmName).remove(logName);
+                        }
                     }
 
+                } catch(Error e) {
+                    System.out.println("ERROR - mining: " + miningAlgorithmName + " - " + measurementAlgorithmName);
+//                    e.printStackTrace();
+                    measures.get(miningAlgorithmName).remove(logName);
                 } catch(Exception e) {
-                    System.out.println("ERROR - for: " + miningAlgorithmName + " - " + measurementAlgorithmName);
-                    e.printStackTrace();
+                    System.out.println("ERROR - mining: " + miningAlgorithmName + " - " + measurementAlgorithmName);
+//                    e.printStackTrace();
                     measures.get(miningAlgorithmName).remove(logName);
                 }
 
-                publishResults("./" + logName + "_" + miningAlgorithmName + ".xls");
+                if(old != null) old.delete();
+                pathname = "./results/" + miningAlgorithmName + "/" + logName + "_" + Long.toString(System.currentTimeMillis()) + ".xls";
+                old = new File(pathname);
+                publishResults(pathname);
             }
         }
-        publishResults("./benchmark_result_" + Long.toString(System.currentTimeMillis()) + ".xls");
+        publishResults("./results/" + "benchmark_" + Long.toString(System.currentTimeMillis()) + ".xls");
     }
 
     private void loadLogs() {

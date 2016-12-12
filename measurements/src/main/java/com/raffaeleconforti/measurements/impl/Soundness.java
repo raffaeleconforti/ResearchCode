@@ -42,6 +42,9 @@ public class Soundness implements MeasurementAlgorithm {
     }
 
     @Override
+    public String getAcronym() {return "sound";}
+
+    @Override
     public boolean isMultimetrics() {
         return true;
     }

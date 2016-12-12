@@ -67,7 +67,10 @@ public class InductiveMinerIMaWrapper implements MiningAlgorithm {
 
     @Override
     public String getAlgorithmName() {
-        return "Inductive Miner - all operators (IMa)";
+        return "Inductive Miner - all operators";
     }
+
+    @Override
+    public String getAcronym() { return "IMa";}
 
 }

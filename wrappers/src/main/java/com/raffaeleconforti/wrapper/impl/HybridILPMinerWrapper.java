@@ -108,4 +108,7 @@ public class HybridILPMinerWrapper implements MiningAlgorithm {
     public String getAlgorithmName() {
         return "Hybrid ILP Miner";
     }
+
+    @Override
+    public String getAcronym() { return "HILP";}
 }

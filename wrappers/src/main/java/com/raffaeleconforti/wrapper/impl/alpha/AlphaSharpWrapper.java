@@ -62,4 +62,7 @@ public class AlphaSharpWrapper implements MiningAlgorithm {
     public String getAlgorithmName() {
         return "Alpha Miner Sharp";
     }
+
+    @Override
+    public String getAcronym() { return "A#";}
 }

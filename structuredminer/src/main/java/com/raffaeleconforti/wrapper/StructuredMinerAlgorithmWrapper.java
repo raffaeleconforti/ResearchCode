@@ -80,4 +80,7 @@ public class StructuredMinerAlgorithmWrapper implements MiningAlgorithm {
         return "Structured Miner using Heuristics Miner ProM6.5";
     }
 
+    @Override
+    public String getAcronym() { return "SMhm6";}
+
 }

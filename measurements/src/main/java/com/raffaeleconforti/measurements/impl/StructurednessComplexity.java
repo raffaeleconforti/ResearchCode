@@ -1,6 +1,6 @@
 package com.raffaeleconforti.measurements.impl;
 
-import au.edu.qut.metrics.ComplexityCalculator;
+import au.edu.qut.bpmn.metrics.ComplexityCalculator;
 import com.raffaeleconforti.conversion.petrinet.PetriNetToBPMNConverter;
 import com.raffaeleconforti.measurements.Measure;
 import com.raffaeleconforti.measurements.MeasurementAlgorithm;
@@ -37,4 +37,7 @@ public class StructurednessComplexity implements MeasurementAlgorithm {
     public String getMeasurementName() {
         return "Structuredness";
     }
+
+    @Override
+    public String getAcronym() {return "struct.";}
 }

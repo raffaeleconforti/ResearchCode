@@ -94,4 +94,6 @@ public class Heuristics52AlgorithmWrapper implements MiningAlgorithm {
         return "Heuristics Miner ProM5.2";
     }
 
+    @Override
+    public String getAcronym() { return "HM";}
 }
