@@ -6,6 +6,7 @@ import org.deckfour.xes.info.XLogInfo;
 import org.deckfour.xes.model.*;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.eclipse.collections.impl.map.mutable.primitive.IntObjectHashMap;
+import org.eclipse.collections.impl.map.mutable.primitive.ObjectIntHashMap;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 
 import java.util.*;
@@ -17,7 +18,7 @@ public class XLogImpl extends ArrayList<XTrace> implements XLog {
 
     private int[] counter;
     private IntObjectHashMap<XEvent> intToEvent;
-    private Map<XEvent, Integer> eventToInt;
+    private ObjectIntHashMap<XEvent> eventToInt;
 
     /**
      * serial version UID.
@@ -58,7 +59,7 @@ public class XLogImpl extends ArrayList<XTrace> implements XLog {
      * @param attributeMap The attribute map used to store this
      * 	log's attributes.
      */
-    public XLogImpl(XAttributeMap attributeMap, int[] counter, IntObjectHashMap<XEvent> intToEvent, Map<XEvent, Integer> eventToInt) {
+    public XLogImpl(XAttributeMap attributeMap, int[] counter, IntObjectHashMap<XEvent> intToEvent, ObjectIntHashMap<XEvent> eventToInt) {
         this.counter = counter;
         this.intToEvent = intToEvent;
         this.eventToInt = eventToInt;
@@ -116,7 +117,7 @@ public class XLogImpl extends ArrayList<XTrace> implements XLog {
         XLogImpl clone = new XLogImpl((XAttributeMap) attributes.clone(), counter, intToEvent, eventToInt);
         clone.counter = counter;
         clone.intToEvent = new IntObjectHashMap<XEvent>(intToEvent);
-        clone.eventToInt = new UnifiedMap<XEvent, Integer>(eventToInt);
+        clone.eventToInt = new ObjectIntHashMap<XEvent>(eventToInt);
         clone.extensions = new UnifiedSet<XExtension>(extensions);
         clone.classifiers = new ArrayList<XEventClassifier>(classifiers);
         clone.globalTraceAttributes = new ArrayList<XAttribute>(globalTraceAttributes);

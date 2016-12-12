@@ -113,6 +113,34 @@ public class LogPreprocessing {
         return log;
     }
 
+    private XLog addArtificialStartAndEndEvents(UIPluginContext context, XLog log, XEventClassifier xEventClassifier) {
+        try {
+            log = LogFilter.filter(context.getProgress(), 100, log, XLogInfoFactory.createLogInfo(log, xEventClassifier),
+                    new XTraceEditor() {
+
+                        public XTrace editTrace(XTrace trace) {
+                            // Add the new final event
+                            trace.add(0, start);
+                            return trace;
+                        }
+                    });
+
+            log = LogFilter.filter(context.getProgress(), 100, log, XLogInfoFactory.createLogInfo(log, xEventClassifier),
+                    new XTraceEditor() {
+
+                        public XTrace editTrace(XTrace trace) {
+                            // Add the new final event
+                            trace.add(end);
+                            return trace;
+                        }
+                    });
+        } catch (LogFilterException e) {
+            e.printStackTrace();
+        }
+
+        return log;
+    }
+
     private XLog removeArtificialStartAndEndEvents(UIPluginContext context, XLog log) {
         try {
             log = LogFilter.filter(context.getProgress(), 100, log, XLogInfoFactory.createLogInfo(log),

@@ -8,6 +8,7 @@ import org.deckfour.xes.id.XID;
 import org.deckfour.xes.model.*;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.eclipse.collections.impl.map.mutable.primitive.IntObjectHashMap;
+import org.eclipse.collections.impl.map.mutable.primitive.ObjectIntHashMap;
 
 import java.net.URI;
 import java.util.ArrayList;
@@ -21,7 +22,7 @@ public class XFactoryMemoryImpl implements XFactory {
 
     private int[] counter = new int[1];
     private IntObjectHashMap<XEvent> intToEvent = new IntObjectHashMap<>();
-    private Map<XEvent, Integer> eventToInt = new UnifiedMap<>();
+    private ObjectIntHashMap<XEvent> eventToInt = new ObjectIntHashMap<>();
 
     // Use String interning to save memory
     private Interner<String> interner;

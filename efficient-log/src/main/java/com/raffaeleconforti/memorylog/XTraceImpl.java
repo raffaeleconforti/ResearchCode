@@ -7,6 +7,7 @@ import org.deckfour.xes.model.*;
 import org.deckfour.xes.util.XAttributeUtils;
 import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
 import org.eclipse.collections.impl.map.mutable.primitive.IntObjectHashMap;
+import org.eclipse.collections.impl.map.mutable.primitive.ObjectIntHashMap;
 import org.xerial.snappy.Snappy;
 
 import java.io.IOException;
@@ -20,7 +21,7 @@ public class XTraceImpl implements XTrace {
     private int size = 0;
     private int[] counter;
     private IntObjectHashMap<XEvent> intToEvent;
-    private Map<XEvent, Integer> eventToInt;
+    private ObjectIntHashMap<XEvent> eventToInt;
     private int[] array = new int[0];
     private byte[] compressedArray;
 
@@ -40,7 +41,7 @@ public class XTraceImpl implements XTrace {
      * @param attributeMap
      *            Attribute map used to store this trace's attributes.
      */
-    public XTraceImpl(XAttributeMap attributeMap, int[] counter, IntObjectHashMap<XEvent> intToEvent, Map<XEvent, Integer> eventToInt) {
+    public XTraceImpl(XAttributeMap attributeMap, int[] counter, IntObjectHashMap<XEvent> intToEvent, ObjectIntHashMap<XEvent> eventToInt) {
         this.counter = counter;
         this.intToEvent = intToEvent;
         this.eventToInt = eventToInt;

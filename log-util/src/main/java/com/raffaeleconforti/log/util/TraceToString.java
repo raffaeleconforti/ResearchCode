@@ -4,9 +4,7 @@ import org.deckfour.xes.extension.std.XTimeExtension;
 import org.deckfour.xes.model.XTrace;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by conforti on 5/02/2016.
@@ -14,6 +12,45 @@ import java.util.Map;
 public class TraceToString {
 
     private static final XTimeExtension xte = XTimeExtension.instance();
+
+    public static String convertXTraceToString(XTrace trace, NameExtractor nameExtractor, Map<String, Set<String>> parallel) {
+        List<String> labels = new ArrayList<>(trace.size());
+        for (int i = 0; i < trace.size(); i++) {
+            labels.add(nameExtractor.getEventName(trace.get(i)));
+        }
+        labels = sort(labels, parallel);
+
+        return listToString(labels);
+    }
+
+    private static List sort(List<String> list, Map<String, Set<String>> parallel) {
+        Comparator<String> comparator = new Comparator<String>() {
+            @Override
+            public int compare(String o1, String o2) {
+                Set<String> concurrent = null;
+                if((concurrent = parallel.get(o1)) != null) {
+                    if(concurrent.contains(o2)) {
+                        return o1.compareTo(o2);
+                    }
+                }
+                return 0;
+            }
+        };
+
+        List<String> sorted = new ArrayList<>(list.size());
+        int last = 0;
+        for(int i = 0; i < list.size(); i++) {
+            sorted.add(list.get(i));
+            if(i != 0) {
+                if(comparator.compare(sorted.get(last), sorted.get(i)) == 0) {
+                    Collections.sort(sorted.subList(last, i+1), comparator);
+                }else {
+                    last = i;
+                }
+            }
+        }
+        return sorted;
+    }
 
     public static String convertXTraceToString(XTrace trace, NameExtractor nameExtractor) {
         List<String> labels = new ArrayList<>(trace.size());

@@ -35,30 +35,11 @@ public class XFoldAlignmentBasedFMeasure implements MeasurementAlgorithm {
         this.log = log;
         XLog[] logs = createdXFolds();
 
-        AlignmentBasedFMeasure alignmentBasedFMeasure = new AlignmentBasedFMeasure();
+        XFoldAlignmentBasedFitness xFoldAlignmentBasedFitness = new XFoldAlignmentBasedFitness();
+        XFoldAlignmentBasedPrecision xFoldAlignmentBasedPrecision = new XFoldAlignmentBasedPrecision();
 
-        for(int i = 0; i < fold; i++) {
-            XLog log1 = factory.createLog(log.getAttributes());
-            for (int j = 0; j < fold; j++) {
-                if (j != i) {
-                    log1.addAll(logs[j]);
-                }
-            }
-
-            try {
-                petrinetWithMarking = miningAlgorithm.minePetrinet(pluginContext, logs[i], false);
-
-                Measure measures = alignmentBasedFMeasure.computeMeasurement(pluginContext, xEventClassifier, petrinetWithMarking, miningAlgorithm, log1);
-                Double f = Double.parseDouble(measures.getMetricValue("Alignment-Based Fitness"));
-                fitness += (f != null)?f:0.0;
-
-                Double p = Double.parseDouble(measures.getMetricValue("Alignment-Based ETC Precision"));
-                precision += (p != null)?p:0.0;
-            } catch( Exception e ) { return measure; }
-        }
-
-        fitness = fitness / (double) fold;
-        precision = precision / (double) fold;
+        fitness = xFoldAlignmentBasedFitness.computeMeasurement(pluginContext, xEventClassifier, null, miningAlgorithm, log).getValue();
+        precision = xFoldAlignmentBasedPrecision.computeMeasurement(pluginContext, xEventClassifier, null, miningAlgorithm, log).getValue();
         f_measure = 2*(fitness*precision)/(fitness+precision);
 
         measure.addMeasure(getMeasurementName(), f_measure);
