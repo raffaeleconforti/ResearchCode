@@ -28,7 +28,7 @@ public class StructurednessComplexity implements MeasurementAlgorithm {
         try {
             BPMNDiagram bpmn = PetriNetToBPMNConverter.convert(petrinetWithMarking.getPetrinet(), petrinetWithMarking.getInitialMarking(), petrinetWithMarking.getFinalMarking(), false);
             ComplexityCalculator cc = new ComplexityCalculator(bpmn);
-            measure.addMeasure(getMeasurementName(), cc.computeStructuredness());
+            measure.addMeasure(getAcronym(), cc.computeStructuredness());
             return measure;
         } catch (Exception e) { return measure; }
     }

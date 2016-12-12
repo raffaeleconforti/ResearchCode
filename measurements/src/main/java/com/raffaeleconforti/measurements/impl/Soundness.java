@@ -26,8 +26,8 @@ public class Soundness implements MeasurementAlgorithm {
             Petrinet petrinet = petrinetWithMarking.getPetrinet();
             SoundnessChecker checker = new SoundnessChecker(petrinet);
 
-            if( checker.isSound() ) measure.addMeasure("Sound", "yes");
-            else measure.addMeasure("Sound", "no");
+            if( checker.isSound() ) measure.addMeasure("sound", "yes");
+            else measure.addMeasure("sound", "no");
 
             if( checker.isDead() ) measure.addMeasure("deadlock", "yes");
             if( !checker.isSafe() ) measure.addMeasure("safe", "no");

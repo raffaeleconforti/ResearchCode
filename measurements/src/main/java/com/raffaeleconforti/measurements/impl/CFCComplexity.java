@@ -28,7 +28,7 @@ public class CFCComplexity  implements MeasurementAlgorithm {
         try {
             BPMNDiagram bpmn = PetriNetToBPMNConverter.convert(petrinetWithMarking.getPetrinet(), petrinetWithMarking.getInitialMarking(), petrinetWithMarking.getFinalMarking(), false);
             ComplexityCalculator cc = new ComplexityCalculator(bpmn);
-            measure.addMeasure(getMeasurementName(), cc.computeCFC());
+            measure.addMeasure(getAcronym(), cc.computeCFC());
             return measure;
         } catch( Exception e ) { return measure; }
     }
