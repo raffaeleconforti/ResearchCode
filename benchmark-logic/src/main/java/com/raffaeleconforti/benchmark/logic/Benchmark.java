@@ -142,6 +142,7 @@ public class Benchmark {
                     PetrinetWithMarking petrinetWithMarking = miningAlgorithm.minePetrinet(fakePluginContext, log, false);
                     long execTime = System.currentTimeMillis() - sTime;
                     measures.get(miningAlgorithmName).get(logName).put("_exec-t", Long.toString(execTime));
+                    System.out.println("DEBUG - mining time: " + execTime + "ms");
 
                     ExportAcceptingPetriNetPlugin exportAcceptingPetriNetPlugin = new ExportAcceptingPetriNetPlugin();
                     exportAcceptingPetriNetPlugin.export(
