@@ -60,7 +60,7 @@ public class XFoldAlignmentBasedPrecision implements MeasurementAlgorithm {
     }
 
     @Override
-    public String getAcronym() { return "prec.(a)("+fold+"-f)"; }
+    public String getAcronym() { return "(a)("+fold+"-f)prec."; }
 
     private XLog[] createdXFolds() {
 

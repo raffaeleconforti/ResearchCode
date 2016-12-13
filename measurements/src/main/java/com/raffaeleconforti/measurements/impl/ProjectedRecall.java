@@ -56,5 +56,5 @@ public class ProjectedRecall implements MeasurementAlgorithm {
     }
 
     @Override
-    public String getAcronym() {return "recall(p)";}
+    public String getAcronym() {return "(p)recall";}
 }

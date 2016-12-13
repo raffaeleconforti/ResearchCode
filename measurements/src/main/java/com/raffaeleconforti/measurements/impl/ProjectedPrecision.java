@@ -55,5 +55,5 @@ public class ProjectedPrecision implements MeasurementAlgorithm {
     }
 
     @Override
-    public String getAcronym() {return "precision(p)";}
+    public String getAcronym() {return "(p)precision";}
 }

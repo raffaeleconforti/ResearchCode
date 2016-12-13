@@ -65,5 +65,5 @@ public class AlignmentBasedPrecision implements MeasurementAlgorithm {
     }
 
     @Override
-    public String getAcronym() {return "precision(a)";}
+    public String getAcronym() {return "(a)precision";}
 }

@@ -61,7 +61,7 @@ public class XFoldAlignmentBasedFitness implements MeasurementAlgorithm {
     }
 
     @Override
-    public String getAcronym() { return "fit.(a)("+fold+"-f)"; }
+    public String getAcronym() { return "(a)("+fold+"-f)fit."; }
 
     private XLog[] createdXFolds() {
 

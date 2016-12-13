@@ -12,12 +12,9 @@ import org.processmining.contexts.uitopia.UIPluginContext;
 import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
 
 /**
- * Created by Adriano on 19/10/2016.
+ * Created by Adriano on 13/12/2016.
  */
-public class CFCComplexity  implements MeasurementAlgorithm {
-
-    @Override
-    public boolean isMultimetrics() { return true; }
+public class BPMNComplexity implements MeasurementAlgorithm {
 
     @Override
     public Measure computeMeasurement(UIPluginContext pluginContext, XEventClassifier xEventClassifier, PetrinetWithMarking petrinetWithMarking, MiningAlgorithm miningAlgorithm, XLog log) {
@@ -28,16 +25,26 @@ public class CFCComplexity  implements MeasurementAlgorithm {
         try {
             BPMNDiagram bpmn = PetriNetToBPMNConverter.convert(petrinetWithMarking.getPetrinet(), petrinetWithMarking.getInitialMarking(), petrinetWithMarking.getFinalMarking(), false);
             ComplexityCalculator cc = new ComplexityCalculator(bpmn);
-            measure.addMeasure(getAcronym(), cc.computeCFC());
+            measure.addMeasure("size", cc.computeSize());
+            measure.addMeasure("cfc", cc.computeCFC());
+            measure.addMeasure("struct.", cc.computeStructuredness());
             return measure;
         } catch( Exception e ) { return measure; }
+
     }
 
     @Override
     public String getMeasurementName() {
-        return "Control Flow Complexity";
+        return "Complexity on BPMN Model";
     }
 
     @Override
-    public String getAcronym() {return "cfc";}
+    public String getAcronym() {
+        return "size, cfc, struct.";
+    }
+
+    @Override
+    public boolean isMultimetrics() {
+        return true;
+    }
 }

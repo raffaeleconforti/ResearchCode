@@ -42,9 +42,9 @@ public class XFoldAlignmentBasedFMeasure implements MeasurementAlgorithm {
         precision = xFoldAlignmentBasedPrecision.computeMeasurement(pluginContext, xEventClassifier, null, miningAlgorithm, log).getValue();
         f_measure = 2*(fitness*precision)/(fitness+precision);
 
-        measure.addMeasure(getAcronym(), f_measure);
-        measure.addMeasure(xFoldAlignmentBasedFitness.getAcronym(), fitness);
-        measure.addMeasure(xFoldAlignmentBasedPrecision.getAcronym(), precision);
+        measure.addMeasure(getAcronym(), String.format("%.2f", f_measure));
+        measure.addMeasure(xFoldAlignmentBasedFitness.getAcronym(), String.format("%.2f", fitness));
+        measure.addMeasure(xFoldAlignmentBasedPrecision.getAcronym(), String.format("%.2f", precision));
 
         return measure;
     }
@@ -55,7 +55,7 @@ public class XFoldAlignmentBasedFMeasure implements MeasurementAlgorithm {
     }
 
     @Override
-    public String getAcronym() { return "f-M.(a)("+fold+"-f)"; }
+    public String getAcronym() { return "(a)("+fold+"-f)f-meas."; }
 
     private XLog[] createdXFolds() {
 

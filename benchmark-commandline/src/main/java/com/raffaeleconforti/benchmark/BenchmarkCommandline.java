@@ -212,7 +212,7 @@ public class BenchmarkCommandline {
 
         index = 0;
         System.out.println("Measurement algorithms available: ");
-        for(MeasurementAlgorithm ma : measurementAlgorithms) System.out.println(index++ + " - " + ma.getMeasurementName() + " (" + ma.getAcronym() + ")");
+        for(MeasurementAlgorithm ma : measurementAlgorithms) System.out.println(index++ + " - " + ma.getMeasurementName() + " : " + ma.getAcronym());
 
     }
 

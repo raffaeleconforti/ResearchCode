@@ -15,6 +15,7 @@ import org.deckfour.xes.classification.XEventNameClassifier;
 import org.deckfour.xes.factory.XFactoryNaiveImpl;
 import org.deckfour.xes.in.XesXmlGZIPParser;
 import org.deckfour.xes.model.XLog;
+import org.eclipse.collections.impl.list.mutable.ArrayListAdapter;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 import org.processmining.acceptingpetrinet.models.impl.AcceptingPetriNetImpl;
@@ -73,7 +74,7 @@ public class Benchmark {
 
         // pruning the list of miners
         if( selectedMiners != null && !selectedMiners.isEmpty() ) {
-            System.out.println("DEBUG - pruning miners");
+//            System.out.println("DEBUG - pruning miners");
             Collections.sort(selectedMiners);
             Collections.reverse(selectedMiners);
             for(int i = miningAlgorithms.size()-1; i >= 0; i--) {
@@ -94,7 +95,7 @@ public class Benchmark {
 
         // pruning the list of metrics
         if( selectedMetrics != null && !selectedMetrics.isEmpty() ) {
-            System.out.println("DEBUG - pruning metrics");
+//            System.out.println("DEBUG - pruning metrics");
             Collections.sort(selectedMetrics);
             Collections.reverse(selectedMetrics);
             for(int i = measurementAlgorithms.size()-1; i >= 0; i--) {
@@ -122,7 +123,7 @@ public class Benchmark {
 
             String miningAlgorithmName = miningAlgorithm.getAcronym();
             String measurementAlgorithmName = "NULL";
-            System.out.println("DEBUG - measuring on mining algorithm: " + miningAlgorithmName);
+            System.out.println("DEBUG - mining with algorithm: " + miningAlgorithmName);
 
             /* creating the directory for the results*/
             File maDir = new File("./results/" + miningAlgorithmName);
@@ -130,7 +131,7 @@ public class Benchmark {
 
             for( String logName : inputLogs.keySet() ) {
                 log = loadLog(inputLogs.get(logName));
-                System.out.println("DEBUG - measuring on log: " + logName);
+                System.out.println("DEBUG - log: " + logName);
                 // adding an entry on the measures table for this miner
                 if( !measures.containsKey(miningAlgorithmName) )measures.put(miningAlgorithmName, new HashMap<>());
                 measures.get(miningAlgorithmName).put(logName, new HashMap<>());
@@ -140,7 +141,7 @@ public class Benchmark {
                     long sTime = System.currentTimeMillis();
                     PetrinetWithMarking petrinetWithMarking = miningAlgorithm.minePetrinet(fakePluginContext, log, false);
                     long execTime = System.currentTimeMillis() - sTime;
-                    measures.get(miningAlgorithmName).get(logName).put("ex-t", Long.toString(execTime));
+                    measures.get(miningAlgorithmName).get(logName).put("_exec-t", Long.toString(execTime));
 
                     ExportAcceptingPetriNetPlugin exportAcceptingPetriNetPlugin = new ExportAcceptingPetriNetPlugin();
                     exportAcceptingPetriNetPlugin.export(
@@ -166,7 +167,7 @@ public class Benchmark {
                             }
 
                             if( execTime > MAX_TIME)
-                                measures.get(miningAlgorithmName).get(logName).put(measurementAlgorithmName + ":et", Long.toString(execTime));
+                                measures.get(miningAlgorithmName).get(logName).put(measurementAlgorithmName + ":tor", Long.toString(execTime));
                         } catch (Error e) {
                             measures.get(miningAlgorithmName).get(logName).put(measurementAlgorithmName, "-ERR");
                             System.out.println("ERROR - measuring: " + miningAlgorithmName + " : " + logName + " : " + measurementAlgorithmName);
@@ -187,7 +188,7 @@ public class Benchmark {
                 }
 
                 if(old != null) old.delete();
-                pathname = "./results/" + miningAlgorithmName + "/" + logName + "_" + Long.toString(System.currentTimeMillis()) + ".xls";
+                pathname = "./results/" + miningAlgorithmName + "/upto_" + logName + "_" + Long.toString(System.currentTimeMillis()) + ".xls";
                 old = new File(pathname);
                 publishResults(pathname);
             }
@@ -214,9 +215,9 @@ public class Benchmark {
                     while( entries.hasMoreElements() ) {
                         logName = entries.nextElement().getName();
                         if( logName.startsWith(path) && !logName.equalsIgnoreCase(path) ) {
-                            System.out.println("DEBUG - name: " + logName);
+                            System.out.println("DEBUG - found log: " + logName);
                             in = classLoader.getResourceAsStream(logName);
-                            System.out.println("DEBUG - stream size: " + in.available());
+//                            System.out.println("DEBUG - stream size: " + in.available());
                             inputLogs.put(logName.replaceAll(".*/", ""), in);
                         }
                     }
@@ -233,7 +234,7 @@ public class Benchmark {
                     for( File file : listOfFiles )
                         if( file.isFile() ) {
                             logName = file.getPath();
-                            System.out.println("DEBUG - name: " + logName);
+                            System.out.println("DEBUG - found log: " + logName);
                             inputLogs.put(file.getName(), logName);
                         }
                 } else {
@@ -260,7 +261,7 @@ public class Benchmark {
     }
 
     private void publishResults(String filename) {
-        System.out.println("DEBUG - starting generation of the excel file.");
+//        System.out.println("DEBUG - starting generation of the excel file.");
         try {
             HSSFWorkbook workbook = new HSSFWorkbook();
             int rowCounter;
@@ -273,6 +274,7 @@ public class Benchmark {
                 rowCounter = 0;
 
                 HSSFSheet sheet = workbook.createSheet(miningAlgorithmName);
+                sheet.setDefaultColumnWidth(12);
                 HSSFRow rowhead = sheet.createRow((short) rowCounter);
                 rowCounter++;
 
@@ -286,7 +288,11 @@ public class Benchmark {
                     row.createCell(cellCounter).setCellValue(logName);
                     cellCounter++;
 
-                    for( String metricName : measures.get(miningAlgorithmName).get(logName).keySet() ) {
+                    ArrayList<String> metrics = new ArrayList<>(measures.get(miningAlgorithmName).get(logName).keySet());
+                    Collections.sort(metrics);
+
+                    for( int i = 0; i < metrics.size(); i++ ) {
+                        String metricName = metrics.get(i);
                         if( generateHead ) rowhead.createCell(cellCounter).setCellValue(metricName);
                         row.createCell(cellCounter).setCellValue(measures.get(miningAlgorithmName).get(logName).get(metricName));
                         cellCounter++;
@@ -298,7 +304,7 @@ public class Benchmark {
             FileOutputStream fileOut = new FileOutputStream(filename);
             workbook.write(fileOut);
             fileOut.close();
-            System.out.println("DEBUG - generation of the excel sheet completed.");
+            System.out.println("DEBUG - results exported to: " + filename);
         } catch ( Exception e ) {
             System.out.println("ERROR - something went wrong while writing the excel sheet: " + e.getMessage());
             e.printStackTrace();

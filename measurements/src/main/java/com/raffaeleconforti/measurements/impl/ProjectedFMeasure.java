@@ -59,5 +59,5 @@ public class ProjectedFMeasure implements MeasurementAlgorithm {
     }
 
     @Override
-    public String getAcronym() {return "f-measure(p)";}
+    public String getAcronym() {return "(p)f-measure";}
 }
