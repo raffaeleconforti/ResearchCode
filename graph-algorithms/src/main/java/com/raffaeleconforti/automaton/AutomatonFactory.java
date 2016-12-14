@@ -1,12 +1,14 @@
 package com.raffaeleconforti.automaton;
 
 import com.raffaeleconforti.log.util.NameExtractor;
+import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.deckfour.xes.classification.XEventClassifier;
 import org.deckfour.xes.model.XEvent;
 import org.deckfour.xes.model.XLog;
 import org.deckfour.xes.model.XTrace;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -19,6 +21,38 @@ public class AutomatonFactory {
 
     public AutomatonFactory(XEventClassifier xEventClassifier) {
         nameExtractor = new NameExtractor(xEventClassifier);
+    }
+
+    public Automaton<Integer> generate(List<IntArrayList> log) {
+        Automaton<Integer> automaton = new Automaton<>();
+
+        Map<Node, Node> map = new UnifiedMap<Node, Node>();
+        for(IntArrayList t : log) {
+            for (int i = 0; i < t.size(); i++) {
+                int e = t.get(i);
+                Node n;
+                if((n = map.get(new Node<>(e))) == null) {
+                    n = new Node<>(e);
+                    map.put(n, n);
+                }
+                automaton.addNode(n);
+            }
+        }
+
+        for(IntArrayList t : log) {
+            for (int i = 0; i < t.size(); i++) {
+                int e = t.get(i);
+                if(i < t.size() - 1) {
+                    int e1 = t.get(i + 1);
+                    Node n = map.get(new Node<>(e));
+                    Node n1 = map.get(new Node<>(e1));
+
+                    automaton.addEdge(n, n1);
+                }
+            }
+        }
+
+        return automaton;
     }
 
     public Automaton generate(XLog log) {
