@@ -93,4 +93,7 @@ public class FodinaAlgorithmWrapper implements MiningAlgorithm {
         return "Fodina Miner";
     }
 
+    @Override
+    public String getAcronym() { return "FO";}
+
 }

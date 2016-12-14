@@ -207,12 +207,12 @@ public class BenchmarkCommandline {
 
         index = 0;
         System.out.println("Mining algorithms available: ");
-        for(MiningAlgorithm ma : miningAlgorithms) System.out.println(index++ + " - " + ma.getAlgorithmName());
+        for(MiningAlgorithm ma : miningAlgorithms) System.out.println(index++ + " - " + ma.getAlgorithmName() + " (" + ma.getAcronym() + ")");
         System.out.println();
 
         index = 0;
         System.out.println("Measurement algorithms available: ");
-        for(MeasurementAlgorithm ma : measurementAlgorithms) System.out.println(index++ + " - " + ma.getMeasurementName());
+        for(MeasurementAlgorithm ma : measurementAlgorithms) System.out.println(index++ + " - " + ma.getMeasurementName() + " : " + ma.getAcronym());
 
     }
 

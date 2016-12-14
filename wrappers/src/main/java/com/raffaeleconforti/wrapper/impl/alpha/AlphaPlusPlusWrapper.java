@@ -62,4 +62,7 @@ public class AlphaPlusPlusWrapper implements MiningAlgorithm {
     public String getAlgorithmName() {
         return "Alpha Miner Plus Plus";
     }
+
+    @Override
+    public String getAcronym() { return "A++";}
 }

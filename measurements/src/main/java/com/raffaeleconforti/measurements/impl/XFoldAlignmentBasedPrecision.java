@@ -59,6 +59,9 @@ public class XFoldAlignmentBasedPrecision implements MeasurementAlgorithm {
         return fold+"-Fold Alignment-Based ETC Precision";
     }
 
+    @Override
+    public String getAcronym() { return "(a)("+fold+"-f)prec."; }
+
     private XLog[] createdXFolds() {
 
         if(log.size() < fold) fold = log.size();

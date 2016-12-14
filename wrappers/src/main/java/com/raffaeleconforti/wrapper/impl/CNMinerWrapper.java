@@ -64,4 +64,7 @@ public class CNMinerWrapper implements MiningAlgorithm {
     public String getAlgorithmName() {
         return "CN Miner";
     }
+
+    @Override
+    public String getAcronym() { return "CNM";}
 }

@@ -60,6 +60,9 @@ public class XFoldAlignmentBasedFitness implements MeasurementAlgorithm {
         return fold+"-Fold Alignment-Based Fitness";
     }
 
+    @Override
+    public String getAcronym() { return "(a)("+fold+"-f)fit."; }
+
     private XLog[] createdXFolds() {
 
         if(log.size() < fold) fold = log.size();

@@ -78,4 +78,6 @@ public class InductiveMinerIMWrapper implements MiningAlgorithm {
         return "Inductive Miner IM";
     }
 
+    @Override
+    public String getAcronym() { return "IM";}
 }

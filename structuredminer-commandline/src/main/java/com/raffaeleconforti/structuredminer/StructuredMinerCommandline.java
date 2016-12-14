@@ -1,6 +1,6 @@
 package com.raffaeleconforti.structuredminer;
 
-import au.edu.qut.structuring.ui.iBPStructUIResult;
+import au.edu.qut.bpmn.structuring.ui.iBPStructUIResult;
 import com.raffaeleconforti.context.FakePluginContext;
 import com.raffaeleconforti.log.util.LogImporter;
 import com.raffaeleconforti.structuredminer.miner.StructuredMiner;

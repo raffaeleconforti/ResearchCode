@@ -63,4 +63,7 @@ public class AlignmentBasedPrecision implements MeasurementAlgorithm {
     public String getMeasurementName() {
         return "Alignment-Based ETC Precision";
     }
+
+    @Override
+    public String getAcronym() {return "(a)precision";}
 }

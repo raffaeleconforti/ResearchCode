@@ -1,6 +1,6 @@
 package com.raffaeleconforti.bpmnminer.commandline;
 
-import au.edu.qut.structuring.StructuringService;
+import au.edu.qut.bpmn.structuring.StructuringService;
 import com.raffaeleconforti.bpmnminer.exception.ExecutionCancelledException;
 import com.raffaeleconforti.bpmnminer.commandline.preprocessing.functionaldependencies.ui.DiscoverERModel_UI;
 import com.raffaeleconforti.bpmnminer.commandline.subprocessminer.ui.EntityDiscoverer_UI;

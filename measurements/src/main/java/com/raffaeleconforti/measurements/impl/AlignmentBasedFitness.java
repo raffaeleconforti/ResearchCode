@@ -45,6 +45,9 @@ public class AlignmentBasedFitness implements MeasurementAlgorithm {
         return "Alignment-Based Fitness";
     }
 
+    @Override
+    public String getAcronym() {return "(a)fitness";}
+
     public PNRepResult computeAlignment(PluginContext pluginContext, XEventClassifier xEventClassifier, PetrinetWithMarking petrinetWithMarking, XLog log) {
         if(petrinetWithMarking == null) return null;
 

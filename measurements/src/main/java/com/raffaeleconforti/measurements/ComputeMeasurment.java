@@ -1,7 +1,7 @@
 package com.raffaeleconforti.measurements;
 
-import au.edu.qut.metrics.ComplexityCalculator;
-import au.edu.qut.structuring.StructuringService;
+import au.edu.qut.bpmn.metrics.ComplexityCalculator;
+import au.edu.qut.bpmn.structuring.StructuringService;
 import com.raffaeleconforti.conversion.bpmn.BPMNToPetriNetConverter;
 import com.raffaeleconforti.conversion.petrinet.PetriNetToBPMNConverter;
 import com.raffaeleconforti.measurements.ui.computemeasurement.SelectMinerUICM;

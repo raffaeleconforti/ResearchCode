@@ -36,14 +36,14 @@ public class Measure {
     }
 
     public void addMeasure(String metric, String value) {
+        measures.put(metric, value);
         try { if( this.value == Double.NaN ) this.value = Double.valueOf(value); }
         catch( NumberFormatException nfe ) { this.value = Double.NaN; }
-        measures.put(metric, value);
     }
 
     public void addMeasure(String metric, double value) {
-        if( this.value == Double.NaN ) this.value = value;
         measures.put(metric, Double.toString(value));
+        if( this.value == Double.NaN ) this.value = value;
     }
 
     public void setValue(double value) {

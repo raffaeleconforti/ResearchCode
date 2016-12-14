@@ -111,4 +111,6 @@ public class AlphaDollarAlgorithmWrapper implements MiningAlgorithm {
         return petrinet;
     }
 
+    @Override
+    public String getAcronym() { return "A$";}
 }

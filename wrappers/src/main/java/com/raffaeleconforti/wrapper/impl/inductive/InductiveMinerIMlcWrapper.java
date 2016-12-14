@@ -67,7 +67,10 @@ public class InductiveMinerIMlcWrapper implements MiningAlgorithm {
 
     @Override
     public String getAlgorithmName() {
-        return "Inductive Miner - life cycle (IMlc)";
+        return "Inductive Miner - life cycle";
     }
+
+    @Override
+    public String getAcronym() { return "IMlc";}
 
 }

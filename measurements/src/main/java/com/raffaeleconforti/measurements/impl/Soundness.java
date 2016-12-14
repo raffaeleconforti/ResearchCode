@@ -23,15 +23,17 @@ public class Soundness implements MeasurementAlgorithm {
         if(petrinetWithMarking == null) return measure;
 
         try {
+            String soundness;
             Petrinet petrinet = petrinetWithMarking.getPetrinet();
             SoundnessChecker checker = new SoundnessChecker(petrinet);
 
-            if( checker.isSound() ) measure.addMeasure("Sound", "yes");
-            else measure.addMeasure("Sound", "no");
-
-            if( checker.isDead() ) measure.addMeasure("deadlock", "yes");
-            if( !checker.isSafe() ) measure.addMeasure("safe", "no");
-
+            if( checker.isSound() ) soundness = "sound";
+            else {
+                soundness = "unsound";
+                if( checker.isDead() ) soundness = "deadlock";
+                if( !checker.isSafe() ) soundness = "unbounded";
+            }
+            measure.addMeasure(getAcronym(), soundness);
             return measure;
         } catch( Exception e ) { return measure; }
     }
@@ -40,6 +42,9 @@ public class Soundness implements MeasurementAlgorithm {
     public String getMeasurementName() {
         return "Soundness";
     }
+
+    @Override
+    public String getAcronym() {return "soundness";}
 
     @Override
     public boolean isMultimetrics() {

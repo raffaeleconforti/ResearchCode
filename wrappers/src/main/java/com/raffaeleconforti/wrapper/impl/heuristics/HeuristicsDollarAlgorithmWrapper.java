@@ -65,11 +65,6 @@ public class HeuristicsDollarAlgorithmWrapper implements MiningAlgorithm {
         return PetriNetToBPMNConverter.convert(petrinetWithMarking.getPetrinet(), petrinetWithMarking.getInitialMarking(), petrinetWithMarking.getFinalMarking(), true);
     }
 
-    @Override
-    public String getAlgorithmName() {
-        return "Heuristics Dollar";
-    }
-
     private Petrinet getPetrinet(PetriNet result) {
         Petrinet petrinet = new PetrinetImpl("Alpha Dollar");
         UnifiedMap<org.processmining.framework.models.petrinet.Transition, Transition> transitionUnifiedMap = new UnifiedMap<>();
@@ -102,4 +97,11 @@ public class HeuristicsDollarAlgorithmWrapper implements MiningAlgorithm {
         return petrinet;
     }
 
+    @Override
+    public String getAlgorithmName() {
+        return "Heuristics Dollar";
+    }
+
+    @Override
+    public String getAcronym() { return "HM$";}
 }

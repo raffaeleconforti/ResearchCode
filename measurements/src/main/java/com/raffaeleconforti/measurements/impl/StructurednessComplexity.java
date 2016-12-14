@@ -1,6 +1,6 @@
 package com.raffaeleconforti.measurements.impl;
 
-import au.edu.qut.metrics.ComplexityCalculator;
+import au.edu.qut.bpmn.metrics.ComplexityCalculator;
 import com.raffaeleconforti.conversion.petrinet.PetriNetToBPMNConverter;
 import com.raffaeleconforti.measurements.Measure;
 import com.raffaeleconforti.measurements.MeasurementAlgorithm;
@@ -28,7 +28,7 @@ public class StructurednessComplexity implements MeasurementAlgorithm {
         try {
             BPMNDiagram bpmn = PetriNetToBPMNConverter.convert(petrinetWithMarking.getPetrinet(), petrinetWithMarking.getInitialMarking(), petrinetWithMarking.getFinalMarking(), false);
             ComplexityCalculator cc = new ComplexityCalculator(bpmn);
-            measure.addMeasure(getMeasurementName(), cc.computeStructuredness());
+            measure.addMeasure(getAcronym(), cc.computeStructuredness());
             return measure;
         } catch (Exception e) { return measure; }
     }
@@ -37,4 +37,7 @@ public class StructurednessComplexity implements MeasurementAlgorithm {
     public String getMeasurementName() {
         return "Structuredness";
     }
+
+    @Override
+    public String getAcronym() {return "struct.";}
 }

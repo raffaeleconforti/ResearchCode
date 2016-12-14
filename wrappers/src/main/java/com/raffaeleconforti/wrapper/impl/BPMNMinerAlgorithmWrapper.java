@@ -1,6 +1,6 @@
 package com.raffaeleconforti.wrapper.impl;
 
-import au.edu.qut.structuring.StructuringService;
+import au.edu.qut.bpmn.structuring.StructuringService;
 import com.raffaeleconforti.conversion.bpmn.BPMNToPetriNetConverter;
 import com.raffaeleconforti.conversion.petrinet.PetriNetToBPMNConverter;
 import com.raffaeleconforti.wrapper.LogPreprocessing;
@@ -72,4 +72,7 @@ public class BPMNMinerAlgorithmWrapper implements MiningAlgorithm {
     public String getAlgorithmName() {
         return "BPMNMiner";
     }
+
+    @Override
+    public String getAcronym() { return "BPMNMiner";}
 }

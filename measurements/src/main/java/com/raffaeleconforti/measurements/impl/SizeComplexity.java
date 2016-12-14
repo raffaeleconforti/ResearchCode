@@ -1,6 +1,6 @@
 package com.raffaeleconforti.measurements.impl;
 
-import au.edu.qut.metrics.ComplexityCalculator;
+import au.edu.qut.bpmn.metrics.ComplexityCalculator;
 import com.raffaeleconforti.conversion.petrinet.PetriNetToBPMNConverter;
 import com.raffaeleconforti.measurements.Measure;
 import com.raffaeleconforti.measurements.MeasurementAlgorithm;
@@ -28,7 +28,7 @@ public class SizeComplexity  implements MeasurementAlgorithm {
         try {
             BPMNDiagram bpmn = PetriNetToBPMNConverter.convert(petrinetWithMarking.getPetrinet(), petrinetWithMarking.getInitialMarking(), petrinetWithMarking.getFinalMarking(), false);
             ComplexityCalculator cc = new ComplexityCalculator(bpmn);
-            measure.addMeasure(getMeasurementName(), cc.computeSize());
+            measure.addMeasure(getAcronym(), cc.computeSize());
             return measure;
         } catch( Exception e ) { return measure; }
     }
@@ -37,4 +37,7 @@ public class SizeComplexity  implements MeasurementAlgorithm {
     public String getMeasurementName() {
         return "Size";
     }
+
+    @Override
+    public String getAcronym() {return "size";}
 }

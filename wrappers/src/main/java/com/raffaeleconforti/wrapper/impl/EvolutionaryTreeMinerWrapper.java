@@ -101,4 +101,7 @@ public class EvolutionaryTreeMinerWrapper implements MiningAlgorithm {
     public String getAlgorithmName() {
         return "Evolutionary Tree Miner";
     }
+
+    @Override
+    public String getAcronym() { return "ETM";}
 }
