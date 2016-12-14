@@ -1,6 +1,7 @@
 package com.raffaeleconforti.benchmark.logic;
 
 import com.raffaeleconforti.context.FakePluginContext;
+import com.raffaeleconforti.log.util.LogCloner;
 import com.raffaeleconforti.measurements.Measure;
 import com.raffaeleconforti.measurements.MeasurementAlgorithm;
 import com.raffaeleconforti.wrapper.MiningAlgorithm;
@@ -41,6 +42,7 @@ public class Benchmark {
     private boolean defaultLogs;
     private String extLocation;
     private Map<String, Object> inputLogs;
+    private LogCloner logCloner = new LogCloner(new XFactoryNaiveImpl());
 
     private Set<String> packages = new UnifiedSet<>();
 
@@ -139,7 +141,8 @@ public class Benchmark {
                 try {
                     // mining the petrinet
                     long sTime = System.currentTimeMillis();
-                    PetrinetWithMarking petrinetWithMarking = miningAlgorithm.minePetrinet(fakePluginContext, log, false);
+                    XLog miningLog = logCloner.cloneLog(log);
+                    PetrinetWithMarking petrinetWithMarking = miningAlgorithm.minePetrinet(fakePluginContext, miningLog, false);
                     long execTime = System.currentTimeMillis() - sTime;
                     measures.get(miningAlgorithmName).get(logName).put("_exec-t", Long.toString(execTime));
                     System.out.println("DEBUG - mining time: " + execTime + "ms");
@@ -155,7 +158,8 @@ public class Benchmark {
                         measurementAlgorithmName = measurementAlgorithm.getAcronym();
                         try {
                             sTime = System.currentTimeMillis();
-                            Measure measure = measurementAlgorithm.computeMeasurement(fakePluginContext, xEventClassifier, petrinetWithMarking, miningAlgorithm, log);
+                            XLog measuringLog = logCloner.cloneLog(log);
+                            Measure measure = measurementAlgorithm.computeMeasurement(fakePluginContext, xEventClassifier, petrinetWithMarking, miningAlgorithm, measuringLog);
                             execTime = System.currentTimeMillis() - sTime;
                             if (measurementAlgorithm.isMultimetrics()) {
                                 for (String metric : measure.getMetrics()) {
