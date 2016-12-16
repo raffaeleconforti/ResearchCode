@@ -98,6 +98,11 @@ public class BenchmarkCommandline {
 
         int icmd = 0;
 
+        if( (args.length == 3) && (args[0].equalsIgnoreCase("-jfitnprec"))) {
+            Benchmark.computeFitnessNPrecision(args[1], args[2]);
+            return;
+        }
+
         if( (args.length != 0) && (args[icmd].equalsIgnoreCase("-help"))) {
             showHelp();
             return;
