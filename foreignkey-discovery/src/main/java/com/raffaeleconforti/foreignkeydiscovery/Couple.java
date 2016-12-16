@@ -1,5 +1,7 @@
 package com.raffaeleconforti.foreignkeydiscovery;
 
+import com.google.common.hash.HashCode;
+
 /**
  * Created by Raffaele Conforti on 14/10/14.
  */
@@ -39,7 +41,11 @@ public class Couple<T extends Comparable, D extends Comparable> {
     @Override
     public int hashCode() {
         if(hashCode == null) {
-            hashCode = firstElement.hashCode() + secondElement.hashCode();
+            if(firstElement instanceof String && secondElement instanceof String) {
+                hashCode = (firstElement + " " + secondElement).hashCode();
+            }else {
+                hashCode = firstElement.hashCode() + secondElement.hashCode();
+            }
         }
         return hashCode;
     }

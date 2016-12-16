@@ -2,6 +2,9 @@ package com.raffaeleconforti.log.util;
 
 import org.deckfour.xes.extension.std.XTimeExtension;
 import org.deckfour.xes.model.XTrace;
+import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
+import org.eclipse.collections.impl.map.mutable.primitive.IntObjectHashMap;
+import org.eclipse.collections.impl.set.mutable.primitive.IntHashSet;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -13,6 +16,42 @@ public class TraceToString {
 
     private static final XTimeExtension xte = XTimeExtension.instance();
 
+    public static String convertXTraceToString(XTrace trace, NameExtractor nameExtractor, String skipLabel, Comparator<String> comparator) {
+        List<String> labels = new ArrayList<>(trace.size());
+        for (int i = 0; i < trace.size(); i++) {
+            String name = nameExtractor.getEventName(trace.get(i));
+            if(!name.equals(skipLabel)) {
+                labels.add(name);
+            }
+        }
+        labels = sort(labels, comparator);
+
+        return listToString(labels);
+    }
+
+    public static String convertXTraceToString(XTrace trace, NameExtractor nameExtractor, String skipLabel, Map<String, Set<String>> parallel) {
+        List<String> labels = new ArrayList<>(trace.size());
+        for (int i = 0; i < trace.size(); i++) {
+            String name = nameExtractor.getEventName(trace.get(i));
+            if(!name.equals(skipLabel)) {
+                labels.add(name);
+            }
+        }
+        labels = sort(labels, parallel);
+
+        return listToString(labels);
+    }
+
+    public static String convertXTraceToString(XTrace trace, NameExtractor nameExtractor, Comparator<String> comparator) {
+        List<String> labels = new ArrayList<>(trace.size());
+        for (int i = 0; i < trace.size(); i++) {
+            labels.add(nameExtractor.getEventName(trace.get(i)));
+        }
+        labels = sort(labels, comparator);
+
+        return listToString(labels);
+    }
+
     public static String convertXTraceToString(XTrace trace, NameExtractor nameExtractor, Map<String, Set<String>> parallel) {
         List<String> labels = new ArrayList<>(trace.size());
         for (int i = 0; i < trace.size(); i++) {
@@ -21,6 +60,23 @@ public class TraceToString {
         labels = sort(labels, parallel);
 
         return listToString(labels);
+    }
+
+    private static List sort(List<String> list, Comparator<String> comparator) {
+        List<String> sorted = new ArrayList<>(list.size());
+        int last = 0;
+        for(int i = 0; i < list.size(); i++) {
+            sorted.add(list.get(i));
+            if(i != 0) {
+                if(comparator.compare(sorted.get(last), sorted.get(i)) == 0) {
+                    if(last != i - 1) {
+                        Collections.sort(sorted.subList(last, i), comparator);
+                    }
+                    last = i;
+                }
+            }
+        }
+        return sorted;
     }
 
     private static List sort(List<String> list, Map<String, Set<String>> parallel) {
@@ -37,19 +93,7 @@ public class TraceToString {
             }
         };
 
-        List<String> sorted = new ArrayList<>(list.size());
-        int last = 0;
-        for(int i = 0; i < list.size(); i++) {
-            sorted.add(list.get(i));
-            if(i != 0) {
-                if(comparator.compare(sorted.get(last), sorted.get(i)) == 0) {
-                    Collections.sort(sorted.subList(last, i+1), comparator);
-                }else {
-                    last = i;
-                }
-            }
-        }
-        return sorted;
+        return sort(list, comparator);
     }
 
     public static String convertXTraceToString(XTrace trace, NameExtractor nameExtractor) {
@@ -92,11 +136,59 @@ public class TraceToString {
         return  listToString(labels);
     }
 
+    public static String listToString(IntArrayList list, Comparator<Integer> comparator) {
+        List<Integer> labels = new ArrayList<>(list.size());
+        for (int i = 0; i < list.size(); i++) {
+            labels.add(list.get(i));
+        }
+        labels = sortIntList(labels, comparator);
+
+        return intListToString(labels);
+    }
+
+    public static String listToString(IntArrayList list, int skipLabel, Comparator<Integer> comparator) {
+        List<Integer> labels = new ArrayList<>(list.size());
+        for (int i = 0; i < list.size(); i++) {
+            int name = list.get(i);
+            if(name != skipLabel) {
+                labels.add(name);
+            }
+        }
+        labels = sortIntList(labels, comparator);
+
+        return intListToString(labels);
+    }
+
+    public static String intListToString(List<Integer> list) {
+        StringBuffer sb = new StringBuffer();
+        for(int event : list) {
+            sb.append(event).append(", ");
+        }
+        return sb.toString();
+    }
+
     public static String listToString(List<String> list) {
         StringBuffer sb = new StringBuffer();
         for(String event : list) {
             sb.append(event).append(", ");
         }
         return sb.toString();
+    }
+
+    private static List sortIntList(List<Integer> list, Comparator<Integer> comparator) {
+        List<Integer> sorted = new ArrayList<>(list.size());
+        int last = 0;
+        for(int i = 0; i < list.size(); i++) {
+            sorted.add(list.get(i));
+            if(i != 0) {
+                if(comparator.compare(sorted.get(last), sorted.get(i)) == 0) {
+                    if(last != i - 1) {
+                        Collections.sort(sorted.subList(last, i), comparator);
+                    }
+                    last = i;
+                }
+            }
+        }
+        return sorted;
     }
 }
