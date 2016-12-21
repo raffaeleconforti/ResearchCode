@@ -7,6 +7,8 @@ import com.raffaeleconforti.measurements.MeasurementAlgorithm;
 import com.raffaeleconforti.measurements.impl.AlignmentBasedFMeasure;
 import com.raffaeleconforti.wrapper.MiningAlgorithm;
 import com.raffaeleconforti.wrapper.PetrinetWithMarking;
+import com.raffaeleconforti.wrapper.StructuredMinerAlgorithmWrapper;
+import com.raffaeleconforti.wrapper.StructuredMinerAlgorithmWrapperHM52;
 import com.raffaeleconforti.wrapper.impl.heuristics.Heuristics52AlgorithmWrapper;
 import com.raffaeleconforti.wrapper.impl.inductive.InductiveMinerIMaWrapper;
 import com.raffaeleconforti.wrapper.impl.inductive.InductiveMinerIMfWrapper;
@@ -350,6 +352,7 @@ public class Benchmark {
         HashSet<MiningAlgorithm> miningAlgorithms = new HashSet<>();
         miningAlgorithms.add(new Heuristics52AlgorithmWrapper());
         miningAlgorithms.add(new InductiveMinerIMfWrapper());
+        miningAlgorithms.add(new StructuredMinerAlgorithmWrapperHM52());
 
         XLog mLog = benchmark.loadLog(mLogPath);
         XLog eLog = benchmark.loadLog(eLogPath);
