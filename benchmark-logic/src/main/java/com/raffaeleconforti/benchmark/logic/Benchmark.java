@@ -4,8 +4,12 @@ import com.raffaeleconforti.context.FakePluginContext;
 import com.raffaeleconforti.log.util.LogCloner;
 import com.raffaeleconforti.measurements.Measure;
 import com.raffaeleconforti.measurements.MeasurementAlgorithm;
+import com.raffaeleconforti.measurements.impl.AlignmentBasedFMeasure;
 import com.raffaeleconforti.wrapper.MiningAlgorithm;
 import com.raffaeleconforti.wrapper.PetrinetWithMarking;
+import com.raffaeleconforti.wrapper.impl.heuristics.Heuristics52AlgorithmWrapper;
+import com.raffaeleconforti.wrapper.impl.inductive.InductiveMinerIMaWrapper;
+import com.raffaeleconforti.wrapper.impl.inductive.InductiveMinerIMfWrapper;
 import hub.top.petrinet.PetriNet;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -19,8 +23,15 @@ import org.deckfour.xes.model.XLog;
 import org.eclipse.collections.impl.list.mutable.ArrayListAdapter;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
+import org.processmining.acceptingpetrinet.models.AcceptingPetriNet;
 import org.processmining.acceptingpetrinet.models.impl.AcceptingPetriNetImpl;
 import org.processmining.acceptingpetrinet.plugins.ExportAcceptingPetriNetPlugin;
+import org.processmining.acceptingpetrinet.plugins.ImportAcceptingPetriNetPlugin;
+import org.processmining.contexts.uitopia.UIPluginContext;
+import org.processmining.models.graphbased.directed.petrinet.Petrinet;
+import org.processmining.models.graphbased.directed.petrinet.impl.PetrinetFactory;
+import org.processmining.models.semantics.petrinet.Marking;
+import org.processmining.plugins.pnml.importing.PnmlImportINet;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -49,6 +60,8 @@ public class Benchmark {
     /* this is a multidimensional cube containing all the measures.
     for each log, each mining algorithm and each metric we have a resulting metric value */
     private HashMap<String, HashMap<String, HashMap<String, String>>> measures;
+
+    private Benchmark() {}
 
     public Benchmark(boolean defaultLogs, String extLocation, Set<String> packages) {
         this.defaultLogs = defaultLogs;
@@ -147,11 +160,8 @@ public class Benchmark {
                     measures.get(miningAlgorithmName).get(logName).put("_exec-t", Long.toString(execTime));
                     System.out.println("DEBUG - mining time: " + execTime + "ms");
 
-                    ExportAcceptingPetriNetPlugin exportAcceptingPetriNetPlugin = new ExportAcceptingPetriNetPlugin();
-                    exportAcceptingPetriNetPlugin.export(
-                            fakePluginContext,
-                            new AcceptingPetriNetImpl(petrinetWithMarking.getPetrinet(), petrinetWithMarking.getInitialMarking(), petrinetWithMarking.getFinalMarking()),
-                            new File("./results/" + miningAlgorithmName + "/" + logName + "_" + Long.toString(System.currentTimeMillis()) + ".pnml"));
+                    String pnpath = "./results/" + miningAlgorithmName + "/" + logName + "_" + Long.toString(System.currentTimeMillis()) + ".pnml";
+                    exportPetrinet(fakePluginContext, petrinetWithMarking, pnpath);
 
                     // computing metrics on the output petrinet
                     for( MeasurementAlgorithm measurementAlgorithm : measurementAlgorithms ) {
@@ -167,7 +177,7 @@ public class Benchmark {
                                     System.out.println("DEBUG - " + metric + " : " + measure.getMetricValue(metric));
                                 }
                             } else {
-                                measures.get(miningAlgorithmName).get(logName).put(measurementAlgorithmName, Double.toString(measure.getValue()));
+                                measures.get(miningAlgorithmName).get(logName).put(measurementAlgorithmName, String.format("%.2f", measure.getValue()));
                                 System.out.println("DEBUG - " + measurementAlgorithmName + " : " + measure.getValue());
                             }
 
@@ -265,6 +275,19 @@ public class Benchmark {
         return null;
     }
 
+    private void exportPetrinet(UIPluginContext context, PetrinetWithMarking petrinetWithMarking, String path) {
+        ExportAcceptingPetriNetPlugin exportAcceptingPetriNetPlugin = new ExportAcceptingPetriNetPlugin();
+        try {
+            exportAcceptingPetriNetPlugin.export(
+                    context,
+                    new AcceptingPetriNetImpl(petrinetWithMarking.getPetrinet(), petrinetWithMarking.getInitialMarking(), petrinetWithMarking.getFinalMarking()),
+                    new File(path));
+        } catch (Exception e) {
+            System.out.println("ERROR - impossible to export the petrinet to: " + path);
+            return;
+        }
+    }
+
     private void publishResults(String filename) {
 //        System.out.println("DEBUG - starting generation of the excel file.");
         try {
@@ -314,6 +337,40 @@ public class Benchmark {
             System.out.println("ERROR - something went wrong while writing the excel sheet: " + e.getMessage());
             e.printStackTrace();
         }
+    }
+
+
+    public static void computeFitnessNPrecision(String mLogPath, String eLogPath) {
+        XEventClassifier xEventClassifier = new XEventAndClassifier(new XEventNameClassifier());
+        FakePluginContext fakePluginContext = new FakePluginContext();
+
+        AlignmentBasedFMeasure alignmentBasedFMeasure = new AlignmentBasedFMeasure();
+        Benchmark benchmark = new Benchmark();
+
+        HashSet<MiningAlgorithm> miningAlgorithms = new HashSet<>();
+        miningAlgorithms.add(new Heuristics52AlgorithmWrapper());
+        miningAlgorithms.add(new InductiveMinerIMfWrapper());
+
+        XLog mLog = benchmark.loadLog(mLogPath);
+        XLog eLog = benchmark.loadLog(eLogPath);
+
+        try {
+            for( MiningAlgorithm ma : miningAlgorithms ) {
+
+                PetrinetWithMarking petrinet = ma.minePetrinet(fakePluginContext, mLog, false);
+                benchmark.exportPetrinet(fakePluginContext, petrinet, "./" + ma.getAcronym() + "_pn.pnml");
+                Measure measure = alignmentBasedFMeasure.computeMeasurement(fakePluginContext, xEventClassifier, petrinet, ma, eLog);
+
+                System.out.println("DEBUG - results for: " + ma.getAlgorithmName());
+                for( String metric : measure.getMetrics() )
+                    System.out.println("RESULT - " + metric + " : " + measure.getMetricValue(metric));
+            }
+        } catch ( Exception e ) {
+            System.out.println("ERROR - " + e.getMessage());
+            e.printStackTrace();
+            return;
+        }
+
     }
 
 }
