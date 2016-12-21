@@ -12,6 +12,7 @@ import org.deckfour.xes.model.XEvent;
 import org.deckfour.xes.model.XLog;
 import org.deckfour.xes.model.XTrace;
 import org.processmining.contexts.uitopia.UIPluginContext;
+import org.processmining.models.graphbased.AttributeMap;
 import org.processmining.models.graphbased.directed.petrinet.Petrinet;
 import org.processmining.models.graphbased.directed.petrinet.elements.Transition;
 import org.processmining.plugins.log.logfilters.LogFilter;
@@ -25,12 +26,14 @@ import java.util.ArrayList;
  */
 public class LogPreprocessing {
 
-    XEvent start;
-    XEvent end;
-    final XFactory factory = new XFactoryMemoryImpl();
-    final XConceptExtension xce = XConceptExtension.instance();
-    final XTimeExtension xte = XTimeExtension.instance();
-    final XLifecycleExtension xle = XLifecycleExtension.instance();
+    private XEvent start;
+    private XEvent end;
+    private final XFactory factory = new XFactoryMemoryImpl();
+    private final XConceptExtension xce = XConceptExtension.instance();
+    private final XTimeExtension xte = XTimeExtension.instance();
+    private final XLifecycleExtension xle = XLifecycleExtension.instance();
+    private final String startLabel = "###$$$%%%$$$###START###$$$%%%$$$###";
+    private final String endLabel = "###$$$%%%$$$###END###$$$%%%$$$###";
 
     public XLog preprocessLog(UIPluginContext context, XLog log) {
         ArrayList<String> classifiers = new ArrayList<String>();
@@ -47,16 +50,16 @@ public class LogPreprocessing {
 
     public void removedAddedElements(Petrinet petrinet) {
         for (Transition t : petrinet.getTransitions()) {
-            if (t.getLabel().contains("###$$$%%%$$$###START###$$$%%%$$$###")) {
+            if (t.getLabel().contains(startLabel)) {
                 t.setInvisible(true);
-                t.getAttributeMap().put("ProM_Vis_attr_label", "source");
-            } else if (t.getLabel().contains("###$$$%%%$$$###END###$$$%%%$$$###")) {
+                t.getAttributeMap().put(AttributeMap.LABEL, "source");
+            } else if (t.getLabel().contains(endLabel)) {
                 t.setInvisible(true);
-                t.getAttributeMap().put("ProM_Vis_attr_label", "sink");
+                t.getAttributeMap().put(AttributeMap.LABEL, "sink");
             } else if (t.getLabel().toLowerCase().endsWith("+complete")) {
-                t.getAttributeMap().put("ProM_Vis_attr_label", t.getLabel().substring(0, t.getLabel().toLowerCase().indexOf("+complete")));
+                t.getAttributeMap().put(AttributeMap.LABEL, t.getLabel().substring(0, t.getLabel().toLowerCase().indexOf("+complete")));
             } else if (t.getLabel().toLowerCase().endsWith("+start")) {
-                t.getAttributeMap().put("ProM_Vis_attr_label", t.getLabel().substring(0, t.getLabel().toLowerCase().indexOf("+start")));
+                t.getAttributeMap().put(AttributeMap.LABEL, t.getLabel().substring(0, t.getLabel().toLowerCase().indexOf("+start")));
             }
         }
     }
@@ -64,10 +67,10 @@ public class LogPreprocessing {
     private XEvent createStartEvent(ArrayList<String> classifiers) {
         XEvent start = factory.createEvent();
         for(String s : classifiers) {
-            XAttributeLiteralImpl a = new XAttributeLiteralImpl(s, "###$$$%%%$$$###START###$$$%%%$$$###");
+            XAttributeLiteralImpl a = new XAttributeLiteralImpl(s, startLabel);
             start.getAttributes().put(s, a);
         }
-        xce.assignName(start, "###$$$%%%$$$###START###$$$%%%$$$###");
+        xce.assignName(start, startLabel);
         xte.assignTimestamp(start, 1L);
         xle.assignStandardTransition(start, XLifecycleExtension.StandardModel.COMPLETE);
         return start;
@@ -76,10 +79,10 @@ public class LogPreprocessing {
     private XEvent createEndEvent(ArrayList<String> classifiers) {
         XEvent end = factory.createEvent();
         for (String s : classifiers) {
-            XAttributeLiteralImpl a = new XAttributeLiteralImpl(s, "###$$$%%%$$$###END###$$$%%%$$$###");
+            XAttributeLiteralImpl a = new XAttributeLiteralImpl(s, endLabel);
             end.getAttributes().put(s, a);
         }
-        xce.assignName(end, "###$$$%%%$$$###END###$$$%%%$$$###");
+        xce.assignName(end, endLabel);
         xte.assignTimestamp(end, Long.MAX_VALUE);
         xle.assignStandardTransition(end, XLifecycleExtension.StandardModel.COMPLETE);
         return end;

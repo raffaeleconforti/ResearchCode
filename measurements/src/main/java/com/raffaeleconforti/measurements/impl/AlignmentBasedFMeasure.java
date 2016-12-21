@@ -55,9 +55,12 @@ public class AlignmentBasedFMeasure implements MeasurementAlgorithm {
             double precision = (Double) (multiETCResult).getAttribute(MultiETCResult.PRECISION);
             double f_measure = 2*(fitness*precision)/(fitness+precision);
 
-            measure.addMeasure(getAcronym(), String.format("%.2f", f_measure));
-            measure.addMeasure(alignmentBasedFitness.getAcronym(), String.format("%.2f", fitness));
-            measure.addMeasure(alignmentBasedPrecision.getAcronym(), String.format("%.2f", precision));
+//            measure.addMeasure(getAcronym(), String.format("%.2f", f_measure));
+//            measure.addMeasure(alignmentBasedFitness.getAcronym(), String.format("%.2f", fitness));
+//            measure.addMeasure(alignmentBasedPrecision.getAcronym(), String.format("%.2f", precision));
+            measure.addMeasure(getAcronym(), f_measure);
+            measure.addMeasure(alignmentBasedFitness.getAcronym(), fitness);
+            measure.addMeasure(alignmentBasedPrecision.getAcronym(), precision);
 
             return measure;
 

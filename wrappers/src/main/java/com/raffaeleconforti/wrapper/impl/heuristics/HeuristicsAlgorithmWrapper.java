@@ -1,5 +1,6 @@
 package com.raffaeleconforti.wrapper.impl.heuristics;
 
+import com.raffaeleconforti.context.FakePluginContext;
 import com.raffaeleconforti.conversion.petrinet.PetriNetToBPMNConverter;
 import com.raffaeleconforti.wrapper.LogPreprocessing;
 import com.raffaeleconforti.wrapper.MiningAlgorithm;
@@ -51,7 +52,10 @@ public class HeuristicsAlgorithmWrapper implements MiningAlgorithm {
             public void write(int b) throws IOException {}
         }));
 
-        if(settings == null) {
+        if(context instanceof FakePluginContext) {
+            ParametersPanel parameters = new ParametersPanel();
+            settings = parameters.getSettings();
+        }else {
             ParametersPanel parameters = new ParametersPanel(LogUtility.getEventClassifiers(log));
             parameters.removeAndThreshold();
 

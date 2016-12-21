@@ -63,11 +63,11 @@ public class EvolutionaryTreeMinerWrapper implements MiningAlgorithm {
 
             ProcessTree processTree;
             if(context instanceof FakePluginContext) {
-//                ETMParam params = ETMParamFactory.buildStandardParamConfigurable(context, new XLog[] {log});
-//                ETM etm = new ETM(params);
-//                etm.run();
-//                NAryTree tree1 = etm.getResult();
-//                processTree = NAryTreeToProcessTree.convert(params.getCentralRegistry().getEventClasses(), tree1, "Process tree discovered by the ETM algorithm");
+                ETMParam params = ETMParamFactory.buildStandardParamConfigurable(context, new XLog[] {log});
+                ETM etm = new ETM(params);
+                etm.run();
+                NAryTree tree1 = etm.getResult();
+                processTree = NAryTreeToProcessTree.convert(params.getCentralRegistry().getEventClasses(), tree1, "Process tree discovered by the ETM algorithm");
                 processTree = ETMwithoutGUI.minePTWithClassifier(context, log, new XEventNameClassifier());
             }else {
                 ETMPlugin etmPlugin = new ETMPlugin();
@@ -80,7 +80,7 @@ public class EvolutionaryTreeMinerWrapper implements MiningAlgorithm {
             System.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out)));
 
             MarkingDiscoverer.createInitialMarkingConnection(context, petrinetWithMarkings.petrinet, petrinetWithMarkings.initialMarking);
-            MarkingDiscoverer.createInitialMarkingConnection(context, petrinetWithMarkings.petrinet, petrinetWithMarkings.finalMarking);
+            MarkingDiscoverer.createFinalMarkingConnection(context, petrinetWithMarkings.petrinet, petrinetWithMarkings.finalMarking);
             return new PetrinetWithMarking(petrinetWithMarkings.petrinet, petrinetWithMarkings.initialMarking, petrinetWithMarkings.finalMarking);
         } catch (ProcessTree2Petrinet.InvalidProcessTreeException e) {
             e.printStackTrace();
