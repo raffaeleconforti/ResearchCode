@@ -64,7 +64,7 @@ public class EvolutionaryTreeMinerWrapper implements MiningAlgorithm {
             ProcessTree processTree;
             if(context instanceof FakePluginContext) {
                 ETMParam params = ETMParamFactory.buildStandardParam(log, context);
-                params.addTerminationConditionMaxDuration(900000); //1 hour
+                params.addTerminationConditionMaxDuration(3600000); //1 hour
                 processTree = ETMwithoutGUI.minePTWithParameters(context, log, new XEventNameClassifier(), params);
             }else {
                 ETMPlugin etmPlugin = new ETMPlugin();

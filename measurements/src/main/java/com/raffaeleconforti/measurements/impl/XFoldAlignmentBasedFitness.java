@@ -10,7 +10,9 @@ import org.deckfour.xes.factory.XFactory;
 import org.deckfour.xes.factory.XFactoryNaiveImpl;
 import org.deckfour.xes.model.XLog;
 import org.deckfour.xes.model.XTrace;
+import org.deckfour.xes.out.XesXmlSerializer;
 import org.processmining.contexts.uitopia.UIPluginContext;
+import org.processmining.exporting.log.MXMLibGzLogExport;
 
 import java.util.Random;
 
@@ -48,6 +50,7 @@ public class XFoldAlignmentBasedFitness implements MeasurementAlgorithm {
                 petrinetWithMarking = miningAlgorithm.minePetrinet(pluginContext, log1, false);
                 Double f = alignmentBasedFitness.computeMeasurement(pluginContext, xEventClassifier, petrinetWithMarking, miningAlgorithm, logs[i]).getValue();
                 fitness += (f != null)?f:0.0;
+                System.out.println("DEBUG - " + (i+1) + "/" + fold + " -fold fitness: " + f);
             } catch( Exception e ) { return measure; }
         }
 

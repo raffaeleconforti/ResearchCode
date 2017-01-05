@@ -19,9 +19,12 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.deckfour.xes.classification.XEventAndClassifier;
 import org.deckfour.xes.classification.XEventClassifier;
 import org.deckfour.xes.classification.XEventNameClassifier;
+import org.deckfour.xes.factory.XFactory;
 import org.deckfour.xes.factory.XFactoryNaiveImpl;
 import org.deckfour.xes.in.XesXmlGZIPParser;
 import org.deckfour.xes.model.XLog;
+import org.deckfour.xes.model.XTrace;
+import org.deckfour.xes.out.XesXmlSerializer;
 import org.eclipse.collections.impl.list.mutable.ArrayListAdapter;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
@@ -77,7 +80,7 @@ public class Benchmark {
         hub.top.petrinet.PetriNet petriNet = new PetriNet();
         petriNet.getPlaces();
 
-        XEventClassifier xEventClassifier = new XEventAndClassifier(new XEventNameClassifier());
+        XEventClassifier xEventClassifier = new XEventNameClassifier();
         FakePluginContext fakePluginContext = new FakePluginContext();
 
         /* retrieving all the mining algorithms */
@@ -343,7 +346,7 @@ public class Benchmark {
 
 
     public static void computeFitnessNPrecision(String mLogPath, String eLogPath) {
-        XEventClassifier xEventClassifier = new XEventAndClassifier(new XEventNameClassifier());
+        XEventClassifier xEventClassifier = new XEventNameClassifier();
         FakePluginContext fakePluginContext = new FakePluginContext();
 
         AlignmentBasedFMeasure alignmentBasedFMeasure = new AlignmentBasedFMeasure();
@@ -374,6 +377,71 @@ public class Benchmark {
             return;
         }
 
+    }
+
+    public static void foldLog(String path, String sfold) {
+        Benchmark benchmark = new Benchmark();
+        XFactory factory = new XFactoryNaiveImpl();
+        XLog mLog;
+        XLog eLog;
+        XLog log = benchmark.loadLog(path);
+        Random r = new Random(123456789);
+
+        String mLogPath = sfold + "_mining_fold.xes";
+        String eLogPath = sfold + "_eval_fold.xes";
+//        String folder = "./folding/";
+        String folder = "./";
+
+        FileOutputStream fos;
+        XesXmlSerializer serializer = new XesXmlSerializer();
+
+        try {
+            int fold = Integer.valueOf(sfold);
+            if( log.size() < fold ) fold = log.size();
+
+            /* creating the folds */
+            XLog[] logs = new XLog[fold];
+            for( int i = 0; i < fold; i++ ) logs[i] = factory.createLog(log.getAttributes());
+            if( log.size() == fold ) {
+                int pos = 0;
+                for( XTrace t : log ) {
+                    logs[pos].add(t);
+                    pos++;
+                }
+            } else {
+                boolean finish = false;
+                while( !finish ) {
+                    finish = true;
+
+                    for( XTrace t : log ) {
+                        int pos = r.nextInt(fold);
+                        logs[pos].add(t);
+                    }
+
+                    for( int i = 0; i < logs.length; i++ ) if( logs[i].size() == 0 ) finish = false;
+                    if( !finish ) for(int i = 0; i < fold; i++) logs[i].clear();
+                }
+            }
+
+            /* saving the folds */
+            for( int i = 0; i < fold; i++ ) {
+                mLog = factory.createLog(log.getAttributes());
+                eLog = logs[i];
+                for( int j = 0; j < fold; j++ )  if ( j != i )  mLog.addAll(logs[j]);
+
+                fos = new FileOutputStream( new String(folder + (i+1) + "." + mLogPath) );
+                serializer.serialize(mLog, fos);
+                fos.close();
+
+                fos = new FileOutputStream( new String(folder + (i+1) + "." + eLogPath) );
+                serializer.serialize(eLog, fos);
+                fos.close();
+            }
+
+        } catch(Exception e) {
+            System.out.println("ERROR - something went wrong while folding the log.");
+            e.printStackTrace();
+        }
     }
 
 }
