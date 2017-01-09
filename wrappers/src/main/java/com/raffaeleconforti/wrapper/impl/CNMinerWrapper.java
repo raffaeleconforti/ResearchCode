@@ -38,12 +38,13 @@ public class CNMinerWrapper implements MiningAlgorithm {
             Object result[];
 
             result = cnminer.startCNMining(context, log, s);
+            System.out.println("ERROR - CN Miner: Got Result");
 
             if( result[0] instanceof Flex ) {
                 cnet = (Flex) result[0];
                 PNFromFlex converter = new PNFromFlex();
                 result = converter.convertToPN(context, cnet);
-                if( (result[0] instanceof Petrinet) && (result[1] instanceof Marking) ) petrinet = new PetrinetWithMarking( (Petrinet)result[0], (Marking)result[1]);
+                if( (result[0] instanceof Petrinet) && (result[1] instanceof Marking) ) petrinet = new PetrinetWithMarking((Petrinet)result[0], (Marking)result[1]);
             }
 
         } catch (Exception e) {
