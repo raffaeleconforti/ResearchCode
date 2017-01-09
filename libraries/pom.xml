@@ -1403,9 +1403,9 @@
                         <configuration>
                             <groupId>org.apromore</groupId>
                             <artifactId>bpmntk-osgi</artifactId>
-                            <version>1.0-20161108</version>
+                            <version>1.0-20160109</version>
                             <packaging>jar</packaging>
-                            <file>src/main/java/bpmntk-osgi-1.0.jar</file>
+                            <file>src/main/java/bpmntk-osgi-20160109.jar</file>
                             <generatePom>true</generatePom>
                         </configuration>
                     </execution>

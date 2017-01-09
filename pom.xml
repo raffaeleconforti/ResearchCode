@@ -52,12 +52,12 @@
         <module>noisefiltering-event-prom</module>
         <module>measurements</module>
 
-        <!--<module>kernel-sn</module>-->
+        <module>kernel-estimation</module>
 
         <module>assembly</module>
-        <!--<module>noisefiltering-timestamp-logic</module>-->
-        <!--<module>noisefiltering-timestamp-commandline</module>-->
-        <!--<module>noisefiltering-timestamp-prom</module>-->
+        <module>noisefiltering-timestamp-logic</module>
+        <module>noisefiltering-timestamp-commandline</module>
+        <module>noisefiltering-timestamp-prom</module>
 
         <!--<module>design-structure-matrix</module>-->
         <module>prom6</module>
@@ -69,7 +69,8 @@
 
         <maven.build.timestamp.format>yyyyMMdd</maven.build.timestamp.format>
         <buildNumber>${maven.build.timestamp}</buildNumber>
-        <code.version>1.0.${buildNumber}</code.version>
+        <!--<buildNumber>2.0</buildNumber>-->
+        <!--<code.version>1.0.${buildNumber}</code.version>-->
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.source.version>1.8</java.source.version>

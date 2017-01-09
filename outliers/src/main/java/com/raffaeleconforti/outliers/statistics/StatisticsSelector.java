@@ -1,5 +1,7 @@
 package com.raffaeleconforti.outliers.statistics;
 
+import com.raffaeleconforti.outliers.statistics.max.Max;
+import com.raffaeleconforti.outliers.statistics.min.Min;
 import com.raffaeleconforti.outliers.statistics.percentile.Percentile;
 import com.raffaeleconforti.outliers.statistics.medianabsolutedeviation.LeftMedianAbsoluteDeviation;
 import com.raffaeleconforti.outliers.statistics.medianabsolutedeviation.MedianAbsoluteDeviation;
@@ -25,7 +27,10 @@ import com.raffaeleconforti.outliers.statistics.standarddeviation.StandardDeviat
  */
 public class StatisticsSelector {
 
-    public enum StatisticsMeasures {MEAN, MEDIAN, MODE, PERCENTILE, SD, LEFT_SD, RIGHT_SD, MAD, LEFT_MAD, RIGHT_MAD, MoAD, LEFT_MoAD, RIGHT_MoAD, SN, LEFT_SN, RIGHT_SN, QN, LEFT_QN, RIGHT_QN}
+    public enum StatisticsMeasures {MIN, MAX, MEAN, MEDIAN, MODE, PERCENTILE, SD, LEFT_SD, RIGHT_SD, MAD, LEFT_MAD, RIGHT_MAD, MoAD, LEFT_MoAD, RIGHT_MoAD, SN, LEFT_SN, RIGHT_SN, QN, LEFT_QN, RIGHT_QN}
+
+    private final Min min = new Min();
+    private final Max max = new Max();
 
     private final Mean mean = new Mean();
     private final Median median = new Median();
@@ -55,6 +60,12 @@ public class StatisticsSelector {
     public double evaluate(StatisticsMeasures measure, Double val, double... values) {
         StatisticsMeasure statisticsMeasure = null;
         switch (measure) {
+            case MIN       : statisticsMeasure = min;
+                break;
+
+            case MAX     : statisticsMeasure = max;
+                break;
+
             case MEAN       : statisticsMeasure = mean;
                             break;
 

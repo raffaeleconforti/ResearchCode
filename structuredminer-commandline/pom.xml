@@ -129,6 +129,10 @@
 
         <dependency>
             <groupId>org.processmining</groupId>
+            <artifactId>murata</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.processmining</groupId>
             <artifactId>prom5</artifactId>
             <scope>provided</scope>
         </dependency>
