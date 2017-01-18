@@ -10,7 +10,7 @@
         <relativePath>../</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <modelVersion>4.0.0</modelVersion><version>$[code.version}</version>
+
 
 
     <artifactId>entropy</artifactId>

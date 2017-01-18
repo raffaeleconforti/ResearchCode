@@ -4,8 +4,7 @@ import com.raffaeleconforti.log.util.LogImporter;
 import com.raffaeleconforti.log.util.NameExtractor;
 import com.raffaeleconforti.log.util.TraceToString;
 import com.raffaeleconforti.noisefiltering.timestamp.check.TimeStampChecker;
-import com.raffaeleconforti.outliers.statistics.StatisticsSelector;
-import com.raffaeleconforti.outliers.statistics.mean.Mean;
+import com.raffaeleconforti.statistics.StatisticsSelector;
 import org.deckfour.xes.factory.XFactoryNaiveImpl;
 import org.deckfour.xes.model.XAttributeTimestamp;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
@@ -17,6 +16,7 @@ import org.deckfour.xes.extension.std.XTimeExtension;
 import org.deckfour.xes.model.XEvent;
 import org.deckfour.xes.model.XLog;
 import org.deckfour.xes.model.XTrace;
+import org.processmining.framework.util.StringUtils;
 
 import java.io.FileWriter;
 import java.text.DecimalFormat;
@@ -33,6 +33,79 @@ public class TimeStampFilterChecker {
     XTimeExtension xte = XTimeExtension.instance();
 
     public static void main(String[] args) throws Exception {
+        String path = "/Volumes/Data/Dropbox/LaTex/2016/Timestamp Repair/Logs/Experiments/RealLife/";
+        String logExtension = ".xes.gz";
+
+        String[] typeLogs = new String[] {"BPI2014"};
+        String[] typeFilters = new String[] {" ILP", "D", "R"};
+
+        TimeStampFilterChecker timeStampFilterChecker = new TimeStampFilterChecker();
+
+        XLog correctLog = LogImporter.importFromFile(new XFactoryNaiveImpl(), path + "BPI2014 (Incident Activity Sorted).xes.gz");
+        for(String typeLog : typeLogs) {
+            Set<String> done = new HashSet<>();
+            for(String typeFilter : typeFilters) {
+                XLog filteredLog = LogImporter.importFromFile(new XFactoryNaiveImpl(), path +  typeLog + typeFilter + logExtension);
+                XLog noisyLog = LogImporter.importFromFile(new XFactoryNaiveImpl(), path + typeLog + logExtension);
+
+                String base = "\\multirow{4}{*}{BPI2014}";
+
+                if(!done.contains(base)) {
+                    done.add(base);
+                    String res = timeStampFilterChecker.check(noisyLog, noisyLog, correctLog).replaceAll("<html><p>", "").replaceAll("<br>", "\n").replaceAll("</p></html>", "");
+
+                    FileWriter fileWriter = new FileWriter(path + typeLog + ".txt");
+                    fileWriter.write(res);
+                    fileWriter.close();
+
+                    res = res.replaceAll("\nMin Levenshtein Distance : 0.0", "");
+                    res = res.substring(res.indexOf("Levenshtein Distance"), res.indexOf("Total time error"));
+
+                    String f = base + "} & " + "Affected";
+                    String[] numbers = getNumbers(res);
+
+                    System.out.println("\\hline");
+                    System.out.println(f + " & " + numbers[4] + " & " + numbers[0] + " & " + numbers[1] + " & " + numbers[2] + " & " + numbers[3] + " & " + numbers[5] + " & " + numbers[6] + " & " + numbers[8] + " \\\\");
+                    System.out.println("\\cline{2-10}");
+                }
+
+                String res = timeStampFilterChecker.check(filteredLog, noisyLog, correctLog).replaceAll("<html><p>", "").replaceAll("<br>", "\n").replaceAll("</p></html>", "");
+
+                FileWriter fileWriter = new FileWriter(path + typeLog + typeFilter + ".txt");
+                fileWriter.write(res);
+                fileWriter.close();
+
+                res = res.replaceAll("\nMin Levenshtein Distance : 0.0", "");
+                res = res.substring(res.indexOf("Levenshtein Distance"), res.indexOf("Total time error"));
+
+                String algo = "";
+                if(typeFilter.equals(" ILP")) {
+                    algo = "Our";
+                }else if(typeFilter.equals("D")) {
+                    algo = "Naive";
+                }else {
+                    algo = "Random";
+                }
+
+                String f = " & " + algo;
+                String[] numbers = getNumbers(res);
+
+                if(algo.equals("Our")) {
+                    System.out.println(f + " & \\bf{" + numbers[4] + "} & \\bf{" + numbers[0] + "} & \\bf{" + numbers[1] + "} & \\bf{" + numbers[2] + "} & \\bf{" + numbers[3] + "} & \\bf{" + numbers[5] + "} & \\bf{" + numbers[6] + "} & \\bf{" + numbers[8] + "}\\\\");
+                }else {
+                    System.out.println(f + " & " + numbers[4] + " & " + numbers[0] + " & " + numbers[1] + " & " + numbers[2] + " & " + numbers[3] + " & " + numbers[5] + " & " + numbers[6] + " & " + numbers[8] + " \\\\");
+                }
+                if(algo.equals("Random")) {
+                    System.out.println("\\hline");
+                }else {
+                    System.out.println("\\cline{2-10}");
+                }
+            }
+        }
+    }
+
+    //Graph
+    public static void main3(String[] args) throws Exception {
         String path = "/Volumes/Data/Dropbox/LaTex/2016/Timestamp Repair/Logs/Experiments/";
         String logExtension = ".xes.gz";
 
@@ -46,12 +119,30 @@ public class TimeStampFilterChecker {
         XLog correctLog = LogImporter.importFromFile(new XFactoryNaiveImpl(), path + "TimeExperimentSimulation.xes.gz");
         for(String typeLog : typeLogs) {
             Set<String> done = new HashSet<>();
-            for(String typeFilter : typeFilters) {
-                for(String typeExperiment : typeExperiments) {
+            for(String typeExperiment : typeExperiments) {
+                String[] values = new String[4];
+                String n = "";
+                for(String typeFilter : typeFilters) {
                     XLog filteredLog = LogImporter.importFromFile(new XFactoryNaiveImpl(), path + typeLog + "/" + typeLog + typeExperiment + typeFilter + logExtension);
                     XLog noisyLog = LogImporter.importFromFile(new XFactoryNaiveImpl(), path + typeLog + "/" + typeLog + typeExperiment + logExtension);
 
-                    String base = typeLog + typeExperiment;
+                    String base = "N$";
+                    if(typeExperiment.equals("0.05")) {
+                        n = "5";
+                        base += "5";
+                    }else {
+                        n = typeExperiment.substring(2);
+                        base += typeExperiment.substring(2);
+                    }
+
+                    if(typeLog.equals("Event")) {
+                        base += "_e$";
+                    }else if(typeLog.equals("Trace")) {
+                        base += "_t$";
+                    }else {
+                        base += "_{\\textit{ut}}$";
+                    }
+
                     if(!done.contains(base)) {
                         done.add(base);
                         String res = timeStampFilterChecker.check(noisyLog, noisyLog, correctLog).replaceAll("<html><p>", "").replaceAll("<br>", "\n").replaceAll("</p></html>", "");
@@ -60,10 +151,12 @@ public class TimeStampFilterChecker {
                         fileWriter.write(res);
                         fileWriter.close();
 
+                        res = res.replaceAll("\nMin Levenshtein Distance : 0.0", "");
                         res = res.substring(res.indexOf("Levenshtein Distance"), res.indexOf("Total time error"));
-                        System.out.println(base);
-                        System.out.println(res);
-                        System.out.println();
+
+                        String[] numbers = getNumbers(res);
+
+                        values[0] = numbers[8];
                     }
 
                     String res = timeStampFilterChecker.check(filteredLog, noisyLog, correctLog).replaceAll("<html><p>", "").replaceAll("<br>", "\n").replaceAll("</p></html>", "");
@@ -72,13 +165,131 @@ public class TimeStampFilterChecker {
                     fileWriter.write(res);
                     fileWriter.close();
 
+                    res = res.replaceAll("\nMin Levenshtein Distance : 0.0", "");
                     res = res.substring(res.indexOf("Levenshtein Distance"), res.indexOf("Total time error"));
-                    System.out.println(typeLog + typeExperiment + typeFilter);
-                    System.out.println(res);
-                    System.out.println();
+
+                    String[] numbers = getNumbers(res);
+
+                    if(typeFilter.equals(" ILP")) {
+                        values[3] = numbers[8];
+                    }else if(typeFilter.equals("D")) {
+                        values[2] = numbers[8];
+                    }else {
+                        values[1] = numbers[8];
+                    }
+                }
+
+//                System.out.println(n + "\\%" + " " + values[0] + " " + values[1] + " " + values[2] + " " + values[3]);
+                System.out.println(values[2]);
+            }
+        }
+    }
+
+    //Table
+    public static void main2(String[] args) throws Exception {
+        String path = "/Volumes/Data/Dropbox/LaTex/2016/Timestamp Repair/Logs/Experiments/";
+        String logExtension = ".xes.gz";
+
+        String[] typeLogs = new String[] {"Event", "Trace", "UniqueTrace"};
+        String[] typeFilters = new String[] {" ILP", "D", "R"};
+
+        String[] typeExperiments = new String[] {"0.05", "0.10", "0.15", "0.20", "0.25", "0.30", "0.35", "0.40"};
+
+        TimeStampFilterChecker timeStampFilterChecker = new TimeStampFilterChecker();
+
+        XLog correctLog = LogImporter.importFromFile(new XFactoryNaiveImpl(), path + "TimeExperimentSimulation.xes.gz");
+        for(String typeLog : typeLogs) {
+            Set<String> done = new HashSet<>();
+            for(String typeExperiment : typeExperiments) {
+                for(String typeFilter : typeFilters) {
+                    XLog filteredLog = LogImporter.importFromFile(new XFactoryNaiveImpl(), path + typeLog + "/" + typeLog + typeExperiment + typeFilter + logExtension);
+                    XLog noisyLog = LogImporter.importFromFile(new XFactoryNaiveImpl(), path + typeLog + "/" + typeLog + typeExperiment + logExtension);
+
+                    String base = "\\multirow{4}{*}{N$";
+                    if(typeExperiment.equals("0.05")) {
+                        base += "5";
+                    }else {
+                        base += typeExperiment.substring(2);
+                    }
+
+                    if(typeLog.equals("Event")) {
+                        base += "_e$";
+                    }else if(typeLog.equals("Trace")) {
+                        base += "_t$";
+                    }else {
+                        base += "_{\\textit{ut}}$";
+                    }
+
+                    if(!done.contains(base)) {
+                        done.add(base);
+                        String res = timeStampFilterChecker.check(noisyLog, noisyLog, correctLog).replaceAll("<html><p>", "").replaceAll("<br>", "\n").replaceAll("</p></html>", "");
+
+                        FileWriter fileWriter = new FileWriter(path + typeLog + "/" + typeLog + typeExperiment + ".txt");
+                        fileWriter.write(res);
+                        fileWriter.close();
+
+                        res = res.replaceAll("\nMin Levenshtein Distance : 0.0", "");
+                        res = res.substring(res.indexOf("Levenshtein Distance"), res.indexOf("Total time error"));
+
+                        String f = base + "} & " + "Affected";
+                        String[] numbers = getNumbers(res);
+
+                        System.out.println("\\hline");
+                        System.out.println(f + " & " + numbers[4] + " & " + numbers[0] + " & " + numbers[1] + " & " + numbers[2] + " & " + numbers[3] + " & " + numbers[5] + " & " + numbers[6] + " & " + numbers[8] + " \\\\");
+                        System.out.println("\\cline{2-10}");
+                    }
+
+                    String res = timeStampFilterChecker.check(filteredLog, noisyLog, correctLog).replaceAll("<html><p>", "").replaceAll("<br>", "\n").replaceAll("</p></html>", "");
+
+                    FileWriter fileWriter = new FileWriter(path + typeLog + "/" + typeLog + typeExperiment + typeFilter + ".txt");
+                    fileWriter.write(res);
+                    fileWriter.close();
+
+                    res = res.replaceAll("\nMin Levenshtein Distance : 0.0", "");
+                    res = res.substring(res.indexOf("Levenshtein Distance"), res.indexOf("Total time error"));
+
+                    String algo = "";
+                    if(typeFilter.equals(" ILP")) {
+                        algo = "Our";
+                    }else if(typeFilter.equals("D")) {
+                        algo = "Naive";
+                    }else {
+                        algo = "Random";
+                    }
+
+                    String f = " & " + algo;
+                    String[] numbers = getNumbers(res);
+
+                    if(algo.equals("Our")) {
+                        System.out.println(f + " & \\bf{" + numbers[4] + "} & \\bf{" + numbers[0] + "} & \\bf{" + numbers[1] + "} & \\bf{" + numbers[2] + "} & \\bf{" + numbers[3] + "} & \\bf{" + numbers[5] + "} & \\bf{" + numbers[6] + "} & \\bf{" + numbers[8] + "}\\\\");
+                    }else {
+                        System.out.println(f + " & " + numbers[4] + " & " + numbers[0] + " & " + numbers[1] + " & " + numbers[2] + " & " + numbers[3] + " & " + numbers[5] + " & " + numbers[6] + " & " + numbers[8] + " \\\\");
+                    }
+                    if(algo.equals("Random")) {
+                        System.out.println("\\hline");
+                    }else {
+                        System.out.println("\\cline{2-10}");
+                    }
                 }
             }
         }
+    }
+
+    private static String[] getNumbers(String res) {
+        StringTokenizer stringTokenizer = new StringTokenizer(res, " \n");
+        String[] numbers = new String[9];
+        int pos = 0;
+        while (stringTokenizer.hasMoreElements()) {
+            String s = stringTokenizer.nextToken();
+            try {
+                Double.parseDouble(s);
+                numbers[pos] = s;
+                pos++;
+            }catch (NumberFormatException nfe) {
+
+            }
+        }
+        return numbers;
     }
 
     public String check(XLog filteredLog, XLog noisyLog, XLog correctLog) {
@@ -221,10 +432,14 @@ public class TimeStampFilterChecker {
         double percentageOfEventsWronglyChanged = (double) numberOfEventsWronglyChanged/ (double) numberOfEventsAffected;
 
 
+        double mse = 0;
         double totalError = 0;
         for(Long error : errors) {
+            mse += Math.pow(error, 2);
             totalError += Math.abs(error);
         }
+        mse = mse / errors.size();
+        double rmse = Math.sqrt(mse);
         double averageError = totalError / errors.size();
 
         double totalSquareDifferenced = 0;
@@ -234,6 +449,24 @@ public class TimeStampFilterChecker {
         double stdDeviation = Math.sqrt(totalSquareDifferenced/ errors.size());
 
         StatisticsSelector statisticsSelector = new StatisticsSelector();
+
+        double ave = 0;
+        double sd = 0;
+        int size = 0;
+        for(double d : partialDistances) {
+            if(d > 0) {
+                ave += d;
+                size++;
+            }
+        }
+        ave = ave / size;
+
+        for(double d : partialDistances) {
+            if(d > 0) {
+                sd += Math.pow(d - ave, 2);
+            }
+        }
+        sd = Math.sqrt(sd / size);
 
         String s =  "<html><p>Number of Noisy Traces: " + numberOfTracesAffected +
                     "<br>Number of Attempted Noisy Traces: " + numberOfTracesAttempted + //" (" + format(percentageOfTracesAttempted) + "%) " +
@@ -247,10 +480,15 @@ public class TimeStampFilterChecker {
                     "<br>Number of Wrongly Fixed Events: " + eventErrorIntroduced +
                     "<br>Levenshtein Distance : " + totalDistance +
                     "<br>Min Levenshtein Distance : " + statisticsSelector.evaluate(StatisticsSelector.StatisticsMeasures.MIN, null, partialDistances) +
-                    "<br>Max Levenshtein Distance : " + statisticsSelector.evaluate(StatisticsSelector.StatisticsMeasures.MAX, null, partialDistances) +
+                    "<br>Max Levenshtein Distance : " + truncate(statisticsSelector.evaluate(StatisticsSelector.StatisticsMeasures.MAX, null, partialDistances)) +
                     "<br>Average Levenshtein Distance : " + truncate(statisticsSelector.evaluate(StatisticsSelector.StatisticsMeasures.MEAN, null, partialDistances)) +
                     "<br>Sd Levenshtein Distance : " + truncate(statisticsSelector.evaluate(StatisticsSelector.StatisticsMeasures.SD, null, partialDistances)) +
+                    "<br>Exclusive : " + size +
+                    "<br>Average Exclusive Levenshtein Distance : " + truncate(ave) +
+                    "<br>Sd Exclusive Levenshtein Distance : " + truncate(sd) +
 
+                    "<br>MSE: " + format2(mse / (1000 * 60 * 60 * 24)) +
+                    "<br>RMSE: " + format2(rmse / (1000 * 60 * 60 * 24)) +
                     "<br>Total time error: " + format(totalError) +
                     "<br>Average time error: " + format(averageError) +
                     "<br>Std Deviation time error: " + format(stdDeviation);
@@ -266,7 +504,16 @@ public class TimeStampFilterChecker {
     }
 
     private String truncate(double value) {
-        DecimalFormat df = new DecimalFormat("#.###");
+        DecimalFormat df = new DecimalFormat("#0.000");
+        String s = df.format(value);
+        if(value > 10 && s.endsWith(".000")) {
+            return s.substring(0, s.length() - 4);
+        }
+        return s;
+    }
+
+    private String format2(double value) {
+        DecimalFormat df = new DecimalFormat("#.##");
         return df.format(value);
     }
 

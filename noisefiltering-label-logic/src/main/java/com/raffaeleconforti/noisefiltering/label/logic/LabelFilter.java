@@ -5,7 +5,7 @@ import com.raffaeleconforti.automaton.AutomatonFactory;
 import com.raffaeleconforti.automaton.Edge;
 import com.raffaeleconforti.automaton.Node;
 import com.raffaeleconforti.log.util.*;
-import com.raffaeleconforti.outliers.statistics.StatisticsSelector;
+import com.raffaeleconforti.statistics.StatisticsSelector;
 import com.raffaeleconforti.outliers.statistics.StatisticsSelector.StatisticsMeasures;
 import org.deckfour.xes.classification.*;
 import org.deckfour.xes.extension.std.XConceptExtension;

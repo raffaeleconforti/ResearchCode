@@ -11,7 +11,7 @@ import com.raffaeleconforti.log.util.LogOptimizer;
 import com.raffaeleconforti.noisefiltering.event.infrequentbehaviour.automaton.AutomatonInfrequentBehaviourDetector;
 import com.raffaeleconforti.noisefiltering.event.infrequentbehaviour.automaton.AutomatonInfrequentBehaviourRemover;
 import com.raffaeleconforti.noisefiltering.event.selection.NoiseFilterResult;
-import com.raffaeleconforti.outliers.statistics.percentile.Percentile;
+import com.raffaeleconforti.statistics.percentile.Percentile;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.deckfour.xes.classification.XEventClassifier;
 import org.deckfour.xes.extension.std.XConceptExtension;

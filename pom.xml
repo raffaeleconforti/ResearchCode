@@ -33,7 +33,7 @@
         <module>conversion</module>
         <module>logic-solver</module>
 
-        <module>outliers</module>
+        <module>statistics</module>
         <module>foreignkey-discovery</module>
         <module>data-structures</module>
 
@@ -62,14 +62,15 @@
         <!--<module>design-structure-matrix</module>-->
         <module>prom6</module>
         <module>benchmark-logic</module>
+        <module>nlp</module>
         <!--<module>noisefiltering-label-logic</module>-->
     </modules>
 
     <properties>
 
         <maven.build.timestamp.format>yyyyMMdd</maven.build.timestamp.format>
-        <buildNumber>${maven.build.timestamp}</buildNumber>
-        <!--<buildNumber>2.0</buildNumber>-->
+        <!--<buildNumber>${maven.build.timestamp}</buildNumber>-->
+        <buildNumber>2.0</buildNumber>
         <!--<code.version>1.0.${buildNumber}</code.version>-->
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -250,6 +251,11 @@
             <dependency>
                 <groupId>com.raffaeleconforti</groupId>
                 <artifactId>benchmark-logic</artifactId>
+                <version>1.0.${buildNumber}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.raffaeleconforti</groupId>
+                <artifactId>nlp</artifactId>
                 <version>1.0.${buildNumber}</version>
             </dependency>
             <dependency>
