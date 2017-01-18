@@ -62,7 +62,7 @@ public class StructuredMinerAlgorithmWrapper implements MiningAlgorithm {
         else MarkingDiscoverer.createInitialMarkingConnection(context, (Petrinet) result[0], (Marking) result[1]);
 
         if(result[2] == null) result[2] = MarkingDiscoverer.constructFinalMarking(context, (Petrinet) result[0]);
-        else MarkingDiscoverer.createFinalMarkingConnection(context, (Petrinet) result[0], (Marking) result[1]);
+        else MarkingDiscoverer.createFinalMarkingConnection(context, (Petrinet) result[0], (Marking) result[2]);
 
         System.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out)));
 
