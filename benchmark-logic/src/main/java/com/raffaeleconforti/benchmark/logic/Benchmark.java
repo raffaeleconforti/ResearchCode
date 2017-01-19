@@ -150,7 +150,7 @@ public class Benchmark {
             if( !maDir.exists() && maDir.mkdir() );
 
             for( String logName : inputLogs.keySet() ) {
-                if(!logName.contains("Less")) continue;
+//                if(!logName.contains("Less")) continue;
                 log = loadLog(inputLogs.get(logName));
                 System.out.println("DEBUG - log: " + logName);
                 // adding an entry on the measures table for this miner
