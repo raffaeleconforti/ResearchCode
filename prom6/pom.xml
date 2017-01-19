@@ -372,18 +372,18 @@
                         </configuration>
                     </execution>
 
-                    <execution>
-                        <id>download-Licenses</id>
-                        <phase>process-resources</phase>
-                        <goals>
-                            <goal>wget</goal>
-                        </goals>
-                        <configuration>
-                            <url>https://svn.win.tue.nl/repos/prom/Releases/Framework/lib/Licenses.txt</url>
-                            <outputFileName>Licenses.txt</outputFileName>
-                            <outputDirectory>${project.build.directory}/lib</outputDirectory>
-                        </configuration>
-                    </execution>
+                    <!--<execution>-->
+                        <!--<id>download-Licenses</id>-->
+                        <!--<phase>process-resources</phase>-->
+                        <!--<goals>-->
+                            <!--<goal>wget</goal>-->
+                        <!--</goals>-->
+                        <!--<configuration>-->
+                            <!--<url>https://svn.win.tue.nl/repos/prom/Releases/Framework/lib/Licenses.txt</url>-->
+                            <!--<outputFileName>Licenses.txt</outputFileName>-->
+                            <!--<outputDirectory>${project.build.directory}/lib</outputDirectory>-->
+                        <!--</configuration>-->
+                    <!--</execution>-->
 
                     <execution>
                         <id>download-openide-lookup-1.9-patched</id>
