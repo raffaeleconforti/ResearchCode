@@ -4,31 +4,20 @@ import com.raffaeleconforti.conversion.petrinet.PetriNetToBPMNConverter;
 import com.raffaeleconforti.wrapper.LogPreprocessing;
 import com.raffaeleconforti.wrapper.MiningAlgorithm;
 import com.raffaeleconforti.wrapper.PetrinetWithMarking;
-import com.raffaeleconforti.wrapper.marking.MarkingDiscoverer;
+import com.raffaeleconforti.marking.MarkingDiscoverer;
 import org.deckfour.xes.classification.XEventNameClassifier;
-import org.deckfour.xes.info.XLogInfo;
-import org.deckfour.xes.info.XLogInfoFactory;
 import org.deckfour.xes.model.XLog;
-import org.processmining.alphaminer.abstractions.AlphaAbstractionFactory;
-import org.processmining.alphaminer.abstractions.AlphaClassicAbstraction;
-import org.processmining.alphaminer.abstractions.impl.AlphaClassicAbstractionImpl;
 import org.processmining.alphaminer.algorithms.AlphaMinerFactory;
-import org.processmining.alphaminer.algorithms.AlphaPlusMinerImpl;
 import org.processmining.alphaminer.parameters.AlphaMinerParameters;
-import org.processmining.alphaminer.parameters.AlphaPlusMinerParameters;
 import org.processmining.alphaminer.parameters.AlphaVersion;
 import org.processmining.contexts.uitopia.UIPluginContext;
 import org.processmining.contexts.uitopia.annotations.UITopiaVariant;
-import org.processmining.framework.plugin.PluginContext;
 import org.processmining.framework.plugin.annotations.Plugin;
 import org.processmining.framework.plugin.annotations.PluginVariant;
 import org.processmining.framework.util.Pair;
 import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
 import org.processmining.models.graphbased.directed.petrinet.Petrinet;
 import org.processmining.models.semantics.petrinet.Marking;
-import org.processmining.plugins.log.logabstraction.BasicLogRelations;
-
-import java.util.concurrent.ExecutionException;
 
 /**
  * Created by conforti on 20/02/15.

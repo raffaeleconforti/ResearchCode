@@ -150,7 +150,7 @@ public class Benchmark {
             if( !maDir.exists() && maDir.mkdir() );
 
             for( String logName : inputLogs.keySet() ) {
-//                if(!logName.contains("Less")) continue;
+                if(!logName.contains("Less")) continue;
                 log = loadLog(inputLogs.get(logName));
                 System.out.println("DEBUG - log: " + logName);
                 // adding an entry on the measures table for this miner
@@ -190,6 +190,7 @@ public class Benchmark {
                             if( execTime > MAX_TIME)
                                 measures.get(miningAlgorithmName).get(logName).put(measurementAlgorithmName + ":tor", Long.toString(execTime));
                         } catch (Error e) {
+                            e.printStackTrace();
                             measures.get(miningAlgorithmName).get(logName).put(measurementAlgorithmName, "-ERR");
                             System.out.println("ERROR - measuring: " + miningAlgorithmName + " : " + logName + " : " + measurementAlgorithmName);
                         } catch(Exception e) {

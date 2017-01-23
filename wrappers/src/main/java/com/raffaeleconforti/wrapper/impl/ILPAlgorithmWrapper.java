@@ -6,7 +6,7 @@ import com.raffaeleconforti.ilpminer.ILPMiner;
 import com.raffaeleconforti.wrapper.LogPreprocessing;
 import com.raffaeleconforti.wrapper.MiningAlgorithm;
 import com.raffaeleconforti.wrapper.PetrinetWithMarking;
-import com.raffaeleconforti.wrapper.marking.MarkingDiscoverer;
+import com.raffaeleconforti.marking.MarkingDiscoverer;
 import org.deckfour.uitopia.api.event.TaskListener;
 import org.deckfour.xes.info.XLogInfoFactory;
 import org.deckfour.xes.model.XLog;

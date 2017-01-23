@@ -9,7 +9,7 @@ import com.raffaeleconforti.log.util.LogReaderClassic;
 import com.raffaeleconforti.wrapper.LogPreprocessing;
 import com.raffaeleconforti.wrapper.MiningAlgorithm;
 import com.raffaeleconforti.wrapper.PetrinetWithMarking;
-import com.raffaeleconforti.wrapper.marking.MarkingDiscoverer;
+import com.raffaeleconforti.marking.MarkingDiscoverer;
 import org.deckfour.xes.model.XLog;
 import org.processmining.contexts.uitopia.UIPluginContext;
 import org.processmining.contexts.uitopia.annotations.UITopiaVariant;

@@ -37,42 +37,12 @@ public class PetriNetToBPMNConverter {
      * @param net1 PetriNet The given Petri net.
      * @return EPC The constructed EPC.
      */
-    public static BPMNDiagram convert(Petrinet net1, Marking initialMarking, Marking finalMarking, boolean clean) {
-        Petrinet net = new PetrinetImpl("");
-        Map<Place, Place> places = new UnifiedMap<Place, Place>();
-        Map<Transition, Transition> transitions = new UnifiedMap<Transition, Transition>();
+    public static BPMNDiagram convert(Petrinet net1, Marking initialMarking1, Marking finalMarking1, boolean clean) {
+        Object[] init = initializeCloneOfNet(net1, initialMarking1, finalMarking1);
 
-        for(Place place : net1.getPlaces()) {
-            Place p = net.addPlace(place.getLabel());
-            places.put(place, p);
-        }
-        for(Transition transition : net1.getTransitions()) {
-            Transition t = net.addTransition(transition.getLabel());
-            t.setInvisible(transition.isInvisible());
-            transitions.put(transition, t);
-        }
-        for(PetrinetEdge edge: net1.getEdges()) {
-            if(edge.getSource() instanceof Place) {
-                net.addArc(places.get(edge.getSource()), transitions.get(edge.getTarget()));
-            }else {
-                net.addArc(transitions.get(edge.getSource()), places.get(edge.getTarget()));
-            }
-        }
-        Marking m = new Marking();
-        if(initialMarking != null) {
-            for (Place p : initialMarking) {
-                m.add(places.get(p));
-            }
-            initialMarking = m;
-        }
-
-        if(finalMarking != null) {
-            m = new Marking();
-            for (Place p : finalMarking) {
-                m.add(places.get(p));
-            }
-            finalMarking = m;
-        }
+        Petrinet net = (Petrinet) init[0];
+        Marking initialMarking = (Marking) init[1];
+        Marking finalMarking = (Marking) init[2];
 
         transitionActivityUnifiedMap = new UnifiedMap<Transition, Activity>();
         placeXORSplitGatewayUnifiedMap = new UnifiedMap<Place, Gateway>();
@@ -147,6 +117,50 @@ public class PetriNetToBPMNConverter {
         removeInvisibleActivities(diagram);
 
         return diagram;
+    }
+
+    private static Object[] initializeCloneOfNet(Petrinet net1, Marking initialMarking1, Marking finalMarking1) {
+        Petrinet net = new PetrinetImpl("");
+        Map<Place, Place> places = new UnifiedMap<Place, Place>();
+        Map<Transition, Transition> transitions = new UnifiedMap<Transition, Transition>();
+
+        for(Place place : net1.getPlaces()) {
+            Place p = net.addPlace(place.getLabel());
+            places.put(place, p);
+        }
+
+        for(Transition transition : net1.getTransitions()) {
+            Transition t = net.addTransition(transition.getLabel());
+            t.setInvisible(transition.isInvisible());
+            transitions.put(transition, t);
+        }
+
+        for(PetrinetEdge edge: net1.getEdges()) {
+            if(edge.getSource() instanceof Place) {
+                net.addArc(places.get(edge.getSource()), transitions.get(edge.getTarget()));
+            }else {
+                net.addArc(transitions.get(edge.getSource()), places.get(edge.getTarget()));
+            }
+        }
+
+        Marking initialMarking = null;
+        Marking finalMarking = null;
+        Marking m = new Marking();
+        if(initialMarking1 != null) {
+            for (Place p : initialMarking1) {
+                m.add(places.get(p));
+            }
+            initialMarking = m;
+        }
+
+        if(finalMarking1 != null) {
+            m = new Marking();
+            for (Place p : finalMarking1) {
+                m.add(places.get(p));
+            }
+            finalMarking = m;
+        }
+        return new Object[] {net, initialMarking, finalMarking};
     }
 
     public static Petrinet convert1(Petrinet net1, Marking initialMarking, Marking finalMarking, boolean clean) {
@@ -383,36 +397,38 @@ public class PetriNetToBPMNConverter {
             added = false;
             for(Transition t : net.getTransitions()) {
                 if(!t.isInvisible()) {
-                    List<PetrinetEdge> input = new ArrayList<PetrinetEdge>();
-                    List<PetrinetEdge> output = new ArrayList<PetrinetEdge>();
+                    List<PetrinetEdge> outgoing = new ArrayList<PetrinetEdge>();
+                    List<PetrinetEdge> incoming = new ArrayList<PetrinetEdge>();
                     for (PetrinetEdge edge : net.getEdges()) {
                         if (edge.getSource().equals(t)) {
-                            input.add(edge);
+                            outgoing.add(edge);
                         }
                         if (edge.getTarget().equals(t)) {
-                            output.add(edge);;
+                            incoming.add(edge);;
                         }
                     }
-                    if (input.size() > 1) {
+
+                    if (outgoing.size() > 1) {
                         Transition t1 = net.addTransition("INVISIBLE");
                         t1.setInvisible(true);
-                        Place p1 = net.addPlace("p1");
+                        Place p1 = net.addPlace("");
                         net.addArc(t, p1);
                         net.addArc(p1, t1);
-                        for(PetrinetEdge edge : input) {
+                        for(PetrinetEdge edge : outgoing) {
                             net.addArc(t1, (Place) edge.getTarget());
                             net.removeEdge(edge);
                         }
                         added = true;
                         break;
                     }
-                    if (output.size() > 1) {
+
+                    if (incoming.size() > 1) {
                         Transition t1 = net.addTransition("INVISIBLE");
                         t1.setInvisible(true);
-                        Place p1 = net.addPlace("p1");
+                        Place p1 = net.addPlace("");
                         net.addArc(t1, p1);
                         net.addArc(p1, t);
-                        for(PetrinetEdge edge : output) {
+                        for(PetrinetEdge edge : incoming) {
                             net.addArc((Place) edge.getSource(), t1);
                             net.removeEdge(edge);
                         }
@@ -443,13 +459,13 @@ public class PetriNetToBPMNConverter {
         }
 
         for(Place place : places) {
-            List<Transition> inputs = new ArrayList<Transition>();
-            List<Transition> outputs = new ArrayList<Transition>();
+            List<Transition> incomings = new ArrayList<Transition>();
+            List<Transition> outgoings = new ArrayList<Transition>();
             for(PetrinetEdge edge : net.getEdges()) {
                 if(edge.getSource().equals(place)) {
-                    outputs.add((Transition) edge.getTarget());
+                    outgoings.add((Transition) edge.getTarget());
                 }else if(edge.getTarget().equals(place)) {
-                    inputs.add((Transition) edge.getSource());
+                    incomings.add((Transition) edge.getSource());
                 }
             }
 
@@ -459,10 +475,10 @@ public class PetriNetToBPMNConverter {
             transition.setInvisible(true);
             net.removeNode(place);
 
-            for(Transition transition1 : inputs) {
+            for(Transition transition1 : incomings) {
                 net.addArc(transition1, input);
             }
-            for(Transition transition1 : outputs) {
+            for(Transition transition1 : outgoings) {
                 net.addArc(output, transition1);
             }
             net.addArc(input, transition);
@@ -489,13 +505,13 @@ public class PetriNetToBPMNConverter {
         }
 
         for(Transition transition : transitions) {
-            List<Place> inputs = new ArrayList<Place>();
-            List<Place> outputs = new ArrayList<Place>();
+            List<Place> incomings = new ArrayList<Place>();
+            List<Place> outgoings = new ArrayList<Place>();
             for(PetrinetEdge edge : net.getEdges()) {
                 if(edge.getSource().equals(transition)) {
-                    outputs.add((Place) edge.getTarget());
+                    outgoings.add((Place) edge.getTarget());
                 }else if(edge.getTarget().equals(transition)) {
-                    inputs.add((Place) edge.getSource());
+                    incomings.add((Place) edge.getSource());
                 }
             }
 
@@ -504,13 +520,14 @@ public class PetriNetToBPMNConverter {
             Transition output = net.addTransition("INVISIBLE");
             output.setInvisible(true);
             Place place = net.addPlace("");
+            if(!transition.isInvisible()) System.out.println("ERROR 520!");
             net.removeNode(transition);
 
-            for(Place place1 : inputs) {
+            for(Place place1 : incomings) {
                 net.addArc(place1, input);
             }
-            for(Place place1 : outputs) {
-                net.addArc(output, place);
+            for(Place place1 : outgoings) {
+                net.addArc(output, place1);
             }
             net.addArc(input, place);
             net.addArc(place, output);

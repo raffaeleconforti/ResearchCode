@@ -1,4 +1,4 @@
-package com.raffaeleconforti.wrapper.marking;
+package com.raffaeleconforti.marking;
 
 import org.processmining.framework.plugin.PluginContext;
 import org.processmining.models.connections.petrinets.behavioral.FinalMarkingConnection;
