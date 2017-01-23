@@ -145,6 +145,14 @@
                                     <file>${project.parent.basedir}/assembly/target/liblpsolve55j.jnilib</file>
                                 </transformer>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.IncludeResourceTransformer">
+                                    <resource>liblpsolve55.so</resource>
+                                    <file>${project.parent.basedir}/assembly/target/liblpsolve55.so</file>
+                                </transformer>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.IncludeResourceTransformer">
+                                    <resource>liblpsolve55j.so</resource>
+                                    <file>${project.parent.basedir}/assembly/target/liblpsolve55j.so</file>
+                                </transformer>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.IncludeResourceTransformer">
                                     <resource>lpsolve55.dll</resource>
                                     <file>${project.parent.basedir}/assembly/target/lpsolve55.dll</file>
                                 </transformer>

@@ -1507,6 +1507,38 @@
                     </execution>
 
                     <execution>
+                        <id>install-liblpsolve-linux</id>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                        <configuration>
+                            <groupId>org.sourceforge</groupId>
+                            <artifactId>liblpsolve</artifactId>
+                            <version>55</version>
+                            <packaging>so</packaging>
+                            <file>${project.build.sourceDirectory}/liblpsolve55.so</file>
+                            <generatePom>true</generatePom>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>install-liblpsolvej-linux</id>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                        <configuration>
+                            <groupId>org.sourceforge</groupId>
+                            <artifactId>liblpsolvej</artifactId>
+                            <version>55j</version>
+                            <packaging>so</packaging>
+                            <file>${project.build.sourceDirectory}/liblpsolve55j.so</file>
+                            <generatePom>true</generatePom>
+                        </configuration>
+                    </execution>
+
+                    <execution>
                         <id>install-liblpsolvej-win64-1</id>
                         <phase>install</phase>
                         <goals>

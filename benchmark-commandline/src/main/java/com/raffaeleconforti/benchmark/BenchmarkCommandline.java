@@ -23,32 +23,42 @@ public class BenchmarkCommandline {
 
     private final static String LPSOLVE55 = "lpsolve55";
     private final static String LPSOLVE55J = "lpsolve55j";
+
+
     private final static String LIBLPSOLVE55 = "liblpsolve55";
     private final static String LIBLPSOLVE55J = "liblpsolve55j";
 
-//    static {
-//        try {
-//            if(System.getProperty("os.name").startsWith("Windows")) {
-//                System.loadLibrary(LPSOLVE55);
-//                System.loadLibrary(LPSOLVE55J);
-//            }else {
-//                System.loadLibrary(LIBLPSOLVE55);
-//                System.loadLibrary(LIBLPSOLVE55J);
-//            }
-//        } catch (UnsatisfiedLinkError e) {
-//            loadFromJar();
-//        }
-//    }
+    static {
+        try {
+            String os = System.getProperty("os.name");
+            if(os.contains("win")) {
+                System.loadLibrary(LPSOLVE55);
+                System.loadLibrary(LPSOLVE55J);
+            }else if(os.contains("mac")) {
+                System.loadLibrary(LIBLPSOLVE55);
+                System.loadLibrary(LIBLPSOLVE55J);
+            }else if(os.contains("nix") || os.contains("nux") || os.contains("aix")) {
+                System.loadLibrary(LIBLPSOLVE55);
+                System.loadLibrary(LIBLPSOLVE55J);
+            }
+        } catch (UnsatisfiedLinkError e) {
+            loadFromJar();
+        }
+    }
 
     private static void loadFromJar() {
         // we need to put both DLLs to temp dir
         String path = "AC_" + new Date().getTime();
-        if(System.getProperty("os.name").startsWith("Windows")) {
+        String os = System.getProperty("os.name");
+        if(os.contains("win")) {
             loadLibWin(path, LPSOLVE55);
             loadLibWin(path, LPSOLVE55J);
-        }else {
+        }else if(os.contains("mac")) {
             loadLibMac(path, LIBLPSOLVE55);
             loadLibMac(path, LIBLPSOLVE55J);
+        }else if(os.contains("nix") || os.contains("nux") || os.contains("aix")) {
+            loadLibLinux(path, LIBLPSOLVE55);
+            loadLibLinux(path, LIBLPSOLVE55J);
         }
     }
 
@@ -81,6 +91,22 @@ public class BenchmarkCommandline {
             out.close();
         } catch (Exception e) {
             throw new RuntimeException("Failed to load required JNILIB", e);
+        }
+    }
+
+    private static void loadLibLinux(String path, String name) {
+        name = name + ".so";
+        try {
+            // have to use a stream
+            InputStream in = InfrequentBehaviourFilter.class.getResourceAsStream("/" + name);
+            // always write to different location
+            File fileOut = new File(name);
+            OutputStream out = FileUtils.openOutputStream(fileOut);
+            IOUtils.copy(in, out);
+            in.close();
+            out.close();
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to load required SO", e);
         }
     }
 
