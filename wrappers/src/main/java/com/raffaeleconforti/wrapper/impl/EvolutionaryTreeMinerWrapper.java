@@ -6,8 +6,7 @@ import com.raffaeleconforti.wrapper.LogPreprocessing;
 import com.raffaeleconforti.wrapper.MiningAlgorithm;
 import com.raffaeleconforti.wrapper.PetrinetWithMarking;
 import com.raffaeleconforti.marking.MarkingDiscoverer;
-import org.deckfour.xes.classification.XEventClass;
-import org.deckfour.xes.classification.XEventNameClassifier;
+import org.deckfour.xes.classification.*;
 import org.deckfour.xes.model.XLog;
 import org.processmining.contexts.uitopia.UIContext;
 import org.processmining.contexts.uitopia.UIPluginContext;
@@ -29,6 +28,7 @@ import org.processmining.plugins.etm.ui.plugins.ETMPlugin;
 import org.processmining.processtree.ProcessTree;
 import org.processmining.processtree.conversion.ProcessTree2Petrinet;
 import org.uncommonseditedbyjoosbuijs.watchmaker.framework.TerminationCondition;
+import org.uncommonseditedbyjoosbuijs.watchmaker.framework.termination.GenerationCount;
 
 import java.util.Iterator;
 import java.util.List;
@@ -66,28 +66,32 @@ public class EvolutionaryTreeMinerWrapper implements MiningAlgorithm {
                 PluginContext pluginContext = new UIContext().getMainPluginContext();
                 ETMParam params = ETMParamFactory.buildStandardParam(log, pluginContext);
 
-                System.out.println(params.getSeed().size());
+                System.out.println(params.getPopulationSize());
                 params.setMaxThreads(Runtime.getRuntime().availableProcessors());
 
-                params.getCentralRegistry().updateEventClassifier(new XEventNameClassifier());
+                XEventClassifier classifier = new XEventNameClassifier();//new XEventAndClassifier(new XEventNameClassifier(), new XEventLifeTransClassifier());
+                params.getCentralRegistry().updateEventClassifier(classifier);
                 params.addTerminationConditionMaxDuration(3600000); //1 hour
 
-                ETM etm = new ETM(params);
-                System.out.println("Starting the ETM");
-                etm.run();
-                List stopped = etm.getSatisfiedTerminationConditions();
-                Iterator tree = stopped.iterator();
+//                ETM etm = new ETM(params);
+//                System.out.println("Starting the ETM");
+//                etm.run();
+//                List stopped = etm.getSatisfiedTerminationConditions();
+//                Iterator tree = stopped.iterator();
+//
+//                while(tree.hasNext()) {
+//                    TerminationCondition cond = (TerminationCondition)tree.next();
+//                    System.out.println(cond.toString());
+//                }
+//
+//                NAryTree tree1 = etm.getResult();
+//                System.out.println("Tree: " + TreeUtils.toString(tree1, params.getCentralRegistry().getEventClasses()));
+//                System.out.println("Fitness: " + params.getCentralRegistry().getFitness(tree1).fitnessValues);
+//                System.out.println("Discovered tree: " + TreeUtils.toString(tree1, params.getCentralRegistry().getEventClasses()));
+//                processTree = NAryTreeToProcessTree.convert(params.getCentralRegistry().getEventClasses(), tree1, "Process tree discovered by the ETM algorithm");
 
-                while(tree.hasNext()) {
-                    TerminationCondition cond = (TerminationCondition)tree.next();
-                    System.out.println(cond.toString());
-                }
-
-                NAryTree tree1 = etm.getResult();
-                System.out.println("Tree: " + TreeUtils.toString(tree1, params.getCentralRegistry().getEventClasses()));
-                System.out.println("Fitness: " + params.getCentralRegistry().getFitness(tree1).fitnessValues);
-                System.out.println("Discovered tree: " + TreeUtils.toString(tree1, params.getCentralRegistry().getEventClasses()));
-                processTree = NAryTreeToProcessTree.convert(params.getCentralRegistry().getEventClasses(), tree1, "Process tree discovered by the ETM algorithm");
+                ETMPlugin etmPlugin = new ETMPlugin();
+                processTree = etmPlugin.withoutSeedParams(pluginContext, log, params);
             }else {
                 ETMPlugin etmPlugin = new ETMPlugin();
                 processTree = etmPlugin.withoutSeed(context, log);
