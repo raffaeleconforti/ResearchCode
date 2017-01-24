@@ -6,30 +6,30 @@ import com.raffaeleconforti.wrapper.LogPreprocessing;
 import com.raffaeleconforti.wrapper.MiningAlgorithm;
 import com.raffaeleconforti.wrapper.PetrinetWithMarking;
 import com.raffaeleconforti.marking.MarkingDiscoverer;
-import org.deckfour.xes.classification.XEventClassifier;
+import org.deckfour.xes.classification.XEventClass;
 import org.deckfour.xes.classification.XEventNameClassifier;
 import org.deckfour.xes.model.XLog;
+import org.processmining.contexts.uitopia.UIContext;
 import org.processmining.contexts.uitopia.UIPluginContext;
 import org.processmining.contexts.uitopia.annotations.UITopiaVariant;
 import org.processmining.framework.plugin.PluginContext;
 import org.processmining.framework.plugin.annotations.Plugin;
 import org.processmining.framework.plugin.annotations.PluginVariant;
 import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
-import org.processmining.models.graphbased.directed.petrinet.Petrinet;
-import org.processmining.models.semantics.petrinet.Marking;
 import org.processmining.plugins.etm.ETM;
+import org.processmining.plugins.etm.fitness.metrics.EditDistanceWrapperRTEDAbsolute;
+import org.processmining.plugins.etm.fitness.metrics.FitnessReplay;
+import org.processmining.plugins.etm.fitness.metrics.OverallFitness;
 import org.processmining.plugins.etm.model.narytree.NAryTree;
 import org.processmining.plugins.etm.model.narytree.TreeUtils;
 import org.processmining.plugins.etm.model.narytree.conversion.NAryTreeToProcessTree;
 import org.processmining.plugins.etm.parameters.ETMParam;
 import org.processmining.plugins.etm.parameters.ETMParamFactory;
 import org.processmining.plugins.etm.ui.plugins.ETMPlugin;
-import org.processmining.plugins.etm.ui.plugins.ETMwithoutGUI;
 import org.processmining.processtree.ProcessTree;
 import org.processmining.processtree.conversion.ProcessTree2Petrinet;
 import org.uncommonseditedbyjoosbuijs.watchmaker.framework.TerminationCondition;
 
-import java.io.*;
 import java.util.Iterator;
 import java.util.List;
 
@@ -56,25 +56,47 @@ public class EvolutionaryTreeMinerWrapper implements MiningAlgorithm {
             LogPreprocessing logPreprocessing = new LogPreprocessing();
             log = logPreprocessing.preprocessLog(context, log);
 
-            System.setOut(new PrintStream(new OutputStream() {
-                @Override
-                public void write(int b) throws IOException {}
-            }));
+//            System.setOut(new PrintStream(new OutputStream() {
+//                @Override
+//                public void write(int b) throws IOException {}
+//            }));
 
             ProcessTree processTree;
             if(context instanceof FakePluginContext) {
-                ETMParam params = ETMParamFactory.buildStandardParam(log, context);
+                PluginContext pluginContext = new UIContext().getMainPluginContext();
+                ETMParam params = ETMParamFactory.buildStandardParam(log, pluginContext);
+
+                System.out.println(params.getSeed().size());
+                params.setMaxThreads(Runtime.getRuntime().availableProcessors());
+
+                params.getCentralRegistry().updateEventClassifier(new XEventNameClassifier());
                 params.addTerminationConditionMaxDuration(3600000); //1 hour
-                processTree = ETMwithoutGUI.minePTWithParameters(context, log, new XEventNameClassifier(), params);
+
+                ETM etm = new ETM(params);
+                System.out.println("Starting the ETM");
+                etm.run();
+                List stopped = etm.getSatisfiedTerminationConditions();
+                Iterator tree = stopped.iterator();
+
+                while(tree.hasNext()) {
+                    TerminationCondition cond = (TerminationCondition)tree.next();
+                    System.out.println(cond.toString());
+                }
+
+                NAryTree tree1 = etm.getResult();
+                System.out.println("Tree: " + TreeUtils.toString(tree1, params.getCentralRegistry().getEventClasses()));
+                System.out.println("Fitness: " + params.getCentralRegistry().getFitness(tree1).fitnessValues);
+                System.out.println("Discovered tree: " + TreeUtils.toString(tree1, params.getCentralRegistry().getEventClasses()));
+                processTree = NAryTreeToProcessTree.convert(params.getCentralRegistry().getEventClasses(), tree1, "Process tree discovered by the ETM algorithm");
             }else {
                 ETMPlugin etmPlugin = new ETMPlugin();
                 processTree = etmPlugin.withoutSeed(context, log);
             }
-            ProcessTree2Petrinet.PetrinetWithMarkings petrinetWithMarkings = ProcessTree2Petrinet.convert(processTree);
+
+//            System.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out)));
+            ProcessTree2Petrinet.PetrinetWithMarkings petrinetWithMarkings = ProcessTree2Petrinet.convert(processTree, true);
 
             logPreprocessing.removedAddedElements(petrinetWithMarkings.petrinet);
-
-            System.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out)));
 
             MarkingDiscoverer.createInitialMarkingConnection(context, petrinetWithMarkings.petrinet, petrinetWithMarkings.initialMarking);
             MarkingDiscoverer.createFinalMarkingConnection(context, petrinetWithMarkings.petrinet, petrinetWithMarkings.finalMarking);

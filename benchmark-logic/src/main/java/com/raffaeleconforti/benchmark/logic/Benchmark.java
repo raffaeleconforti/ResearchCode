@@ -9,6 +9,7 @@ import com.raffaeleconforti.wrapper.MiningAlgorithm;
 import com.raffaeleconforti.wrapper.PetrinetWithMarking;
 import com.raffaeleconforti.wrapper.StructuredMinerAlgorithmWrapper;
 import com.raffaeleconforti.wrapper.StructuredMinerAlgorithmWrapperHM52;
+import com.raffaeleconforti.wrapper.impl.EvolutionaryTreeMinerWrapper;
 import com.raffaeleconforti.wrapper.impl.heuristics.Heuristics52AlgorithmWrapper;
 import com.raffaeleconforti.wrapper.impl.inductive.InductiveMinerIMaWrapper;
 import com.raffaeleconforti.wrapper.impl.inductive.InductiveMinerIMfWrapper;
@@ -38,9 +39,7 @@ import org.processmining.models.graphbased.directed.petrinet.impl.PetrinetFactor
 import org.processmining.models.semantics.petrinet.Marking;
 import org.processmining.plugins.pnml.importing.PnmlImportINet;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
+import java.io.*;
 import java.util.*;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
@@ -141,6 +140,7 @@ public class Benchmark {
         for( MiningAlgorithm miningAlgorithm : miningAlgorithms ) {
             old = null;
 
+//            if(!(miningAlgorithm instanceof EvolutionaryTreeMinerWrapper)) continue;
             String miningAlgorithmName = miningAlgorithm.getAcronym();
             String measurementAlgorithmName = "NULL";
             System.out.println("DEBUG - mining with algorithm: " + miningAlgorithmName);
@@ -150,7 +150,7 @@ public class Benchmark {
             if( !maDir.exists() && maDir.mkdir() );
 
             for( String logName : inputLogs.keySet() ) {
-                if(!logName.contains("Less")) continue;
+//                if(!logName.contains("15_1")) continue;
                 log = loadLog(inputLogs.get(logName));
                 System.out.println("DEBUG - log: " + logName);
                 // adding an entry on the measures table for this miner
@@ -190,22 +190,26 @@ public class Benchmark {
                             if( execTime > MAX_TIME)
                                 measures.get(miningAlgorithmName).get(logName).put(measurementAlgorithmName + ":tor", Long.toString(execTime));
                         } catch (Error e) {
+                            System.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out)));
                             e.printStackTrace();
                             measures.get(miningAlgorithmName).get(logName).put(measurementAlgorithmName, "-ERR");
                             System.out.println("ERROR - measuring: " + miningAlgorithmName + " : " + logName + " : " + measurementAlgorithmName);
                         } catch(Exception e) {
+                            System.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out)));
                             System.out.println("ERROR - mining: " + miningAlgorithmName + " - " + measurementAlgorithmName);
                             measures.get(miningAlgorithmName).remove(logName);
                         }
                     }
 
                 } catch(Error e) {
+                    System.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out)));
                     System.out.println("ERROR - mining: " + miningAlgorithmName + " - " + measurementAlgorithmName);
-//                    e.printStackTrace();
+                    e.printStackTrace();
                     measures.get(miningAlgorithmName).remove(logName);
                 } catch(Exception e) {
+                    System.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out)));
                     System.out.println("ERROR - mining: " + miningAlgorithmName + " - " + measurementAlgorithmName);
-//                    e.printStackTrace();
+                    e.printStackTrace();
                     measures.get(miningAlgorithmName).remove(logName);
                 }
 
