@@ -5,7 +5,7 @@
     <parent>
         <artifactId>research-code</artifactId>
         <groupId>com.raffaeleconforti</groupId>
-        <version>1.0.20170119</version>
+        <version>1.0.20170125</version>
         <relativePath>../</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -84,6 +84,10 @@
         <dependency>
             <groupId>org.processmining</groupId>
             <artifactId>properties</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.processmining</groupId>
+            <artifactId>efficientstorage</artifactId>
         </dependency>
         <dependency>
             <groupId>org.processmining</groupId>

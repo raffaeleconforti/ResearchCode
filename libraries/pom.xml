@@ -7,7 +7,7 @@
     <parent>
         <artifactId>research-code</artifactId>
         <groupId>com.raffaeleconforti</groupId>
-        <version>1.0.20170119</version>
+        <version>1.0.20170125</version>
         <relativePath>../</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -101,18 +101,18 @@
                         </configuration>
                     </execution>
 
-                    <execution>
-                        <id>download-evolutionarytreeminer</id>
-                        <phase>process-resources</phase>
-                        <goals>
-                            <goal>wget</goal>
-                        </goals>
-                        <configuration>
-                            <url>https://svn.win.tue.nl/repos/prom/Releases/Packages/EvolutionaryTreeMiner/EvolutionaryTreeMiner.jar</url>
-                            <outputFileName>evolutionarytreeminer.jar</outputFileName>
-                            <outputDirectory>${project.build.directory}</outputDirectory>
-                        </configuration>
-                    </execution>
+                    <!--<execution>-->
+                        <!--<id>download-evolutionarytreeminer</id>-->
+                        <!--<phase>process-resources</phase>-->
+                        <!--<goals>-->
+                            <!--<goal>wget</goal>-->
+                        <!--</goals>-->
+                        <!--<configuration>-->
+                            <!--<url>https://svn.win.tue.nl/repos/prom/Releases/Packages/EvolutionaryTreeMiner/EvolutionaryTreeMiner.jar</url>-->
+                            <!--<outputFileName>evolutionarytreeminer.jar</outputFileName>-->
+                            <!--<outputDirectory>${project.build.directory}</outputDirectory>-->
+                        <!--</configuration>-->
+                    <!--</execution>-->
 
                     <execution>
                         <id>download-heuristicsminer</id>
@@ -988,7 +988,7 @@
                             <artifactId>evolutionarytreeminer</artifactId>
                             <version>${prom.version}</version>
                             <packaging>jar</packaging>
-                            <file>${project.build.directory}/evolutionarytreeminer.jar</file>
+                            <file>src/main/java/evolutionarytreeminer-6.7.156.jar</file>
                             <generatePom>true</generatePom>
                         </configuration>
                     </execution>
@@ -1084,7 +1084,7 @@
                             <artifactId>lpsolve</artifactId>
                             <version>5.5.2</version>
                             <packaging>jar</packaging>
-                            <file>${project.build.sourceDirectory}/lpsolve55j.jar</file>
+                            <file>${project.build.sourceDirectory}/lpsolve-5.5.2.jar</file>
                             <generatePom>true</generatePom>
                         </configuration>
                     </execution>

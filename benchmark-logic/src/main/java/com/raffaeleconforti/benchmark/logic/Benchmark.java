@@ -151,6 +151,7 @@ public class Benchmark {
 
             for( String logName : inputLogs.keySet() ) {
 //                if(!logName.contains("15_1")) continue;
+//                if(!logName.contains("Less")) continue;
                 log = loadLog(inputLogs.get(logName));
                 System.out.println("DEBUG - log: " + logName);
                 // adding an entry on the measures table for this miner
