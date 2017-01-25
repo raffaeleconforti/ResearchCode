@@ -78,10 +78,10 @@ public class EvolutionaryTreeMinerWrapper implements MiningAlgorithm {
 
             ProcessTree processTree;
             if(context instanceof FakePluginContext) {
-                UIContext uiContext = new UIContext();
-                PluginManagerImpl.initialize(UIPluginContext.class);
-                uiContext.initialize();
-                PluginContext pluginContext = uiContext.getMainPluginContext();
+//                UIContext uiContext = new UIContext();
+//                PluginManagerImpl.initialize(UIPluginContext.class);
+//                uiContext.initialize();
+//                PluginContext pluginContext = uiContext.getMainPluginContext();
 
                 XEventClassifier classifier = new XEventNameClassifier();
 
@@ -136,7 +136,7 @@ public class EvolutionaryTreeMinerWrapper implements MiningAlgorithm {
                 params.addTerminationConditionMaxGen(1000);
                 params.addTerminationConditionTargetFitness(1, params.getFitnessEvaluator().isNatural());
 
-                params.addTerminationConditionMaxDuration(180000); //1 hour
+                params.addTerminationConditionMaxDuration(3600000); //1 hour
 
                 ETM etm = new ETM(params);
                 etm.run();
