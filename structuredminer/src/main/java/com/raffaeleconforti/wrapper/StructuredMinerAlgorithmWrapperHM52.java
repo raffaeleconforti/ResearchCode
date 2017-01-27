@@ -79,6 +79,6 @@ public class StructuredMinerAlgorithmWrapperHM52 implements MiningAlgorithm {
     }
 
     @Override
-    public String getAcronym() { return "SMhm";}
+    public String getAcronym() { return "sHM";}
 
 }

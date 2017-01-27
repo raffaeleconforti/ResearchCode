@@ -80,6 +80,6 @@ public class StructuredMinerAlgorithmWrapper implements MiningAlgorithm {
     }
 
     @Override
-    public String getAcronym() { return "SMhm6";}
+    public String getAcronym() { return "sHM6";}
 
 }

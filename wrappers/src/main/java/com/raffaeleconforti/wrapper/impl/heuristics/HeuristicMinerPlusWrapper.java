@@ -60,7 +60,7 @@ public class HeuristicMinerPlusWrapper implements MiningAlgorithm {
 
         if(context instanceof FakePluginContext) {
             HeuristicMinerPlus heuristicMinerPlus = new HeuristicMinerPlus();
-            output = heuristicMinerPlus.mineBPMNModel(log, 0.95, 0.00, 1.00, true, HMPlusUIResult.StructuringTime.NONE);
+            output = heuristicMinerPlus.mineBPMNModel(log, 0.90, 0.00, 1.00, true, HMPlusUIResult.StructuringTime.PRE);
         } else {
             output = HeuristicMinerPlusPlugin.mineBPMNModelWithHMP(context, log);
         }
