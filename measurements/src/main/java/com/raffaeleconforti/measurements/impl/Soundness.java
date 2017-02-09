@@ -28,11 +28,8 @@ public class Soundness implements MeasurementAlgorithm {
             SoundnessChecker checker = new SoundnessChecker(petrinet);
 
             if( checker.isSound() ) soundness = "sound";
-            else {
-                soundness = "unsound";
-                if( checker.isDead() ) soundness = "deadlock";
-                if( !checker.isSafe() ) soundness = "unbounded";
-            }
+            else soundness = "unsound";
+
             measure.addMeasure(getAcronym(), soundness);
             return measure;
         } catch( Exception e ) { return measure; }

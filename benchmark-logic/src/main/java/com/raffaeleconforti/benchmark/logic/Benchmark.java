@@ -1,5 +1,7 @@
 package com.raffaeleconforti.benchmark.logic;
 
+import au.edu.qut.processmining.log.LogParser;
+import au.edu.qut.processmining.log.SimpleLog;
 import com.raffaeleconforti.context.FakePluginContext;
 import com.raffaeleconforti.log.util.LogCloner;
 import com.raffaeleconforti.measurements.Measure;
@@ -71,7 +73,7 @@ public class Benchmark {
         this.defaultLogs = defaultLogs;
         this.extLocation = extLocation;
         this.packages = packages;
-        loadLogs();
+        loadLogs(extLocation);
     }
 
     public void performBenchmark(ArrayList<Integer> selectedMiners, ArrayList<Integer> selectedMetrics) {
@@ -150,8 +152,6 @@ public class Benchmark {
             if( !maDir.exists() && maDir.mkdir() );
 
             for( String logName : inputLogs.keySet() ) {
-//                if(!logName.contains("15_1")) continue;
-//                if(!logName.contains("Less")) continue;
                 log = loadLog(inputLogs.get(logName));
                 System.out.println("DEBUG - log: " + logName);
                 // adding an entry on the measures table for this miner
@@ -223,7 +223,7 @@ public class Benchmark {
         publishResults("./results/" + "benchmark_" + Long.toString(System.currentTimeMillis()) + ".xls");
     }
 
-    private void loadLogs() {
+    private void loadLogs(String extLocation) {
         inputLogs = new UnifiedMap<>();
         String logName;
         InputStream in;
@@ -384,6 +384,58 @@ public class Benchmark {
             return;
         }
 
+    }
+
+    public static void logsAnalysis(String path) {
+        ArrayList<SimpleLog> sLogs = new ArrayList<>();
+        Benchmark benchmark = new Benchmark();
+        XLog log;
+
+        int totalLogs;
+
+        int avgDistinctTraces = 0;
+        int avgDistinctEvents = 0;
+        int avgTraces = 0;
+        long avgEvents = 0;
+
+        int avgLongestTrace = 0;
+        int avgShortestTrace = 0;
+        int avgAvgTrace = 0;
+
+        System.out.println("LOGSA - starting analysis ... ");
+
+        benchmark.loadLogs(path);
+        for( String logName : benchmark.inputLogs.keySet() ) {
+            log = benchmark.loadLog(benchmark.inputLogs.get(logName));
+            sLogs.add(LogParser.getSimpleLog(log));
+        }
+
+        totalLogs = sLogs.size();
+
+
+        for( SimpleLog l : sLogs ) {
+            avgTraces += l.size();
+            avgEvents += l.getTotalEvents();
+
+            avgDistinctTraces += l.getDistinctTraces();
+            avgDistinctEvents += l.getDistinctEvents();
+
+            avgShortestTrace += l.getShortestTrace();
+            avgAvgTrace += l.getAvgTraceLength();
+            avgLongestTrace += l.getLongestTrace();
+        }
+
+        System.out.println("LOGSA - analysis result of " + totalLogs + " logs: ");
+
+        System.out.println("LOGSA - avg traces: " + avgTraces/totalLogs);
+        System.out.println("LOGSA - avg events: " + avgEvents/totalLogs);
+
+        System.out.println("LOGSA - avg distinct traces: " + avgDistinctTraces/totalLogs);
+        System.out.println("LOGSA - avg distinct events: " + avgDistinctEvents/totalLogs);
+
+        System.out.println("LOGSA - avg shortest trace: " + avgShortestTrace/totalLogs);
+        System.out.println("LOGSA - avg avg trace: " + avgAvgTrace/totalLogs);
+        System.out.println("LOGSA - avg longest trace: " + avgLongestTrace/totalLogs);
     }
 
     public static void foldLog(String path, String sfold) {

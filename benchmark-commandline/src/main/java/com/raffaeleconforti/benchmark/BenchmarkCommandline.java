@@ -124,6 +124,11 @@ public class BenchmarkCommandline {
 
         int icmd = 0;
 
+        if( (args.length == 2) && (args[0].equalsIgnoreCase("-logsa"))) {
+            Benchmark.logsAnalysis(args[1]);
+            return;
+        }
+
         if( (args.length == 3) && (args[0].equalsIgnoreCase("-foldlog"))) {
             Benchmark.foldLog(args[1], args[2]);
             return;
