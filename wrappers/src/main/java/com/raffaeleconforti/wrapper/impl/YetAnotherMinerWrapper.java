@@ -1,8 +1,8 @@
-package com.raffaeleconforti.wrapper.impl.heuristics;
+package com.raffaeleconforti.wrapper.impl;
 
-import au.edu.qut.processmining.miners.heuristic.HeuristicMinerPlus;
-import au.edu.qut.processmining.miners.heuristic.ui.miner.HMPlusUIResult;
-import au.edu.qut.promplugins.HeuristicMinerPlusPlugin;
+import au.edu.qut.processmining.miners.yam.YAM;
+import au.edu.qut.processmining.miners.yam.ui.miner.YAMUIResult;
+import au.edu.qut.promplugins.YAMPlugin;
 import com.raffaeleconforti.context.FakePluginContext;
 import com.raffaeleconforti.conversion.bpmn.BPMNToPetriNetConverter;
 import com.raffaeleconforti.conversion.petrinet.PetriNetToBPMNConverter;
@@ -25,11 +25,11 @@ import java.io.PrintStream;
 /**
  * Created by Adriano on 17/01/2017.
  */
-@Plugin(name = "Heuristic Miner Plus Wrapper",
+@Plugin(name = "Yet Another Miner Wrapper",
         parameterLabels = {"Event Log"},
-        returnLabels = {"HM+ BPMN model output"},
+        returnLabels = {"YAM output"},
         returnTypes = {BPMNDiagram.class})
-public class HeuristicMinerPlusWrapper implements MiningAlgorithm {
+public class YetAnotherMinerWrapper implements MiningAlgorithm {
 
     @Override
     public PetrinetWithMarking minePetrinet(UIPluginContext context, XLog log, boolean structure) {
@@ -54,26 +54,26 @@ public class HeuristicMinerPlusWrapper implements MiningAlgorithm {
             author = "Adriano Augusto",
             email = "adriano.august@ut.ee",
             pack = "bpmntk-osgi")
-    @PluginVariant(variantLabel = "Heuristic Miner Plus Wrapper", requiredParameterLabels = {0})
+    @PluginVariant(variantLabel = "Yet Another Miner Wrapper", requiredParameterLabels = {0})
     public BPMNDiagram mineBPMNDiagram(UIPluginContext context, XLog log, boolean structure) {
-        BPMNDiagram output ;
+        BPMNDiagram output = null;
 
         if(context instanceof FakePluginContext) {
-            HeuristicMinerPlus heuristicMinerPlus = new HeuristicMinerPlus();
-            output = heuristicMinerPlus.mineBPMNModel(log, 1.0, 0.30, true, HMPlusUIResult.StructuringTime.NONE);
+            YAM yam = new YAM();
+            output = yam.mineBPMNModel(log, 1.0, 0.10, true, YAMUIResult.StructuringTime.NONE);
         } else {
-            output = HeuristicMinerPlusPlugin.mineBPMNModelWithHMP(context, log);
+            output = YAMPlugin.discoverBPMNModelWithYAM(context, log);
         }
         return output;
     }
 
     @Override
     public String getAlgorithmName() {
-        return "Heuristic Miner Plus";
+        return "Yet Another Miner";
     }
 
     @Override
     public String getAcronym() {
-        return "HM+";
+        return "YAM";
     }
 }

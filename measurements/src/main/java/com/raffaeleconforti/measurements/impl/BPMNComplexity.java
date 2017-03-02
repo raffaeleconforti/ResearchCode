@@ -33,6 +33,18 @@ public class BPMNComplexity implements MeasurementAlgorithm {
 
     }
 
+    public Measure computeMeasurementBPMN(BPMNDiagram bpmn) {
+        Measure measure = new Measure();
+
+        try {ComplexityCalculator cc = new ComplexityCalculator(bpmn);
+            measure.addMeasure("size", cc.computeSize());
+            measure.addMeasure("cfc", cc.computeCFC());
+            measure.addMeasure("struct.", cc.computeStructuredness());
+            return measure;
+        } catch( Exception e ) { return measure; }
+
+    }
+
     @Override
     public String getMeasurementName() {
         return "Complexity on BPMN Model";

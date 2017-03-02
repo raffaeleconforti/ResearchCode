@@ -7,6 +7,7 @@ import com.raffaeleconforti.log.util.LogCloner;
 import com.raffaeleconforti.measurements.Measure;
 import com.raffaeleconforti.measurements.MeasurementAlgorithm;
 import com.raffaeleconforti.measurements.impl.AlignmentBasedFMeasure;
+import com.raffaeleconforti.measurements.impl.BPMNComplexity;
 import com.raffaeleconforti.wrapper.MiningAlgorithm;
 import com.raffaeleconforti.wrapper.PetrinetWithMarking;
 import com.raffaeleconforti.wrapper.StructuredMinerAlgorithmWrapper;
@@ -36,6 +37,7 @@ import org.processmining.acceptingpetrinet.models.impl.AcceptingPetriNetImpl;
 import org.processmining.acceptingpetrinet.plugins.ExportAcceptingPetriNetPlugin;
 import org.processmining.acceptingpetrinet.plugins.ImportAcceptingPetriNetPlugin;
 import org.processmining.contexts.uitopia.UIPluginContext;
+import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
 import org.processmining.models.graphbased.directed.petrinet.Petrinet;
 import org.processmining.models.graphbased.directed.petrinet.impl.PetrinetFactory;
 import org.processmining.models.semantics.petrinet.Marking;
@@ -170,13 +172,20 @@ public class Benchmark {
                     String pnpath = "./results/" + miningAlgorithmName + "/" + logName + "_" + Long.toString(System.currentTimeMillis()) + ".pnml";
                     exportPetrinet(fakePluginContext, petrinetWithMarking, pnpath);
 
+                    Measure measure;
                     // computing metrics on the output petrinet
                     for( MeasurementAlgorithm measurementAlgorithm : measurementAlgorithms ) {
                         measurementAlgorithmName = measurementAlgorithm.getAcronym();
+
                         try {
-                            sTime = System.currentTimeMillis();
                             XLog measuringLog = logCloner.cloneLog(log);
-                            Measure measure = measurementAlgorithm.computeMeasurement(fakePluginContext, xEventClassifier, petrinetWithMarking, miningAlgorithm, measuringLog);
+                            sTime = System.currentTimeMillis();
+                            if(measurementAlgorithm instanceof BPMNComplexity) {
+                                BPMNDiagram diagram = miningAlgorithm.mineBPMNDiagram(fakePluginContext, miningLog, false);
+                                sTime = System.currentTimeMillis();
+                                measure = ((BPMNComplexity) measurementAlgorithm).computeMeasurementBPMN(diagram);
+                            } else measure = measurementAlgorithm.computeMeasurement(fakePluginContext, xEventClassifier, petrinetWithMarking, miningAlgorithm, measuringLog);
+
                             execTime = System.currentTimeMillis() - sTime;
                             if (measurementAlgorithm.isMultimetrics()) {
                                 for (String metric : measure.getMetrics()) {
