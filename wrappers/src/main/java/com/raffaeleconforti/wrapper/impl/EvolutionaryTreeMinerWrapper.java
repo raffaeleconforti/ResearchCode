@@ -19,6 +19,8 @@ import org.processmining.framework.plugin.impl.PluginManagerImpl;
 import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
 import org.processmining.plugins.etm.CentralRegistry;
 import org.processmining.plugins.etm.ETM;
+import org.processmining.plugins.etm.factory.InductiveMinerWrapper;
+import org.processmining.plugins.etm.factory.TreeFactoryAbstract;
 import org.processmining.plugins.etm.factory.TreeFactoryCoordinator;
 import org.processmining.plugins.etm.fitness.metrics.*;
 import org.processmining.plugins.etm.logging.EvolutionLogger;
@@ -28,11 +30,10 @@ import org.processmining.plugins.etm.model.narytree.TreeUtils;
 import org.processmining.plugins.etm.model.narytree.conversion.NAryTreeToProcessTree;
 import org.processmining.plugins.etm.mutation.GuidedTreeMutationCoordinator;
 import org.processmining.plugins.etm.mutation.TreeCrossover;
+import org.processmining.plugins.etm.mutation.TreeMutationAbstract;
 import org.processmining.plugins.etm.mutation.TreeMutationCoordinator;
 import org.processmining.plugins.etm.mutation.mutators.*;
-import org.processmining.plugins.etm.mutation.mutators.maikelvaneck.MutateSingleNodeGuided;
-import org.processmining.plugins.etm.mutation.mutators.maikelvaneck.ReplaceTreeBySequenceMutation;
-import org.processmining.plugins.etm.mutation.mutators.maikelvaneck.SequenceFactory;
+import org.processmining.plugins.etm.mutation.mutators.maikelvaneck.*;
 import org.processmining.plugins.etm.parameters.ETMParam;
 import org.processmining.plugins.etm.parameters.ETMParamAbstract;
 import org.processmining.plugins.etm.parameters.ETMParamFactory;
@@ -71,13 +72,13 @@ public class EvolutionaryTreeMinerWrapper implements MiningAlgorithm {
             LogPreprocessing logPreprocessing = new LogPreprocessing();
             log = logPreprocessing.preprocessLog(context, log);
 
-            System.setOut(new PrintStream(new OutputStream() {
-                @Override
-                public void write(int b) throws IOException {}
-            }));
+//            System.setOut(new PrintStream(new OutputStream() {
+//                @Override
+//                public void write(int b) throws IOException {}
+//            }));
 
             ProcessTree processTree;
-            if(context instanceof FakePluginContext) {
+//            if(context instanceof FakePluginContext) {
 //                UIContext uiContext = new UIContext();
 //                PluginManagerImpl.initialize(UIPluginContext.class);
 //                uiContext.initialize();
@@ -90,7 +91,11 @@ public class EvolutionaryTreeMinerWrapper implements MiningAlgorithm {
 
                 ETMParam params = new ETMParam(registry, null, null, 20, 5);
                 params.addTerminationCondition(new ExternalTerminationCondition());
-                params.setFactory(new SequenceFactory(registry));
+
+//                params.setFactory(new SequenceFactory(registry));
+                Map<TreeFactoryAbstract, Double> otherFactories = new HashMap<TreeFactoryAbstract, Double>();
+                otherFactories.put(new IntelligentTreeFactory(registry), 0.05);
+                params.setFactory(new TreeFactoryCoordinator(registry, 0.95, otherFactories));
 
                 ArrayList evolutionObservers = new ArrayList();
                 evolutionObservers.add(new EvolutionLogger(context,registry, false));
@@ -118,6 +123,10 @@ public class EvolutionaryTreeMinerWrapper implements MiningAlgorithm {
 
                 LinkedHashMap smartMutators = new LinkedHashMap();
                 smartMutators.put(new MutateSingleNodeGuided(registry), Double.valueOf(0.25D));
+                smartMutators.put(new InsertActivityGuided(registry), 1.);
+                smartMutators.put(new MutateLeafClassGuided(registry), 1.);
+                smartMutators.put(new MutateOperatorTypeGuided(registry), 1.);
+                smartMutators.put(new RemoveActivityGuided(registry), 1.);
 
                 LinkedHashMap dumbMutators = new LinkedHashMap();
                 dumbMutators.put(new ReplaceTreeBySequenceMutation(registry), Double.valueOf(0.25)); //random tree creation
@@ -150,12 +159,12 @@ public class EvolutionaryTreeMinerWrapper implements MiningAlgorithm {
 
                 NAryTree tree1 = etm.getResult();
                 processTree = NAryTreeToProcessTree.convert(params.getCentralRegistry().getEventClasses(), tree1, "Process tree discovered by the ETM algorithm");
-            }else {;
-                ETMPlugin etmPlugin = new ETMPlugin();
-                processTree = etmPlugin.withoutSeed(context, log);
-            }
+//            }else {;
+//                ETMPlugin etmPlugin = new ETMPlugin();
+//                processTree = etmPlugin.withoutSeed(context, log);
+//            }
 
-            System.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out)));
+//            System.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out)));
             ProcessTree2Petrinet.PetrinetWithMarkings petrinetWithMarkings = ProcessTree2Petrinet.convert(processTree, true);
 
             logPreprocessing.removedAddedElements(petrinetWithMarkings.petrinet);
