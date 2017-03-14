@@ -6,7 +6,7 @@ import org.deckfour.xes.extension.std.XConceptExtension;
 import org.deckfour.xes.extension.std.XLifecycleExtension;
 import org.deckfour.xes.extension.std.XTimeExtension;
 import org.deckfour.xes.factory.XFactory;
-import com.raffaeleconforti.memorylog.XFactoryMemoryImpl;
+import org.deckfour.xes.factory.XFactoryNaiveImpl;
 import org.deckfour.xes.info.XLogInfoFactory;
 import org.deckfour.xes.model.XEvent;
 import org.deckfour.xes.model.XLog;
@@ -28,7 +28,7 @@ public class LogPreprocessing {
 
     private XEvent start;
     private XEvent end;
-    private final XFactory factory = new XFactoryMemoryImpl();
+    private final XFactory factory = new XFactoryNaiveImpl();
     private final XConceptExtension xce = XConceptExtension.instance();
     private final XTimeExtension xte = XTimeExtension.instance();
     private final XLifecycleExtension xle = XLifecycleExtension.instance();

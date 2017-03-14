@@ -1,8 +1,5 @@
 package com.raffaeleconforti.datastructures.cache;
 
-import org.eclipse.collections.impl.map.mutable.UnifiedMap;
-
-import java.util.Iterator;
 import java.util.Map;
 
 /**

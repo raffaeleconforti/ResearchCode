@@ -20,7 +20,8 @@ import org.deckfour.xes.classification.XEventLifeTransClassifier;
 import org.deckfour.xes.classification.XEventNameClassifier;
 import org.deckfour.xes.extension.std.XConceptExtension;
 import org.deckfour.xes.extension.std.XTimeExtension;
-import com.raffaeleconforti.memorylog.XFactoryMemoryImpl;
+import org.deckfour.xes.factory.XFactory;
+import org.deckfour.xes.factory.XFactoryNaiveImpl;
 import org.deckfour.xes.model.XLog;
 import org.deckfour.xes.model.XTrace;
 import org.deckfour.xes.model.impl.XLogImpl;
@@ -132,8 +133,9 @@ public class FrequentBehaviourFilter {
     }
 
     private XLog filterLog(final UIPluginContext context, XLog logToFilter, XLog logToUseAsReference, String label) {
-        LogOptimizer logOptimizer = new LogOptimizer();
-        LogModifier logModifier = new LogModifier(new XFactoryMemoryImpl(), XConceptExtension.instance(), XTimeExtension.instance(), logOptimizer);
+        XFactory factory = new XFactoryNaiveImpl();
+        LogOptimizer logOptimizer = new LogOptimizer(factory);
+        LogModifier logModifier = new LogModifier(factory, XConceptExtension.instance(), XTimeExtension.instance(), logOptimizer);
 
         XLog frequentLog = logToUseAsReference;
 

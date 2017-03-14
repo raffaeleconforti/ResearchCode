@@ -9,20 +9,19 @@ import com.raffaeleconforti.bpmnminer.subprocessminer.BPMNSubProcessMiner;
 import com.raffaeleconforti.bpmnminer.subprocessminer.EntityDiscoverer;
 import com.raffaeleconforti.bpmnminer.subprocessminer.selection.SelectMinerResult;
 import com.raffaeleconforti.context.FakePluginContext;
-import com.raffaeleconforti.memorylog.XFactoryMemoryImpl;
 import com.raffaeleconforti.foreignkeydiscovery.conceptualmodels.ConceptualModel;
 import com.raffaeleconforti.foreignkeydiscovery.conceptualmodels.Entity;
 import com.raffaeleconforti.foreignkeydiscovery.functionaldependencies.NoEntityException;
 import com.raffaeleconforti.log.util.LogImporter;
 import com.raffaeleconforti.log.util.LogOptimizer;
 import org.deckfour.xes.factory.XFactory;
+import org.deckfour.xes.factory.XFactoryNaiveImpl;
 import org.deckfour.xes.model.XLog;
 import org.processmining.contexts.uitopia.UIContext;
 import org.processmining.contexts.uitopia.UIPluginContext;
 import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
 import org.processmining.models.graphbased.directed.bpmn.elements.Activity;
 import org.processmining.plugins.bpmn.BpmnDefinitions;
-import org.processmining.plugins.bpmn.plugins.BpmnExportPlugin;
 
 import javax.swing.*;
 import java.io.File;
@@ -135,7 +134,7 @@ public class BPMNMinerCommandLine {
             name = name.substring(0, name.length() - 1);
         }
 
-        XFactory factory = new XFactoryMemoryImpl();
+        XFactory factory = new XFactoryNaiveImpl();
         XLog log = LogImporter.importFromFile(factory, name);
 
         UIPluginContext fakeContext = new FakePluginContext();

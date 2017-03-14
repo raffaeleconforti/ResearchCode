@@ -1,5 +1,6 @@
 package com.raffaeleconforti.log.util;
 
+import org.deckfour.xes.factory.XFactoryNaiveImpl;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 import org.deckfour.xes.extension.std.XConceptExtension;
 import org.deckfour.xes.extension.std.XTimeExtension;
@@ -17,6 +18,125 @@ public class LogModifier {
     private XConceptExtension xce = null;
     private XTimeExtension xte = null;
     private Map<Object, Object> map = null;
+
+    public static void main(String[] args) throws Exception {
+        XFactory factory = new XFactoryNaiveImpl();
+        XLog log = LogImporter.importFromFile(factory, "/Volumes/Data/SharedFolder/Logs/Sepsis Cases.xes.gz");
+
+        for(XTrace trace : log) {
+            boolean violation = checkViolation(trace);
+            XEvent event = factory.createEvent();
+            String name;
+            if(violation) {
+                name = "Bad";
+            }else {
+                name = "Good";
+            }
+
+            XConceptExtension.instance().assignName(event, name);
+            trace.add(event);
+        }
+
+        LogImporter.exportToFile("/Volumes/Data/SharedFolder/Logs/Sepsis Cases_label.xes.gz", log);
+    }
+
+    private static boolean checkViolation(XTrace trace) {
+        boolean tested = false;
+        boolean tested_positive = false;
+        boolean treated = false;
+        for (int i = 0; i < trace.size(); i++) {
+            XEvent current_event = trace.get(i);
+            String current_name = XConceptExtension.instance().extractName(current_event);
+            if ("Leucocytes".equalsIgnoreCase(current_name)) {
+                tested = true;
+                XAttribute attribute = current_event.getAttributes().get("Leucocytes");
+                if(attribute != null) {
+                    Double leucocyte = ((XAttributeContinuous) attribute).getValue();
+                    if (leucocyte < 20 || leucocyte > 40) {
+                        tested_positive = true;
+                    }
+                }
+            }else if ("CRP".equalsIgnoreCase(current_name)) {
+                tested = true;
+                XAttribute attribute = current_event.getAttributes().get("CRP");
+                if(attribute != null) {
+                    Double crp = ((XAttributeContinuous) attribute).getValue();
+                    if (crp > 100) {
+                        tested_positive = true;
+                    }
+                }
+            }else if ("LacticAcid".equalsIgnoreCase(current_name)) {
+                tested = true;
+                XAttribute attribute = current_event.getAttributes().get("LacticAcid");
+                if(attribute != null) {
+                    Double lactic_acid = ((XAttributeContinuous) attribute).getValue();
+                    if (lactic_acid > 4) {
+                        tested_positive = true;
+                    }
+                }
+            }else {
+                if("IV Liquid".equalsIgnoreCase(current_name) ||
+                        "IV Antibiotics".equalsIgnoreCase(current_name) ||
+                        "Admission IC".equalsIgnoreCase(current_name) ||
+                        "Admission NC".equalsIgnoreCase(current_name)
+                ) {
+                    treated = true;
+                }
+            }
+        }
+        return (tested_positive && !treated) || (tested && !tested_positive) || (!tested_positive && treated);
+    }
+
+    public static void main1(String[] args) throws Exception {
+        XFactory factory = new XFactoryNaiveImpl();
+        XLog log = LogImporter.importFromFile(factory, "/Volumes/Data/SharedFolder/Logs/SIAE.xes.gz");
+
+        for(XTrace trace : log) {
+            boolean violation = checkViolation(trace);
+            XEvent event = factory.createEvent();
+            String name;
+            if(violation) {
+                name = "Bad";
+            }else {
+                name = "Good";
+            }
+
+            XConceptExtension.instance().assignName(event, name);
+            trace.add(event);
+        }
+
+        LogImporter.exportToFile("/Volumes/Data/SharedFolder/Logs/SIAE_label.xes.gz", log);
+    }
+
+    private static boolean checkViolation1(XTrace trace) {
+        for(int i = 0; i < trace.size() - 1; i++) {
+            String current_name = XConceptExtension.instance().extractName(trace.get(i));
+            String next_name = XConceptExtension.instance().extractName(trace.get(i + 1));
+            if("Annullamento Permesso".equalsIgnoreCase(current_name)) {
+                if("Associazione Evento a Permesso".equalsIgnoreCase(next_name)) {
+                    return true;
+                }
+            }
+            if("Associazione Evento a Permesso".equalsIgnoreCase(current_name)) {
+                if("Validazione Dichiarazione".equalsIgnoreCase(next_name)) {
+                    return true;
+                }else if("Validazione Distinta".equalsIgnoreCase(next_name)) {
+                    return true;
+                }
+            }
+            if("Validazione Dichiarazione".equalsIgnoreCase(current_name)) {
+                if("Associazione Evento a Gratuito".equalsIgnoreCase(next_name)) {
+                    return true;
+                }
+            }
+            if("Validazione Gratuito".equalsIgnoreCase(current_name)) {
+                if("Associazione Evento a Dichiarazione".equalsIgnoreCase(next_name)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 
     private final Comparator<XEvent> comparatorXEvent = new Comparator<XEvent>() {
         @Override

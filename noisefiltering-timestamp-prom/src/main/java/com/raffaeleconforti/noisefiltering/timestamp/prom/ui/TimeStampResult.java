@@ -1,16 +1,11 @@
 package com.raffaeleconforti.noisefiltering.timestamp.prom.ui;
 
-import com.fluxicon.slickerbox.components.NiceIntegerSlider;
-import com.fluxicon.slickerbox.components.NiceSlider;
 import com.fluxicon.slickerbox.factory.SlickerFactory;
-import com.raffaeleconforti.noisefiltering.timestamp.noise.selection.TimeStampNoiseResult;
 import com.raffaeleconforti.noisefiltering.timestamp.permutation.PermutationTechnique;
 import com.raffaeleconforti.noisefiltering.timestamp.permutation.PermutationTechniqueFactory;
 import org.processmining.framework.util.ui.widgets.ProMPropertiesPanel;
 
 import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 

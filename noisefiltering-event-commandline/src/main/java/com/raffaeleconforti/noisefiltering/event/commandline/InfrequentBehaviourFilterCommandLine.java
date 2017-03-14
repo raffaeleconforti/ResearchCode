@@ -6,21 +6,17 @@ import com.raffaeleconforti.context.FakePluginContext;
 import com.raffaeleconforti.log.util.LogImporter;
 import com.raffaeleconforti.log.util.LogModifier;
 import com.raffaeleconforti.log.util.LogOptimizer;
-import com.raffaeleconforti.memorylog.XFactoryMemoryImpl;
 import com.raffaeleconforti.noisefiltering.event.InfrequentBehaviourFilter;
 import com.raffaeleconforti.noisefiltering.event.commandline.ui.NoiseFilterUI;
 import com.raffaeleconforti.noisefiltering.event.selection.NoiseFilterResult;
-import lpsolve.LpSolve;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.deckfour.xes.classification.XEventAndClassifier;
 import org.deckfour.xes.classification.XEventClassifier;
-import org.deckfour.xes.classification.XEventLifeTransClassifier;
 import org.deckfour.xes.classification.XEventNameClassifier;
 import org.deckfour.xes.extension.std.XConceptExtension;
 import org.deckfour.xes.extension.std.XTimeExtension;
 import org.deckfour.xes.factory.XFactory;
-import com.raffaeleconforti.memorylog.XFactoryMemoryImpl;
 import org.deckfour.xes.factory.XFactoryNaiveImpl;
 import org.deckfour.xes.factory.XFactoryRegistry;
 import org.deckfour.xes.model.XLog;
@@ -80,7 +76,7 @@ public class InfrequentBehaviourFilterCommandLine {
             name = name.substring(0, name.length() - 1);
         }
 
-        XFactory factory = new XFactoryMemoryImpl();
+        XFactory factory = new XFactoryNaiveImpl();
         XLog log = LogImporter.importFromFile(factory, name);
 
         InfrequentBehaviourFilterCommandLine ibfcl = new InfrequentBehaviourFilterCommandLine();
@@ -144,12 +140,12 @@ public class InfrequentBehaviourFilterCommandLine {
 
     public XLog filterLog(XLog rawlog) {
         XLog log = rawlog;
-        LogOptimizer logOptimizer = new LogOptimizer();
+        XFactory factory = new XFactoryNaiveImpl();
+        LogOptimizer logOptimizer = new LogOptimizer(factory);
         log = logOptimizer.optimizeLog(log);
 
-        XFactory memory = new XFactoryMemoryImpl();
-        XFactoryRegistry.instance().setCurrentDefault(memory);
-        LogModifier logModifier = new LogModifier(memory, XConceptExtension.instance(), XTimeExtension.instance(), logOptimizer);
+        XFactoryRegistry.instance().setCurrentDefault(factory);
+        LogModifier logModifier = new LogModifier(factory, XConceptExtension.instance(), XTimeExtension.instance(), logOptimizer);
         logModifier.insertArtificialStartAndEndEvent(log);
 
         Automaton<String> automatonOriginal = automatonFactory.generate(log);

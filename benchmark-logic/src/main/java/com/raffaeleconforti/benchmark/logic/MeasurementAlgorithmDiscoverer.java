@@ -2,7 +2,6 @@ package com.raffaeleconforti.benchmark.logic;
 
 import com.raffaeleconforti.classloading.ClassFinder;
 import com.raffaeleconforti.measurements.MeasurementAlgorithm;
-import com.raffaeleconforti.wrapper.MiningAlgorithm;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 
 import java.util.ArrayList;

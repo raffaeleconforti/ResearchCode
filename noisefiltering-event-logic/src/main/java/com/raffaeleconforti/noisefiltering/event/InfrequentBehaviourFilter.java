@@ -12,6 +12,7 @@ import com.raffaeleconforti.noisefiltering.event.infrequentbehaviour.automaton.A
 import com.raffaeleconforti.noisefiltering.event.infrequentbehaviour.automaton.AutomatonInfrequentBehaviourRemover;
 import com.raffaeleconforti.noisefiltering.event.selection.NoiseFilterResult;
 import com.raffaeleconforti.statistics.percentile.Percentile;
+import org.deckfour.xes.factory.XFactory;
 import org.deckfour.xes.factory.XFactoryNaiveImpl;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.deckfour.xes.classification.XEventClassifier;
@@ -121,10 +122,11 @@ public class InfrequentBehaviourFilter {
 
         XLog log2;
         XLog log = rawlog;
-        LogOptimizer logOptimizer = new LogOptimizer();
+        XFactory factory = new XFactoryNaiveImpl();
+        LogOptimizer logOptimizer = new LogOptimizer(factory);
         log = logOptimizer.optimizeLog(log);
 
-        LogModifier logModifier = new LogModifier(new XFactoryNaiveImpl(), XConceptExtension.instance(), XTimeExtension.instance(), logOptimizer);
+        LogModifier logModifier = new LogModifier(factory, XConceptExtension.instance(), XTimeExtension.instance(), logOptimizer);
         logModifier.insertArtificialStartAndEndEvent(log);
 
         Automaton<String> automatonOriginal = automatonFactory.generate(log);
@@ -256,10 +258,11 @@ public class InfrequentBehaviourFilter {
     public XLog filterLog(XLog rawlog) {
 
         XLog log = rawlog;
-        LogOptimizer logOptimizer = new LogOptimizer(new XFactoryNaiveImpl());
+        XFactory factory = new XFactoryNaiveImpl();
+        LogOptimizer logOptimizer = new LogOptimizer(factory);
         log = logOptimizer.optimizeLog(log);
 
-        LogModifier logModifier = new LogModifier(new XFactoryNaiveImpl(), XConceptExtension.instance(), XTimeExtension.instance(), logOptimizer);
+        LogModifier logModifier = new LogModifier(factory, XConceptExtension.instance(), XTimeExtension.instance(), logOptimizer);
         logModifier.insertArtificialStartAndEndEvent(log);
 
         Automaton<String> automatonOriginal = automatonFactory.generate(log);

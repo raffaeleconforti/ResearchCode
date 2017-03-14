@@ -1,7 +1,5 @@
 package com.raffaeleconforti.noisefiltering.timestamp.permutation;
 
-import com.raffaeleconforti.datastructures.cache.Cache;
-import com.raffaeleconforti.datastructures.cache.impl.SelfCleaningCache;
 import com.raffaeleconforti.kernelestimation.distribution.EventDistributionCalculator;
 import com.raffaeleconforti.log.util.LogCloner;
 import com.raffaeleconforti.log.util.NameExtractor;

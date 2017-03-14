@@ -4,7 +4,7 @@ import com.raffaeleconforti.context.FakePluginContext;
 import com.raffaeleconforti.log.util.LogImporter;
 import com.raffaeleconforti.noisefiltering.event.FrequentBehaviourFilter;
 import org.deckfour.xes.factory.XFactory;
-import com.raffaeleconforti.memorylog.XFactoryMemoryImpl;
+import org.deckfour.xes.factory.XFactoryNaiveImpl;
 import org.deckfour.xes.model.XLog;
 import org.processmining.contexts.uitopia.UIContext;
 import org.processmining.contexts.uitopia.UIPluginContext;
@@ -48,7 +48,7 @@ public class FrequentBehaviourFilterCommandLine {
 
         FrequentBehaviourFilterCommandLine fbfc = new FrequentBehaviourFilterCommandLine();
 
-        XFactory factory = new XFactoryMemoryImpl();
+        XFactory factory = new XFactoryNaiveImpl();
         BPMNDiagram diagram = null;
 
         if(algorithm == 1) {

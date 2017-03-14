@@ -6,14 +6,11 @@ import org.deckfour.xes.extension.XExtension;
 import org.deckfour.xes.factory.XFactory;
 import org.deckfour.xes.id.XID;
 import org.deckfour.xes.model.*;
-import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.eclipse.collections.impl.map.mutable.primitive.IntObjectHashMap;
 import org.eclipse.collections.impl.map.mutable.primitive.ObjectIntHashMap;
 
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.Map;
 
 /**
  * Created by Raffaele Conforti (conforti.raffaele@gmail.com) on 4/08/2016.

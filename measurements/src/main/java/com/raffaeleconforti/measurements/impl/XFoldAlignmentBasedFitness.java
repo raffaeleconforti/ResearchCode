@@ -2,7 +2,6 @@ package com.raffaeleconforti.measurements.impl;
 
 import com.raffaeleconforti.measurements.Measure;
 import com.raffaeleconforti.measurements.MeasurementAlgorithm;
-import com.raffaeleconforti.noisefiltering.event.prom.InfrequentBehaviourFilterPlugin;
 import com.raffaeleconforti.wrapper.MiningAlgorithm;
 import com.raffaeleconforti.wrapper.PetrinetWithMarking;
 import org.deckfour.xes.classification.XEventClassifier;
@@ -10,9 +9,7 @@ import org.deckfour.xes.factory.XFactory;
 import org.deckfour.xes.factory.XFactoryNaiveImpl;
 import org.deckfour.xes.model.XLog;
 import org.deckfour.xes.model.XTrace;
-import org.deckfour.xes.out.XesXmlSerializer;
 import org.processmining.contexts.uitopia.UIPluginContext;
-import org.processmining.exporting.log.MXMLibGzLogExport;
 
 import java.util.Random;
 

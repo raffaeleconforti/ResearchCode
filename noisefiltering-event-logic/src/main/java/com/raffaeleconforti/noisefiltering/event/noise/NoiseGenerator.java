@@ -1,13 +1,13 @@
 package com.raffaeleconforti.noisefiltering.event.noise;
 
 import com.raffaeleconforti.log.util.LogCloner;
+import org.deckfour.xes.factory.XFactoryNaiveImpl;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 import org.deckfour.xes.extension.std.XConceptExtension;
 import org.deckfour.xes.extension.std.XLifecycleExtension;
 import org.deckfour.xes.extension.std.XTimeExtension;
 import org.deckfour.xes.factory.XFactory;
-import com.raffaeleconforti.memorylog.XFactoryMemoryImpl;
 import org.deckfour.xes.model.XEvent;
 import org.deckfour.xes.model.XLog;
 import org.deckfour.xes.model.XTrace;
@@ -26,7 +26,7 @@ public class NoiseGenerator {
     private final XConceptExtension xce = XConceptExtension.instance();
     private final XTimeExtension xte = XTimeExtension.instance();
     private final XLifecycleExtension xle = XLifecycleExtension.instance();
-    private final XFactory factory = new XFactoryMemoryImpl();
+    private final XFactory factory = new XFactoryNaiveImpl();
     private final Map<String, Set<String>> directDependencies = new UnifiedMap<String, Set<String>>();
     private final Random random = new Random(123456789);
 

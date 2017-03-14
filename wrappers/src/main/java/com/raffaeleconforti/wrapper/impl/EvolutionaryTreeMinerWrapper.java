@@ -1,6 +1,5 @@
 package com.raffaeleconforti.wrapper.impl;
 
-import com.raffaeleconforti.context.FakePluginContext;
 import com.raffaeleconforti.conversion.petrinet.PetriNetToBPMNConverter;
 import com.raffaeleconforti.wrapper.LogPreprocessing;
 import com.raffaeleconforti.wrapper.MiningAlgorithm;
@@ -9,44 +8,33 @@ import com.raffaeleconforti.marking.MarkingDiscoverer;
 import nl.tue.astar.AStarThread.Canceller;
 import org.deckfour.xes.classification.*;
 import org.deckfour.xes.model.XLog;
-import org.processmining.contexts.uitopia.UIContext;
 import org.processmining.contexts.uitopia.UIPluginContext;
 import org.processmining.contexts.uitopia.annotations.UITopiaVariant;
-import org.processmining.framework.plugin.PluginContext;
 import org.processmining.framework.plugin.annotations.Plugin;
 import org.processmining.framework.plugin.annotations.PluginVariant;
-import org.processmining.framework.plugin.impl.PluginManagerImpl;
 import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
 import org.processmining.plugins.etm.CentralRegistry;
 import org.processmining.plugins.etm.ETM;
-import org.processmining.plugins.etm.factory.InductiveMinerWrapper;
 import org.processmining.plugins.etm.factory.TreeFactoryAbstract;
 import org.processmining.plugins.etm.factory.TreeFactoryCoordinator;
 import org.processmining.plugins.etm.fitness.metrics.*;
 import org.processmining.plugins.etm.logging.EvolutionLogger;
-import org.processmining.plugins.etm.logging.StatisticsLogger;
 import org.processmining.plugins.etm.model.narytree.NAryTree;
-import org.processmining.plugins.etm.model.narytree.TreeUtils;
 import org.processmining.plugins.etm.model.narytree.conversion.NAryTreeToProcessTree;
 import org.processmining.plugins.etm.mutation.GuidedTreeMutationCoordinator;
 import org.processmining.plugins.etm.mutation.TreeCrossover;
-import org.processmining.plugins.etm.mutation.TreeMutationAbstract;
 import org.processmining.plugins.etm.mutation.TreeMutationCoordinator;
 import org.processmining.plugins.etm.mutation.mutators.*;
 import org.processmining.plugins.etm.mutation.mutators.maikelvaneck.*;
 import org.processmining.plugins.etm.parameters.ETMParam;
-import org.processmining.plugins.etm.parameters.ETMParamAbstract;
-import org.processmining.plugins.etm.parameters.ETMParamFactory;
 import org.processmining.plugins.etm.termination.ExternalTerminationCondition;
 import org.processmining.plugins.etm.termination.ProMCancelTerminationCondition;
-import org.processmining.plugins.etm.ui.plugins.ETMPlugin;
 import org.processmining.processtree.ProcessTree;
 import org.processmining.processtree.conversion.ProcessTree2Petrinet;
 import org.uncommons.maths.random.Probability;
 import org.uncommonseditedbyjoosbuijs.watchmaker.framework.TerminationCondition;
 import org.uncommonseditedbyjoosbuijs.watchmaker.framework.selection.SigmaScaling;
 
-import java.io.*;
 import java.util.*;
 
 /**

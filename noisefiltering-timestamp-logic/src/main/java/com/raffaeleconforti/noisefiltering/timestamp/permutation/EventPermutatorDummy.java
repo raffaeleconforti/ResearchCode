@@ -7,7 +7,6 @@ import com.raffaeleconforti.log.util.LogCloner;
 import com.raffaeleconforti.log.util.NameExtractor;
 import com.raffaeleconforti.log.util.TraceToString;
 import com.raffaeleconforti.noisefiltering.timestamp.check.TimeStampChecker;
-import com.raffaeleconforti.noisefiltering.timestamp.collections.Collections2;
 import org.deckfour.xes.classification.XEventClassifier;
 import org.deckfour.xes.factory.XFactory;
 import org.deckfour.xes.model.XAttribute;

@@ -5,7 +5,7 @@ import com.raffaeleconforti.noisefiltering.event.noise.NoiseGenerator;
 import com.raffaeleconforti.noisefiltering.event.noise.commandline.ui.NoiseUI;
 import com.raffaeleconforti.noisefiltering.event.noise.selection.NoiseResult;
 import org.deckfour.xes.factory.XFactory;
-import com.raffaeleconforti.memorylog.XFactoryMemoryImpl;
+import org.deckfour.xes.factory.XFactoryNaiveImpl;
 import org.deckfour.xes.model.XLog;
 
 import java.util.Scanner;
@@ -19,7 +19,7 @@ public class NoiseGeneratorCommandLine {
         Scanner console = new Scanner(System.in);
         System.out.println("Input file:");
         String name = console.nextLine();
-        XFactory factory = new XFactoryMemoryImpl();
+        XFactory factory = new XFactoryNaiveImpl();
         XLog log = LogImporter.importFromFile(factory, name);
 
         NoiseGeneratorCommandLine ngcl = new NoiseGeneratorCommandLine();

@@ -4,10 +4,7 @@ import com.raffaeleconforti.automaton.Automaton;
 import com.raffaeleconforti.kernelestimation.distribution.impl.EventDistributionCalculatorNoiseImpl;
 import com.raffaeleconforti.log.util.NameExtractor;
 import com.raffaeleconforti.log.util.TraceToString;
-import com.raffaeleconforti.noisefiltering.timestamp.permutation.PermutationTechnique;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
-import org.eclipse.collections.impl.set.mutable.UnifiedSet;
-import nl.tue.astar.AStarException;
 import org.deckfour.xes.classification.XEventClass;
 import org.deckfour.xes.classification.XEventClassifier;
 import org.deckfour.xes.factory.XFactory;
@@ -18,16 +15,8 @@ import org.deckfour.xes.model.XLog;
 import org.deckfour.xes.model.XTrace;
 import org.processmining.framework.plugin.PluginContext;
 import org.processmining.models.graphbased.directed.petrinet.Petrinet;
-import org.processmining.models.graphbased.directed.petrinet.elements.Place;
 import org.processmining.models.graphbased.directed.petrinet.elements.Transition;
-import org.processmining.models.semantics.petrinet.Marking;
-import org.processmining.plugins.astar.petrinet.PetrinetReplayerWithILP;
 import org.processmining.plugins.connectionfactories.logpetrinet.TransEvClassMapping;
-import org.processmining.plugins.petrinet.replayer.algorithms.IPNReplayParameter;
-import org.processmining.plugins.petrinet.replayer.algorithms.costbasedcomplete.CostBasedCompleteParam;
-import org.processmining.plugins.petrinet.replayresult.PNRepResult;
-import org.processmining.plugins.petrinet.replayresult.StepTypes;
-import org.processmining.plugins.replayer.replayresult.SyncReplayResult;
 
 import java.util.*;
 

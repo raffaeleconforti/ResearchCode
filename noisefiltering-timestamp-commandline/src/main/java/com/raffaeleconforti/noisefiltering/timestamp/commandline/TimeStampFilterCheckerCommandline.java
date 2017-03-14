@@ -3,7 +3,7 @@ package com.raffaeleconforti.noisefiltering.timestamp.commandline;
 import com.raffaeleconforti.log.util.LogImporter;
 import com.raffaeleconforti.noisefiltering.timestamp.TimeStampFilterChecker;
 import org.deckfour.xes.factory.XFactory;
-import com.raffaeleconforti.memorylog.XFactoryMemoryImpl;
+import org.deckfour.xes.factory.XFactoryNaiveImpl;
 import org.deckfour.xes.model.XLog;
 
 import java.util.*;
@@ -16,7 +16,7 @@ public class TimeStampFilterCheckerCommandline {
 
     public static void main(String[] args) throws Exception {
         Scanner console = new Scanner(System.in);
-        XFactory factory = new XFactoryMemoryImpl();
+        XFactory factory = new XFactoryNaiveImpl();
 
         System.out.println("Input filtered log:");
         String name = console.nextLine();

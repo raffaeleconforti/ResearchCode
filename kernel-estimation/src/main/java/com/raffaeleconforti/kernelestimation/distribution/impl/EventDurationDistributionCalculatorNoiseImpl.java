@@ -7,6 +7,7 @@ import com.raffaeleconforti.kernelestimation.distribution.EventDurationDistribut
 import com.raffaeleconforti.kernelestimation.distribution.mixturemodel.NormalMixtureDistribution;
 import com.raffaeleconforti.log.util.LogImporter;
 import com.raffaeleconforti.log.util.NameExtractor;
+import org.deckfour.xes.factory.XFactoryNaiveImpl;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.apache.commons.math3.distribution.*;
 import org.apache.commons.math3.exception.NotStrictlyPositiveException;
@@ -16,7 +17,6 @@ import org.apache.commons.math3.stat.inference.MannWhitneyUTest;
 import org.deckfour.xes.classification.XEventClassifier;
 import org.deckfour.xes.classification.XEventNameClassifier;
 import org.deckfour.xes.extension.std.XTimeExtension;
-import com.raffaeleconforti.memorylog.XFactoryMemoryImpl;
 import org.deckfour.xes.model.XEvent;
 import org.deckfour.xes.model.XLog;
 import org.deckfour.xes.model.XTrace;
@@ -39,7 +39,7 @@ public class EventDurationDistributionCalculatorNoiseImpl implements EventDurati
     private final XTimeExtension xte = XTimeExtension.instance();
 
     public static void main(String[] args) throws Exception {
-        XLog log = LogImporter.importFromFile(new XFactoryMemoryImpl(), "/Volumes/Data/SharedFolder/Logs/TimeNoise/LoanApplication.xes.gz");
+        XLog log = LogImporter.importFromFile(new XFactoryNaiveImpl(), "/Volumes/Data/SharedFolder/Logs/TimeNoise/LoanApplication.xes.gz");
         EventDistributionCalculatorNoiseImpl dc = new EventDistributionCalculatorNoiseImpl(log, new XEventNameClassifier(), null);
         dc.analyseLog();
         System.out.println(dc.computeLikelihood(log.get(100)));

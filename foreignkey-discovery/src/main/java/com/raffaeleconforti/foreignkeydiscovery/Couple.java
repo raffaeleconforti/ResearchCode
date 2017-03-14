@@ -1,7 +1,5 @@
 package com.raffaeleconforti.foreignkeydiscovery;
 
-import com.google.common.hash.HashCode;
-
 /**
  * Created by Raffaele Conforti on 14/10/14.
  */

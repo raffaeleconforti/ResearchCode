@@ -1,12 +1,10 @@
 package com.raffaeleconforti.conversion.bpmn;
 
-import com.raffaeleconforti.context.FakePluginContext;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 import org.processmining.models.graphbased.AttributeMap;
 import org.processmining.models.graphbased.directed.DirectedGraph;
 import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
-import org.processmining.models.graphbased.directed.bpmn.BPMNDiagramFactory;
 import org.processmining.models.graphbased.directed.bpmn.BPMNDiagramImpl;
 import org.processmining.models.graphbased.directed.bpmn.BPMNNode;
 import org.processmining.models.graphbased.directed.bpmn.elements.*;
@@ -17,13 +15,7 @@ import org.processmining.models.graphbased.directed.petrinet.elements.Place;
 import org.processmining.models.graphbased.directed.petrinet.elements.Transition;
 import org.processmining.models.graphbased.directed.petrinet.impl.PetrinetImpl;
 import org.processmining.models.semantics.petrinet.Marking;
-import org.processmining.plugins.bpmn.Bpmn;
-import org.processmining.plugins.bpmn.dialogs.BpmnSelectDiagramDialog;
-import org.processmining.plugins.bpmn.parameters.BpmnSelectDiagramParameters;
-import org.processmining.plugins.bpmn.plugins.BpmnImportPlugin;
-import org.processmining.plugins.pnml.exporting.PnmlExportNetToPNML;
 
-import java.io.File;
 import java.util.*;
 
 /**

@@ -5,7 +5,6 @@ import com.raffaeleconforti.context.FakePluginContext;
 import com.raffaeleconforti.log.util.LogImporter;
 import com.raffaeleconforti.structuredminer.miner.StructuredMiner;
 import com.raffaeleconforti.structuredminer.ui.SettingsStructuredMiner;
-import com.raffaeleconforti.memorylog.XFactoryMemoryImpl;
 import org.deckfour.xes.factory.XFactoryNaiveImpl;
 import org.deckfour.xes.model.XLog;
 import org.processmining.contexts.uitopia.UIContext;
