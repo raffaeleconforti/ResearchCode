@@ -1,9 +1,7 @@
 package com.raffaeleconforti.noisefiltering.timestamp;
 
-import com.raffaeleconforti.log.util.TraceToString;
 import org.deckfour.xes.model.XLog;
 import org.deckfour.xes.model.XTrace;
-import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 
 import java.util.*;
 

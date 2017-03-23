@@ -1,9 +1,6 @@
 package com.raffaeleconforti.noisefiltering.timestamp.prom;
 
-import com.raffaeleconforti.noisefiltering.timestamp.TimeStampFilterChecker;
 import com.raffaeleconforti.noisefiltering.timestamp.TimeStampFilterMarker;
-import org.deckfour.xes.extension.std.XConceptExtension;
-import org.deckfour.xes.extension.std.XTimeExtension;
 import org.deckfour.xes.model.XLog;
 import org.processmining.contexts.uitopia.UIPluginContext;
 import org.processmining.contexts.uitopia.annotations.UITopiaVariant;

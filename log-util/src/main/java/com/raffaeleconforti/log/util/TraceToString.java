@@ -3,8 +3,6 @@ package com.raffaeleconforti.log.util;
 import org.deckfour.xes.extension.std.XTimeExtension;
 import org.deckfour.xes.model.XTrace;
 import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
-import org.eclipse.collections.impl.map.mutable.primitive.IntObjectHashMap;
-import org.eclipse.collections.impl.set.mutable.primitive.IntHashSet;
 
 import java.text.SimpleDateFormat;
 import java.util.*;

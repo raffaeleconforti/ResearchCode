@@ -6,7 +6,7 @@ import org.deckfour.xes.classification.XEventClass;
 import org.deckfour.xes.classification.XEventClassifier;
 import org.deckfour.xes.extension.std.XConceptExtension;
 import org.deckfour.xes.factory.XFactory;
-import com.raffaeleconforti.memorylog.XFactoryMemoryImpl;
+import org.deckfour.xes.factory.XFactoryNaiveImpl;
 import org.deckfour.xes.info.XLogInfo;
 import org.deckfour.xes.info.XLogInfoFactory;
 import org.deckfour.xes.info.impl.XLogInfoImpl;
@@ -35,7 +35,7 @@ import java.util.Map;
  */
 public class AutomatonFrequentBehaviourRemover {
 
-    private static final XFactory factory = new XFactoryMemoryImpl();
+    private static final XFactory factory = new XFactoryNaiveImpl();
 
     public static XLog removeFrequentBehaviour(PluginContext context, XLog log, Automaton<String> automaton, boolean excludeTraces) {
         XLog result = filter(context, log, automaton, excludeTraces);

@@ -29,7 +29,7 @@ public class DesignStructureMatrix {
     private String[] activitiesOrder;
 
     public static void main(String[] args) throws Exception {
-        XLog log = LogImporter.importFromFile(new XFactoryMemoryImpl(), "/Volumes/Data/SharedFolder/Logs/repairExample_complete_lifecycle_only.xes");
+        XLog log = LogImporter.importFromFile(new XFactoryNaiveImpl(), "/Volumes/Data/SharedFolder/Logs/repairExample_complete_lifecycle_only.xes");
         DesignStructureMatrix dsm = new DesignStructureMatrix(log);
         MultiLevelHashMap<String, Boolean> directFollow = DirectFollowFactory.discoverDirectFollow(log, dsm.eventClassifier);
 //        dsm = SequenceDSMFactory.discover(LogAnalyser.getUniqueActivities(log, dsm.eventClassifier), dsm.eventClassifier, directFollow, dsm);

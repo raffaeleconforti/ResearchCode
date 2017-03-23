@@ -25,7 +25,6 @@ import org.processmining.plugins.ilpminer.ILPMinerSettings.SolverSetting;
 import org.processmining.plugins.ilpminer.ILPMinerSettings.SolverType;
 import org.processmining.plugins.log.logabstraction.LogRelations;
 
-import java.lang.reflect.Constructor;
 import java.util.Collection;
 
 import java.util.HashMap;

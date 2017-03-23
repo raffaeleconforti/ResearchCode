@@ -16,6 +16,7 @@ import com.raffaeleconforti.wrapper.impl.alpha.AlphaAlgorithmWrapper;
 import com.raffaeleconforti.wrapper.impl.heuristics.Heuristics52AlgorithmWrapper;
 import com.raffaeleconforti.wrapper.impl.heuristics.HeuristicsAlgorithmWrapper;
 import com.raffaeleconforti.wrapper.impl.inductive.InductiveMinerIMWrapper;
+import org.deckfour.xes.factory.XFactoryNaiveImpl;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import nl.tue.astar.AStarException;
 import org.deckfour.xes.classification.XEventClass;
@@ -24,7 +25,6 @@ import org.deckfour.xes.extension.std.XConceptExtension;
 import org.deckfour.xes.extension.std.XLifecycleExtension;
 import org.deckfour.xes.extension.std.XTimeExtension;
 import org.deckfour.xes.factory.XFactory;
-import com.raffaeleconforti.memorylog.XFactoryMemoryImpl;
 import org.deckfour.xes.info.XLogInfo;
 import org.deckfour.xes.info.XLogInfoFactory;
 import org.deckfour.xes.info.impl.XLogInfoImpl;
@@ -72,7 +72,7 @@ public class ComputeMeasurment {
     private int fold;
     private XLog trainingLog;
     private XLog validatingLog;
-    private final XFactory factory = new XFactoryMemoryImpl();
+    private final XFactory factory = new XFactoryNaiveImpl();
     private int numberTraces;
 
     private IPNReplayParameter parameters;

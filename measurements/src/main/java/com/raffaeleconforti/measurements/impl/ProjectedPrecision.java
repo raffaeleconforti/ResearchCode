@@ -8,8 +8,6 @@ import org.deckfour.xes.classification.XEventClassifier;
 import org.deckfour.xes.model.XLog;
 import org.processmining.acceptingpetrinet.models.impl.AcceptingPetriNetImpl;
 import org.processmining.contexts.uitopia.UIPluginContext;
-import org.processmining.processtree.ProcessTree;
-import org.processmining.processtree.impl.ProcessTreeImpl;
 import org.processmining.projectedrecallandprecision.framework.CompareParameters;
 import org.processmining.projectedrecallandprecision.plugins.CompareLog2PetriNetPlugin;
 import org.processmining.projectedrecallandprecision.result.ProjectedRecallPrecisionResult;

@@ -1,6 +1,7 @@
 package com.raffaeleconforti.log.util;
 
 import com.raffaeleconforti.memorylog.XFactoryMemoryImpl;
+import org.deckfour.xes.factory.XFactoryNaiveImpl;
 import org.deckfour.xes.model.*;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.deckfour.xes.factory.XFactory;
@@ -20,7 +21,8 @@ public class LogCloner {
     private final XFactory factory;
 
     public LogCloner() {
-        factory = new XFactoryMemoryImpl();
+//        factory = new XFactoryMemoryImpl();
+        factory = new XFactoryNaiveImpl();
     }
 
     public LogCloner(XFactory factory) {

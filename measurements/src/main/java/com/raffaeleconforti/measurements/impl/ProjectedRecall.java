@@ -1,7 +1,5 @@
 package com.raffaeleconforti.measurements.impl;
 
-import au.edu.qut.bpmn.metrics.ComplexityCalculator;
-import com.raffaeleconforti.conversion.petrinet.PetriNetToBPMNConverter;
 import com.raffaeleconforti.measurements.Measure;
 import com.raffaeleconforti.measurements.MeasurementAlgorithm;
 import com.raffaeleconforti.wrapper.MiningAlgorithm;
@@ -10,7 +8,6 @@ import org.deckfour.xes.classification.XEventClassifier;
 import org.deckfour.xes.model.XLog;
 import org.processmining.acceptingpetrinet.models.impl.AcceptingPetriNetImpl;
 import org.processmining.contexts.uitopia.UIPluginContext;
-import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
 import org.processmining.projectedrecallandprecision.framework.CompareParameters;
 import org.processmining.projectedrecallandprecision.plugins.CompareLog2PetriNetPlugin;
 import org.processmining.projectedrecallandprecision.result.ProjectedRecallPrecisionResult;

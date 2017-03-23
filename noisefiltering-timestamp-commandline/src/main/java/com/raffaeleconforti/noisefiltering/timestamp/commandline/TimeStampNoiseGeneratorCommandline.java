@@ -3,7 +3,7 @@ package com.raffaeleconforti.noisefiltering.timestamp.commandline;
 import com.raffaeleconforti.log.util.LogImporter;
 import com.raffaeleconforti.noisefiltering.timestamp.noise.TimeStampNoiseGenerator;
 import org.deckfour.xes.factory.XFactory;
-import com.raffaeleconforti.memorylog.XFactoryMemoryImpl;
+import org.deckfour.xes.factory.XFactoryNaiveImpl;
 import org.deckfour.xes.model.XLog;
 
 import java.util.*;
@@ -20,7 +20,7 @@ public class TimeStampNoiseGeneratorCommandline {
         Scanner console = new Scanner(System.in);
         System.out.println("Input file:");
         String name = console.nextLine();
-        XFactory factory = new XFactoryMemoryImpl();
+        XFactory factory = new XFactoryNaiveImpl();
         XLog log = LogImporter.importFromFile(factory, name);
 
         TimeStampNoiseGeneratorCommandline timeStampNoiseGeneratorCommandline = new TimeStampNoiseGeneratorCommandline();

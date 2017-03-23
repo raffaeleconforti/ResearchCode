@@ -4,7 +4,7 @@ import com.raffaeleconforti.log.util.LogImporter;
 import com.raffaeleconforti.noisefiltering.timestamp.TimeStampFixerSmartExecutor;
 import com.raffaeleconforti.noisefiltering.timestamp.permutation.PermutationTechnique;
 import org.deckfour.xes.factory.XFactory;
-import com.raffaeleconforti.memorylog.XFactoryMemoryImpl;
+import org.deckfour.xes.factory.XFactoryNaiveImpl;
 import org.deckfour.xes.model.XLog;
 
 import java.util.Scanner;
@@ -21,7 +21,7 @@ public class TimeStampFixerCommandline {
         Scanner console = new Scanner(System.in);
         System.out.println("Input file:");
         String name = console.nextLine();
-        XFactory factory = new XFactoryMemoryImpl();
+        XFactory factory = new XFactoryNaiveImpl();
         XLog log = LogImporter.importFromFile(factory, name);
 
         TimeStampFixerCommandline timeStampFixerCommandline = new TimeStampFixerCommandline();

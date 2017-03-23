@@ -8,24 +8,17 @@ import org.deckfour.xes.classification.XEventClassifier;
 import org.deckfour.xes.classification.XEventLifeTransClassifier;
 import org.deckfour.xes.classification.XEventNameClassifier;
 import org.deckfour.xes.model.XLog;
-import org.processmining.causalactivitygraph.models.CausalActivityGraph;
 import org.processmining.causalactivitygraphcreator.algorithms.DiscoverCausalActivityGraphAlgorithm;
 import org.processmining.causalactivitygraphcreator.parameters.DiscoverCausalActivityGraphParameters;
-import org.processmining.causalactivitygraphcreator.plugins.ConvertCausalActivityMatrixToCausalActivityGraphPlugin;
-import org.processmining.causalactivitymatrix.models.CausalActivityMatrix;
-import org.processmining.causalactivitymatrix.models.impl.CausalActivityMatrixFactory;
-import org.processmining.causalactivitymatrix.models.impl.CausalActivityMatrixImpl;
 import org.processmining.contexts.uitopia.UIPluginContext;
 import org.processmining.hybridilpminer.parameters.*;
 import org.processmining.lpengines.interfaces.LPEngine;
-import org.processmining.models.causalgraph.SimpleCausalGraphImpl;
 import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
 import org.processmining.models.graphbased.directed.petrinet.Petrinet;
 import org.processmining.models.semantics.petrinet.Marking;
 import org.processmining.hybridilpminer.plugins.HybridILPMinerPlugin;
 
 import java.util.HashSet;
-import java.util.List;
 
 /**
  * Created by Adriano on 7/12/2016.

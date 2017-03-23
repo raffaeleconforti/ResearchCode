@@ -1,11 +1,9 @@
 package com.raffaeleconforti.memorylog;
 
-import com.google.common.primitives.Ints;
 import org.deckfour.xes.extension.XExtension;
 import org.deckfour.xes.extension.std.XTimeExtension;
 import org.deckfour.xes.model.*;
 import org.deckfour.xes.util.XAttributeUtils;
-import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
 import org.eclipse.collections.impl.map.mutable.primitive.IntObjectHashMap;
 import org.eclipse.collections.impl.map.mutable.primitive.ObjectIntHashMap;
 import org.xerial.snappy.Snappy;

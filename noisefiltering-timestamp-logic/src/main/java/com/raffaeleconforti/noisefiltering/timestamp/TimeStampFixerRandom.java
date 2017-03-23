@@ -11,7 +11,6 @@ import com.raffaeleconforti.noisefiltering.event.infrequentbehaviour.automaton.A
 import com.raffaeleconforti.noisefiltering.timestamp.check.TimeStampChecker;
 import com.raffaeleconforti.noisefiltering.timestamp.permutation.EventPermutator;
 import com.raffaeleconforti.noisefiltering.timestamp.permutation.EventPermutatorRandom;
-import com.raffaeleconforti.noisefiltering.timestamp.permutation.EventPermutatorSmart;
 import org.deckfour.xes.classification.XEventClassifier;
 import org.deckfour.xes.factory.XFactory;
 import org.deckfour.xes.model.XEvent;

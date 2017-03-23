@@ -4,7 +4,6 @@ import org.deckfour.xes.classification.XEventClassifier;
 import org.deckfour.xes.extension.XExtension;
 import org.deckfour.xes.info.XLogInfo;
 import org.deckfour.xes.model.*;
-import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.eclipse.collections.impl.map.mutable.primitive.IntObjectHashMap;
 import org.eclipse.collections.impl.map.mutable.primitive.ObjectIntHashMap;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;

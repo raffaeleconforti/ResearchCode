@@ -6,8 +6,6 @@ import org.deckfour.xes.model.XEvent;
 import org.deckfour.xes.model.XTrace;
 import org.eclipse.collections.impl.map.mutable.ConcurrentHashMap;
 
-import java.util.Date;
-
 /**
  * Created by Raffaele Conforti (conforti.raffaele@gmail.com) on 16/02/15.
  */

@@ -4,7 +4,6 @@ import com.raffaeleconforti.automaton.Automaton;
 import com.raffaeleconforti.automaton.AutomatonFactory;
 import com.raffaeleconforti.log.util.LogModifier;
 import com.raffaeleconforti.log.util.LogOptimizer;
-import com.raffaeleconforti.memorylog.XFactoryMemoryImpl;
 import com.raffaeleconforti.noisefiltering.event.InfrequentBehaviourFilter;
 import com.raffaeleconforti.noisefiltering.event.selection.NoiseFilterResult;
 import com.raffaeleconforti.noisefiltering.event.prom.ui.NoiseFilterUI;
@@ -13,8 +12,8 @@ import org.deckfour.xes.classification.XEventClassifier;
 import org.deckfour.xes.classification.XEventNameClassifier;
 import org.deckfour.xes.extension.std.XConceptExtension;
 import org.deckfour.xes.extension.std.XTimeExtension;
-import com.raffaeleconforti.memorylog.XFactoryMemoryImpl;
 import org.deckfour.xes.factory.XFactory;
+import org.deckfour.xes.factory.XFactoryNaiveImpl;
 import org.deckfour.xes.factory.XFactoryRegistry;
 import org.deckfour.xes.model.XLog;
 import org.processmining.contexts.uitopia.UIPluginContext;
@@ -42,12 +41,12 @@ public class InfrequentBehaviourFilterPlugin {
     @PluginVariant(variantLabel = "Infrequent Behaviour Filter", requiredParameterLabels = {0})//, 1, 2, 3 })
     public XLog filterLog(final UIPluginContext context, XLog rawlog) {
         XLog log = rawlog;
-        LogOptimizer logOptimizer = new LogOptimizer();
+        XFactory factory = new XFactoryNaiveImpl();
+        LogOptimizer logOptimizer = new LogOptimizer(factory);
         log = logOptimizer.optimizeLog(log);
 
-        XFactory memory = new XFactoryMemoryImpl();
-        XFactoryRegistry.instance().setCurrentDefault(memory);
-        LogModifier logModifier = new LogModifier(memory, XConceptExtension.instance(), XTimeExtension.instance(), logOptimizer);
+        XFactoryRegistry.instance().setCurrentDefault(factory);
+        LogModifier logModifier = new LogModifier(factory, XConceptExtension.instance(), XTimeExtension.instance(), logOptimizer);
         logModifier.insertArtificialStartAndEndEvent(log);
 
         Automaton<String> automatonOriginal = automatonFactory.generate(log);
@@ -62,10 +61,11 @@ public class InfrequentBehaviourFilterPlugin {
 
     public XLog filterLog(XLog rawlog) {
         XLog log = rawlog;
-        LogOptimizer logOptimizer = new LogOptimizer();
+        XFactory factory = new XFactoryNaiveImpl();
+        LogOptimizer logOptimizer = new LogOptimizer(factory);
         log = logOptimizer.optimizeLog(log);
 
-        LogModifier logModifier = new LogModifier(new XFactoryMemoryImpl(), XConceptExtension.instance(), XTimeExtension.instance(), logOptimizer);
+        LogModifier logModifier = new LogModifier(factory, XConceptExtension.instance(), XTimeExtension.instance(), logOptimizer);
         logModifier.insertArtificialStartAndEndEvent(log);
 
         return infrequentBehaviourFilter.filterLog(log);
