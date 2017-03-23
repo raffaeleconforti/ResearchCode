@@ -180,11 +180,13 @@ public class Benchmark {
                         try {
                             XLog measuringLog = logCloner.cloneLog(log);
                             sTime = System.currentTimeMillis();
-                            if(measurementAlgorithm instanceof BPMNComplexity) {
-                                BPMNDiagram diagram = miningAlgorithm.mineBPMNDiagram(fakePluginContext, miningLog, false);
-                                sTime = System.currentTimeMillis();
-                                measure = ((BPMNComplexity) measurementAlgorithm).computeMeasurementBPMN(diagram);
-                            } else measure = measurementAlgorithm.computeMeasurement(fakePluginContext, xEventClassifier, petrinetWithMarking, miningAlgorithm, measuringLog);
+//                            if(measurementAlgorithm instanceof BPMNComplexity) {
+//                                BPMNDiagram diagram = miningAlgorithm.mineBPMNDiagram(fakePluginContext, miningLog, false);
+//                                sTime = System.currentTimeMillis();
+//                                measure = ((BPMNComplexity) measurementAlgorithm).computeMeasurementBPMN(diagram);
+//                            } else
+
+                            measure = measurementAlgorithm.computeMeasurement(fakePluginContext, xEventClassifier, petrinetWithMarking, miningAlgorithm, measuringLog);
 
                             execTime = System.currentTimeMillis() - sTime;
                             if (measurementAlgorithm.isMultimetrics()) {

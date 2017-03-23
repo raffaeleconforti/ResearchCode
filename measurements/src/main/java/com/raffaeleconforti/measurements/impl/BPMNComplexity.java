@@ -28,6 +28,7 @@ public class BPMNComplexity implements MeasurementAlgorithm {
             measure.addMeasure("size", cc.computeSize());
             measure.addMeasure("cfc", cc.computeCFC());
             measure.addMeasure("struct.", cc.computeStructuredness());
+            measure.addMeasure("duplicates", cc.computeDuplicates());
             return measure;
         } catch( Exception e ) { return measure; }
 

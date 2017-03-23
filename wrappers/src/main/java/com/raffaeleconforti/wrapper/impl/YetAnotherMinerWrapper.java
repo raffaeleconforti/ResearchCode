@@ -60,7 +60,7 @@ public class YetAnotherMinerWrapper implements MiningAlgorithm {
 
         if(context instanceof FakePluginContext) {
             YAM yam = new YAM();
-            output = yam.mineBPMNModel(log, 1.0, 0.10, true, YAMUIResult.StructuringTime.NONE);
+            output = yam.mineBPMNModel(log, 1.0, 0.05, false, YAMUIResult.StructuringTime.NONE);
         } else {
             output = YAMPlugin.discoverBPMNModelWithYAM(context, log);
         }
