@@ -17,7 +17,9 @@ import org.processmining.framework.log.LogFile;
 import org.processmining.framework.plugin.annotations.Plugin;
 import org.processmining.framework.plugin.annotations.PluginVariant;
 import org.processmining.mining.heuristicsmining.HeuristicsNetResult;
+import org.processmining.models.graphbased.AttributeMap;
 import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
+import org.processmining.models.graphbased.directed.bpmn.elements.Activity;
 import org.processmining.models.graphbased.directed.petrinet.Petrinet;
 import org.processmining.models.semantics.petrinet.Marking;
 
@@ -68,6 +70,11 @@ public class Heuristics52AlgorithmWrapper implements MiningAlgorithm {
         }
 
         BPMNDiagram diagram = HNNetToBPMNConverter.convert(hNet.getHeuriticsNet());
+        for(Activity activity : diagram.getActivities()) {
+            if(activity.getLabel().contains("+unknown:")) {
+                activity.getAttributeMap().put(AttributeMap.LABEL, activity.getLabel().replace("+unknown:", "+"));
+            }
+        }
 
         Object[] result = BPMNToPetriNetConverter.convert(diagram);
         logPreprocessing.removedAddedElements((Petrinet) result[0]);

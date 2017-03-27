@@ -10,6 +10,7 @@ import org.deckfour.xes.classification.XEventClassifier;
 import org.deckfour.xes.model.XLog;
 import org.processmining.contexts.uitopia.UIPluginContext;
 import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
+import org.processmining.models.graphbased.directed.petrinet.Petrinet;
 
 /**
  * Created by Adriano on 19/10/2016.

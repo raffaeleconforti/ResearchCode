@@ -7,7 +7,6 @@ import com.raffaeleconforti.log.util.LogCloner;
 import com.raffaeleconforti.measurements.Measure;
 import com.raffaeleconforti.measurements.MeasurementAlgorithm;
 import com.raffaeleconforti.measurements.impl.AlignmentBasedFMeasure;
-import com.raffaeleconforti.measurements.impl.BPMNComplexity;
 import com.raffaeleconforti.wrapper.MiningAlgorithm;
 import com.raffaeleconforti.wrapper.PetrinetWithMarking;
 import com.raffaeleconforti.wrapper.StructuredMinerAlgorithmWrapperHM52;
@@ -17,6 +16,8 @@ import hub.top.petrinet.PetriNet;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+//import org.deckfour.xes.classification.XEventClassifier;
+//import org.deckfour.xes.classification.XEventNameClassifier;
 import org.deckfour.xes.classification.XEventClassifier;
 import org.deckfour.xes.classification.XEventNameClassifier;
 import org.deckfour.xes.factory.XFactory;
@@ -30,7 +31,6 @@ import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 import org.processmining.acceptingpetrinet.models.impl.AcceptingPetriNetImpl;
 import org.processmining.acceptingpetrinet.plugins.ExportAcceptingPetriNetPlugin;
 import org.processmining.contexts.uitopia.UIPluginContext;
-import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
 
 import java.io.*;
 import java.util.*;
@@ -51,6 +51,7 @@ public class Benchmark {
     private String extLocation;
     private Map<String, Object> inputLogs;
     private LogCloner logCloner = new LogCloner(new XFactoryNaiveImpl());
+    private static XEventClassifier xEventClassifier = new XEventNameClassifier();
 
     private Set<String> packages = new UnifiedSet<>();
 
@@ -72,7 +73,6 @@ public class Benchmark {
         hub.top.petrinet.PetriNet petriNet = new PetriNet();
         petriNet.getPlaces();
 
-        XEventClassifier xEventClassifier = new XEventNameClassifier();
         FakePluginContext fakePluginContext = new FakePluginContext();
 
         /* retrieving all the mining algorithms */
@@ -144,6 +144,7 @@ public class Benchmark {
 
             for( String logName : inputLogs.keySet() ) {
                 log = loadLog(inputLogs.get(logName));
+                log.getClassifiers().add(xEventClassifier);
                 System.out.println("DEBUG - log: " + logName);
                 // adding an entry on the measures table for this miner
                 if( !measures.containsKey(miningAlgorithmName) )measures.put(miningAlgorithmName, new HashMap<>());
@@ -353,7 +354,6 @@ public class Benchmark {
 
 
     public static void computeFitnessNPrecision(String mLogPath, String eLogPath) {
-        XEventClassifier xEventClassifier = new XEventNameClassifier();
         FakePluginContext fakePluginContext = new FakePluginContext();
 
         AlignmentBasedFMeasure alignmentBasedFMeasure = new AlignmentBasedFMeasure();
