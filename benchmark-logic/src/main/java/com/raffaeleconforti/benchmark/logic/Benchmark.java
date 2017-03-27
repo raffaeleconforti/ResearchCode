@@ -50,7 +50,7 @@ public class Benchmark {
     private boolean defaultLogs;
     private String extLocation;
     private Map<String, Object> inputLogs;
-    private LogCloner logCloner = new LogCloner(new XFactoryNaiveImpl());
+    private LogCloner logCloner;
     private static XEventClassifier xEventClassifier = new XEventNameClassifier();
 
     private Set<String> packages = new UnifiedSet<>();
@@ -153,6 +153,7 @@ public class Benchmark {
                 try {
                     // mining the petrinet
                     long sTime = System.currentTimeMillis();
+                    logCloner = new LogCloner(new XFactoryNaiveImpl());
                     XLog miningLog = logCloner.cloneLog(log);
                     PetrinetWithMarking petrinetWithMarking = miningAlgorithm.minePetrinet(fakePluginContext, miningLog, false);
                     long execTime = System.currentTimeMillis() - sTime;
