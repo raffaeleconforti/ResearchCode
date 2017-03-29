@@ -144,7 +144,6 @@ public class Benchmark {
 
             for( String logName : inputLogs.keySet() ) {
                 log = loadLog(inputLogs.get(logName));
-                log.getClassifiers().add(xEventClassifier);
                 System.out.println("DEBUG - log: " + logName);
                 // adding an entry on the measures table for this miner
                 if( !measures.containsKey(miningAlgorithmName) )measures.put(miningAlgorithmName, new HashMap<>());

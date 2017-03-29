@@ -6,6 +6,8 @@ import com.raffaeleconforti.wrapper.LogPreprocessing;
 import com.raffaeleconforti.wrapper.MiningAlgorithm;
 import com.raffaeleconforti.wrapper.PetrinetWithMarking;
 import com.raffaeleconforti.marking.MarkingDiscoverer;
+import org.deckfour.xes.classification.XEventClassifier;
+import org.deckfour.xes.classification.XEventNameClassifier;
 import org.deckfour.xes.model.XLog;
 import org.processmining.contexts.uitopia.UIPluginContext;
 import org.processmining.contexts.uitopia.annotations.UITopiaVariant;
@@ -22,6 +24,8 @@ import org.processmining.plugins.heuristicsnet.miner.heuristics.miner.gui.Parame
 import org.processmining.plugins.heuristicsnet.miner.heuristics.miner.settings.HeuristicsMinerSettings;
 
 import java.io.*;
+import java.util.Collection;
+import java.util.HashSet;
 
 /**
  * Created by conforti on 20/02/15.
@@ -56,7 +60,9 @@ public class HeuristicsAlgorithmWrapper implements MiningAlgorithm {
             ParametersPanel parameters = new ParametersPanel();
             settings = parameters.getSettings();
         }else {
-            ParametersPanel parameters = new ParametersPanel(LogUtility.getEventClassifiers(log));
+            Collection<XEventClassifier> classifiers = new HashSet();
+            classifiers.add(new XEventNameClassifier());
+            ParametersPanel parameters = new ParametersPanel(classifiers);
             parameters.removeAndThreshold();
 
             context.showConfiguration("Heuristics Miner Parameters", parameters);
