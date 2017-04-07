@@ -3,10 +3,13 @@ package com.raffaeleconforti.noisefiltering.event.infrequentbehaviour.automaton;
 import com.raffaeleconforti.automaton.Automaton;
 import com.raffaeleconforti.automaton.Edge;
 import com.raffaeleconforti.automaton.Node;
+import com.raffaeleconforti.ilpsolverwrapper.ILPSolver;
+import com.raffaeleconforti.ilpsolverwrapper.impl.lpsolve.LPSolve_Solver;
 import com.raffaeleconforti.noisefiltering.event.optimization.InfrequentBehaviourSolver;
 import com.raffaeleconforti.noisefiltering.event.optimization.gurobi.GurobiInfrequentBehaviourSolver;
 import com.raffaeleconforti.noisefiltering.event.optimization.lpsolve.LPSolveInfrequentBehaviourSolver;
 
+import com.raffaeleconforti.noisefiltering.event.optimization.wrapper.WrapperInfrequentBehaviourSolver;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
@@ -45,23 +48,31 @@ public class AutomatonInfrequentBehaviourDetector {
 
         Set<Edge<String>> infrequent = discoverInfrequentEdges(automaton, threshold);
 
-        InfrequentBehaviourSolver<String> solver;
+//        InfrequentBehaviourSolver<String> solver;
+//
+//        try {
+//            solver = new GurobiInfrequentBehaviourSolver<String>(automaton, infrequent, requiredStates);
+//            removable = solver.identifyRemovableEdges();
+//            System.out.println("Optimized using GUROBI");
+//        } catch (NoClassDefFoundError ncdfe) {
+//            ncdfe.printStackTrace();
+//            System.out.println("GUROBI not available, switching to LPSOLVE");
+//            solver = new LPSolveInfrequentBehaviourSolver<String>(automaton, infrequent, requiredStates);
+//            removable = solver.identifyRemovableEdges();
+//        } catch (UnsatisfiedLinkError ule) {
+//            ule.printStackTrace();
+//            System.out.println("GUROBI not available, switching to LPSOLVE");
+//            solver = new LPSolveInfrequentBehaviourSolver<String>(automaton, infrequent, requiredStates);
+//            removable = solver.identifyRemovableEdges();
+//        }
 
-        try {
-            solver = new GurobiInfrequentBehaviourSolver<String>(automaton, infrequent, requiredStates);
-            removable = solver.identifyRemovableEdges();
-            System.out.println("Optimized using GUROBI");
-        } catch (NoClassDefFoundError ncdfe) {
-            ncdfe.printStackTrace();
-            System.out.println("GUROBI not available, switching to LPSOLVE");
-            solver = new LPSolveInfrequentBehaviourSolver<String>(automaton, infrequent, requiredStates);
-            removable = solver.identifyRemovableEdges();
-        } catch (UnsatisfiedLinkError ule) {
-            ule.printStackTrace();
-            System.out.println("GUROBI not available, switching to LPSOLVE");
-            solver = new LPSolveInfrequentBehaviourSolver<String>(automaton, infrequent, requiredStates);
-            removable = solver.identifyRemovableEdges();
-        }
+        ILPSolver ilp_solver;
+        WrapperInfrequentBehaviourSolver<String> solver;
+
+        System.out.println("GUROBI not available, switching to LPSOLVE");
+        ilp_solver = new LPSolve_Solver();
+        solver = new WrapperInfrequentBehaviourSolver<>(automaton, infrequent, requiredStates);
+        removable = solver.identifyRemovableEdges(ilp_solver);
 
         for(Edge<String> edge : removable) {
             automaton = remove(automaton, edge);

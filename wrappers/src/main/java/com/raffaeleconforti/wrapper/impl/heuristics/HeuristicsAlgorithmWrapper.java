@@ -57,7 +57,9 @@ public class HeuristicsAlgorithmWrapper implements MiningAlgorithm {
         }));
 
         if(context instanceof FakePluginContext) {
-            ParametersPanel parameters = new ParametersPanel();
+            Collection<XEventClassifier> classifiers = new HashSet();
+            classifiers.add(new XEventNameClassifier());
+            ParametersPanel parameters = new ParametersPanel(classifiers);
             settings = parameters.getSettings();
         }else {
             Collection<XEventClassifier> classifiers = new HashSet();

@@ -83,5 +83,10 @@
             <groupId>com.raffaeleconforti</groupId>
             <artifactId>bpmnminer-logic</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.raffaeleconforti</groupId>
+            <artifactId>ilp-solver-wrapper</artifactId>
+            <version>1.0.20170307</version>
+        </dependency>
     </dependencies>
 </project>

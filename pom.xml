@@ -22,6 +22,8 @@
         <module>libraries</module>
         <module>java-util</module>
 
+        <module>ilp-solver-wrapper</module>
+
         <module>efficient-log</module>
         <module>fake-context</module>
         <module>prom-util</module>

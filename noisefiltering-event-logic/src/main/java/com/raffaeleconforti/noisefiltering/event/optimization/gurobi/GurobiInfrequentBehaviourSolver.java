@@ -276,7 +276,6 @@ public class GurobiInfrequentBehaviourSolver<T> implements InfrequentBehaviourSo
             }
 
             // Dispose of model and environment
-
             model.dispose();
             env.dispose();
 
