@@ -1,5 +1,6 @@
 package com.raffaeleconforti.measurements.impl;
 
+import au.edu.qut.petrinet.tools.SoundnessChecker;
 import com.raffaeleconforti.measurements.Measure;
 import com.raffaeleconforti.measurements.MeasurementAlgorithm;
 import com.raffaeleconforti.wrapper.MiningAlgorithm;
@@ -32,6 +33,12 @@ public class XFoldAlignmentBasedFitness implements MeasurementAlgorithm {
         double fitness = 0.0;
         this.log = log;
         XLog[] logs = createdXFolds();
+
+        SoundnessChecker checker = new SoundnessChecker(petrinetWithMarking.getPetrinet());
+        if( !checker.isSound() ) {
+            measure.addMeasure(getAcronym(), "-");
+            return measure;
+        }
 
         AlignmentBasedFitness alignmentBasedFitness = new AlignmentBasedFitness();
 

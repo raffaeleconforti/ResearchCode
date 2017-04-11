@@ -1,5 +1,6 @@
 package com.raffaeleconforti.measurements.impl;
 
+import au.edu.qut.petrinet.tools.SoundnessChecker;
 import com.raffaeleconforti.measurements.Measure;
 import com.raffaeleconforti.measurements.MeasurementAlgorithm;
 import com.raffaeleconforti.wrapper.MiningAlgorithm;
@@ -31,6 +32,17 @@ public class AlignmentBasedFMeasure implements MeasurementAlgorithm {
 
         if(petrinetWithMarking == null) return measure;
 
+        AlignmentBasedFitness alignmentBasedFitness = new AlignmentBasedFitness();
+        AlignmentBasedPrecision alignmentBasedPrecision = new AlignmentBasedPrecision();
+
+        SoundnessChecker checker = new SoundnessChecker(petrinetWithMarking.getPetrinet());
+        if( !checker.isSound() ) {
+            measure.addMeasure(getAcronym(), "-");
+            measure.addMeasure(alignmentBasedFitness.getAcronym(), "-");
+            measure.addMeasure(alignmentBasedPrecision.getAcronym(), "-");
+            return measure;
+        }
+
         System.setOut(new PrintStream(new OutputStream() {
             @Override
             public void write(int b) throws IOException {}
@@ -43,8 +55,6 @@ public class AlignmentBasedFMeasure implements MeasurementAlgorithm {
         settings.put(MultiETCSettings.REPRESENTATION, MultiETCSettings.Representation.ORDERED);
 
         try {
-            AlignmentBasedFitness alignmentBasedFitness = new AlignmentBasedFitness();
-            AlignmentBasedPrecision alignmentBasedPrecision = new AlignmentBasedPrecision();
             PNRepResult pnRepResult = alignmentBasedFitness.computeAlignment(pluginContext, xEventClassifier, petrinetWithMarking, log);
             Object[] res = multiETCPlugin.checkMultiETCAlign1(pluginContext, log, petrinetWithMarking.getPetrinet(), settings, pnRepResult);
             MultiETCResult multiETCResult = (MultiETCResult) res[0];

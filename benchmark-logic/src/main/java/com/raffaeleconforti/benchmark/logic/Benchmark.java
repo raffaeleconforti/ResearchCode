@@ -402,6 +402,18 @@ public class Benchmark {
         int avgShortestTrace = 0;
         int avgAvgTrace = 0;
 
+        int maxTraces = Integer.MIN_VALUE;
+        int minTraces = Integer.MAX_VALUE;
+
+        long minEvents = Long.MAX_VALUE;
+        long maxEvents = Long.MIN_VALUE;
+
+        int maxDistinctTraces = Integer.MIN_VALUE;
+        int minDistinctTraces = Integer.MAX_VALUE;
+
+        int minDistinctEvents = Integer.MAX_VALUE;
+        int maxDistinctEvents = Integer.MIN_VALUE;
+
         System.out.println("LOGSA - starting analysis ... ");
 
         benchmark.loadLogs(path);
@@ -417,8 +429,19 @@ public class Benchmark {
             avgTraces += l.size();
             avgEvents += l.getTotalEvents();
 
+            if( minTraces > l.size() ) minTraces = l.size();
+            if( maxTraces < l.size() ) maxTraces = l.size();
+
+            if( minEvents > l.getTotalEvents() ) minEvents = l.getTotalEvents();
+            if( maxEvents < l.getTotalEvents() ) maxEvents = l.getTotalEvents();
+
             avgDistinctTraces += l.getDistinctTraces();
+            if( minDistinctTraces > l.getDistinctTraces() ) minDistinctTraces = l.getDistinctTraces();
+            if( maxDistinctTraces < l.getDistinctTraces() ) maxDistinctTraces = l.getDistinctTraces();
+
             avgDistinctEvents += l.getDistinctEvents();
+            if( minDistinctEvents > l.getDistinctEvents() ) minDistinctEvents = l.getDistinctEvents();
+            if( maxDistinctEvents < l.getDistinctEvents() ) maxDistinctEvents = l.getDistinctEvents();
 
             avgShortestTrace += l.getShortestTrace();
             avgAvgTrace += l.getAvgTraceLength();
@@ -436,6 +459,18 @@ public class Benchmark {
         System.out.println("LOGSA - avg shortest trace: " + avgShortestTrace/totalLogs);
         System.out.println("LOGSA - avg avg trace: " + avgAvgTrace/totalLogs);
         System.out.println("LOGSA - avg longest trace: " + avgLongestTrace/totalLogs);
+
+        System.out.println("LOGSA - max traces: " + maxTraces);
+        System.out.println("LOGSA - min traces: " + minTraces);
+
+        System.out.println("LOGSA - max events: " + maxEvents);
+        System.out.println("LOGSA - min events: " + minEvents);
+
+        System.out.println("LOGSA - max distinct traces: " + maxDistinctTraces);
+        System.out.println("LOGSA - min distinct traces: " + minDistinctTraces);
+
+        System.out.println("LOGSA - max distinct events: " + maxDistinctTraces);
+        System.out.println("LOGSA - min distinct events: " + minDistinctTraces);
     }
 
     public static void foldLog(String path, String sfold) {

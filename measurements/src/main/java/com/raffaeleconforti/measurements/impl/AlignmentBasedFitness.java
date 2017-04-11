@@ -1,5 +1,6 @@
 package com.raffaeleconforti.measurements.impl;
 
+import au.edu.qut.petrinet.tools.SoundnessChecker;
 import com.raffaeleconforti.measurements.Measure;
 import com.raffaeleconforti.measurements.MeasurementAlgorithm;
 import com.raffaeleconforti.wrapper.MiningAlgorithm;
@@ -37,6 +38,8 @@ public class AlignmentBasedFitness implements MeasurementAlgorithm {
 
     @Override
     public Measure computeMeasurement(UIPluginContext pluginContext, XEventClassifier xEventClassifier, PetrinetWithMarking petrinetWithMarking, MiningAlgorithm miningAlgorithm, XLog log) {
+        SoundnessChecker checker = new SoundnessChecker(petrinetWithMarking.getPetrinet());
+        if( !checker.isSound() ) return new Measure(getAcronym(), "-");
         return new Measure(getAlignmentValue(computeAlignment(pluginContext, xEventClassifier, petrinetWithMarking, log)));
     }
 
