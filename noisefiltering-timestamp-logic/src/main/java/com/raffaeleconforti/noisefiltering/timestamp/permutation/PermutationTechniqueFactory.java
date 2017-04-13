@@ -1,10 +1,11 @@
 package com.raffaeleconforti.noisefiltering.timestamp.permutation;
 
+import com.raffaeleconforti.ilpsolverwrapper.impl.gurobi.Gurobi_Solver;
+import com.raffaeleconforti.ilpsolverwrapper.impl.lpsolve.LPSolve_Solver;
 import com.raffaeleconforti.kernelestimation.distribution.EventDistributionCalculator;
 import com.raffaeleconforti.noisefiltering.timestamp.permutation.permutators.HeuristicBestSolution;
 import com.raffaeleconforti.noisefiltering.timestamp.permutation.permutators.HeuristicSetSolutions;
-import com.raffaeleconforti.noisefiltering.timestamp.permutation.permutators.ILPApproachGurobi;
-import com.raffaeleconforti.noisefiltering.timestamp.permutation.permutators.ILPApproachLpSolve;
+import com.raffaeleconforti.noisefiltering.timestamp.permutation.permutators.ILPApproach;
 import org.deckfour.xes.model.XEvent;
 
 import java.util.Set;
@@ -20,9 +21,9 @@ public class PermutationTechniqueFactory {
         }else if(approach == PermutationTechnique.HEURISTICS_BEST) {
             return new HeuristicBestSolution(events, eventDistributionCalculator, start, end);
         }else if(approach == PermutationTechnique.ILP_GUROBI) {
-            return new ILPApproachGurobi(events, eventDistributionCalculator, start, end);
+            return new ILPApproach(events, eventDistributionCalculator, start, end, new Gurobi_Solver());
         }else if(approach == PermutationTechnique.ILP_LPSOLVE) {
-            return new ILPApproachLpSolve(events, eventDistributionCalculator, start, end);
+            return new ILPApproach(events, eventDistributionCalculator, start, end, new LPSolve_Solver());
         }
         return null;
     }

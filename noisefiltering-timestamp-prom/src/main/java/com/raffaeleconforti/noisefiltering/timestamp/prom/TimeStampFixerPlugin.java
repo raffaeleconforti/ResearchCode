@@ -1,6 +1,7 @@
 package com.raffaeleconforti.noisefiltering.timestamp.prom;
 
 import com.raffaeleconforti.noisefiltering.timestamp.TimeStampFixerSmartExecutor;
+import com.raffaeleconforti.noisefiltering.timestamp.permutation.PermutationTechnique;
 import com.raffaeleconforti.noisefiltering.timestamp.prom.ui.TimeStampUI;
 import org.deckfour.xes.model.XLog;
 import org.processmining.contexts.uitopia.UIPluginContext;
@@ -17,7 +18,7 @@ import org.processmining.framework.plugin.annotations.PluginVariant;
         returnTypes = {XLog.class})
 public class TimeStampFixerPlugin {
 
-    private final TimeStampFixerSmartExecutor timeStampFixerSmartExecutor = new TimeStampFixerSmartExecutor();
+    private TimeStampFixerSmartExecutor timeStampFixerSmartExecutor;
 
     @UITopiaVariant(affiliation = UITopiaVariant.EHV,
             author = "Raffaele Conforti",
@@ -28,6 +29,8 @@ public class TimeStampFixerPlugin {
         int limitExtensive = 11;
         TimeStampUI timeStampUI = new TimeStampUI();
         int approach = timeStampUI.showGUI(context);
+        boolean useGurobi = (approach == PermutationTechnique.ILP_GUROBI) ? true : false;
+        timeStampFixerSmartExecutor = new TimeStampFixerSmartExecutor(useGurobi);
         return timeStampFixerSmartExecutor.filterLog(log, limitExtensive, approach);
     }
 

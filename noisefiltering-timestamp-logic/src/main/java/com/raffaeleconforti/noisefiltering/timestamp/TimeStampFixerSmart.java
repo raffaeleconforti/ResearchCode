@@ -34,6 +34,7 @@ public class TimeStampFixerSmart implements TimeStampFixer {
     private final XEventClassifier xEventClassifier;
     private final XLog log;
     private final XFactory factory;
+    private final boolean useGurobi;
 
     private EventDistributionCalculatorNoiseImpl eventDistributionCalculator;
     private EventPermutator eventPermutator;
@@ -50,11 +51,12 @@ public class TimeStampFixerSmart implements TimeStampFixer {
 
     private int approach;
 
-    public TimeStampFixerSmart(XFactory factory, LogCloner logCloner, XLog rawlog, XEventClassifier xEventClassifier, SimpleDateFormat dateFormatSeconds, int limitExtensive, int approach) {
+    public TimeStampFixerSmart(XFactory factory, LogCloner logCloner, XLog rawlog, XEventClassifier xEventClassifier, SimpleDateFormat dateFormatSeconds, int limitExtensive, int approach, boolean useGurobi) {
         this.factory = factory;
         this.logCloner = logCloner;
         log = rawlog;
         this.approach = approach;
+        this.useGurobi = useGurobi;
 
         this.xEventClassifier = xEventClassifier;
         this.automatonFactory = new AutomatonFactory(xEventClassifier);
@@ -100,7 +102,7 @@ public class TimeStampFixerSmart implements TimeStampFixer {
 
             double[] arcs = infrequentBehaviourFilter.discoverArcs(automatonOriginal, 1.0);
 
-            Automaton<String> automatonClean = automatonInfrequentBehaviourDetector.removeInfrequentBehaviour(automatonOriginal, automatonOriginal.getNodes(), infrequentBehaviourFilter.discoverThreshold(arcs, 0.125));
+            Automaton<String> automatonClean = automatonInfrequentBehaviourDetector.removeInfrequentBehaviour(automatonOriginal, automatonOriginal.getNodes(), infrequentBehaviourFilter.discoverThreshold(arcs, 0.125), useGurobi);
 
             eventDistributionCalculator.filter(automatonClean);
         }

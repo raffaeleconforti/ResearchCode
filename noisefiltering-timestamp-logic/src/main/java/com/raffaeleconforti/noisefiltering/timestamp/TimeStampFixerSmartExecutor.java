@@ -34,6 +34,12 @@ public class TimeStampFixerSmartExecutor {
 
     private final SimpleDateFormat dateFormatSeconds = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 
+    private final boolean useGurobi;
+
+    public TimeStampFixerSmartExecutor(boolean useGurobi) {
+        this.useGurobi = useGurobi;
+    }
+
     public XLog filterLog(XLog log, int limitExtensive, int approach) {
 
         XFactory factory = new XFactoryMemoryImpl();
@@ -51,7 +57,7 @@ public class TimeStampFixerSmartExecutor {
         optimizedLog = logModifier.insertArtificialStartAndEndEvent(optimizedLog);
 
         System.out.println("Permutations discovery started");
-        TimeStampFixer timeStampFixerSmart = new TimeStampFixerSmart(factory, logCloner, optimizedLog, xEventClassifier, dateFormatSeconds, limitExtensive, approach);
+        TimeStampFixer timeStampFixerSmart = new TimeStampFixerSmart(factory, logCloner, optimizedLog, xEventClassifier, dateFormatSeconds, limitExtensive, approach, useGurobi);
 
         XLog permutedLog = timeStampFixerSmart.obtainPermutedLog();
 //        permutedLog = logModifier.insertArtificialStartAndEndEvent(permutedLog);
@@ -74,7 +80,7 @@ public class TimeStampFixerSmartExecutor {
         System.out.println();
 
         System.out.println("Assignation timestamps started");
-        TimestampsAssigner timestampsAssigner = new TimestampsAssigner(res, xEventClassifier, dateFormatSeconds, timeStampFixerSmart.getDuplicatedTraces(), timeStampFixerSmart.getDuplicatedEvents());
+        TimestampsAssigner timestampsAssigner = new TimestampsAssigner(res, xEventClassifier, dateFormatSeconds, timeStampFixerSmart.getDuplicatedTraces(), timeStampFixerSmart.getDuplicatedEvents(), useGurobi);
         boolean result = timestampsAssigner.assignTimestamps(fixedTraces);
 
         if(!result) {

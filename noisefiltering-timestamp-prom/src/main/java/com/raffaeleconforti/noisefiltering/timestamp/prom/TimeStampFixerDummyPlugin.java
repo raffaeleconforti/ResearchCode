@@ -1,6 +1,8 @@
 package com.raffaeleconforti.noisefiltering.timestamp.prom;
 
-import com.raffaeleconforti.noisefiltering.timestamp.TimeStampDummyFixerExecutor;
+import com.raffaeleconforti.noisefiltering.timestamp.TimeStampFixerDummyExecutor;
+import com.raffaeleconforti.noisefiltering.timestamp.TimeStampFixerSmartExecutor;
+import com.raffaeleconforti.noisefiltering.timestamp.permutation.PermutationTechnique;
 import org.deckfour.xes.model.XLog;
 import org.processmining.contexts.uitopia.UIPluginContext;
 import org.processmining.contexts.uitopia.annotations.UITopiaVariant;
@@ -16,7 +18,7 @@ import org.processmining.framework.plugin.annotations.PluginVariant;
         returnTypes = {XLog.class})
 public class TimeStampFixerDummyPlugin {
 
-    private final TimeStampDummyFixerExecutor timeStampFixerExecutor = new TimeStampDummyFixerExecutor();
+    private TimeStampFixerDummyExecutor timeStampFixerExecutor = new TimeStampFixerDummyExecutor(false);;
 
     @UITopiaVariant(affiliation = UITopiaVariant.EHV,
             author = "Raffaele Conforti",

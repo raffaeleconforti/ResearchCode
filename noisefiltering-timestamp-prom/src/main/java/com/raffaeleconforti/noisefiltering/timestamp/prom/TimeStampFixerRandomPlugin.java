@@ -1,6 +1,6 @@
 package com.raffaeleconforti.noisefiltering.timestamp.prom;
 
-import com.raffaeleconforti.noisefiltering.timestamp.TimeStampRandomFixerExecutor;
+import com.raffaeleconforti.noisefiltering.timestamp.TimeStampFixerRandomExecutor;
 import org.deckfour.xes.model.XLog;
 import org.processmining.contexts.uitopia.UIPluginContext;
 import org.processmining.contexts.uitopia.annotations.UITopiaVariant;
@@ -16,7 +16,7 @@ import org.processmining.framework.plugin.annotations.PluginVariant;
         returnTypes = {XLog.class})
 public class TimeStampFixerRandomPlugin {
 
-    private final TimeStampRandomFixerExecutor timeStampRandomFixerExecutor = new TimeStampRandomFixerExecutor();
+    private final TimeStampFixerRandomExecutor timeStampRandomFixerExecutor = new TimeStampFixerRandomExecutor(false);
 
     @UITopiaVariant(affiliation = UITopiaVariant.EHV,
             author = "Raffaele Conforti",

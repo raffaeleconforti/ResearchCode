@@ -43,6 +43,15 @@ public class FrequentBehaviourFilter {
     private final XEventClassifier xEventClassifier = new XEventAndClassifier(new XEventNameClassifier(), new XEventLifeTransClassifier());
     private final AutomatonFactory automatonFactory = new AutomatonFactory(xEventClassifier);
     private final AutomatonFrequentBehaviourDetector automatonFrequentBehaviourDetector = new AutomatonFrequentBehaviourDetector(AutomatonInfrequentBehaviourDetector.MAX);
+    private final boolean useGurobi;
+
+    public FrequentBehaviourFilter() {
+        this(false);
+    }
+
+    public FrequentBehaviourFilter(boolean useGurobi) {
+        this.useGurobi = useGurobi;
+    }
 
     public BPMNDiagram generateDiagram(final UIPluginContext context, XLog rawlog) {
         XLog res = filterLog(context, rawlog, rawlog, "#N#");
@@ -156,7 +165,7 @@ public class FrequentBehaviourFilter {
 
     private Automaton<String> getFilteredAutomaton(Automaton<String> automatonOriginal, Set<Node<String>> requiredStates, double threshold) {
         Automaton<String> automaton = (Automaton<String>) automatonOriginal.clone();
-        return automatonFrequentBehaviourDetector.removeFrequentBehaviour(automaton, requiredStates, threshold);
+        return automatonFrequentBehaviourDetector.removeFrequentBehaviour(automaton, requiredStates, threshold, useGurobi);
     }
 
 }

@@ -36,7 +36,7 @@ public class InfrequentBehaviourFilterCommandLine {
 
     private final XEventClassifier xEventClassifier = new XEventAndClassifier(new XEventNameClassifier());
     private final AutomatonFactory automatonFactory = new AutomatonFactory(xEventClassifier);
-    private final InfrequentBehaviourFilter infrequentBehaviourFilter = new InfrequentBehaviourFilter(xEventClassifier);
+    private final InfrequentBehaviourFilter infrequentBehaviourFilter;
 
     private final static String LPSOLVE55 = "lpsolve55";
     private final static String LPSOLVE55J = "lpsolve55j";
@@ -69,6 +69,10 @@ public class InfrequentBehaviourFilterCommandLine {
         System.out.println("or visit my website www.raffaeleconforti.com");
 
         Scanner console = new Scanner(System.in);
+
+        System.out.println("Solve using GUROBI? (commercial ILP Solver)");
+        boolean useGurobi = (console.nextLine().toLowerCase().contains("y"))?true:false;
+
         System.out.println("Input file:");
         String name = console.nextLine();
 
@@ -79,7 +83,7 @@ public class InfrequentBehaviourFilterCommandLine {
         XFactory factory = new XFactoryNaiveImpl();
         XLog log = LogImporter.importFromFile(factory, name);
 
-        InfrequentBehaviourFilterCommandLine ibfcl = new InfrequentBehaviourFilterCommandLine();
+        InfrequentBehaviourFilterCommandLine ibfcl = new InfrequentBehaviourFilterCommandLine(useGurobi);
         XLog filteredlog = ibfcl.filterLog(log);
 
         System.out.println("Output file: ");
@@ -136,6 +140,10 @@ public class InfrequentBehaviourFilterCommandLine {
         } catch (Exception e) {
             throw new RuntimeException("Failed to load required JNILIB", e);
         }
+    }
+
+    public InfrequentBehaviourFilterCommandLine(boolean useGurobi) {
+         infrequentBehaviourFilter = new InfrequentBehaviourFilter(xEventClassifier, useGurobi);
     }
 
     public XLog filterLog(XLog rawlog) {

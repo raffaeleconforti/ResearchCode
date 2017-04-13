@@ -3,7 +3,6 @@ package com.raffaeleconforti.noisefiltering.timestamp;
 import com.raffaeleconforti.automaton.Automaton;
 import com.raffaeleconforti.automaton.AutomatonFactory;
 import com.raffaeleconforti.context.FakePluginContext;
-import com.raffaeleconforti.memorylog.XFactoryMemoryImpl;
 import com.raffaeleconforti.log.util.LogCloner;
 import com.raffaeleconforti.log.util.LogModifier;
 import com.raffaeleconforti.log.util.LogOptimizer;
@@ -14,6 +13,7 @@ import org.deckfour.xes.classification.XEventLifeTransClassifier;
 import org.deckfour.xes.classification.XEventNameClassifier;
 import org.deckfour.xes.extension.std.XConceptExtension;
 import org.deckfour.xes.extension.std.XTimeExtension;
+import com.raffaeleconforti.memorylog.XFactoryMemoryImpl;
 import org.deckfour.xes.factory.XFactoryNaiveImpl;
 import org.deckfour.xes.model.XLog;
 
@@ -25,13 +25,19 @@ import java.util.List;
  * Created by conforti on 7/02/15.
  */
 
-public class TimeStampRandomFixerExecutor {
+public class TimeStampFixerDummyExecutor {
 
     private final XEventClassifier xEventClassifier = new XEventAndClassifier(new XEventNameClassifier(), new XEventLifeTransClassifier());
 
     private final AutomatonFactory automatonFactory = new AutomatonFactory(xEventClassifier);
 
     private final SimpleDateFormat dateFormatSeconds = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+
+    private final boolean useGurobi;
+
+    public TimeStampFixerDummyExecutor(boolean useGurobi) {
+        this.useGurobi = useGurobi;
+    }
 
     public XLog filterLog(XLog log) {
 
@@ -54,9 +60,9 @@ public class TimeStampRandomFixerExecutor {
             XLog optimizedLog = logOptimizer.optimizeLog(res);
 
             System.out.println("Start permutations");
-            TimeStampFixer timeStampFixerRandom = new TimeStampFixerRandom(new XFactoryNaiveImpl(), logCloner, optimizedLog, xEventClassifier, dateFormatSeconds, 0, 0);
+            TimeStampFixer timeStampFixerDummy = new TimeStampFixerDummy(new XFactoryNaiveImpl(), logCloner, optimizedLog, xEventClassifier, dateFormatSeconds, 0, 0, useGurobi);
 
-            XLog permutedLog = timeStampFixerRandom.obtainPermutedLog();
+            XLog permutedLog = timeStampFixerDummy.obtainPermutedLog();
             permutedLog = logModifier.insertArtificialStartAndEndEvent(permutedLog);
             System.out.println("Permutations ended");
 
@@ -66,18 +72,18 @@ public class TimeStampRandomFixerExecutor {
 //                e.printStackTrace();
 //            }
 
-            System.out.println(timeStampFixerRandom.getDuplicatedTraces());
-            Automaton<String> automaton = automatonFactory.generateForTimeFilter(permutedLog, timeStampFixerRandom.getDuplicatedEvents());
+            System.out.println(timeStampFixerDummy.getDuplicatedTraces());
+            Automaton<String> automaton = automatonFactory.generateForTimeFilter(permutedLog, timeStampFixerDummy.getDuplicatedEvents());
 
             System.out.println("Start filtering");
-            AutomatonBestTraceMatchSelector automatonBestTraceMatchSelector = new AutomatonBestTraceMatchSelector(permutedLog, xEventClassifier, automaton, timeStampFixerRandom.getDuplicatedTraces(), timeStampFixerRandom.getPossibleTraces(), timeStampFixerRandom.getFaultyEvents(), log.size());
+            AutomatonBestTraceMatchSelector automatonBestTraceMatchSelector = new AutomatonBestTraceMatchSelector(permutedLog, xEventClassifier, automaton, timeStampFixerDummy.getDuplicatedTraces(), timeStampFixerDummy.getPossibleTraces(), timeStampFixerDummy.getFaultyEvents(), log.size());
             List<String> fixedTraces = new ArrayList<String>();
 
             res = automatonBestTraceMatchSelector.selectBestMatchingTraces(new FakePluginContext(), fix, fixedTraces, 0);
             res = logModifier.removeArtificialStartAndEndEvent(res);
             res = logModifier.sortLog(res);
 
-            TimestampsAssigner timestampsAssigner = new TimestampsAssigner(res, xEventClassifier, dateFormatSeconds, timeStampFixerRandom.getDuplicatedTraces(), timeStampFixerRandom.getDuplicatedEvents());
+            TimestampsAssigner timestampsAssigner = new TimestampsAssigner(res, xEventClassifier, dateFormatSeconds, timeStampFixerDummy.getDuplicatedTraces(), timeStampFixerDummy.getDuplicatedEvents(), useGurobi);
             boolean result = timestampsAssigner.assignTimestampsDummy(fixedTraces);
 
             System.out.println();

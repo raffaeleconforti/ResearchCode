@@ -33,6 +33,7 @@ public class InfrequentBehaviourFilter {
 
     private final XEventClassifier xEventClassifier;
     private final AutomatonFactory automatonFactory;
+    private final boolean useGurobi;
 
     private Percentile percentileC = new Percentile();
     private double finalThreshold = 0.0;
@@ -42,8 +43,13 @@ public class InfrequentBehaviourFilter {
     private AutomatonInfrequentBehaviourDetector automatonInfrequentBehaviourDetector = new AutomatonInfrequentBehaviourDetector(AutomatonInfrequentBehaviourDetector.MAX);
 
     public InfrequentBehaviourFilter(XEventClassifier xEventClassifier) {
+        this(xEventClassifier, false);
+    }
+
+    public InfrequentBehaviourFilter(XEventClassifier xEventClassifier, boolean useGurobi) {
         this.xEventClassifier = xEventClassifier;
         automatonFactory = new AutomatonFactory(xEventClassifier);
+        this.useGurobi = useGurobi;
     }
 
     public double[] discoverArcs(Automaton<String> automatonOriginal, double finalUpperBound) {
@@ -188,7 +194,7 @@ public class InfrequentBehaviourFilter {
 
     public Automaton<String> getFilteredAutomaton(Automaton<String> automatonOriginal, Set<Node<String>> requiredStates, double threshold) {
         Automaton<String> automaton = (Automaton<String>) automatonOriginal.clone();
-        return automatonInfrequentBehaviourDetector.removeInfrequentBehaviour(automaton, requiredStates, threshold);
+        return automatonInfrequentBehaviourDetector.removeInfrequentBehaviour(automaton, requiredStates, threshold, useGurobi);
     }
 
     private double findBestUpperbound(PluginContext context, XLog log, Set<Node<String>> requiredStates, double upperbound, double oldUpperbound, boolean excludeTraces) {

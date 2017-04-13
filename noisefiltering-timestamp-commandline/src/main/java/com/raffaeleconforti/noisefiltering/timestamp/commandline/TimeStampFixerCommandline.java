@@ -15,16 +15,19 @@ import java.util.Scanner;
 
 public class TimeStampFixerCommandline {
 
-    private final TimeStampFixerSmartExecutor timeStampFixerSmartExecutor = new TimeStampFixerSmartExecutor();
+    private final TimeStampFixerSmartExecutor timeStampFixerSmartExecutor;
 
     public static void main(String[] args) throws Exception {
         Scanner console = new Scanner(System.in);
+        System.out.println("Solve using GUROBI? (commercial ILP Solver)");
+        boolean useGurobi = (console.nextLine().toLowerCase().contains("y"))?true:false;
+
         System.out.println("Input file:");
         String name = console.nextLine();
         XFactory factory = new XFactoryNaiveImpl();
         XLog log = LogImporter.importFromFile(factory, name);
 
-        TimeStampFixerCommandline timeStampFixerCommandline = new TimeStampFixerCommandline();
+        TimeStampFixerCommandline timeStampFixerCommandline = new TimeStampFixerCommandline(useGurobi);
         XLog filteredlog = timeStampFixerCommandline.filterLog(log);
 
         System.out.println("Output file: ");
@@ -32,6 +35,10 @@ public class TimeStampFixerCommandline {
 
         LogImporter.exportToFile(path.substring(0, path.lastIndexOf("/")) + 1, path.substring(path.lastIndexOf("/") + 1, path.length()), filteredlog);
 
+    }
+
+    public TimeStampFixerCommandline(boolean useGurobi) {
+        timeStampFixerSmartExecutor = new TimeStampFixerSmartExecutor(useGurobi);
     }
 
     public XLog filterLog(XLog rawlog) {
