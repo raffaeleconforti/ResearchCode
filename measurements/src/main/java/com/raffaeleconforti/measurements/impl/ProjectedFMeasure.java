@@ -35,17 +35,17 @@ public class ProjectedFMeasure implements MeasurementAlgorithm {
 
         try {
             CompareParameters compareParameters = new CompareParameters(2);
-            ProjectedRecallPrecisionResult projectedRecallPrecisionResult = CompareLog2PetriNetPlugin.measure(log, new AcceptingPetriNetImpl(petrinetWithMarking.getPetrinet(), petrinetWithMarking.getInitialMarking(), petrinetWithMarking.getFinalMarking()), xEventClassifier, compareParameters);
-            double projectedRecall = projectedRecallPrecisionResult.getRecall();
-            double projectedPrecision = projectedRecallPrecisionResult.getPrecision();
-            double projected_fmeasure = 2*(projectedRecall*projectedPrecision)/(projectedRecall+projectedPrecision);
-
-            measure.addMeasure(getMeasurementName(), projected_fmeasure);
-            measure.addMeasure("Projected Recall", projectedRecall);
-            measure.addMeasure("Projected Precision", projectedPrecision);
-
-            measure.setValue(projected_fmeasure);
-            System.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out)));
+////            ProjectedRecallPrecisionResult projectedRecallPrecisionResult = CompareLog2PetriNetPlugin.measure(log, new AcceptingPetriNetImpl(petrinetWithMarking.getPetrinet(), petrinetWithMarking.getInitialMarking(), petrinetWithMarking.getFinalMarking()), xEventClassifier, compareParameters);
+//            double projectedRecall = projectedRecallPrecisionResult.getRecall();
+//            double projectedPrecision = projectedRecallPrecisionResult.getPrecision();
+//            double projected_fmeasure = 2*(projectedRecall*projectedPrecision)/(projectedRecall+projectedPrecision);
+//
+//            measure.addMeasure(getMeasurementName(), projected_fmeasure);
+//            measure.addMeasure("Projected Recall", projectedRecall);
+//            measure.addMeasure("Projected Precision", projectedPrecision);
+//
+//            measure.setValue(projected_fmeasure);
+//            System.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out)));
             return measure;
         } catch( Exception e ) {
             System.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out)));

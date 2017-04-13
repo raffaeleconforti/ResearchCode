@@ -73,7 +73,7 @@ public class HybridILPMinerWrapper implements MiningAlgorithm {
                                                                                             log,
                                                                                             eventClassifier);
 
-            result = HybridILPMinerPlugin.mine(context, log, params);
+            result = HybridILPMinerPlugin.applyParams(context, log, params);
             System.out.println("DEBUG - trying to set petrinet: " + result);
             if( (result[0] instanceof Petrinet) && (result[1] instanceof Marking) ) {
                 petrinet = new PetrinetWithMarking( (Petrinet)result[0], (Marking)result[1], (Marking)result[1]);

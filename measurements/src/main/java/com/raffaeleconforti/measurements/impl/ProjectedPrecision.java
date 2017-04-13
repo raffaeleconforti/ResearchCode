@@ -35,11 +35,11 @@ public class ProjectedPrecision implements MeasurementAlgorithm {
 
         try {
             CompareParameters compareParameters = new CompareParameters(2);
-            ProjectedRecallPrecisionResult projectedRecallPrecisionResult = CompareLog2PetriNetPlugin.measure(log, new AcceptingPetriNetImpl(petrinetWithMarking.getPetrinet(), petrinetWithMarking.getInitialMarking(), petrinetWithMarking.getFinalMarking()), xEventClassifier, compareParameters);
-            double projectedPrecision = projectedRecallPrecisionResult.getPrecision();
-            measure.addMeasure(getMeasurementName(), projectedPrecision);
-            measure.setValue(projectedPrecision);
-            System.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out)));
+//            ProjectedRecallPrecisionResult projectedRecallPrecisionResult = CompareLog2PetriNetPlugin.measure(log, new AcceptingPetriNetImpl(petrinetWithMarking.getPetrinet(), petrinetWithMarking.getInitialMarking(), petrinetWithMarking.getFinalMarking()), xEventClassifier, compareParameters);
+//            double projectedPrecision = projectedRecallPrecisionResult.getPrecision();
+//            measure.addMeasure(getMeasurementName(), projectedPrecision);
+//            measure.setValue(projectedPrecision);
+//            System.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out)));
             return measure;
         } catch( Exception e ) {
             System.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out)));

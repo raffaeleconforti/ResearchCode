@@ -68,18 +68,8 @@ public class StructuredMiner {
             try {
 //                Object[] res = BPMNToPetriNetConverter.convert(diagram);
 //                BPMNDiagram diagram1 = PetriNetToBPMNConverter.convert((Petrinet) res[0], (Marking) res[1], (Marking) res[2], true);
-                if(settingStructuring == null && context instanceof FakePluginContext) return structuring.structureDiagram(diagram);
-                else if(settingStructuring == null) return StructureDiagramPlugin.structureDiagram(context, diagram);
-                else return structuring.structureDiagram(diagram,
-                        settingStructuring.getPolicy().toString(),
-                        settingStructuring.getMaxDepth(),
-                        settingStructuring.getMaxSol(),
-                        settingStructuring.getMaxChildren(),
-                        settingStructuring.getMaxStates(),
-                        settingStructuring.getMaxMinutes(),
-                        settingStructuring.isTimeBounded(),
-                        settingStructuring.isKeepBisimulation(),
-                        settingStructuring.isForceStructuring());
+                if(settingStructuring == null && !(context instanceof FakePluginContext) ) return StructureDiagramPlugin.structureDiagram(context, diagram);
+                else return structuring.structureDiagram(diagram, "ASTAR", 100, 500, 10, 100, 2, true, true, true);
             } catch (Exception e) {
                 e.printStackTrace();
                 return diagram;

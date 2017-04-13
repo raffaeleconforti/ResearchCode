@@ -1,5 +1,6 @@
 package com.raffaeleconforti.wrapper;
 
+import au.edu.qut.bpmn.helper.DiagramHandler;
 import com.raffaeleconforti.context.FakePluginContext;
 import com.raffaeleconforti.conversion.bpmn.BPMNToPetriNetConverter;
 import com.raffaeleconforti.conversion.petrinet.PetriNetToBPMNConverter;
@@ -51,6 +52,9 @@ public class StructuredMinerAlgorithmWrapper implements MiningAlgorithm {
         }
         StructuredMiner miner = new StructuredMiner(context, log, settings);
         BPMNDiagram diagram = miner.mine();
+        DiagramHandler handler = new DiagramHandler();
+        handler.collapseSplitGateways(diagram);
+        handler.collapseJoinGateways(diagram);
 
         Object[] result = BPMNToPetriNetConverter.convert(diagram);
 

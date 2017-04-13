@@ -5,6 +5,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.*;
 
+import au.edu.qut.processmining.miners.yam.YAM;
+import au.edu.qut.processmining.miners.yam.ui.miner.YAMUIResult;
 import com.raffaeleconforti.benchmark.logic.Benchmark;
 import com.raffaeleconforti.benchmark.logic.MeasurementAlgorithmDiscoverer;
 import com.raffaeleconforti.benchmark.logic.MiningAlgorithmDiscoverer;
@@ -13,7 +15,15 @@ import com.raffaeleconforti.noisefiltering.event.InfrequentBehaviourFilter;
 import com.raffaeleconforti.wrapper.MiningAlgorithm;
 import org.apache.commons.io.FileUtils;
 import org.apache.poi.util.IOUtils;
+import org.deckfour.xes.factory.XFactoryNaiveImpl;
+import org.deckfour.xes.model.XLog;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
+import org.processmining.contexts.uitopia.UIContext;
+import org.processmining.contexts.uitopia.UIPluginContext;
+import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
+import org.processmining.plugins.bpmn.plugins.BpmnExportPlugin;
+
+import static com.raffaeleconforti.log.util.LogImporter.importFromFile;
 
 
 /**
@@ -123,6 +133,22 @@ public class BenchmarkCommandline {
         long measurementTimeout = 3600000;
 
         int icmd = 0;
+
+//        try {
+//            YAM yam = new YAM();
+//            XLog log = importFromFile(new XFactoryNaiveImpl(), args[0]);
+//            BPMNDiagram output = yam.mineBPMNModel(log, 1.0, 0.05, false, YAMUIResult.StructuringTime.NONE);
+//
+//            BpmnExportPlugin bpmnExportPlugin = new BpmnExportPlugin();
+//            UIContext context = new UIContext();
+//            UIPluginContext uiPluginContext = context.getMainPluginContext();
+//            bpmnExportPlugin.export(uiPluginContext, output, new File(args[1] + ".bpmn"));
+//            return;
+//        } catch( Error e ) {
+//            System.out.println("ERROR: wrong usage.");
+//            System.out.println("USAGE: java -jar splitminer.jar 'logpath\\log.[xes|xes.gz|mxml]' 'outputpath\\outputname' ");
+//            return;
+//        }
 
         if( (args.length == 2) && (args[0].equalsIgnoreCase("-logsa"))) {
             Benchmark.logsAnalysis(args[1]);

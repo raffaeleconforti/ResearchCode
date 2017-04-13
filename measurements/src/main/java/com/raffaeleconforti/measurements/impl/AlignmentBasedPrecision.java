@@ -1,5 +1,6 @@
 package com.raffaeleconforti.measurements.impl;
 
+import au.edu.qut.petrinet.tools.SoundnessChecker;
 import com.raffaeleconforti.measurements.Measure;
 import com.raffaeleconforti.measurements.MeasurementAlgorithm;
 import com.raffaeleconforti.wrapper.MiningAlgorithm;
@@ -29,6 +30,8 @@ public class AlignmentBasedPrecision implements MeasurementAlgorithm {
         Measure measure = new Measure();
 
         if(petrinetWithMarking == null) return measure;
+        SoundnessChecker checker = new SoundnessChecker(petrinetWithMarking.getPetrinet());
+        if( !checker.isSound() ) return new Measure(getAcronym(), "-");
 
         System.setOut(new PrintStream(new OutputStream() {
             @Override
