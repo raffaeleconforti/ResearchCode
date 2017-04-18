@@ -4,11 +4,12 @@ import com.raffaeleconforti.alphadollar.AlphaMixMiner;
 import com.raffaeleconforti.conversion.petrinet.PetriNetToBPMNConverter;
 import com.raffaeleconforti.log.util.LogImporter;
 import com.raffaeleconforti.log.util.LogReaderClassic;
+import com.raffaeleconforti.marking.MarkingDiscoverer;
 import com.raffaeleconforti.wrapper.LogPreprocessing;
 import com.raffaeleconforti.wrapper.MiningAlgorithm;
 import com.raffaeleconforti.wrapper.PetrinetWithMarking;
-import com.raffaeleconforti.marking.MarkingDiscoverer;
 import org.deckfour.xes.model.XLog;
+import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.processmining.contexts.uitopia.UIPluginContext;
 import org.processmining.contexts.uitopia.annotations.UITopiaVariant;
 import org.processmining.framework.log.LogFile;
@@ -20,8 +21,6 @@ import org.processmining.models.graphbased.directed.petrinet.Petrinet;
 import org.processmining.models.graphbased.directed.petrinet.elements.Place;
 import org.processmining.models.graphbased.directed.petrinet.elements.Transition;
 import org.processmining.models.graphbased.directed.petrinet.impl.PetrinetImpl;
-
-import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 
 import java.io.*;
 

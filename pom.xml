@@ -63,6 +63,7 @@
 
         <!--<module>design-structure-matrix</module>-->
         <module>prom6</module>
+        <module>cnminer-wrapper</module>
         <module>benchmark-logic</module>
         <module>nlp</module>
         <!--<module>noisefiltering-label-logic</module>-->

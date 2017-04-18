@@ -97,6 +97,10 @@
             <groupId>com.raffaeleconforti</groupId>
             <artifactId>modified-miners</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.raffaeleconforti</groupId>
+            <artifactId>wrappers</artifactId>
+        </dependency>
 
     </dependencies>
 </project>

@@ -2,17 +2,14 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-
-
     <parent>
         <artifactId>research-code</artifactId>
         <groupId>com.raffaeleconforti</groupId>
         <version>1.0.20170418</version>
-        <relativePath>../</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>noisefiltering-event-logic</artifactId>
+    <artifactId>cnminer-wrapper</artifactId>
     <packaging>bundle</packaging>
 
     <build>
@@ -24,13 +21,13 @@
                 <configuration>
                     <instructions>
                         <Bundle-ClassPath>.,{maven-dependencies},WEB-INF/classes</Bundle-ClassPath>
-                        <Bundle-Name>NoiseFiltering-Event Logic OSGI</Bundle-Name>
-                        <Bundle-SymbolicName>com.raffaeleconforti.noisefiltering-event-logic</Bundle-SymbolicName>
+                        <Bundle-Name>CNMiner-Wrapper OSGI</Bundle-Name>
+                        <Bundle-SymbolicName>com.raffaeleconforti.cnminer-wrappers</Bundle-SymbolicName>
                         <Import-Package>
                             *
                         </Import-Package>
                         <Export-Package>
-                            com.raffaeleconforti.noisefiltering.event
+                            com.raffaeleconforti.*
                         </Export-Package>
                     </instructions>
                 </configuration>
@@ -59,34 +56,14 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.processmining</groupId>
-            <artifactId>pnetreplayer</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.processmining</groupId>
-            <artifactId>efficientstorage</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.gurobi</groupId>
-            <artifactId>gurobi</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>net.sourceforge.lpsolve</groupId>
-            <artifactId>lpsolve</artifactId>
+            <groupId>it.unical</groupId>
+            <artifactId>cnminer</artifactId>
         </dependency>
 
         <dependency>
             <groupId>com.raffaeleconforti</groupId>
-            <artifactId>outliers</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.raffaeleconforti</groupId>
-            <artifactId>bpmnminer-logic</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.raffaeleconforti</groupId>
-            <artifactId>ilp-solver-com.raffaeleconforti.impl.wrapper</artifactId>
-            <version>1.0.20170418</version>
+            <artifactId>wrappers</artifactId>
         </dependency>
     </dependencies>
+
 </project>

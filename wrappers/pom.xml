@@ -132,13 +132,8 @@
         </dependency>
 
         <dependency>
-            <groupId>com.raffaeleconforti</groupId>
-            <artifactId>bpmnminer-prom</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>it.unical</groupId>
-            <artifactId>cnminer</artifactId>
+            <groupId>org.processmining</groupId>
+            <artifactId>heuristicsminer</artifactId>
         </dependency>
 
         <dependency>
@@ -185,6 +180,29 @@
         <dependency>
             <groupId>org.processmining</groupId>
             <artifactId>causalmatrixminer</artifactId>
+        </dependency>
+
+        <!--<dependency>-->
+            <!--<groupId>it.unical</groupId>-->
+            <!--<artifactId>cnminer</artifactId>-->
+        <!--</dependency>-->
+
+        <dependency>
+            <groupId>com.raffaeleconforti</groupId>
+            <artifactId>log-util</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.raffaeleconforti</groupId>
+            <artifactId>modified-miners</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.raffaeleconforti</groupId>
+            <artifactId>conversion</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.processmining</groupId>
+            <artifactId>inductiveminer</artifactId>
         </dependency>
     </dependencies>
 

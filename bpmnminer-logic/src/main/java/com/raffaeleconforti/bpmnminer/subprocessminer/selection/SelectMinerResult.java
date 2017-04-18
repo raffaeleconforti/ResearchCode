@@ -5,18 +5,18 @@ package com.raffaeleconforti.bpmnminer.subprocessminer.selection;
  */
 public class SelectMinerResult {
 
-    public static final String HMWO5 = "Heuristics Miner ProM5.2 Without Unused Relationships";
+    public static final String HM5 = "Heuristics Miner ProM5.2";
     public static final String IM = "Inductive Miner";
     public static final String ALPHA = "Alpha Algorithm";
     public static final String ILP = "ILP Miner";
-    public static final String HMW5 = "Heuristics Miner ProM5.2 With Unused Relationships";
+    public static final String SM = "Split Miner";
     public static final String HM6 = "Heuristics Miner ProM6";
 
-    public static final int HMWOPOS5 = 0;
+    public static final int HMPOS5 = 0;
     public static final int IMPOS = 1;
     public static final int ALPHAPOS = 2;
     public static final int ILPPOS = 3;
-    public static final int HMWPOS5 = 4;
+    public static final int SMPOS = 4;
     public static final int HMPOS6 = 5;
 
     private int selectedAlgorithm;

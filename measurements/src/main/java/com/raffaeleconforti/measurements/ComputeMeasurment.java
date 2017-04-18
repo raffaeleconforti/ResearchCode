@@ -8,6 +8,7 @@ import com.raffaeleconforti.measurements.ui.computemeasurement.SelectMinerUICM;
 import com.raffaeleconforti.measurements.ui.computemeasurement.SelectMinerUIResultCM;
 import com.raffaeleconforti.memorylog.XAttributeLiteralImpl;
 import com.raffaeleconforti.noisefiltering.event.prom.InfrequentBehaviourFilterPlugin;
+import com.raffaeleconforti.wrapper.BPMNMinerAlgorithmWrapper;
 import com.raffaeleconforti.wrapper.MiningAlgorithm;
 import com.raffaeleconforti.wrapper.PetrinetWithMarking;
 import com.raffaeleconforti.wrapper.StructuredMinerAlgorithmWrapper;
