@@ -16,6 +16,11 @@ public class Gurobi_Solver implements ILPSolver {
     private boolean minimize = true;
 
     @Override
+    public double getInfinity() {
+        return GRB.INFINITY;
+    }
+
+    @Override
     public void createModel() {
         try {
             env = new GRBEnv("qp.noisefiltering");

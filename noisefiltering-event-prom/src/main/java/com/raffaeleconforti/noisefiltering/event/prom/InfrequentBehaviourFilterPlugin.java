@@ -28,51 +28,9 @@ import org.processmining.framework.plugin.annotations.PluginVariant;
 @Plugin(name = "Infrequent Behaviour Filter", parameterLabels = {"Log"},//, "PetriNet", "Marking", "Log" },
         returnLabels = {"FilteredLog"},
         returnTypes = {XLog.class})
-public class InfrequentBehaviourFilterPlugin {
+public abstract class InfrequentBehaviourFilterPlugin {
 
-    private final XEventClassifier xEventClassifier = new XEventAndClassifier(new XEventNameClassifier());
-    private final AutomatonFactory automatonFactory = new AutomatonFactory(xEventClassifier);
-    private final InfrequentBehaviourFilter infrequentBehaviourFilter = new InfrequentBehaviourFilter(xEventClassifier);
+    public abstract double discoverThreshold(double[] arcs, double initialPercentile);
 
-    @UITopiaVariant(affiliation = UITopiaVariant.EHV,
-            author = "Raffaele Conforti",
-            email = "raffaele.conforti@qut.edu.au",
-            pack = "Infrequent Behaviour Filter (raffaele.conforti@qut.edu.au)")
-    @PluginVariant(variantLabel = "Infrequent Behaviour Filter", requiredParameterLabels = {0})//, 1, 2, 3 })
-    public XLog filterLog(final UIPluginContext context, XLog rawlog) {
-        XLog log = rawlog;
-        XFactory factory = new XFactoryNaiveImpl();
-        LogOptimizer logOptimizer = new LogOptimizer(factory);
-        log = logOptimizer.optimizeLog(log);
-
-        XFactoryRegistry.instance().setCurrentDefault(factory);
-        LogModifier logModifier = new LogModifier(factory, XConceptExtension.instance(), XTimeExtension.instance(), logOptimizer);
-        logModifier.insertArtificialStartAndEndEvent(log);
-
-        Automaton<String> automatonOriginal = automatonFactory.generate(log);
-
-        double[] arcs = infrequentBehaviourFilter.discoverArcs(automatonOriginal, 1.0);
-
-        NoiseFilterUI noiseUI = new NoiseFilterUI();
-        NoiseFilterResult result = noiseUI.showGUI(context, this, arcs, automatonOriginal.getNodes());
-
-        return infrequentBehaviourFilter.filterLog(context, rawlog, result);
-    }
-
-    public XLog filterLog(XLog rawlog) {
-        XLog log = rawlog;
-        XFactory factory = new XFactoryNaiveImpl();
-        LogOptimizer logOptimizer = new LogOptimizer(factory);
-        log = logOptimizer.optimizeLog(log);
-
-        LogModifier logModifier = new LogModifier(factory, XConceptExtension.instance(), XTimeExtension.instance(), logOptimizer);
-        logModifier.insertArtificialStartAndEndEvent(log);
-
-        return infrequentBehaviourFilter.filterLog(log);
-    }
-
-    public double discoverThreshold(double[] arcs, double initialPercentile) {
-        return infrequentBehaviourFilter.discoverThreshold(arcs, initialPercentile);
-    }
-
+    public abstract XLog filterLog(XLog log1);
 }

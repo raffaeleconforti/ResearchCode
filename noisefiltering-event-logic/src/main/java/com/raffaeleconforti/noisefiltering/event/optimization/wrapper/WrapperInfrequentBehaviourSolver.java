@@ -166,7 +166,7 @@ public class WrapperInfrequentBehaviourSolver<T> {
                         expr2.addTerm(subconnectedSourceList[i][j], 1.0);
                     }
                 }
-                expr2.addTerm(connectedSourceList[i], Double.MIN_VALUE);
+                expr2.addTerm(connectedSourceList[i], -solver.getInfinity());
                 solver.addConstraint(expr2, ILPSolver.Operator.LESS_EQUAL, 0.0, "");
             }
         }
@@ -234,7 +234,7 @@ public class WrapperInfrequentBehaviourSolver<T> {
                         expr2.addTerm(subconnectedTargetList[i][j], 1.0);
                     }
                 }
-                expr2.addTerm(connectedTargetList[i], Double.MIN_VALUE);
+                expr2.addTerm(connectedTargetList[i], -solver.getInfinity());
                 solver.addConstraint(expr2, ILPSolver.Operator.LESS_EQUAL, 0.0, "");
             }
         }
@@ -250,24 +250,26 @@ public class WrapperInfrequentBehaviourSolver<T> {
 
         // Optimize model
         solver.solve();
-//            int status = model.get(GRB.IntAttr.Status);
-//            if (status == GRB.Status.UNBOUNDED) {
-//                System.out.println("The model cannot be solved "
-//                        + "because it is unbounded");
-//            }
-//            if (status == GRB.Status.OPTIMAL) {
-//                System.out.println("The optimal objective is " +
-//                        model.get(GRB.DoubleAttr.ObjVal));
-//            }
-//            if (status == GRB.Status.INFEASIBLE) {
-//                System.out.println("The model is infeasible");
-//            }
+        ILPSolver.Status status = solver.getStatus();
 
-        // Identify Removable Arcs
-        double[] sol = solver.getSolutionVariables(edges);
-        for(int i = 0; i < edges.length; i++) {
-            if(sol[i] == 0) {
-                removable.add(edgeList.get(i));
+        if (status == ILPSolver.Status.OPTIMAL) {
+            System.out.println("The optimal objective is " +
+                    solver.getSolutionValue());
+
+            // Identify Removable Arcs
+            double[] sol = solver.getSolutionVariables(edges);
+            for (int i = 0; i < edges.length; i++) {
+                if (sol[i] == 0) {
+                    removable.add(edgeList.get(i));
+                }
+            }
+        }else {
+            if (status == ILPSolver.Status.UNBOUNDED) {
+                System.out.println("The model cannot be solved "
+                        + "because it is unbounded");
+            }
+            if (status == ILPSolver.Status.INFEASIBLE) {
+                System.out.println("The model is infeasible");
             }
         }
 

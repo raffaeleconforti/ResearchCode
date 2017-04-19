@@ -23,6 +23,11 @@ public class LPSolve_Solver implements ILPSolver {
     private int status;
 
     @Override
+    public double getInfinity() {
+        return Double.MAX_VALUE;
+    }
+
+    @Override
     public void createModel() {
 
     }

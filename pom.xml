@@ -123,6 +123,11 @@
             </dependency>
             <dependency>
                 <groupId>com.raffaeleconforti</groupId>
+                <artifactId>ilp-solver-wrapper</artifactId>
+                <version>1.0.20170418</version>
+            </dependency>
+            <dependency>
+                <groupId>com.raffaeleconforti</groupId>
                 <artifactId>fake-context</artifactId>
                 <version>1.0.20170418</version>
             </dependency>

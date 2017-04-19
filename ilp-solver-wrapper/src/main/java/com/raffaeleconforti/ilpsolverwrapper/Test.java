@@ -13,8 +13,8 @@ public class Test {
     public static void main(String[] args) {
         ILPSolver solver = new Gurobi_Solver();
         solver.createModel();
-        ILPSolverVariable x = solver.addVariable(Double.MIN_VALUE, Double.MAX_VALUE, 1, ILPSolver.VariableType.CONTINUOUS, "x");
-        ILPSolverVariable y = solver.addVariable(Double.MIN_VALUE, Double.MAX_VALUE, 1, ILPSolver.VariableType.CONTINUOUS, "y");
+        ILPSolverVariable x = solver.addVariable(-Double.MAX_VALUE, Double.MAX_VALUE, 1, ILPSolver.VariableType.CONTINUOUS, "x");
+        ILPSolverVariable y = solver.addVariable(-Double.MAX_VALUE, Double.MAX_VALUE, 1, ILPSolver.VariableType.CONTINUOUS, "y");
 
         solver.integrateVariables();
 

@@ -85,8 +85,7 @@
         </dependency>
         <dependency>
             <groupId>com.raffaeleconforti</groupId>
-            <artifactId>ilp-solver-com.raffaeleconforti.impl.wrapper</artifactId>
-            <version>1.0.20170418</version>
+            <artifactId>ilp-solver-wrapper</artifactId>
         </dependency>
     </dependencies>
 </project>
