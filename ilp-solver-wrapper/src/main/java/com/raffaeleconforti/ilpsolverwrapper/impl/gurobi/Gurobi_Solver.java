@@ -18,7 +18,7 @@ import java.util.List;
  */
 public class Gurobi_Solver implements ILPSolver {
 
-    public static final double INFINITY = 1.0E25D;
+    public static final double INFINITY = 1.0E30;
 
     private GRBEnv env;
     private GRBModel model;
@@ -53,10 +53,10 @@ public class Gurobi_Solver implements ILPSolver {
                 case CONTINUOUS : gurobiVariableType = GRB.CONTINUOUS;
             }
 
-            Gurobi_Variable var = new Gurobi_Variable(model.addVar(-getInfinity(), getInfinity(), 1, gurobiVariableType, variableName), lowerBound, upperBound, variableType, variableName);
-            variables.add(var);
-            return var;
-//            return new Gurobi_Variable(model.addVar(lowerBound, upperBound, objectiveCoefficient, gurobiVariableType, variableName), lowerBound, upperBound, variableType, variableName);
+//            Gurobi_Variable var = new Gurobi_Variable(model.addVar(-getInfinity(), getInfinity(), 1, gurobiVariableType, variableName), lowerBound, upperBound, variableType, variableName);
+//            variables.add(var);
+//            return var;
+            return new Gurobi_Variable(model.addVar(lowerBound, upperBound, objectiveCoefficient, gurobiVariableType, variableName), lowerBound, upperBound, variableType, variableName);
         } catch (GRBException e) {
             e.printStackTrace();
         }

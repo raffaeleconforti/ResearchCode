@@ -22,7 +22,7 @@ import java.util.regex.Pattern;
 public class LPSolve_Solver implements ILPSolver {
 
 
-    public static final double INFINITY = 1.0E25D;//1.0E100D;
+    public static final double INFINITY = 1.0E30;//1.0E100D;
 
     private LpSolve lp;
     private List<LPSolve_Variable> variables = new ArrayList<>();
@@ -122,9 +122,10 @@ public class LPSolve_Solver implements ILPSolver {
                 lp.setColName(variable.getVariablePosition() + 1, variable.getVariableName());
                 if(variable.getVariableType() == VariableType.INTEGER || variable.getVariableType() == VariableType.BINARY) {
                     lp.setInt(variable.getVariablePosition() + 1, true);
-//                }else if(variable.getVariableType() == VariableType.BINARY) {
-//                    lp.setBinary(variable.getVariablePosition() + 1, true);
+                }else if(variable.getVariableType() == VariableType.BINARY) {
+                    lp.setBinary(variable.getVariablePosition() + 1, true);
                 }
+                lp.setBounds(variable.getVariablePosition() + 1, variable.getLowerBound(), variable.getUpperBound());
             }
 
         } catch (LpSolveException e) {
@@ -144,22 +145,22 @@ public class LPSolve_Solver implements ILPSolver {
 
 //            lp.resizeLp(constraints.size(), lp.getNcolumns());
             lp.setAddRowmode(true);
-            for(LPSolve_Variable variable : variables) {
-                int[] colno = new int[variables.size()];
-                double[] row = new double[variables.size()];
-                colno[variable.getVariablePosition()] = variable.getVariablePosition() + 1;
-                row[variable.getVariablePosition()] = 1;
-                double diff = (variable.getVariableType() == VariableType.CONTINUOUS)?Double.MIN_VALUE:1;
-
-                if(variable.getLowerBound() != -getInfinity()) {
-//                    lp.addConstraintex(variables.size(), row, colno, LpSolve.GE, variable.getLowerBound() + diff);
-                    lp.addConstraintex(variables.size(), row, colno, LpSolve.GE, variable.getLowerBound());
-                }
-                if(variable.getUpperBound() != getInfinity()) {
-//                    lp.addConstraintex(variables.size(), row, colno, LpSolve.LE, variable.getUpperBound() - diff);
-                    lp.addConstraintex(variables.size(), row, colno, LpSolve.LE, variable.getUpperBound());
-                }
-            }
+//            for(LPSolve_Variable variable : variables) {
+//                int[] colno = new int[variables.size()];
+//                double[] row = new double[variables.size()];
+//                colno[variable.getVariablePosition()] = variable.getVariablePosition() + 1;
+//                row[variable.getVariablePosition()] = 1;
+//                double diff = (variable.getVariableType() == VariableType.CONTINUOUS)?Double.MIN_VALUE:1;
+//
+//                if(variable.getLowerBound() != -getInfinity()) {
+////                    lp.addConstraintex(variables.size(), row, colno, LpSolve.GE, variable.getLowerBound() + diff);
+//                    lp.addConstraintex(variables.size(), row, colno, LpSolve.GE, variable.getLowerBound());
+//                }
+//                if(variable.getUpperBound() != getInfinity()) {
+////                    lp.addConstraintex(variables.size(), row, colno, LpSolve.LE, variable.getUpperBound() - diff);
+//                    lp.addConstraintex(variables.size(), row, colno, LpSolve.LE, variable.getUpperBound());
+//                }
+//            }
 
             for(LPSolve_Constraint constraint : constraints) {
                 lp.addConstraintex(constraint.getSize(), constraint.getRow(), constraint.getColno(), constraint.getLpSolveOperator(), constraint.getCoefficient());
@@ -168,10 +169,7 @@ public class LPSolve_Solver implements ILPSolver {
             lp.setAddRowmode(false);
             problem = saveProblem();
 
-            lp.setVerbose(LpSolve.DETAILED);
-//            lp.defaultBasis();
-            lp.setSimplextype(LpSolve.SIMPLEX_DUAL_DUAL);
-//            lp.
+            lp.setVerbose(LpSolve.MSG_NONE);
             status = lp.solve();
         } catch (LpSolveException e) {
             e.printStackTrace();
@@ -211,6 +209,7 @@ public class LPSolve_Solver implements ILPSolver {
         if(status == LpSolve.OPTIMAL) return Status.OPTIMAL;
         else if(status == LpSolve.INFEASIBLE) return Status.INFEASIBLE;
         else if(status == LpSolve.UNBOUNDED) return Status.UNBOUNDED;
+        else if(status == LpSolve.NUMFAILURE) return Status.OPTIMAL;
         else return Status.ERROR;
     }
 
@@ -238,7 +237,7 @@ public class LPSolve_Solver implements ILPSolver {
                         sb.append("Maximize\n").append(standardize(line.replaceAll("max:", " "), count, constrain)).append("\n");
                     }
                 }else if(line.equalsIgnoreCase("/* Constraints */")) {
-                    sb.append("\nSubject To\n");
+                    sb.append("\nSubject To");
                     constrain = true;
                     print = true;
                 }else if(line.equalsIgnoreCase("/* Variable bounds */")) {
