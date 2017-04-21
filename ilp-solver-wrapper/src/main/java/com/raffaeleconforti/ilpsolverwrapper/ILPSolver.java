@@ -22,5 +22,6 @@ public interface ILPSolver {
     double[] getSolutionVariables(ILPSolverVariable[] variables);
     double getSolutionValue();
     Status getStatus();
+    String printProblem();
     void dispose();
 }

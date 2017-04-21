@@ -40,12 +40,12 @@ public class WrapperInfrequentBehaviourSolver<T> {
         // Create variables
         ILPSolverVariable[] edges = new ILPSolverVariable[edgeList.size()];
         for(int i = 0; i < edges.length; i++) {
-            edges[i] = solver.addVariable(0.0, 1.0, 0.0, ILPSolver.VariableType.BINARY, edgeList.get(i).toString());
+            edges[i] = solver.addVariable(0.0, 1.0, 0.0, ILPSolver.VariableType.BINARY, edgeList.get(i).toString().replaceAll("-","_").replaceAll(" ",""));
         }
 
         ILPSolverVariable[] connectedSourceList = new ILPSolverVariable[nodeList.size()];
         for(int i = 0; i < connectedSourceList.length; i++) {
-            connectedSourceList[i] = solver.addVariable(0.0, 1.0, 0.0, ILPSolver.VariableType.BINARY, nodeList.get(i).toString());
+            connectedSourceList[i] = solver.addVariable(0.0, 1.0, 0.0, ILPSolver.VariableType.BINARY, "S_"+nodeList.get(i).toString().replaceAll("-","_").replaceAll(" ",""));
         }
 
         ILPSolverVariable[][] subconnectedSourceList = new ILPSolverVariable[nodeList.size()][nodeList.size()];
@@ -63,14 +63,14 @@ public class WrapperInfrequentBehaviourSolver<T> {
 
             for(int j = 0; j < nodeList.size(); j++) {
                 if(connectedFrom.contains(j)) {
-                    subconnectedSourceList[i][j] = solver.addVariable(0.0, Double.MAX_VALUE, 0.0, ILPSolver.VariableType.INTEGER, nodeList.get(i).toString()+nodeList.get(j).toString());
+                    subconnectedSourceList[i][j] = solver.addVariable(0.0, solver.getInfinity(), 0.0, ILPSolver.VariableType.INTEGER, "S_"+nodeList.get(i).toString()+"T_"+nodeList.get(j).toString().replaceAll("-","_").replaceAll(" ",""));
                 }
             }
         }
 
         ILPSolverVariable[] connectedTargetList = new ILPSolverVariable[nodeList.size()];
         for(int i = 0; i < connectedTargetList.length; i++) {
-            connectedTargetList[i] = solver.addVariable(0.0, 1.0, 0.0, ILPSolver.VariableType.BINARY, nodeList.get(i).toString());
+            connectedTargetList[i] = solver.addVariable(0.0, 1.0, 0.0, ILPSolver.VariableType.BINARY, "T_"+nodeList.get(i).toString().replaceAll("-","_").replaceAll(" ",""));
         }
 
         ILPSolverVariable[][] subconnectedTargetList = new ILPSolverVariable[nodeList.size()][nodeList.size()];
@@ -88,7 +88,7 @@ public class WrapperInfrequentBehaviourSolver<T> {
 
             for(int j = 0; j < nodeList.size(); j++) {
                 if(connectedTo.contains(j)) {
-                    subconnectedTargetList[i][j] = solver.addVariable(0.0, Double.MAX_VALUE, 0.0, ILPSolver.VariableType.INTEGER, nodeList.get(i).toString()+nodeList.get(j).toString());
+                    subconnectedTargetList[i][j] = solver.addVariable(0.0, solver.getInfinity(), 0.0, ILPSolver.VariableType.INTEGER, "T_"+nodeList.get(i).toString()+"S_"+nodeList.get(j).toString().replaceAll("-","_").replaceAll(" ",""));
                 }
             }
         }
@@ -108,7 +108,7 @@ public class WrapperInfrequentBehaviourSolver<T> {
             if(!infrequentEdges.contains(edgeList.get(i))) {
                 ILPSolverExpression expr = solver.createExpression();
                 expr.addTerm(edges[i], 1.0);
-                solver.addConstraint(expr, ILPSolver.Operator.EQUAL, 1.0, "edge"+i);
+                solver.addConstraint(expr, ILPSolver.Operator.EQUAL, 1.0, "edge" + i);
             }
         }
 
@@ -250,6 +250,7 @@ public class WrapperInfrequentBehaviourSolver<T> {
 
         // Optimize model
         solver.solve();
+//        System.out.println(solver.printProblem());
         ILPSolver.Status status = solver.getStatus();
 
         if (status == ILPSolver.Status.OPTIMAL) {

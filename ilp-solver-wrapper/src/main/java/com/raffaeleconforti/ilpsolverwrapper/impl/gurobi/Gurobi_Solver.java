@@ -6,18 +6,28 @@ import com.raffaeleconforti.ilpsolverwrapper.ILPSolverExpression;
 import com.raffaeleconforti.ilpsolverwrapper.ILPSolverVariable;
 import gurobi.*;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by Raffaele Conforti (conforti.raffaele@gmail.com) on 4/4/17.
  */
 public class Gurobi_Solver implements ILPSolver {
 
+    public static final double INFINITY = 1.0E25D;
+
     private GRBEnv env;
     private GRBModel model;
+    private List<Gurobi_Variable> variables = new ArrayList<>();
     private boolean minimize = true;
 
     @Override
     public double getInfinity() {
-        return GRB.INFINITY;
+        return INFINITY;
     }
 
     @Override
@@ -43,7 +53,10 @@ public class Gurobi_Solver implements ILPSolver {
                 case CONTINUOUS : gurobiVariableType = GRB.CONTINUOUS;
             }
 
-            return new Gurobi_Variable(model.addVar(lowerBound, upperBound, objectiveCoefficient, gurobiVariableType, variableName));
+            Gurobi_Variable var = new Gurobi_Variable(model.addVar(-getInfinity(), getInfinity(), 1, gurobiVariableType, variableName), lowerBound, upperBound, variableType, variableName);
+            variables.add(var);
+            return var;
+//            return new Gurobi_Variable(model.addVar(lowerBound, upperBound, objectiveCoefficient, gurobiVariableType, variableName), lowerBound, upperBound, variableType, variableName);
         } catch (GRBException e) {
             e.printStackTrace();
         }
@@ -67,7 +80,7 @@ public class Gurobi_Solver implements ILPSolver {
                 case GREATER_EQUAL  : gurobiOperator = GRB.GREATER_EQUAL;
             }
 
-            return new Gurobi_Constraint(model.addConstr(((Gurobi_Expression) expression).getLinearExpression(), gurobiOperator, coefficient, constraintName));
+            return new Gurobi_Constraint(model.addConstr(((Gurobi_Expression) expression).getLinearExpression(), gurobiOperator, coefficient, ""));
         } catch (GRBException e) {
             e.printStackTrace();
         }
@@ -97,6 +110,21 @@ public class Gurobi_Solver implements ILPSolver {
     public void integrateVariables() {
         try {
             model.update();
+
+            for(Gurobi_Variable variable : variables) {
+                double diff = (variable.getVariableType() == VariableType.CONTINUOUS)?Double.MIN_VALUE:1;
+                GRBLinExpr expression = new GRBLinExpr();
+                expression.addTerm(1, variable.getVariable());
+                if(variable.getLowerBound() != -getInfinity()) {
+//                    model.addConstr(expression, GRB.GREATER_EQUAL, variable.getLowerBound() + diff, "");
+                    model.addConstr(expression, GRB.GREATER_EQUAL, variable.getLowerBound(), "");
+                }
+                if(variable.getUpperBound() != getInfinity()) {
+//                    model.addConstr(expression, GRB.LESS_EQUAL, variable.getUpperBound() - diff, "");
+                    model.addConstr(expression, GRB.LESS_EQUAL, variable.getUpperBound(), "");
+                }
+            }
+
         } catch (GRBException e) {
             e.printStackTrace();
         }
@@ -114,6 +142,7 @@ public class Gurobi_Solver implements ILPSolver {
     @Override
     public double[] getSolutionVariables(ILPSolverVariable[] variables) {
         try {
+            if(getStatus() != Status.OPTIMAL) return null;
             double[] solutions = new double[variables.length];
             for(int i = 0; i < variables.length; i++) {
                 solutions[i] = ((Gurobi_Variable) variables[i]).getVariable().get(GRB.DoubleAttr.X);
@@ -128,6 +157,7 @@ public class Gurobi_Solver implements ILPSolver {
     @Override
     public double getSolutionValue() {
         try {
+            if(getStatus() != Status.OPTIMAL) return 0;
             return model.get(GRB.DoubleAttr.ObjVal);
         } catch (GRBException e) {
             e.printStackTrace();
@@ -141,12 +171,49 @@ public class Gurobi_Solver implements ILPSolver {
             int status = model.get(GRB.IntAttr.Status);
             if(status == GRB.OPTIMAL) return Status.OPTIMAL;
             else if(status == GRB.INFEASIBLE) return Status.INFEASIBLE;
-            else if(status == GRB.UNBOUNDED) return Status.UNBOUNDED;
+            else if(status == GRB.UNBOUNDED || status == GRB.INF_OR_UNBD) return Status.INFEASIBLE;
             else return Status.ERROR;
         } catch (GRBException e) {
             e.printStackTrace();
         }
         return Status.ERROR;
+    }
+
+    @Override
+    public String printProblem() {
+        try {
+            String file = "problem.lp";
+            model.write(file);
+            StringBuilder sb = new StringBuilder();
+            BufferedReader br = new BufferedReader(new FileReader(file));
+            String line = br.readLine();
+            boolean skip = false;
+            boolean subjectTo = true;
+            while(line != null) {
+                if(line.equalsIgnoreCase("Bounds")) {
+                    skip = true;
+                }else if(line.equalsIgnoreCase("Generals")) {
+                    skip = false;
+                    subjectTo = true;
+                }else if(line.equalsIgnoreCase("Subject To")) {
+                    subjectTo = false;
+                }
+                if(!skip) {
+                    if(subjectTo || line.startsWith(" R") || line.equalsIgnoreCase("Subject To")) sb.append("\n");
+                    else line = line.substring(2);
+                    sb.append(line);
+                }
+                line = br.readLine();
+            }
+            return sb.toString();
+        } catch (GRBException e) {
+            e.printStackTrace();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     @Override
