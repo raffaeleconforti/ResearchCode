@@ -5,8 +5,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.*;
 
-import au.edu.qut.processmining.miners.yam.YAM;
-import au.edu.qut.processmining.miners.yam.ui.miner.YAMUIResult;
 import com.raffaeleconforti.benchmark.logic.Benchmark;
 import com.raffaeleconforti.benchmark.logic.MeasurementAlgorithmDiscoverer;
 import com.raffaeleconforti.benchmark.logic.MiningAlgorithmDiscoverer;

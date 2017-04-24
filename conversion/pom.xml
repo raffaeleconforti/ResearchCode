@@ -60,6 +60,10 @@
     <dependencies>
         <dependency>
             <groupId>org.processmining</groupId>
+            <artifactId>properties</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.processmining</groupId>
             <artifactId>tableLayout</artifactId>
         </dependency>
         <dependency>
@@ -82,6 +86,10 @@
         <dependency>
             <groupId>com.raffaeleconforti</groupId>
             <artifactId>fake-context</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.processmining</groupId>
+            <artifactId>processtree</artifactId>
         </dependency>
 
     </dependencies>

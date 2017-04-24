@@ -1,8 +1,8 @@
 package com.raffaeleconforti.wrapper.impl;
 
-import au.edu.qut.processmining.miners.yam.YAM;
-import au.edu.qut.processmining.miners.yam.ui.miner.YAMUIResult;
-import au.edu.qut.promplugins.YAMPlugin;
+import au.edu.qut.processmining.miners.splitminer.SplitMiner;
+import au.edu.qut.processmining.miners.splitminer.ui.miner.SplitMinerUIResult;
+import au.edu.qut.promplugins.SplitMinerPlugin;
 import com.raffaeleconforti.context.FakePluginContext;
 import com.raffaeleconforti.conversion.bpmn.BPMNToPetriNetConverter;
 import com.raffaeleconforti.conversion.petrinet.PetriNetToBPMNConverter;
@@ -63,10 +63,10 @@ public class SplitMinerWrapper implements MiningAlgorithm {
         BPMNDiagram output = null;
 
         if(context instanceof FakePluginContext) {
-            YAM yam = new YAM();
-            output = yam.mineBPMNModel(log, 1.0, 0.05, false, YAMUIResult.StructuringTime.NONE);
+            SplitMiner yam = new SplitMiner();
+            output = yam.mineBPMNModel(log, 1.0, 0.05, false, SplitMinerUIResult.StructuringTime.NONE);
         } else {
-            output = YAMPlugin.discoverBPMNModelWithYAM(context, log);
+            output = SplitMinerPlugin.discoverBPMNModelWithSplitMiner(context, log);
         }
         return output;
     }
