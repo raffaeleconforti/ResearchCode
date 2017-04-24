@@ -741,11 +741,20 @@ public class PetriNetToBPMNConverter {
     }
 
     private static void initializeANDSplitGateways(Petrinet net, BPMNDiagram diagram) {
+        String label = null;
+        Gateway.GatewayType gType = null;
         for(Transition transition : net.getTransitions()) {
             if(hasFollowingPlacesInAND(net, transition)) {
                 List<Place> followers = getFollowingPlacesInAND(net, transition);
                 if(followers.size() > 1) {
-                    Gateway and = diagram.addGateway("AND", Gateway.GatewayType.PARALLEL);
+                    if(transition.getLabel().equalsIgnoreCase("ORSPLIT")) {
+                        label = "OR";
+                        gType = Gateway.GatewayType.INCLUSIVE;
+                    } else {
+                        label = "AND";
+                        gType = Gateway.GatewayType.PARALLEL;
+                    }
+                    Gateway and = diagram.addGateway(label, gType);
                     if(!transition.isInvisible()) {
                         if(!areConnected(transitionActivityUnifiedMap.get(transition), and)) {
                             connect(diagram, transitionActivityUnifiedMap.get(transition), and);
@@ -812,11 +821,20 @@ public class PetriNetToBPMNConverter {
     }
 
     private static void initializeANDJoinGateways(Petrinet net, BPMNDiagram diagram) {
+        String label = null;
+        Gateway.GatewayType gType = null;
         for(Transition transition : net.getTransitions()) {
             if(hasPrecedingPlacesInAND(net, transition)) {
                 List<Place> preceders = getPrecedingPlacesInAND(net, transition);
                 if(preceders.size() > 1) {
-                    Gateway and = diagram.addGateway("AND", Gateway.GatewayType.PARALLEL);
+                    if(transition.getLabel().equalsIgnoreCase("ORJOIN")) {
+                        label = "OR";
+                        gType = Gateway.GatewayType.INCLUSIVE;
+                    } else {
+                        label = "AND";
+                        gType = Gateway.GatewayType.PARALLEL;
+                    }
+                    Gateway and = diagram.addGateway(label, gType);
                     if(!transition.isInvisible()) {
                         if(!areConnected(and, transitionActivityUnifiedMap.get(transition))) {
                             connect(diagram, and, transitionActivityUnifiedMap.get(transition));
