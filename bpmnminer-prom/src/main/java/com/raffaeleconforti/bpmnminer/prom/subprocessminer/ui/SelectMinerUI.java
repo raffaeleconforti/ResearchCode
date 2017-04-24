@@ -17,12 +17,12 @@ public class SelectMinerUI {
     public SelectMinerResult showGUI(UIPluginContext context) throws ExecutionCancelledException {
 
         List<String> allAttributes = new ArrayList<String>();
-        allAttributes.add(SelectMinerResult.HM5);
-        allAttributes.add(SelectMinerResult.IM);
-        allAttributes.add(SelectMinerResult.ALPHA);
-        allAttributes.add(SelectMinerResult.ILP);
         allAttributes.add(SelectMinerResult.SM);
+        allAttributes.add(SelectMinerResult.IM);
         allAttributes.add(SelectMinerResult.HM6);
+        allAttributes.add(SelectMinerResult.HM5);
+        allAttributes.add(SelectMinerResult.ILP);
+        allAttributes.add(SelectMinerResult.ALPHA);
 
         // show ui to user to confirm/select primary keys
         SelectMiner ignoreGui = new SelectMiner(allAttributes, false);

@@ -27,9 +27,18 @@ import java.io.PrintStream;
  */
 @Plugin(name = "Split Miner Wrapper",
         parameterLabels = {"Event Log"},
-        returnLabels = {"YAM output"},
-        returnTypes = {BPMNDiagram.class})
+        returnLabels = {"PetrinetWithMarking"},
+        returnTypes = {PetrinetWithMarking.class})
 public class SplitMinerWrapper implements MiningAlgorithm {
+
+    @UITopiaVariant(affiliation = UITopiaVariant.EHV,
+            author = "Adriano Augusto",
+            email = "adriano.august@ut.ee",
+            pack = "bpmntk-osgi")
+    @PluginVariant(variantLabel = "Split Miner Wrapper", requiredParameterLabels = {0})
+    public PetrinetWithMarking minePetrinet(UIPluginContext context, XLog log) {
+        return minePetrinet(context, log, false);
+    }
 
     @Override
     public PetrinetWithMarking minePetrinet(UIPluginContext context, XLog log, boolean structure) {
@@ -50,11 +59,6 @@ public class SplitMinerWrapper implements MiningAlgorithm {
         return new PetrinetWithMarking((Petrinet) result[0], (Marking) result[1], (Marking) result[2]);
     }
 
-    @UITopiaVariant(affiliation = UITopiaVariant.EHV,
-            author = "Adriano Augusto",
-            email = "adriano.august@ut.ee",
-            pack = "bpmntk-osgi")
-    @PluginVariant(variantLabel = "Split Miner Wrapper", requiredParameterLabels = {0})
     public BPMNDiagram mineBPMNDiagram(UIPluginContext context, XLog log, boolean structure) {
         BPMNDiagram output = null;
 
