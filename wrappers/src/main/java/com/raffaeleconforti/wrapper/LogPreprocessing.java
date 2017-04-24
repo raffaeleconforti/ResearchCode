@@ -1,6 +1,5 @@
 package com.raffaeleconforti.wrapper;
 
-import com.raffaeleconforti.memorylog.XAttributeLiteralImpl;
 import org.deckfour.xes.classification.XEventClassifier;
 import org.deckfour.xes.extension.std.XConceptExtension;
 import org.deckfour.xes.extension.std.XLifecycleExtension;
@@ -11,6 +10,7 @@ import org.deckfour.xes.info.XLogInfoFactory;
 import org.deckfour.xes.model.XEvent;
 import org.deckfour.xes.model.XLog;
 import org.deckfour.xes.model.XTrace;
+import org.deckfour.xes.model.impl.XAttributeLiteralImpl;
 import org.processmining.contexts.uitopia.UIPluginContext;
 import org.processmining.models.graphbased.AttributeMap;
 import org.processmining.models.graphbased.directed.petrinet.Petrinet;

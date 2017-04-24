@@ -292,9 +292,9 @@ public class BPMNSubProcessMiner {
                             label = "BPMNModel based on ILPMiner";
                         } else if (selectedAlgorithm == SelectMinerResult.IMPOS) {
                             label = "BPMNModel based on InductiveMiner";
-                        } else if (selectedAlgorithm == SelectMinerResult.HMWOPOS5) {
+                        } else if (selectedAlgorithm == SelectMinerResult.HMPOS5) {
                             label = "BPMNModel based on HeuristicsMiner ProM5.2 without useless arcs";
-                        } else if (selectedAlgorithm == SelectMinerResult.HMWPOS5) {
+                        } else if (selectedAlgorithm == SelectMinerResult.SMPOS) {
                             label = "BPMNModel based on HeuristicsMiner ProM5.2 with useless arcs";
                         } else if (selectedAlgorithm == SelectMinerResult.HMPOS6) {
                             label = "BPMNModel based on HeuristicsMiner ProM6";

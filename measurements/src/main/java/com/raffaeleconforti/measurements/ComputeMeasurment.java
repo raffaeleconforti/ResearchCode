@@ -8,6 +8,8 @@ import com.raffaeleconforti.measurements.ui.computemeasurement.SelectMinerUICM;
 import com.raffaeleconforti.measurements.ui.computemeasurement.SelectMinerUIResultCM;
 import com.raffaeleconforti.memorylog.XAttributeLiteralImpl;
 import com.raffaeleconforti.noisefiltering.event.prom.InfrequentBehaviourFilterPlugin;
+import com.raffaeleconforti.noisefiltering.event.prom.InfrequentBehaviourFilterPluginLPSolve;
+import com.raffaeleconforti.wrapper.BPMNMinerAlgorithmWrapper;
 import com.raffaeleconforti.wrapper.MiningAlgorithm;
 import com.raffaeleconforti.wrapper.PetrinetWithMarking;
 import com.raffaeleconforti.wrapper.StructuredMinerAlgorithmWrapper;
@@ -539,7 +541,7 @@ public class ComputeMeasurment {
                         log1.addAll(logs[j]);
                     }
                 }
-                InfrequentBehaviourFilterPlugin logInspector = new InfrequentBehaviourFilterPlugin();
+                InfrequentBehaviourFilterPlugin logInspector = new InfrequentBehaviourFilterPluginLPSolve();
                 log1 = logInspector.filterLog(log1);
 
                 context.getProvidedObjectManager().createProvidedObject("TrainingLogFold" + i, log1, XLog.class, context);

@@ -17,24 +17,24 @@
 
     <build>
         <plugins>
-            <plugin>
-                <groupId>org.apache.felix</groupId>
-                <artifactId>maven-bundle-plugin</artifactId>
-                <extensions>true</extensions>
-                <configuration>
-                    <instructions>
-                        <Bundle-ClassPath>.,{maven-dependencies},WEB-INF/classes</Bundle-ClassPath>
-                        <Bundle-Name>BPMNMiner Commandline OSGI</Bundle-Name>
-                        <Bundle-SymbolicName>com.raffaeleconforti.bpmnminer-commandline</Bundle-SymbolicName>
-                        <Import-Package>
-                            *
-                        </Import-Package>
-                        <Export-Package>
-                            *
-                        </Export-Package>
-                    </instructions>
-                </configuration>
-            </plugin>
+            <!--<plugin>-->
+                <!--<groupId>org.apache.felix</groupId>-->
+                <!--<artifactId>maven-bundle-plugin</artifactId>-->
+                <!--<extensions>true</extensions>-->
+                <!--<configuration>-->
+                    <!--<instructions>-->
+                        <!--<Bundle-ClassPath>.,{maven-dependencies},WEB-INF/classes</Bundle-ClassPath>-->
+                        <!--<Bundle-Name>BPMNMiner Commandline OSGI</Bundle-Name>-->
+                        <!--<Bundle-SymbolicName>com.raffaeleconforti.bpmnminer-commandline</Bundle-SymbolicName>-->
+                        <!--<Import-Package>-->
+                            <!--*-->
+                        <!--</Import-Package>-->
+                        <!--<Export-Package>-->
+                            <!--*-->
+                        <!--</Export-Package>-->
+                    <!--</instructions>-->
+                <!--</configuration>-->
+            <!--</plugin>-->
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

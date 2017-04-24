@@ -19,7 +19,6 @@ import org.processmining.models.heuristics.HeuristicsNet;
 import org.processmining.models.semantics.petrinet.Marking;
 import org.processmining.plugins.heuristicsnet.miner.heuristics.converter.HeuristicsNetToPetriNetConverter;
 import org.processmining.plugins.heuristicsnet.miner.heuristics.miner.FlexibleHeuristicsMinerPlugin;
-import org.processmining.plugins.heuristicsnet.miner.heuristics.miner.LogUtility;
 import org.processmining.plugins.heuristicsnet.miner.heuristics.miner.gui.ParametersPanel;
 import org.processmining.plugins.heuristicsnet.miner.heuristics.miner.settings.HeuristicsMinerSettings;
 

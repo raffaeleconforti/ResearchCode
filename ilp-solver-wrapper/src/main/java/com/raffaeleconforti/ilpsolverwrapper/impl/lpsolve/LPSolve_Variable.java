@@ -8,26 +8,46 @@ import com.raffaeleconforti.ilpsolverwrapper.ILPSolverVariable;
  */
 public class LPSolve_Variable implements ILPSolverVariable {
 
+    private double lowerBound;
+    private double upperBound;
     private VariableType variableType;
     private String variableName;
     private int variablePosition;
 
-    public LPSolve_Variable(VariableType variableType, String variableName, int variablePosition) {
+    public LPSolve_Variable(int variablePosition,
+                            double lowerBound,
+                            double upperBound,
+                            VariableType variableType,
+                            String variableName) {
+        this.variablePosition = variablePosition;
+        this.lowerBound = lowerBound;
+        this.upperBound = upperBound;
         this.variableType = variableType;
         this.variableName = variableName;
-        this.variablePosition = variablePosition;
-    }
-
-    public VariableType getVariableType() {
-        return variableType;
-    }
-
-    public String getVariableName() {
-        return variableName;
     }
 
     public int getVariablePosition() {
         return variablePosition;
+    }
+
+    @Override
+    public double getLowerBound() {
+        return lowerBound;
+    }
+
+    @Override
+    public double getUpperBound() {
+        return upperBound;
+    }
+
+    @Override
+    public VariableType getVariableType() {
+        return variableType;
+    }
+
+    @Override
+    public String getVariableName() {
+        return variableName;
     }
 
 }

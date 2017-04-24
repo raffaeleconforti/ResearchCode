@@ -30,7 +30,7 @@
                             *
                         </Import-Package>
                         <Export-Package>
-                            *;
+                            com.raffaeleconforti.bpmnminer
                         </Export-Package>
                     </instructions>
                 </configuration>

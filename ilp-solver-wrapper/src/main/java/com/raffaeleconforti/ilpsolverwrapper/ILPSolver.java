@@ -9,6 +9,7 @@ public interface ILPSolver {
     enum Operator {LESS_EQUAL, EQUAL, GREATER_EQUAL}
     enum Status {OPTIMAL, INFEASIBLE, UNBOUNDED, ERROR}
 
+    double getInfinity();
     void createModel();
     ILPSolverVariable addVariable(double lowerBound, double upperBound, double objectiveCoefficient, VariableType variableType, String variableName);
     ILPSolverExpression createExpression();
@@ -21,5 +22,6 @@ public interface ILPSolver {
     double[] getSolutionVariables(ILPSolverVariable[] variables);
     double getSolutionValue();
     Status getStatus();
+    String printProblem();
     void dispose();
 }

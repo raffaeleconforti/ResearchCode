@@ -40,6 +40,7 @@ public class InfrequentBehaviourFilter {
     private XLog finalLog = null;
     private final Map<Double, Boolean> upperbounds = new UnifiedMap<Double, Boolean>();
 
+
     private AutomatonInfrequentBehaviourDetector automatonInfrequentBehaviourDetector = new AutomatonInfrequentBehaviourDetector(AutomatonInfrequentBehaviourDetector.MAX);
 
     public InfrequentBehaviourFilter(XEventClassifier xEventClassifier) {
@@ -265,7 +266,7 @@ public class InfrequentBehaviourFilter {
 
         XLog log = rawlog;
         XFactory factory = new XFactoryNaiveImpl();
-        LogOptimizer logOptimizer = new LogOptimizer(factory);
+        LogOptimizer logOptimizer = new LogOptimizer();
         log = logOptimizer.optimizeLog(log);
 
         LogModifier logModifier = new LogModifier(factory, XConceptExtension.instance(), XTimeExtension.instance(), logOptimizer);

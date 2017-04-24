@@ -63,6 +63,7 @@
 
         <!--<module>design-structure-matrix</module>-->
         <module>prom6</module>
+        <module>cnminer-wrapper</module>
         <module>benchmark-logic</module>
         <module>nlp</module>
         <!--<module>noisefiltering-label-logic</module>-->
@@ -106,7 +107,7 @@
         <flanagan.version>20151114</flanagan.version>
 
         <commons-math3.version>3.6</commons-math3.version>
-        <bpmntk-osgi.version>1.0-20170303</bpmntk-osgi.version>
+        <bpmntk-osgi.version>1.0-20170424</bpmntk-osgi.version>
         <bpstruct.version>0.1.117</bpstruct.version>
         <jbpt.version>0.2.77</jbpt.version>
 
@@ -118,6 +119,11 @@
             <dependency>
                 <groupId>com.raffaeleconforti</groupId>
                 <artifactId>java-util</artifactId>
+                <version>1.0.20170418</version>
+            </dependency>
+            <dependency>
+                <groupId>com.raffaeleconforti</groupId>
+                <artifactId>ilp-solver-wrapper</artifactId>
                 <version>1.0.20170418</version>
             </dependency>
             <dependency>

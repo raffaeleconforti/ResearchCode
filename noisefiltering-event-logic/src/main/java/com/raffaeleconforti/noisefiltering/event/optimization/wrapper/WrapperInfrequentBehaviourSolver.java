@@ -40,12 +40,12 @@ public class WrapperInfrequentBehaviourSolver<T> {
         // Create variables
         ILPSolverVariable[] edges = new ILPSolverVariable[edgeList.size()];
         for(int i = 0; i < edges.length; i++) {
-            edges[i] = solver.addVariable(0.0, 1.0, 0.0, ILPSolver.VariableType.BINARY, edgeList.get(i).toString());
+            edges[i] = solver.addVariable(0.0, 1.0, 0.0, ILPSolver.VariableType.BINARY, edgeList.get(i).toString().replaceAll("-","_").replaceAll(" ",""));
         }
 
         ILPSolverVariable[] connectedSourceList = new ILPSolverVariable[nodeList.size()];
         for(int i = 0; i < connectedSourceList.length; i++) {
-            connectedSourceList[i] = solver.addVariable(0.0, 1.0, 0.0, ILPSolver.VariableType.BINARY, nodeList.get(i).toString());
+            connectedSourceList[i] = solver.addVariable(0.0, 1.0, 0.0, ILPSolver.VariableType.BINARY, "S_"+nodeList.get(i).toString().replaceAll("-","_").replaceAll(" ",""));
         }
 
         ILPSolverVariable[][] subconnectedSourceList = new ILPSolverVariable[nodeList.size()][nodeList.size()];
@@ -63,14 +63,14 @@ public class WrapperInfrequentBehaviourSolver<T> {
 
             for(int j = 0; j < nodeList.size(); j++) {
                 if(connectedFrom.contains(j)) {
-                    subconnectedSourceList[i][j] = solver.addVariable(0.0, Double.MAX_VALUE, 0.0, ILPSolver.VariableType.INTEGER, nodeList.get(i).toString()+nodeList.get(j).toString());
+                    subconnectedSourceList[i][j] = solver.addVariable(0.0, solver.getInfinity(), 0.0, ILPSolver.VariableType.INTEGER, "S_"+nodeList.get(i).toString()+"T_"+nodeList.get(j).toString().replaceAll("-","_").replaceAll(" ",""));
                 }
             }
         }
 
         ILPSolverVariable[] connectedTargetList = new ILPSolverVariable[nodeList.size()];
         for(int i = 0; i < connectedTargetList.length; i++) {
-            connectedTargetList[i] = solver.addVariable(0.0, 1.0, 0.0, ILPSolver.VariableType.BINARY, nodeList.get(i).toString());
+            connectedTargetList[i] = solver.addVariable(0.0, 1.0, 0.0, ILPSolver.VariableType.BINARY, "T_"+nodeList.get(i).toString().replaceAll("-","_").replaceAll(" ",""));
         }
 
         ILPSolverVariable[][] subconnectedTargetList = new ILPSolverVariable[nodeList.size()][nodeList.size()];
@@ -88,7 +88,7 @@ public class WrapperInfrequentBehaviourSolver<T> {
 
             for(int j = 0; j < nodeList.size(); j++) {
                 if(connectedTo.contains(j)) {
-                    subconnectedTargetList[i][j] = solver.addVariable(0.0, Double.MAX_VALUE, 0.0, ILPSolver.VariableType.INTEGER, nodeList.get(i).toString()+nodeList.get(j).toString());
+                    subconnectedTargetList[i][j] = solver.addVariable(0.0, solver.getInfinity(), 0.0, ILPSolver.VariableType.INTEGER, "T_"+nodeList.get(i).toString()+"S_"+nodeList.get(j).toString().replaceAll("-","_").replaceAll(" ",""));
                 }
             }
         }
@@ -108,7 +108,7 @@ public class WrapperInfrequentBehaviourSolver<T> {
             if(!infrequentEdges.contains(edgeList.get(i))) {
                 ILPSolverExpression expr = solver.createExpression();
                 expr.addTerm(edges[i], 1.0);
-                solver.addConstraint(expr, ILPSolver.Operator.EQUAL, 1.0, "edge"+i);
+                solver.addConstraint(expr, ILPSolver.Operator.EQUAL, 1.0, "edge" + i);
             }
         }
 
@@ -166,7 +166,7 @@ public class WrapperInfrequentBehaviourSolver<T> {
                         expr2.addTerm(subconnectedSourceList[i][j], 1.0);
                     }
                 }
-                expr2.addTerm(connectedSourceList[i], Double.MIN_VALUE);
+                expr2.addTerm(connectedSourceList[i], -solver.getInfinity());
                 solver.addConstraint(expr2, ILPSolver.Operator.LESS_EQUAL, 0.0, "");
             }
         }
@@ -234,7 +234,7 @@ public class WrapperInfrequentBehaviourSolver<T> {
                         expr2.addTerm(subconnectedTargetList[i][j], 1.0);
                     }
                 }
-                expr2.addTerm(connectedTargetList[i], Double.MIN_VALUE);
+                expr2.addTerm(connectedTargetList[i], -solver.getInfinity());
                 solver.addConstraint(expr2, ILPSolver.Operator.LESS_EQUAL, 0.0, "");
             }
         }
@@ -250,24 +250,27 @@ public class WrapperInfrequentBehaviourSolver<T> {
 
         // Optimize model
         solver.solve();
-//            int status = model.get(GRB.IntAttr.Status);
-//            if (status == GRB.Status.UNBOUNDED) {
-//                System.out.println("The model cannot be solved "
-//                        + "because it is unbounded");
-//            }
-//            if (status == GRB.Status.OPTIMAL) {
-//                System.out.println("The optimal objective is " +
-//                        model.get(GRB.DoubleAttr.ObjVal));
-//            }
-//            if (status == GRB.Status.INFEASIBLE) {
-//                System.out.println("The model is infeasible");
-//            }
+//        System.out.println(solver.printProblem());
+        ILPSolver.Status status = solver.getStatus();
 
-        // Identify Removable Arcs
-        double[] sol = solver.getSolutionVariables(edges);
-        for(int i = 0; i < edges.length; i++) {
-            if(sol[i] == 0) {
-                removable.add(edgeList.get(i));
+        if (status == ILPSolver.Status.OPTIMAL) {
+            System.out.println("The optimal objective is " +
+                    solver.getSolutionValue());
+
+            // Identify Removable Arcs
+            double[] sol = solver.getSolutionVariables(edges);
+            for (int i = 0; i < edges.length; i++) {
+                if (sol[i] == 0) {
+                    removable.add(edgeList.get(i));
+                }
+            }
+        }else {
+            if (status == ILPSolver.Status.UNBOUNDED) {
+                System.out.println("The model cannot be solved "
+                        + "because it is unbounded");
+            }
+            if (status == ILPSolver.Status.INFEASIBLE) {
+                System.out.println("The model is infeasible");
             }
         }
 

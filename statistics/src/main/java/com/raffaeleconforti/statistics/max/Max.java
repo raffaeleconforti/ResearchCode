@@ -10,7 +10,7 @@ public class Max implements StatisticsMeasure {
     @Override
     public double evaluate(Double val, double... values) {
         try {
-            double max = Double.MIN_VALUE;
+            double max = -Double.MAX_VALUE;
             for(double v : values) {
                 max = Math.max(max, v);
             }

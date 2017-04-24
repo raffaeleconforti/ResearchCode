@@ -1,5 +1,6 @@
 package com.raffaeleconforti.structuredminer.ui;
 
+
 import org.processmining.framework.util.ui.widgets.ProMPropertiesPanel;
 
 import javax.swing.*;

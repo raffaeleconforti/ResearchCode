@@ -94,6 +94,10 @@
             <groupId>com.raffaeleconforti</groupId>
             <artifactId>noisefiltering-event-prom</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.raffaeleconforti</groupId>
+            <artifactId>bpmnminer-prom</artifactId>
+        </dependency>
     </dependencies>
 
 
