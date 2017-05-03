@@ -485,7 +485,7 @@
             <dependency>
                 <groupId>org.deckfour.xes</groupId>
                 <artifactId>OpenXES</artifactId>
-                <version>${openxes.version}</version>
+                <version>${prom.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.processmining</groupId>
