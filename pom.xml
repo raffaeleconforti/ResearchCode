@@ -107,7 +107,7 @@
         <flanagan.version>20151114</flanagan.version>
 
         <commons-math3.version>3.6</commons-math3.version>
-        <bpmntk-osgi.version>1.0-20170425</bpmntk-osgi.version>
+        <bpmntk-osgi.version>1.0-20170503</bpmntk-osgi.version>
         <bpstruct.version>0.1.117</bpstruct.version>
         <jbpt.version>0.2.77</jbpt.version>
 
