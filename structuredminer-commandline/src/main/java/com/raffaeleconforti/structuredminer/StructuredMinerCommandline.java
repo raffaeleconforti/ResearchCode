@@ -1,5 +1,6 @@
 package com.raffaeleconforti.structuredminer;
 
+import au.edu.qut.bpmn.structuring.core.StructuringCore;
 import au.edu.qut.bpmn.structuring.ui.iBPStructUIResult;
 import com.raffaeleconforti.context.FakePluginContext;
 import com.raffaeleconforti.log.util.LogImporter;
@@ -38,6 +39,11 @@ public class StructuredMinerCommandline  {
         settingStructuring.setKeepBisimulation(true);
         settingStructuring.setTimeBounded(true);
         settingStructuring.setMaxMinutes(2);
+        settingStructuring.setMaxChildren(10);
+        settingStructuring.setMaxDepth(100);
+        settingStructuring.setMaxStates(100);
+        settingStructuring.setMaxSol(500);
+        settingStructuring.setPolicy(StructuringCore.Policy.ASTAR);
 
         int maxMinutes;
 
@@ -48,7 +54,8 @@ public class StructuredMinerCommandline  {
                 showHelp();
                 return;
             }
-            else if( args[icmd].equalsIgnoreCase("HM") ) miningAlgorithm = SettingsStructuredMiner.HMPOS52;
+            else if( args[icmd].equalsIgnoreCase("HM52") ) miningAlgorithm = SettingsStructuredMiner.HMPOS52;
+            else if( args[icmd].equalsIgnoreCase("HM") ) miningAlgorithm = SettingsStructuredMiner.HMPOS;
             else if( args[icmd].equalsIgnoreCase("FO") ) miningAlgorithm = SettingsStructuredMiner.FODINAPOS;
             else throw new Exception("ERROR - specified mining algorithm not found.");
             icmd++;
@@ -88,24 +95,26 @@ public class StructuredMinerCommandline  {
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println("ERROR: " + e.getMessage());
-            System.out.println("RUN: java -jar StructuredMiner [hm|fo] [p] [f] [minutes] logFileName.[mxml|xes] bpmnFileName");
+            System.out.println("RUN: java -jar StructuredMiner [hm|hm52|fo] [p] [f] [minutes] logFileName.[mxml|xes] bpmnFileName");
             System.out.println("HELP: java -jar StructuredMiner -help");
         }
-
     }
 
     private static void showHelp(){
         System.out.println("COMMAND: java -jar StructuredMiner");
-        System.out.println("PARAM1 (mandatory) - mining algorithn: hm|fo");
-        System.out.println("\t- HM stands for Heuristics Miner");
+        System.out.println("PARAM1 (mandatory) - mining algorithn: hm|hm52|fo");
+        System.out.println("\t- HM stands for Heuristics Miner ProM 6.5");
+        System.out.println("\t- HM52 stands for Heuristics Miner ProM 5.2");
         System.out.println("\t- FO stands for Fodina Miner");
         System.out.println("PARAM2 (optional) - pull-up rule flag: p");
         System.out.println("\t- when present enable the pull-up rule and the output model may not be weakly bisimilar");
         System.out.println("PARAM3 (optional) - force structuring flag: f");
         System.out.println("\t- when present it forces the structuring, meaning the structured model may lose or gain behaviour");
-        System.out.println("PARAM4 (mandatory) - input log file name: logFileName.[mxml|xes]");
+        System.out.println("PARAM4 (optional) - minutes for time-out of the TBA*: integer > 0");
+        System.out.println("\t- if not set, the time-out is by default 2 minutes");
+        System.out.println("PARAM5 (mandatory) - input log file name: logFileName.[mxml|xes]");
         System.out.println("\t- accepted log files are in .mxml or .xes format");
-        System.out.println("PARAM5 (mandatory) - output model file name: bpmnFileName");
+        System.out.println("PARAM6 (mandatory) - output model file name: bpmnFileName");
         System.out.println("\t- this will be the name of the output .bpmn file containing the structured model");
     }
 

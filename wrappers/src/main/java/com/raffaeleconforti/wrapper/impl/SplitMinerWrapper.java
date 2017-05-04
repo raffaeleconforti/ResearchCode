@@ -10,6 +10,7 @@ import com.raffaeleconforti.wrapper.MiningAlgorithm;
 import com.raffaeleconforti.wrapper.PetrinetWithMarking;
 import com.raffaeleconforti.marking.MarkingDiscoverer;
 import org.deckfour.xes.model.XLog;
+import org.processmining.contexts.uitopia.UIContext;
 import org.processmining.contexts.uitopia.UIPluginContext;
 import org.processmining.contexts.uitopia.annotations.UITopiaVariant;
 import org.processmining.framework.plugin.annotations.Plugin;
@@ -17,7 +18,9 @@ import org.processmining.framework.plugin.annotations.PluginVariant;
 import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
 import org.processmining.models.graphbased.directed.petrinet.Petrinet;
 import org.processmining.models.semantics.petrinet.Marking;
+import org.processmining.plugins.bpmn.plugins.BpmnExportPlugin;
 
+import java.io.File;
 import java.io.FileDescriptor;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
@@ -64,7 +67,8 @@ public class SplitMinerWrapper implements MiningAlgorithm {
 
         if(context instanceof FakePluginContext) {
             SplitMiner yam = new SplitMiner();
-            output = yam.mineBPMNModel(log, 1.0, 0.05, false, SplitMinerUIResult.StructuringTime.NONE);
+            output = yam.mineBPMNModel(log, 1.0, 1.0, true, SplitMinerUIResult.StructuringTime.NONE);
+//            export(output, "log_"+System.currentTimeMillis());
         } else {
             output = SplitMinerPlugin.discoverBPMNModelWithSplitMiner(context, log);
         }
@@ -79,5 +83,14 @@ public class SplitMinerWrapper implements MiningAlgorithm {
     @Override
     public String getAcronym() {
         return "SM";
+    }
+
+    private void export(BPMNDiagram diagram, String name) {
+        BpmnExportPlugin bpmnExportPlugin = new BpmnExportPlugin();
+        UIContext context = new UIContext();
+        UIPluginContext uiPluginContext = context.getMainPluginContext();
+        try {
+            bpmnExportPlugin.export(uiPluginContext, diagram, new File(name + ".bpmn"));
+        } catch (Exception e) { System.out.println("ERROR - impossible to export .bpmn result of split-miner"); }
     }
 }
