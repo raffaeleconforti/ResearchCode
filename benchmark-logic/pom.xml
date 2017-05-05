@@ -16,6 +16,10 @@
     <dependencies>
         <dependency>
             <groupId>com.raffaeleconforti</groupId>
+            <artifactId>hyperparamoptimized-splitminer</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.raffaeleconforti</groupId>
             <artifactId>wrappers</artifactId>
         </dependency>
         <dependency>
