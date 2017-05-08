@@ -568,7 +568,7 @@
                                     -XX:+CMSParallelRemarkEnabled
                                     -XX:GCTimeRatio=19
                                     -XX:MaxGCPauseMillis=500
-                                    -Djava.library.path=/Users/conforti/.ProM/packages/lpsolve-5.5.2/LpSolve_mac/mac:/Library/gurobi652/mac64/lib:.//lib:.//stdlib:.//packagelib:${project.build.directory}/lib:${project.build.directory}/../../assembly/target
+                                    -Djava.library.path=/Users/conforti/.ProM/packages/lpsolve-5.5.2/LpSolve_mac/mac:/Library/gurobi702/mac64/lib:.//lib:.//stdlib:.//packagelib:${project.build.directory}/lib:${project.build.directory}/../../assembly/target
                                     -cp ${libs}:${project.build.directory}/*:${project.build.directory}/lib/*:${project.build.directory}/../../assembly/target/* org.processmining.contexts.uitopia.UI" />
                                 </exec>
                                 <exec executable="cmd" osfamily="windows">
