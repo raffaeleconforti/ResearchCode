@@ -22,6 +22,7 @@ import java.util.regex.Pattern;
 public class LPSolve_Solver implements ILPSolver {
 
 
+    private int max_exp = 30;
     public static final double INFINITY = 1.0E30;//1.0E100D;
 
     private LpSolve lp;
@@ -35,6 +36,10 @@ public class LPSolve_Solver implements ILPSolver {
     @Override
     public double getInfinity() {
         return INFINITY;
+    }
+
+    private double infinity() {
+        return Double.parseDouble("1.0E" + max_exp);
     }
 
     @Override
@@ -125,7 +130,7 @@ public class LPSolve_Solver implements ILPSolver {
                 }else if(variable.getVariableType() == VariableType.BINARY) {
                     lp.setBinary(variable.getVariablePosition() + 1, true);
                 }
-                lp.setBounds(variable.getVariablePosition() + 1, variable.getLowerBound(), variable.getUpperBound());
+                lp.setBounds(variable.getVariablePosition() + 1, fixInfinity(variable.getLowerBound()), fixInfinity(variable.getUpperBound()));
             }
 
         } catch (LpSolveException e) {
@@ -133,10 +138,28 @@ public class LPSolve_Solver implements ILPSolver {
         }
     }
 
+    private double[] reduceInfinity(double[] row) {
+        double[] new_row = new double[row.length];
+        for(int i = 0; i < row.length; i++) {
+            new_row[i] = fixInfinity(row[i]);
+        }
+        return new_row;
+    }
+
+    private double fixInfinity(double value) {
+        if(value == getInfinity()) {
+            return infinity();
+        }else if(-value == getInfinity()) {
+            return -infinity();
+        }
+        return value;
+    }
+
     @Override
     public void solve() {
         try {
-            lp.setObjFnex(objectiveFunction.getSize(), objectiveFunction.getRow(), objectiveFunction.getColno());
+            double[] row = reduceInfinity(objectiveFunction.getRow());
+            lp.setObjFnex(objectiveFunction.getSize(), row, objectiveFunction.getColno());
             if(minimize) {
                 lp.setMinim();
             }else {
@@ -163,7 +186,10 @@ public class LPSolve_Solver implements ILPSolver {
 //            }
 
             for(LPSolve_Constraint constraint : constraints) {
-                lp.addConstraintex(constraint.getSize(), constraint.getRow(), constraint.getColno(), constraint.getLpSolveOperator(), constraint.getCoefficient());
+                double coefficient = constraint.getCoefficient();
+                coefficient = fixInfinity(coefficient);
+                row = reduceInfinity(constraint.getRow());
+                lp.addConstraintex(constraint.getSize(), row, constraint.getColno(), constraint.getLpSolveOperator(), coefficient);
             }
 
             lp.setAddRowmode(false);
@@ -171,6 +197,13 @@ public class LPSolve_Solver implements ILPSolver {
 
             lp.setVerbose(LpSolve.MSG_NONE);
             status = lp.solve();
+            if(status == LpSolve.NUMFAILURE) {
+                System.out.println("NUM FAILURE with infinity = " + infinity());
+                if(max_exp > 0) max_exp--;
+                dispose();
+                integrateVariables();
+                solve();
+            }
         } catch (LpSolveException e) {
             e.printStackTrace();
         }
@@ -209,7 +242,10 @@ public class LPSolve_Solver implements ILPSolver {
         if(status == LpSolve.OPTIMAL) return Status.OPTIMAL;
         else if(status == LpSolve.INFEASIBLE) return Status.INFEASIBLE;
         else if(status == LpSolve.UNBOUNDED) return Status.UNBOUNDED;
-        else if(status == LpSolve.NUMFAILURE) return Status.OPTIMAL;
+        else if(status == LpSolve.NUMFAILURE) {
+            System.out.println("NUM FAILURE");
+            return Status.OPTIMAL;
+        }
         else return Status.ERROR;
     }
 

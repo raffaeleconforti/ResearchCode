@@ -6,9 +6,6 @@ import com.raffaeleconforti.automaton.Node;
 import com.raffaeleconforti.ilpsolverwrapper.ILPSolver;
 import com.raffaeleconforti.ilpsolverwrapper.impl.gurobi.Gurobi_Solver;
 import com.raffaeleconforti.ilpsolverwrapper.impl.lpsolve.LPSolve_Solver;
-import com.raffaeleconforti.noisefiltering.event.optimization.InfrequentBehaviourSolver;
-import com.raffaeleconforti.noisefiltering.event.optimization.gurobi.GurobiInfrequentBehaviourSolver;
-import com.raffaeleconforti.noisefiltering.event.optimization.lpsolve.LPSolveInfrequentBehaviourSolver;
 
 import com.raffaeleconforti.noisefiltering.event.optimization.wrapper.WrapperInfrequentBehaviourSolver;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
@@ -57,7 +54,7 @@ public class AutomatonInfrequentBehaviourDetector {
         }else {
             ilp_solver = new LPSolve_Solver();
         }
-        solver = new WrapperInfrequentBehaviourSolver<>(automaton, infrequent, requiredStates);
+        solver = new WrapperInfrequentBehaviourSolver<>(automaton, automaton.getEdges(), requiredStates);
         removable = solver.identifyRemovableEdges(ilp_solver);
 
         for(Edge<String> edge : removable) {
