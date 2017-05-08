@@ -74,17 +74,19 @@ public class HyperParamOptimizedSplitMiner implements MiningAlgorithm {
             petrinet = convertToPetrinet(context, bpmn);
             fitness = fitnessCalculator.computeMeasurement(context, eventNameClassifier, petrinet, this, log).getValue();
             precision = precisionCalculator.computeMeasurement(context, eventNameClassifier, petrinet, this, log).getValue();
+            System.out.println("DEBUG - fitness @ " + p_threshold + " : " + fitness);
+            System.out.println("DEBUG - precision @ " + p_threshold + " : " + precision);
 
             fscore = (fitness * precision * 2) / (fitness + precision);
             if( fscore.isNaN() ) fscore = 0.0;
 
             models.put(fscore, petrinet);
             thresholds.put(fscore, p_threshold);
-            System.out.println("DEBUG - result for " + p_threshold + " is: " + fscore);
+            System.out.println("DEBUG - f-score @ " + p_threshold + " : " + fscore);
         }
 
         maxScore = Collections.max(models.keySet());
-        System.out.println("DEBUG - best results got for: " + thresholds.get(maxScore));
+        System.out.println("DEBUG - best result @ " + thresholds.get(maxScore));
         return models.get(maxScore);
     }
 

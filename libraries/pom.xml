@@ -1387,9 +1387,9 @@
                         <configuration>
                             <groupId>com.gurobi</groupId>
                             <artifactId>gurobi</artifactId>
-                            <version>6.52</version>
+                            <version>7.02</version>
                             <packaging>jar</packaging>
-                            <file>${project.build.sourceDirectory}/gurobi-652.jar</file>
+                            <file>${project.build.sourceDirectory}/gurobi-702.jar</file>
                             <generatePom>true</generatePom>
                         </configuration>
                     </execution>
@@ -1403,9 +1403,9 @@
                         <configuration>
                             <groupId>org.apromore</groupId>
                             <artifactId>bpmntk-osgi</artifactId>
-                            <version>1.0-20170503</version>
+                            <version>1.0-20170508</version>
                             <packaging>jar</packaging>
-                            <file>src/main/java/bpmntk-osgi-20170503.jar</file>
+                            <file>src/main/java/bpmntk-osgi-20170508.jar</file>
                             <generatePom>true</generatePom>
                         </configuration>
                     </execution>
