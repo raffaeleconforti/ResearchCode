@@ -11,7 +11,7 @@ import java.util.Arrays;
 public class Test {
 
     public static void main(String[] args) {
-        test(new Gurobi_Solver());
+//        test(new Gurobi_Solver());
         test(new LPSolve_Solver());
     }
 
@@ -48,7 +48,7 @@ public class Test {
         ILPSolverConstraint constraint2 = solver.addConstraint(expression2, ILPSolver.Operator.EQUAL, 4000, "");
 
         ILPSolverExpression expression3 = solver.createExpression();
-        expression3.addTerm(x, 1);
+        expression3.addTerm(x, solver.getInfinity());
         expression3.addTerm(y, 1);
         ILPSolverConstraint constraint3 = solver.addConstraint(expression3, ILPSolver.Operator.LESS_EQUAL, 75, "");
 

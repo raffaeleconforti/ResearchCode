@@ -6,9 +6,6 @@ import com.raffaeleconforti.automaton.Node;
 import com.raffaeleconforti.ilpsolverwrapper.ILPSolver;
 import com.raffaeleconforti.ilpsolverwrapper.impl.gurobi.Gurobi_Solver;
 import com.raffaeleconforti.ilpsolverwrapper.impl.lpsolve.LPSolve_Solver;
-import com.raffaeleconforti.noisefiltering.event.optimization.InfrequentBehaviourSolver;
-import com.raffaeleconforti.noisefiltering.event.optimization.gurobi.GurobiInfrequentBehaviourSolver;
-import com.raffaeleconforti.noisefiltering.event.optimization.lpsolve.LPSolveInfrequentBehaviourSolver;
 
 import com.raffaeleconforti.noisefiltering.event.optimization.wrapper.WrapperInfrequentBehaviourSolver;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
