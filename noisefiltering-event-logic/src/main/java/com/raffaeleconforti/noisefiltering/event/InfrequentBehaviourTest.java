@@ -4,6 +4,7 @@ import com.raffaeleconforti.automaton.Automaton;
 import com.raffaeleconforti.automaton.Edge;
 import com.raffaeleconforti.automaton.Node;
 import com.raffaeleconforti.ilpsolverwrapper.impl.gurobi.Gurobi_Solver;
+import com.raffaeleconforti.ilpsolverwrapper.impl.lpsolve.LPSolve_Solver;
 import com.raffaeleconforti.log.util.LogImporter;
 import com.raffaeleconforti.noisefiltering.event.optimization.wrapper.WrapperInfrequentBehaviourSolver;
 import org.deckfour.xes.classification.XEventNameClassifier;
@@ -15,7 +16,7 @@ import java.util.Set;
 /**
  * Created by Raffaele Conforti (conforti.raffaele@gmail.com) on 20/4/17.
  */
-public class Test {
+public class InfrequentBehaviourTest {
 
     public static void main(String[] args) throws Exception {
 //        XLog log = LogImporter.importFromFile(new XFactoryNaiveImpl(), "/Volumes/Data/SharedFolder/Logs/ArtificialLess.xes.gz");
@@ -40,12 +41,25 @@ public class Test {
         automaton.addEdge(c, b, 1);
         automaton.addEdge(c, d, 1);
 
+//        Node<String> a = new Node<>("A");
+//        Node<String> b = new Node<>("B");
+//        Node<String> c = new Node<>("C");
+//
+//        Automaton<String> automaton = new Automaton<>();
+//        automaton.addNode(a, 4);
+//        automaton.addNode(b, 4);
+//        automaton.addNode(c, 3);
+//        automaton.addEdge(a, b, 4);
+//        automaton.addEdge(b, c, 2);
+//        automaton.addEdge(a, c, 1);
+
         automaton.getAutomatonStart();
         automaton.getAutomatonEnd();
         automaton.createDirectedGraph();
 
         WrapperInfrequentBehaviourSolver wrapperInfrequentBehaviourSolver = new WrapperInfrequentBehaviourSolver(automaton, automaton.getEdges(), automaton.getNodes());
         Set<Edge<String>> infrequent = wrapperInfrequentBehaviourSolver.identifyRemovableEdges(new Gurobi_Solver());
+        infrequent = wrapperInfrequentBehaviourSolver.identifyRemovableEdges(new LPSolve_Solver());
         System.out.println(infrequent);
     }
 

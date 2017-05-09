@@ -158,32 +158,8 @@ public class LPSolve_Solver implements ILPSolver {
     @Override
     public void solve() {
         try {
-            double[] row = reduceInfinity(objectiveFunction.getRow());
-            lp.setObjFnex(objectiveFunction.getSize(), row, objectiveFunction.getColno());
-            if(minimize) {
-                lp.setMinim();
-            }else {
-                lp.setMaxim();
-            }
-
-//            lp.resizeLp(constraints.size(), lp.getNcolumns());
+            double[] row;
             lp.setAddRowmode(true);
-//            for(LPSolve_Variable variable : variables) {
-//                int[] colno = new int[variables.size()];
-//                double[] row = new double[variables.size()];
-//                colno[variable.getVariablePosition()] = variable.getVariablePosition() + 1;
-//                row[variable.getVariablePosition()] = 1;
-//                double diff = (variable.getVariableType() == VariableType.CONTINUOUS)?Double.MIN_VALUE:1;
-//
-//                if(variable.getLowerBound() != -getInfinity()) {
-////                    lp.addConstraintex(variables.size(), row, colno, LpSolve.GE, variable.getLowerBound() + diff);
-//                    lp.addConstraintex(variables.size(), row, colno, LpSolve.GE, variable.getLowerBound());
-//                }
-//                if(variable.getUpperBound() != getInfinity()) {
-////                    lp.addConstraintex(variables.size(), row, colno, LpSolve.LE, variable.getUpperBound() - diff);
-//                    lp.addConstraintex(variables.size(), row, colno, LpSolve.LE, variable.getUpperBound());
-//                }
-//            }
 
             for(LPSolve_Constraint constraint : constraints) {
                 double coefficient = constraint.getCoefficient();
@@ -193,13 +169,23 @@ public class LPSolve_Solver implements ILPSolver {
             }
 
             lp.setAddRowmode(false);
+
+            row = reduceInfinity(objectiveFunction.getRow());
+            lp.setObjFnex(objectiveFunction.getSize(), row, objectiveFunction.getColno());
+            if(minimize) {
+                lp.setMinim();
+            }else {
+                lp.setMaxim();
+            }
+
             problem = saveProblem();
 
             lp.setVerbose(LpSolve.MSG_NONE);
             status = lp.solve();
-            if(status == LpSolve.NUMFAILURE) {
-                System.out.println("NUM FAILURE with infinity = " + infinity());
+            if(status == LpSolve.NUMFAILURE || (max_exp != 30 && status == LpSolve.INFEASIBLE)) {
+                System.out.print("NUM FAILURE with infinity = " + infinity());
                 if(max_exp > 0) max_exp--;
+                System.out.println(" using " + infinity());
                 dispose();
                 integrateVariables();
                 solve();

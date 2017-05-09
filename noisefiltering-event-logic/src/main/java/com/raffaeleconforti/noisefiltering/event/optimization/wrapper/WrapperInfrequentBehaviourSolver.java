@@ -40,55 +40,57 @@ public class WrapperInfrequentBehaviourSolver<T> {
         // Create variables
         ILPSolverVariable[] edges = new ILPSolverVariable[edgeList.size()];
         for(int i = 0; i < edges.length; i++) {
-            edges[i] = solver.addVariable(0.0, 1.0, 0.0, ILPSolver.VariableType.BINARY, edgeList.get(i).toString().replaceAll("-","_").replaceAll(" ",""));
+            edges[i] = solver.addVariable(0.0, 1.0, 1.0, ILPSolver.VariableType.BINARY, edgeList.get(i).toString().replaceAll("-","_").replaceAll(" ",""));
         }
 
         ILPSolverVariable[] connectedSourceList = new ILPSolverVariable[nodeList.size()];
+        ILPSolverVariable[] connectedTargetList = new ILPSolverVariable[nodeList.size()];
         for(int i = 0; i < connectedSourceList.length; i++) {
-            connectedSourceList[i] = solver.addVariable(0.0, 1.0, 0.0, ILPSolver.VariableType.BINARY, "S_"+nodeList.get(i).toString().replaceAll("-","_").replaceAll(" ",""));
+            connectedSourceList[i] = solver.addVariable(0.0, 1.0, 1.0, ILPSolver.VariableType.BINARY, "S_"+nodeList.get(i).toString().replaceAll("-","_").replaceAll(" ",""));
+            connectedTargetList[i] = solver.addVariable(0.0, 1.0, 1.0, ILPSolver.VariableType.BINARY, "T_"+nodeList.get(i).toString().replaceAll("-","_").replaceAll(" ",""));
         }
+
+//        ILPSolverVariable[][] subconnectedSourceList = new ILPSolverVariable[nodeList.size()][nodeList.size()];
+//        ILPSolverVariable[][] subconnectedTargetList = new ILPSolverVariable[nodeList.size()][nodeList.size()];
+//        for(int i = 0; i < nodeList.size(); i++) {
+//            Set<Integer> connectedFrom = new UnifiedSet<Integer>();
+//            Set<Integer> connectedTo = new UnifiedSet<Integer>();
+//            for(int j = 0; j < nodeList.size(); j++) {
+//                if(i != j) {
+//                    for (Edge<T> edge : edgeList) {
+//                        if (edge.getTarget().equals(nodeList.get(i)) && edge.getSource().equals(nodeList.get(j))) {
+//                            connectedFrom.add(j);
+//                        }
+//                        if (edge.getSource().equals(nodeList.get(i)) && edge.getTarget().equals(nodeList.get(j))) {
+//                            connectedTo.add(j);
+//                        }
+//                    }
+//                }
+//            }
+//
+//            for(int j = 0; j < nodeList.size(); j++) {
+//                if(connectedFrom.contains(j)) {
+//                    subconnectedSourceList[i][j] = solver.addVariable(0.0, solver.getInfinity(), 0.0, ILPSolver.VariableType.INTEGER, "S_"+nodeList.get(i).toString()+"T_"+nodeList.get(j).toString().replaceAll("-","_").replaceAll(" ",""));
+//                }
+//                if(connectedTo.contains(j)) {
+//                    subconnectedTargetList[i][j] = solver.addVariable(0.0, solver.getInfinity(), 0.0, ILPSolver.VariableType.INTEGER, "T_"+nodeList.get(i).toString()+"S_"+nodeList.get(j).toString().replaceAll("-","_").replaceAll(" ",""));
+//                }
+//            }
+//        }
 
         ILPSolverVariable[][] subconnectedSourceList = new ILPSolverVariable[nodeList.size()][nodeList.size()];
-        for(int i = 0; i < nodeList.size(); i++) {
-            Set<Integer> connectedFrom = new UnifiedSet<Integer>();
-            for(int j = 0; j < nodeList.size(); j++) {
-                if(i != j) {
-                    for (Edge<T> edge : edgeList) {
-                        if (edge.getTarget().equals(nodeList.get(i)) && edge.getSource().equals(nodeList.get(j))) {
-                            connectedFrom.add(j);
-                        }
-                    }
-                }
-            }
-
-            for(int j = 0; j < nodeList.size(); j++) {
-                if(connectedFrom.contains(j)) {
-                    subconnectedSourceList[i][j] = solver.addVariable(0.0, solver.getInfinity(), 0.0, ILPSolver.VariableType.INTEGER, "S_"+nodeList.get(i).toString()+"T_"+nodeList.get(j).toString().replaceAll("-","_").replaceAll(" ",""));
-                }
-            }
-        }
-
-        ILPSolverVariable[] connectedTargetList = new ILPSolverVariable[nodeList.size()];
-        for(int i = 0; i < connectedTargetList.length; i++) {
-            connectedTargetList[i] = solver.addVariable(0.0, 1.0, 0.0, ILPSolver.VariableType.BINARY, "T_"+nodeList.get(i).toString().replaceAll("-","_").replaceAll(" ",""));
-        }
-
         ILPSolverVariable[][] subconnectedTargetList = new ILPSolverVariable[nodeList.size()][nodeList.size()];
-        for(int i = 0; i < nodeList.size(); i++) {
-            Set<Integer> connectedTo = new UnifiedSet<Integer>();
-            for(int j = 0; j < nodeList.size(); j++) {
-                if(i != j) {
-                    for (Edge<T> edge : edgeList) {
-                        if (edge.getSource().equals(nodeList.get(i)) && edge.getTarget().equals(nodeList.get(j))) {
-                            connectedTo.add(j);
+        for (Edge<T> edge : edgeList) {
+            for(int i = 0; i < nodeList.size(); i++) {
+                if(edge.getSource().equals(nodeList.get(i))) {
+                    for (int j = 0; j < nodeList.size(); j++) {
+                        if (i != j && edge.getTarget().equals(nodeList.get(j))) {
+                            subconnectedSourceList[i][j] = solver.addVariable(0.0, solver.getInfinity(), 1.0, ILPSolver.VariableType.INTEGER, "SL_" + nodeList.get(j).toString() + "_" + nodeList.get(i).toString().replaceAll("-", "_").replaceAll(" ", ""));
+                            subconnectedTargetList[i][j] = solver.addVariable(0.0, solver.getInfinity(), 1.0, ILPSolver.VariableType.INTEGER, "TL_" + nodeList.get(i).toString() + "_" + nodeList.get(j).toString().replaceAll("-", "_").replaceAll(" ", ""));
+                            break;
                         }
                     }
-                }
-            }
-
-            for(int j = 0; j < nodeList.size(); j++) {
-                if(connectedTo.contains(j)) {
-                    subconnectedTargetList[i][j] = solver.addVariable(0.0, solver.getInfinity(), 0.0, ILPSolver.VariableType.INTEGER, "T_"+nodeList.get(i).toString()+"S_"+nodeList.get(j).toString().replaceAll("-","_").replaceAll(" ",""));
+                    break;
                 }
             }
         }
@@ -96,14 +98,14 @@ public class WrapperInfrequentBehaviourSolver<T> {
         // Integrate new variables
         solver.integrateVariables();
 
-        // Set objective: summation of all edges
+        // Set objective: summation of all edges (Equation 1 Paper)
         ILPSolverExpression obj = solver.createExpression();
         for(int i = 0; i < edges.length; i++) {
             obj.addTerm(edges[i],1.0);
         }
         solver.setObjectiveFunction(obj);
 
-        // Add constraint: set mandatory edges
+        // Add constraint: set mandatory edges (Equation 2 Paper)
         for(int i = 0; i < edgeList.size(); i++) {
             if(!infrequentEdges.contains(edgeList.get(i))) {
                 ILPSolverExpression expr = solver.createExpression();
@@ -113,7 +115,7 @@ public class WrapperInfrequentBehaviourSolver<T> {
         }
 
         Set<Integer> sources = new UnifiedSet<Integer>();
-        // Add constraint: source is connected to source
+        // Add constraint: source is connected to source (Equation 3 Paper)
         for(int i = 0; i < nodeList.size(); i++) {
             if(automaton.getAutomatonStart().contains(nodeList.get(i))) {
                 ILPSolverExpression expr = solver.createExpression();
@@ -123,65 +125,8 @@ public class WrapperInfrequentBehaviourSolver<T> {
             }
         }
 
-        // Add constraint: node is connected from source 1
-        for(int i = 0; i < nodeList.size(); i++) {
-            if(!sources.contains(i)) {
-                for (int j = 0; j < nodeList.size(); j++) {
-                    if (j != i) {
-                        for (int k = 0; k < edgeList.size(); k++) {
-                            if (edgeList.get(k).getSource().equals(nodeList.get(j)) && edgeList.get(k).getTarget().equals(nodeList.get(i))) {
-                                ILPSolverExpression expr1 = solver.createExpression();
-                                expr1.addTerm(connectedSourceList[j], -1.0);
-                                expr1.addTerm(edges[k], -1.0);
-                                expr1.addTerm(subconnectedSourceList[i][j], 2.0);
-                                solver.addConstraint(expr1, ILPSolver.Operator.LESS_EQUAL, 0, "");
-
-                                ILPSolverExpression expr2 = solver.createExpression();
-                                expr2.addTerm(connectedSourceList[j], 1.0);
-                                expr2.addTerm(edges[k], 1.0);
-                                expr2.addTerm(subconnectedSourceList[i][j], -2);
-                                solver.addConstraint(expr2, ILPSolver.Operator.LESS_EQUAL, 1.0, "");
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        // Add constraint: node is connected from source 2
-        for(int i = 0; i < nodeList.size(); i++) {
-            if(!sources.contains(i)) {
-                ILPSolverExpression expr1 = solver.createExpression();
-                for (int j = 0; j < nodeList.size(); j++) {
-                    if (subconnectedSourceList[i][j] != null) {
-                        expr1.addTerm(subconnectedSourceList[i][j], -1.0);
-                    }
-                }
-                expr1.addTerm(connectedSourceList[i], 1.0);
-                solver.addConstraint(expr1, ILPSolver.Operator.LESS_EQUAL, 0, "");
-
-                ILPSolverExpression expr2 = solver.createExpression();
-                for (int j = 0; j < nodeList.size(); j++) {
-                    if (subconnectedSourceList[i][j] != null) {
-                        expr2.addTerm(subconnectedSourceList[i][j], 1.0);
-                    }
-                }
-                expr2.addTerm(connectedSourceList[i], -solver.getInfinity());
-                solver.addConstraint(expr2, ILPSolver.Operator.LESS_EQUAL, 0.0, "");
-            }
-        }
-
-        // Add constraint: node is connected from source 3
-        for(int i = 0; i < nodeList.size(); i++) {
-            if(requiredStatus.contains(nodeList.get(i))) {
-                ILPSolverExpression expr = solver.createExpression();
-                expr.addTerm(connectedSourceList[i], 1.0);
-                solver.addConstraint(expr, ILPSolver.Operator.EQUAL, 1.0, "");
-            }
-        }
-
         Set<Integer> sinks = new UnifiedSet<Integer>();
-        // Add constraint: source is connected to target
+        // Add constraint: target is connected to target (Equation 4 Paper)
         for(int i = 0; i < nodeList.size(); i++) {
             if(automaton.getAutomatonEnd().contains(nodeList.get(i))) {
                 ILPSolverExpression expr = solver.createExpression();
@@ -191,13 +136,56 @@ public class WrapperInfrequentBehaviourSolver<T> {
             }
         }
 
-        // Add constraint: node is connected to target 1
+        // Add constraint: node is connected from source 3 (Equation 5 Paper)
         for(int i = 0; i < nodeList.size(); i++) {
-            if(!sinks.contains(i)) {
+            if(requiredStatus.contains(nodeList.get(i))) {
+                ILPSolverExpression expr = solver.createExpression();
+                expr.addTerm(connectedSourceList[i], 1.0);
+                solver.addConstraint(expr, ILPSolver.Operator.EQUAL, 1.0, "");
+            }
+        }
+
+        // Add constraint: node is connected to target 3 (Equation 6 Paper)
+        for(int i = 0; i < nodeList.size(); i++) {
+            if(requiredStatus.contains(nodeList.get(i))) {
+                ILPSolverExpression expr = solver.createExpression();
+                expr.addTerm(connectedTargetList[i], 1.0);
+                solver.addConstraint(expr, ILPSolver.Operator.EQUAL, 1.0, "");
+            }
+        }
+
+        // Add constraint: node is connected from source 1 (Equation 7 using equation 11 Paper)
+        for(int i = 0; i < nodeList.size(); i++) {
+//            if(!sources.contains(i)) {
                 for (int j = 0; j < nodeList.size(); j++) {
-                    if (j != i) {
+                    if (i != j && subconnectedSourceList[i][j] != null) {
                         for (int k = 0; k < edgeList.size(); k++) {
-                            if (edgeList.get(k).getTarget().equals(nodeList.get(j)) && edgeList.get(k).getSource().equals(nodeList.get(i))) {
+                            if (edgeList.get(k).getSource().equals(nodeList.get(i)) && edgeList.get(k).getTarget().equals(nodeList.get(j))) {
+                                ILPSolverExpression expr1 = solver.createExpression();
+                                expr1.addTerm(connectedSourceList[i], -1.0);
+                                expr1.addTerm(edges[k], -1.0);
+                                expr1.addTerm(subconnectedSourceList[i][j], 2.0);
+                                solver.addConstraint(expr1, ILPSolver.Operator.LESS_EQUAL, 0, "");
+
+                                ILPSolverExpression expr2 = solver.createExpression();
+                                expr2.addTerm(connectedSourceList[i], 1.0);
+                                expr2.addTerm(edges[k], 1.0);
+                                expr2.addTerm(subconnectedSourceList[i][j], -2);
+                                solver.addConstraint(expr2, ILPSolver.Operator.LESS_EQUAL, 1.0, "");
+                            }
+                        }
+                    }
+                }
+//            }
+        }
+
+        // Add constraint: node is connected to target 1 (Equation 8 using equation 11 Paper)
+        for(int i = 0; i < nodeList.size(); i++) {
+//            if(!sinks.contains(i)) {
+                for (int j = 0; j < nodeList.size(); j++) {
+                    if (j != i && subconnectedTargetList[i][j] != null) {
+                        for (int k = 0; k < edgeList.size(); k++) {
+                            if (edgeList.get(k).getSource().equals(nodeList.get(i)) && edgeList.get(k).getTarget().equals(nodeList.get(j))) {
                                 ILPSolverExpression expr1 = solver.createExpression();
                                 expr1.addTerm(connectedTargetList[j], -1.0);
                                 expr1.addTerm(edges[k], -1.0);
@@ -213,10 +201,33 @@ public class WrapperInfrequentBehaviourSolver<T> {
                         }
                     }
                 }
+//            }
+        }
+
+        // Add constraint: node is connected from source 2 (Equation 9 using equation 12 Paper)
+        for(int i = 0; i < nodeList.size(); i++) {
+            if(!sources.contains(i)) {
+                ILPSolverExpression expr1 = solver.createExpression();
+                for (int j = 0; j < nodeList.size(); j++) {
+                    if (subconnectedSourceList[j][i] != null) {
+                        expr1.addTerm(subconnectedSourceList[j][i], -1.0);
+                    }
+                }
+                expr1.addTerm(connectedSourceList[i], 1.0);
+                solver.addConstraint(expr1, ILPSolver.Operator.LESS_EQUAL, 0, "");
+
+                ILPSolverExpression expr2 = solver.createExpression();
+                for (int j = 0; j < nodeList.size(); j++) {
+                    if (subconnectedSourceList[j][i] != null) {
+                        expr2.addTerm(subconnectedSourceList[j][i], 1.0);
+                    }
+                }
+                expr2.addTerm(connectedSourceList[i], -solver.getInfinity());
+                solver.addConstraint(expr2, ILPSolver.Operator.LESS_EQUAL, 0.0, "");
             }
         }
 
-        // Add constraint: node is connected to target 2
+        // Add constraint: node is connected to target 2 (Equation 10 using equation 12 Paper)
         for(int i = 0; i < nodeList.size(); i++) {
             if(!sinks.contains(i)) {
                 ILPSolverExpression expr1 = solver.createExpression();
@@ -239,18 +250,9 @@ public class WrapperInfrequentBehaviourSolver<T> {
             }
         }
 
-        // Add constraint: node is connected to target 3
-        for(int i = 0; i < nodeList.size(); i++) {
-            if(requiredStatus.contains(nodeList.get(i))) {
-                ILPSolverExpression expr = solver.createExpression();
-                expr.addTerm(connectedTargetList[i], 1.0);
-                solver.addConstraint(expr, ILPSolver.Operator.EQUAL, 1.0, "");
-            }
-        }
-
         // Optimize model
         solver.solve();
-//        System.out.println(solver.printProblem());
+        System.out.println(solver.printProblem());
         ILPSolver.Status status = solver.getStatus();
 
         if (status == ILPSolver.Status.OPTIMAL) {

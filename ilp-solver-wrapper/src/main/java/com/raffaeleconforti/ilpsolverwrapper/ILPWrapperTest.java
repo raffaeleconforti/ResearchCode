@@ -8,7 +8,7 @@ import java.util.Arrays;
 /**
  * Created by Raffaele Conforti (conforti.raffaele@gmail.com) on 4/4/17.
  */
-public class Test {
+public class ILPWrapperTest {
 
     public static void main(String[] args) {
 //        test(new Gurobi_Solver());
