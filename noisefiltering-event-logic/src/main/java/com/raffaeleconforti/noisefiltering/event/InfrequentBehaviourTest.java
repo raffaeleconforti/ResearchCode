@@ -24,34 +24,34 @@ public class InfrequentBehaviourTest {
 //        test(log, true);
 //        test(log, false);
 
-        Node<String> a = new Node<>("A");
-        Node<String> b = new Node<>("B");
-        Node<String> c = new Node<>("C");
-        Node<String> d = new Node<>("D");
-
-        Automaton<String> automaton = new Automaton<>();
-        automaton.addNode(a, 4);
-        automaton.addNode(b, 8);
-        automaton.addNode(c, 2);
-        automaton.addNode(d, 4);
-        automaton.addEdge(a, b, 4);
-        automaton.addEdge(b, b, 3);
-        automaton.addEdge(b, c, 2);
-        automaton.addEdge(b, d, 3);
-        automaton.addEdge(c, b, 1);
-        automaton.addEdge(c, d, 1);
-
 //        Node<String> a = new Node<>("A");
 //        Node<String> b = new Node<>("B");
 //        Node<String> c = new Node<>("C");
+//        Node<String> d = new Node<>("D");
 //
 //        Automaton<String> automaton = new Automaton<>();
 //        automaton.addNode(a, 4);
-//        automaton.addNode(b, 4);
-//        automaton.addNode(c, 3);
+//        automaton.addNode(b, 8);
+//        automaton.addNode(c, 2);
+//        automaton.addNode(d, 4);
 //        automaton.addEdge(a, b, 4);
+//        automaton.addEdge(b, b, 3);
 //        automaton.addEdge(b, c, 2);
-//        automaton.addEdge(a, c, 1);
+//        automaton.addEdge(b, d, 3);
+//        automaton.addEdge(c, b, 1);
+//        automaton.addEdge(c, d, 1);
+
+        Node<String> a = new Node<>("A");
+        Node<String> b = new Node<>("B");
+        Node<String> c = new Node<>("C");
+
+        Automaton<String> automaton = new Automaton<>();
+        automaton.addNode(a, 4);
+        automaton.addNode(b, 4);
+        automaton.addNode(c, 3);
+        automaton.addEdge(a, b, 4);
+        automaton.addEdge(b, c, 2);
+        automaton.addEdge(a, c, 1);
 
         automaton.getAutomatonStart();
         automaton.getAutomatonEnd();
@@ -59,6 +59,7 @@ public class InfrequentBehaviourTest {
 
         WrapperInfrequentBehaviourSolver wrapperInfrequentBehaviourSolver = new WrapperInfrequentBehaviourSolver(automaton, automaton.getEdges(), automaton.getNodes());
         Set<Edge<String>> infrequent = wrapperInfrequentBehaviourSolver.identifyRemovableEdges(new Gurobi_Solver());
+        System.out.println(infrequent);
         infrequent = wrapperInfrequentBehaviourSolver.identifyRemovableEdges(new LPSolve_Solver());
         System.out.println(infrequent);
     }
