@@ -156,7 +156,7 @@ public class WrapperInfrequentBehaviourSolver<T> {
 
         // Add constraint: node is connected from source 1 (Equation 7 using equation 11 Paper)
         for(int i = 0; i < nodeList.size(); i++) {
-//            if(!sources.contains(i)) {
+            if(!sources.contains(i)) {
                 for (int j = 0; j < nodeList.size(); j++) {
                     if (i != j && subconnectedSourceList[i][j] != null) {
                         for (int k = 0; k < edgeList.size(); k++) {
@@ -176,12 +176,12 @@ public class WrapperInfrequentBehaviourSolver<T> {
                         }
                     }
                 }
-//            }
+            }
         }
 
         // Add constraint: node is connected to target 1 (Equation 8 using equation 11 Paper)
         for(int i = 0; i < nodeList.size(); i++) {
-//            if(!sinks.contains(i)) {
+            if(!sinks.contains(i)) {
                 for (int j = 0; j < nodeList.size(); j++) {
                     if (j != i && subconnectedTargetList[i][j] != null) {
                         for (int k = 0; k < edgeList.size(); k++) {
@@ -201,7 +201,7 @@ public class WrapperInfrequentBehaviourSolver<T> {
                         }
                     }
                 }
-//            }
+            }
         }
 
         // Add constraint: node is connected from source 2 (Equation 9 using equation 12 Paper)
@@ -252,7 +252,7 @@ public class WrapperInfrequentBehaviourSolver<T> {
 
         // Optimize model
         solver.solve();
-        System.out.println(solver.printProblem());
+//        System.out.println(solver.printProblem());
         ILPSolver.Status status = solver.getStatus();
 
         if (status == ILPSolver.Status.OPTIMAL) {

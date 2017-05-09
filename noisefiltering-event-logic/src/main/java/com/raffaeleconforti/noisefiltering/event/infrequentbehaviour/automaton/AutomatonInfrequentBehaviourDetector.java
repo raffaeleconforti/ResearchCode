@@ -54,7 +54,7 @@ public class AutomatonInfrequentBehaviourDetector {
         }else {
             ilp_solver = new LPSolve_Solver();
         }
-        solver = new WrapperInfrequentBehaviourSolver<>(automaton, automaton.getEdges(), requiredStates);
+        solver = new WrapperInfrequentBehaviourSolver<>(automaton, infrequent, requiredStates);
         removable = solver.identifyRemovableEdges(ilp_solver);
 
         for(Edge<String> edge : removable) {
