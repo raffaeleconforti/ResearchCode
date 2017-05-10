@@ -1,6 +1,7 @@
 package com.raffaeleconforti.wrapper.impl;
 
 import au.edu.qut.processmining.miners.splitminer.SplitMiner;
+import au.edu.qut.processmining.miners.splitminer.ui.dfgp.DFGPUIResult;
 import au.edu.qut.processmining.miners.splitminer.ui.miner.SplitMinerUIResult;
 import au.edu.qut.promplugins.SplitMinerPlugin;
 import com.raffaeleconforti.context.FakePluginContext;
@@ -67,7 +68,7 @@ public class SplitMinerWrapper implements MiningAlgorithm {
 
         if(context instanceof FakePluginContext) {
             SplitMiner yam = new SplitMiner();
-            output = yam.mineBPMNModel(log, 1.0, 0.05, true, SplitMinerUIResult.StructuringTime.NONE);
+            output = yam.mineBPMNModel(log, 1.0, 0.05, DFGPUIResult.FilterType.GUB, true, SplitMinerUIResult.StructuringTime.NONE);
 //            export(output, "log_"+System.currentTimeMillis());
         } else {
             output = SplitMinerPlugin.discoverBPMNModelWithSplitMiner(context, log);
