@@ -41,6 +41,7 @@ public class AutomatonInfrequentBehaviourRemover {
         double originalEvents = countEvents(log);
 
         XLog result = filter(context, xEventClassifier, log, automaton, excludeTraces);
+//        XLog result = filter(context, xEventClassifier, log, automaton, false);
         double resultEvents = countEvents(result);
 
         if(exception) {
