@@ -23,11 +23,13 @@ public class WrapperInfrequentBehaviourSolver<T> {
     private final Automaton<T> automaton;
     private final Set<Edge<T>> infrequentEdges;
     private final Set<Node<T>> requiredStatus;
+    private final boolean useArcsFrequency;
 
-    public WrapperInfrequentBehaviourSolver(Automaton<T> automaton, Set<Edge<T>> infrequentEdges, Set<Node<T>> requiredStates) {
+    public WrapperInfrequentBehaviourSolver(Automaton<T> automaton, Set<Edge<T>> infrequentEdges, Set<Node<T>> requiredStates, boolean useArcsFrequency) {
         this.automaton = automaton;
         this.infrequentEdges = infrequentEdges;
         this.requiredStatus = requiredStates;
+        this.useArcsFrequency = useArcsFrequency;
     }
 
     public Set<Edge<T>> identifyRemovableEdges(ILPSolver solver) {
@@ -49,34 +51,6 @@ public class WrapperInfrequentBehaviourSolver<T> {
             connectedSourceList[i] = solver.addVariable(0.0, 1.0, 1.0, ILPSolver.VariableType.BINARY, "S_"+nodeList.get(i).toString().replaceAll("-","_").replaceAll(" ",""));
             connectedTargetList[i] = solver.addVariable(0.0, 1.0, 1.0, ILPSolver.VariableType.BINARY, "T_"+nodeList.get(i).toString().replaceAll("-","_").replaceAll(" ",""));
         }
-
-//        ILPSolverVariable[][] subconnectedSourceList = new ILPSolverVariable[nodeList.size()][nodeList.size()];
-//        ILPSolverVariable[][] subconnectedTargetList = new ILPSolverVariable[nodeList.size()][nodeList.size()];
-//        for(int i = 0; i < nodeList.size(); i++) {
-//            Set<Integer> connectedFrom = new UnifiedSet<Integer>();
-//            Set<Integer> connectedTo = new UnifiedSet<Integer>();
-//            for(int j = 0; j < nodeList.size(); j++) {
-//                if(i != j) {
-//                    for (Edge<T> edge : edgeList) {
-//                        if (edge.getTarget().equals(nodeList.get(i)) && edge.getSource().equals(nodeList.get(j))) {
-//                            connectedFrom.add(j);
-//                        }
-//                        if (edge.getSource().equals(nodeList.get(i)) && edge.getTarget().equals(nodeList.get(j))) {
-//                            connectedTo.add(j);
-//                        }
-//                    }
-//                }
-//            }
-//
-//            for(int j = 0; j < nodeList.size(); j++) {
-//                if(connectedFrom.contains(j)) {
-//                    subconnectedSourceList[i][j] = solver.addVariable(0.0, solver.getInfinity(), 0.0, ILPSolver.VariableType.INTEGER, "S_"+nodeList.get(i).toString()+"T_"+nodeList.get(j).toString().replaceAll("-","_").replaceAll(" ",""));
-//                }
-//                if(connectedTo.contains(j)) {
-//                    subconnectedTargetList[i][j] = solver.addVariable(0.0, solver.getInfinity(), 0.0, ILPSolver.VariableType.INTEGER, "T_"+nodeList.get(i).toString()+"S_"+nodeList.get(j).toString().replaceAll("-","_").replaceAll(" ",""));
-//                }
-//            }
-//        }
 
         ILPSolverVariable[][] subconnectedSourceList = new ILPSolverVariable[nodeList.size()][nodeList.size()];
         ILPSolverVariable[][] subconnectedTargetList = new ILPSolverVariable[nodeList.size()][nodeList.size()];
@@ -101,7 +75,11 @@ public class WrapperInfrequentBehaviourSolver<T> {
         // Set objective: summation of all edges (Equation 1 Paper)
         ILPSolverExpression obj = solver.createExpression();
         for(int i = 0; i < edges.length; i++) {
-            obj.addTerm(edges[i],1.0);
+            if(!useArcsFrequency) {
+                obj.addTerm(edges[i], 1.0);
+            }else {
+                obj.addTerm(edges[i], 1 - edgeList.get(i).getFrequency());
+            }
         }
         solver.setObjectiveFunction(obj);
 

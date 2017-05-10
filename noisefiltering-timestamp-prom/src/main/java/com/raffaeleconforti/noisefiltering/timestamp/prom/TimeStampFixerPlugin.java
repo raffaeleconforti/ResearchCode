@@ -29,8 +29,17 @@ public class TimeStampFixerPlugin {
         int limitExtensive = 11;
         TimeStampUI timeStampUI = new TimeStampUI();
         int approach = timeStampUI.showGUI(context);
-        boolean useGurobi = (approach == PermutationTechnique.ILP_GUROBI) ? true : false;
-        timeStampFixerSmartExecutor = new TimeStampFixerSmartExecutor(useGurobi);
+        boolean useGurobi = false;
+        boolean useArcsFrequency = false;
+        if(approach == PermutationTechnique.ILP_GUROBI) {
+            useGurobi = true;
+        }else if(approach == PermutationTechnique.ILP_GUROBI_ARCS) {
+            useGurobi = true;
+            useArcsFrequency = true;
+        }else if(approach == PermutationTechnique.ILP_LPSOLVE_ARCS) {
+            useArcsFrequency = true;
+        }
+        timeStampFixerSmartExecutor = new TimeStampFixerSmartExecutor(useGurobi, useArcsFrequency);
         return timeStampFixerSmartExecutor.filterLog(log, limitExtensive, approach);
     }
 

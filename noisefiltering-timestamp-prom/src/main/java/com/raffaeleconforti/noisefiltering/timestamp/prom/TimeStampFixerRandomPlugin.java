@@ -16,7 +16,7 @@ import org.processmining.framework.plugin.annotations.PluginVariant;
         returnTypes = {XLog.class})
 public class TimeStampFixerRandomPlugin {
 
-    private final TimeStampFixerRandomExecutor timeStampRandomFixerExecutor = new TimeStampFixerRandomExecutor(false);
+    private final TimeStampFixerRandomExecutor timeStampRandomFixerExecutor = new TimeStampFixerRandomExecutor(false, false);
 
     @UITopiaVariant(affiliation = UITopiaVariant.EHV,
             author = "Raffaele Conforti",

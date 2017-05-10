@@ -25,13 +25,13 @@ public class LogicFormulaGenerator<T> {
         automaton.addNode(s4);
 
         Edge<String> a = new Edge<String>(s1, s2);
-        a.setInfrequent(true);
+//        a.setInfrequent(true);
         Edge<String> b = new Edge<String>(s2, s4);
-        b.setInfrequent(true);
+//        b.setInfrequent(true);
         Edge<String> c = new Edge<String>(s3, s4);
-        c.setInfrequent(true);
+//        c.setInfrequent(true);
         Edge<String> d = new Edge<String>(s3, s2);
-        d.setInfrequent(true);
+//        d.setInfrequent(true);
         Edge<String> e = new Edge<String>(s1, s3);
         Edge<String> f = new Edge<String>(s2, s3);
 //

@@ -34,6 +34,7 @@ public class InfrequentBehaviourFilter {
     private final XEventClassifier xEventClassifier;
     private final AutomatonFactory automatonFactory;
     private final boolean useGurobi;
+    private final boolean useArcsFrequency;
 
     private Percentile percentileC = new Percentile();
     private double finalThreshold = 0.0;
@@ -44,13 +45,14 @@ public class InfrequentBehaviourFilter {
     private AutomatonInfrequentBehaviourDetector automatonInfrequentBehaviourDetector = new AutomatonInfrequentBehaviourDetector(AutomatonInfrequentBehaviourDetector.MAX);
 
     public InfrequentBehaviourFilter(XEventClassifier xEventClassifier) {
-        this(xEventClassifier, false);
+        this(xEventClassifier, false, false);
     }
 
-    public InfrequentBehaviourFilter(XEventClassifier xEventClassifier, boolean useGurobi) {
+    public InfrequentBehaviourFilter(XEventClassifier xEventClassifier, boolean useGurobi, boolean useArcsFrequency) {
         this.xEventClassifier = xEventClassifier;
         automatonFactory = new AutomatonFactory(xEventClassifier);
         this.useGurobi = useGurobi;
+        this.useArcsFrequency = useArcsFrequency;
     }
 
     public double[] discoverArcs(Automaton<String> automatonOriginal, double finalUpperBound) {
@@ -195,7 +197,7 @@ public class InfrequentBehaviourFilter {
 
     public Automaton<String> getFilteredAutomaton(Automaton<String> automatonOriginal, Set<Node<String>> requiredStates, double threshold) {
         Automaton<String> automaton = (Automaton<String>) automatonOriginal.clone();
-        return automatonInfrequentBehaviourDetector.removeInfrequentBehaviour(automaton, requiredStates, threshold, useGurobi);
+        return automatonInfrequentBehaviourDetector.removeInfrequentBehaviour(automaton, requiredStates, threshold, useGurobi, useArcsFrequency);
     }
 
     private double findBestUpperbound(PluginContext context, XLog log, Set<Node<String>> requiredStates, double upperbound, double oldUpperbound, boolean excludeTraces) {

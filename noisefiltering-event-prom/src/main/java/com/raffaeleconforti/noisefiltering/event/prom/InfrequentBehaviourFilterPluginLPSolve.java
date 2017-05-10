@@ -51,7 +51,7 @@ public class InfrequentBehaviourFilterPluginLPSolve extends InfrequentBehaviourF
 
         Automaton<String> automatonOriginal = automatonFactory.generate(log);
 
-        InfrequentBehaviourFilter infrequentBehaviourFilter = new InfrequentBehaviourFilter(xEventClassifier);
+        InfrequentBehaviourFilter infrequentBehaviourFilter = new InfrequentBehaviourFilter(xEventClassifier, false, false);
         double[] arcs = infrequentBehaviourFilter.discoverArcs(automatonOriginal, 1.0);
 
         NoiseFilterUI noiseUI = new NoiseFilterUI();

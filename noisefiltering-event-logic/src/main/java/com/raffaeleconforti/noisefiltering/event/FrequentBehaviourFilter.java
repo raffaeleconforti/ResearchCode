@@ -44,13 +44,15 @@ public class FrequentBehaviourFilter {
     private final AutomatonFactory automatonFactory = new AutomatonFactory(xEventClassifier);
     private final AutomatonFrequentBehaviourDetector automatonFrequentBehaviourDetector = new AutomatonFrequentBehaviourDetector(AutomatonInfrequentBehaviourDetector.MAX);
     private final boolean useGurobi;
+    private final boolean useArcsFrequency;
 
     public FrequentBehaviourFilter() {
-        this(false);
+        this(false, false);
     }
 
-    public FrequentBehaviourFilter(boolean useGurobi) {
+    public FrequentBehaviourFilter(boolean useGurobi, boolean useArcsFrequency) {
         this.useGurobi = useGurobi;
+        this.useArcsFrequency = useArcsFrequency;
     }
 
     public BPMNDiagram generateDiagram(final UIPluginContext context, XLog rawlog) {
@@ -165,7 +167,7 @@ public class FrequentBehaviourFilter {
 
     private Automaton<String> getFilteredAutomaton(Automaton<String> automatonOriginal, Set<Node<String>> requiredStates, double threshold) {
         Automaton<String> automaton = (Automaton<String>) automatonOriginal.clone();
-        return automatonFrequentBehaviourDetector.removeFrequentBehaviour(automaton, requiredStates, threshold, useGurobi);
+        return automatonFrequentBehaviourDetector.removeFrequentBehaviour(automaton, requiredStates, threshold, useGurobi, useArcsFrequency);
     }
 
 }

@@ -32,7 +32,7 @@ public class TimestampsAssigner {
     private final EventDurationDistributionCalculatorNoiseImpl eventDurationDistributionCalculator;
     private final SimpleDateFormat dateFormatSeconds;
 
-    public TimestampsAssigner(XLog log, XEventClassifier xEventClassifier, SimpleDateFormat dateFormatSeconds, Set<String> duplicatedTraces, Map<String, Set<String>> duplicatedEvents, boolean useGurobi) {
+    public TimestampsAssigner(XLog log, XEventClassifier xEventClassifier, SimpleDateFormat dateFormatSeconds, Set<String> duplicatedTraces, Map<String, Set<String>> duplicatedEvents, boolean useGurobi, boolean useArcsFrequency) {
         this.log = log;
         this.nameExtractor = new NameExtractor(xEventClassifier);
         this.automatonFactory = new AutomatonFactory(xEventClassifier);
@@ -48,7 +48,7 @@ public class TimestampsAssigner {
 
             double[] arcs = infrequentBehaviourFilter.discoverArcs(automatonOriginal, 1.0);
 
-            Automaton<String> automatonClean = automatonInfrequentBehaviourDetector.removeInfrequentBehaviour(automatonOriginal, automatonOriginal.getNodes(), infrequentBehaviourFilter.discoverThreshold(arcs, 0.125), useGurobi);
+            Automaton<String> automatonClean = automatonInfrequentBehaviourDetector.removeInfrequentBehaviour(automatonOriginal, automatonOriginal.getNodes(), infrequentBehaviourFilter.discoverThreshold(arcs, 0.125), useGurobi, useArcsFrequency);
 
             eventDurationDistributionCalculator.filter(automatonClean);
         }

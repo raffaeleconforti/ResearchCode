@@ -20,10 +20,10 @@ import java.util.Set;
 public class InfrequentBehaviourTest {
 
     public static void main(String[] args) throws Exception {
-        XLog log = LogImporter.importFromFile(new XFactoryNaiveImpl(), "/Volumes/Data/SharedFolder/Logs/Sepsis Cases.xes.gz");
+        XLog log = LogImporter.importFromFile(new XFactoryNaiveImpl(), "/Volumes/Data/SharedFolder/Logs/ArtificialLess.xes.gz");
 
-        XLog filtered1 = test(log, true);
-        LogImporter.exportToFile("/Volumes/Data/SharedFolder/Logs/Sepsis Cases1.xes.gz", filtered1);
+        XLog filtered1 = test(log, true, false);
+        LogImporter.exportToFile("/Volumes/Data/SharedFolder/Logs/ArtificialLess1.xes.gz", filtered1);
 //        test(log, false);
 
 //        Node<String> a = new Node<>("A");
@@ -66,9 +66,9 @@ public class InfrequentBehaviourTest {
 //        System.out.println(infrequent);
     }
 
-    private static XLog test(XLog log, boolean useGurobi) {
+    private static XLog test(XLog log, boolean useGurobi, boolean useArcsFrequency) {
         System.out.println(count(log));
-        InfrequentBehaviourFilter filter = new InfrequentBehaviourFilter(new XEventNameClassifier(), useGurobi);
+        InfrequentBehaviourFilter filter = new InfrequentBehaviourFilter(new XEventNameClassifier(), useGurobi, useArcsFrequency);
         XLog filtered = filter.filterLog(log);
         System.out.println(count(filtered));
         return filtered;

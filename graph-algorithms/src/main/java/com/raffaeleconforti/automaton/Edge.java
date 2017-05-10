@@ -12,11 +12,20 @@ public class Edge<T> {
     private Node<T> source;
     private Node<T> target;
     private boolean infrequent = false;
+    private Double frequency = null;
 
     public Edge(Node<T> source, Node<T> target) {
         id = count.getAndIncrement();
         this.source = source;
         this.target = target;
+    }
+
+    public void setFrequency(double frequency) {
+        this.frequency = frequency;
+    }
+
+    public double getFrequency() {
+        return frequency;
     }
 
     public void setInfrequent(boolean infrequent) {

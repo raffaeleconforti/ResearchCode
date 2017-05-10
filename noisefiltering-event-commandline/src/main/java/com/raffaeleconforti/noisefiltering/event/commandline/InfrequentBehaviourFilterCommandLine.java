@@ -72,6 +72,8 @@ public class InfrequentBehaviourFilterCommandLine {
 
         System.out.println("Solve using GUROBI? (commercial ILP Solver)");
         boolean useGurobi = (console.nextLine().toLowerCase().contains("y"))?true:false;
+        System.out.println("Solve using Arcs Frequency?");
+        boolean useArcsFrequency = (console.nextLine().toLowerCase().contains("y"))?true:false;
 
         System.out.println("Input file:");
         String name = console.nextLine();
@@ -83,7 +85,7 @@ public class InfrequentBehaviourFilterCommandLine {
         XFactory factory = new XFactoryNaiveImpl();
         XLog log = LogImporter.importFromFile(factory, name);
 
-        InfrequentBehaviourFilterCommandLine ibfcl = new InfrequentBehaviourFilterCommandLine(useGurobi);
+        InfrequentBehaviourFilterCommandLine ibfcl = new InfrequentBehaviourFilterCommandLine(useGurobi, useArcsFrequency);
         XLog filteredlog = ibfcl.filterLog(log);
 
         System.out.println("Output file: ");
@@ -142,8 +144,8 @@ public class InfrequentBehaviourFilterCommandLine {
         }
     }
 
-    public InfrequentBehaviourFilterCommandLine(boolean useGurobi) {
-         infrequentBehaviourFilter = new InfrequentBehaviourFilter(xEventClassifier, useGurobi);
+    public InfrequentBehaviourFilterCommandLine(boolean useGurobi, boolean useArcsFrequency) {
+         infrequentBehaviourFilter = new InfrequentBehaviourFilter(xEventClassifier, useGurobi, useArcsFrequency);
     }
 
     public XLog filterLog(XLog rawlog) {

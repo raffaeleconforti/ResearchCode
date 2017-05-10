@@ -18,7 +18,7 @@ import org.processmining.framework.plugin.annotations.PluginVariant;
         returnTypes = {XLog.class})
 public class TimeStampFixerDummyPlugin {
 
-    private TimeStampFixerDummyExecutor timeStampFixerExecutor = new TimeStampFixerDummyExecutor(false);;
+    private TimeStampFixerDummyExecutor timeStampFixerExecutor = new TimeStampFixerDummyExecutor(false, false);
 
     @UITopiaVariant(affiliation = UITopiaVariant.EHV,
             author = "Raffaele Conforti",

@@ -74,7 +74,7 @@ public class InfrequentBehaviourFilterPluginGurobi extends InfrequentBehaviourFi
         Automaton<String> automatonOriginal = automatonFactory.generate(log);
 
 
-        InfrequentBehaviourFilter infrequentBehaviourFilter = new InfrequentBehaviourFilter(xEventClassifier, true);
+        InfrequentBehaviourFilter infrequentBehaviourFilter = new InfrequentBehaviourFilter(xEventClassifier, true, false);
         double[] arcs = infrequentBehaviourFilter.discoverArcs(automatonOriginal, 1.0);
 
         NoiseFilterUI noiseUI = new NoiseFilterUI();

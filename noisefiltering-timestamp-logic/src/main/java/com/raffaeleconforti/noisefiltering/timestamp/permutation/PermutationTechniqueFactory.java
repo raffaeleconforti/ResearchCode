@@ -24,6 +24,10 @@ public class PermutationTechniqueFactory {
             return new ILPApproach(events, eventDistributionCalculator, start, end, new Gurobi_Solver());
         }else if(approach == PermutationTechnique.ILP_LPSOLVE) {
             return new ILPApproach(events, eventDistributionCalculator, start, end, new LPSolve_Solver());
+        }else if(approach == PermutationTechnique.ILP_GUROBI_ARCS) {
+            return new ILPApproach(events, eventDistributionCalculator, start, end, new Gurobi_Solver());
+        }else if(approach == PermutationTechnique.ILP_LPSOLVE_ARCS) {
+            return new ILPApproach(events, eventDistributionCalculator, start, end, new LPSolve_Solver());
         }
         return null;
     }
@@ -37,6 +41,10 @@ public class PermutationTechniqueFactory {
             return "ILP_GUROBI";
         }else if(approach == PermutationTechnique.ILP_LPSOLVE) {
             return "ILP_LPSOLVE";
+        }else if(approach == PermutationTechnique.ILP_GUROBI_ARCS) {
+            return "ILP_GUROBI_ARCS";
+        }else if(approach == PermutationTechnique.ILP_LPSOLVE_ARCS) {
+            return "ILP_LPSOLVE_ARCS";
         }
         return null;
     }

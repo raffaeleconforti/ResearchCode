@@ -21,13 +21,15 @@ public class TimeStampFixerCommandline {
         Scanner console = new Scanner(System.in);
         System.out.println("Solve using GUROBI? (commercial ILP Solver)");
         boolean useGurobi = (console.nextLine().toLowerCase().contains("y"))?true:false;
+        System.out.println("Solve using Arcs Frequency? ");
+        boolean useArcsFrequency = (console.nextLine().toLowerCase().contains("y"))?true:false;
 
         System.out.println("Input file:");
         String name = console.nextLine();
         XFactory factory = new XFactoryNaiveImpl();
         XLog log = LogImporter.importFromFile(factory, name);
 
-        TimeStampFixerCommandline timeStampFixerCommandline = new TimeStampFixerCommandline(useGurobi);
+        TimeStampFixerCommandline timeStampFixerCommandline = new TimeStampFixerCommandline(useGurobi, useArcsFrequency);
         XLog filteredlog = timeStampFixerCommandline.filterLog(log);
 
         System.out.println("Output file: ");
@@ -37,8 +39,8 @@ public class TimeStampFixerCommandline {
 
     }
 
-    public TimeStampFixerCommandline(boolean useGurobi) {
-        timeStampFixerSmartExecutor = new TimeStampFixerSmartExecutor(useGurobi);
+    public TimeStampFixerCommandline(boolean useGurobi, boolean useArcsFrequency) {
+        timeStampFixerSmartExecutor = new TimeStampFixerSmartExecutor(useGurobi, useArcsFrequency);
     }
 
     public XLog filterLog(XLog rawlog) {

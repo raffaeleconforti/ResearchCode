@@ -37,7 +37,7 @@ public class AutomatonInfrequentBehaviourDetector {
         this.approach = approach;
     }
 
-    public Automaton removeInfrequentBehaviour(Automaton<String> automaton, Set<Node<String>> requiredStates, double threshold, boolean useGurobi) {
+    public Automaton removeInfrequentBehaviour(Automaton<String> automaton, Set<Node<String>> requiredStates, double threshold, boolean useGurobi, boolean useArcsFrequency) {
         Set<Edge<String>> removable;
 
         automaton.getAutomatonStart();
@@ -54,7 +54,7 @@ public class AutomatonInfrequentBehaviourDetector {
         }else {
             ilp_solver = new LPSolve_Solver();
         }
-        solver = new WrapperInfrequentBehaviourSolver<>(automaton, infrequent, requiredStates);
+        solver = new WrapperInfrequentBehaviourSolver<>(automaton, infrequent, requiredStates, useArcsFrequency);
         removable = solver.identifyRemovableEdges(ilp_solver);
 
         for(Edge<String> edge : removable) {
@@ -76,6 +76,7 @@ public class AutomatonInfrequentBehaviourDetector {
 
     public boolean isInfrequent(Automaton<String> automaton, Edge<String> edge, double threshold) {
         double value = getFrequency(automaton, edge);
+        edge.setFrequency(value);
         return value < threshold;
     }
 

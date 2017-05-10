@@ -28,7 +28,9 @@ public class TimeStampResult extends ProMPropertiesPanel {
         UpdateDataListener udl = new UpdateDataListener();
         comboBox = SlickerFactory.instance().createComboBox(new Object[] {
                 PermutationTechniqueFactory.getPermutationTechniqueName(PermutationTechnique.ILP_GUROBI),
+                PermutationTechniqueFactory.getPermutationTechniqueName(PermutationTechnique.ILP_GUROBI_ARCS),
                 PermutationTechniqueFactory.getPermutationTechniqueName(PermutationTechnique.ILP_LPSOLVE),
+                PermutationTechniqueFactory.getPermutationTechniqueName(PermutationTechnique.ILP_LPSOLVE_ARCS),
                 PermutationTechniqueFactory.getPermutationTechniqueName(PermutationTechnique.HEURISTICS_BEST),
                 PermutationTechniqueFactory.getPermutationTechniqueName(PermutationTechnique.HEURISTICS_SET)
         });
