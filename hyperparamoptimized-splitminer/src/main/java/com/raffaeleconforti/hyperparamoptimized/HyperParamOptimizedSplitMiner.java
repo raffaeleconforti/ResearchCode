@@ -43,6 +43,8 @@ import java.util.Map;
         returnTypes = {PetrinetWithMarking.class})
 public class HyperParamOptimizedSplitMiner implements MiningAlgorithm {
 
+    public enum BestOn {FIT, PREC, FSCORE}
+
     static double[] pt_values={0.05, 0.10, 0.25, 0.50, 0.75, 1.00};
 
     @UITopiaVariant(affiliation = UITopiaVariant.EHV,
@@ -56,8 +58,15 @@ public class HyperParamOptimizedSplitMiner implements MiningAlgorithm {
 
     @Override
     public PetrinetWithMarking minePetrinet(UIPluginContext context, XLog log, boolean structure) {
+        return discoverBestOn(context, log, structure, HyperParamOptimizedSplitMiner.BestOn.PREC);
+    }
+
+    public PetrinetWithMarking discoverBestOn(UIPluginContext context, XLog log, boolean structure, BestOn metric) {
         Map<Double, PetrinetWithMarking> models = new HashMap<>();
-        Map<Double, Double> thresholds = new HashMap<>();
+        Map<Double, Double> fitness = new HashMap<>();
+        Map<Double, Double> precision = new HashMap<>();
+        Map<Double, Double> fscore = new HashMap<>();
+
         SplitMiner yam = new SplitMiner();
         BPMNDiagram bpmn;
         PetrinetWithMarking petrinet;
@@ -65,30 +74,58 @@ public class HyperParamOptimizedSplitMiner implements MiningAlgorithm {
         AlignmentBasedFitness fitnessCalculator = new AlignmentBasedFitness();
         AlignmentBasedPrecision precisionCalculator = new AlignmentBasedPrecision();
         XEventNameClassifier eventNameClassifier = new XEventNameClassifier();
-        Double fitness;
-        Double precision;
-        Double fscore;
-        Double maxScore;
+
+        Double fit;
+        Double prec;
+        Double score;
+
+        Double bestValue;
+        Double bestThreshold;
 
         for (Double p_threshold : pt_values) {
-            bpmn = yam.mineBPMNModel(log, 1.0, p_threshold, DFGPUIResult.FilterType.STD, true, SplitMinerUIResult.StructuringTime.NONE);
-            petrinet = convertToPetrinet(context, bpmn);
-            fitness = fitnessCalculator.computeMeasurement(context, eventNameClassifier, petrinet, this, log).getValue();
-            precision = precisionCalculator.computeMeasurement(context, eventNameClassifier, petrinet, this, log).getValue();
-            System.out.println("DEBUG - fitness @ " + p_threshold + " : " + fitness);
-            System.out.println("DEBUG - precision @ " + p_threshold + " : " + precision);
+            try {
+                bpmn = yam.mineBPMNModel(log, 1.0, p_threshold, DFGPUIResult.FilterType.WTH, true, SplitMinerUIResult.StructuringTime.NONE);
+                petrinet = convertToPetrinet(context, bpmn);
+                models.put(p_threshold, petrinet);
 
-            fscore = (fitness * precision * 2) / (fitness + precision);
-            if( fscore.isNaN() ) fscore = 0.0;
+                fit = fitnessCalculator.computeMeasurement(context, eventNameClassifier, petrinet, this, log).getValue();
+                prec = precisionCalculator.computeMeasurement(context, eventNameClassifier, petrinet, this, log).getValue();
 
-            models.put(fscore, petrinet);
-            thresholds.put(fscore, p_threshold);
-            System.out.println("DEBUG - f-score @ " + p_threshold + " : " + fscore);
+                if( fit.isNaN() ) fit = 0.0;
+                if( prec.isNaN() ) prec = 0.0;
+                score = (fit*prec*2)/(fit+prec);
+
+                fitness.put(fit, p_threshold);
+                precision.put(prec, p_threshold);
+                fscore.put(score, p_threshold);
+
+                System.out.println("DEBUG - fitness @ " + p_threshold + " : " + fit);
+                System.out.println("DEBUG - precision @ " + p_threshold + " : " + prec);
+                System.out.println("DEBUG - f-score @ " + p_threshold + " : " + score);
+            } catch (Exception e) {
+                System.out.println("ERROR - splitminer output model broken @ " + p_threshold);
+                fitness.put(0.0, p_threshold);
+                precision.put(0.0, p_threshold);
+                fscore.put(0.0, p_threshold);
+            }
         }
 
-        maxScore = Collections.max(models.keySet());
-        System.out.println("DEBUG - best result @ " + thresholds.get(maxScore));
-        return models.get(maxScore);
+        switch ( metric ) {
+            case FIT:
+                bestValue = Collections.max(fitness.keySet());
+                bestThreshold = fitness.get(bestValue);
+                break;
+            case PREC: bestValue = Collections.max(precision.keySet());
+                bestThreshold = precision.get(bestValue);
+                break;
+            case FSCORE: bestValue = Collections.max(fscore.keySet());
+                bestThreshold = fscore.get(bestValue);
+                break;
+            default: bestThreshold = 0.05;
+        }
+
+        System.out.println("DEBUG - best result @ " + bestThreshold);
+        return models.get(bestThreshold);
     }
 
     private PetrinetWithMarking convertToPetrinet(UIPluginContext context, BPMNDiagram diagram) {
