@@ -101,8 +101,8 @@ public class HyperParamOptimizedSplitMiner implements MiningAlgorithm {
 
                 System.out.println("DEBUG - fitness @ " + p_threshold + " : " + fit);
                 System.out.println("DEBUG - precision @ " + p_threshold + " : " + prec);
-                System.out.println("DEBUG - f-score @ " + p_threshold + " : " + fit);
-            } catch (Throwable e) {
+                System.out.println("DEBUG - f-score @ " + p_threshold + " : " + score);
+            } catch (Exception e) {
                 System.out.println("ERROR - splitminer output model broken @ " + p_threshold);
                 fitness.put(0.0, p_threshold);
                 precision.put(0.0, p_threshold);
