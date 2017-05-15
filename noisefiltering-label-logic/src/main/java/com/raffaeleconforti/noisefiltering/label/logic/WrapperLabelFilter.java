@@ -8,9 +8,14 @@ import com.raffaeleconforti.ilpsolverwrapper.ILPSolver;
 import com.raffaeleconforti.ilpsolverwrapper.ILPSolverExpression;
 import com.raffaeleconforti.ilpsolverwrapper.ILPSolverVariable;
 import com.raffaeleconforti.ilpsolverwrapper.impl.gurobi.Gurobi_Solver;
+import com.raffaeleconforti.log.util.LogCloner;
 import com.raffaeleconforti.log.util.LogImporter;
+import com.raffaeleconforti.log.util.LogModifier;
+import com.raffaeleconforti.log.util.LogOptimizer;
 import org.deckfour.xes.classification.XEventClassifier;
 import org.deckfour.xes.classification.XEventNameClassifier;
+import org.deckfour.xes.extension.std.XConceptExtension;
+import org.deckfour.xes.extension.std.XTimeExtension;
 import org.deckfour.xes.factory.XFactoryNaiveImpl;
 import org.deckfour.xes.model.XEvent;
 import org.deckfour.xes.model.XLog;
@@ -30,13 +35,40 @@ public class WrapperLabelFilter<T> {
     private XEventClassifier classifier = new XEventNameClassifier();
 
     public static void main(String[] args) throws Exception {
-        XLog log = LogImporter.importFromFile(new XFactoryNaiveImpl(), "/Volumes/Data/SharedFolder/Logs/ArtificialLess.xes.gz");
+
+        XLog log = LogImporter.importFromFile(new XFactoryNaiveImpl(), "/Volumes/Data/SharedFolder/Logs/BPI2012.xes.gz");
+        LogModifier logModifier = new LogModifier(new XFactoryNaiveImpl(), XConceptExtension.instance(), XTimeExtension.instance(), new LogOptimizer());
+        log = logModifier.insertArtificialStartAndEndEvent(log);
 
         XEventClassifier classifier = new XEventNameClassifier();
         AutomatonFactory automatonFactory = new AutomatonFactory(classifier);
-        Automaton<String> automaton = automatonFactory.generate(log);
-        WrapperLabelFilter wrapperLabelFilter = new WrapperLabelFilter(automaton, log);
-        Set<Node<String>> nodes = wrapperLabelFilter.identifyRemovableNodes(new Gurobi_Solver());
+
+        boolean removed = true;
+        while (removed) {
+            removed = false;
+            Automaton<String> automaton = automatonFactory.generate(log);
+            WrapperLabelFilter wrapperLabelFilter = new WrapperLabelFilter(automaton, log);
+            Set<Node<String>> nodes = wrapperLabelFilter.identifyRemovableNodes(new Gurobi_Solver());
+
+            for (XTrace trace : log) {
+                Iterator<XEvent> iterator = trace.iterator();
+                while (iterator.hasNext()) {
+                    XEvent event = iterator.next();
+                    String name = classifier.getClassIdentity(event);
+                    for (Node<String> node : nodes) {
+                        if (node.getData().equals(name)) {
+                            iterator.remove();
+                            removed = true;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+        log = logModifier.removeArtificialStartAndEndEvent(log);
+
+        LogImporter.exportToFile("/Volumes/Data/SharedFolder/Logs/BPI2012 (SimpleFiltered)2.xes.gz", log);
     }
 
     public WrapperLabelFilter(Automaton<T> automaton, XLog log) {
@@ -50,6 +82,7 @@ public class WrapperLabelFilter<T> {
 
         for(XTrace trace : log) {
             for(int event_pos = 1; event_pos < trace.size() - 1; event_pos++) {
+//            for(int event_pos = 1; event_pos < trace.size(); event_pos++) {
                 String name_previous = classifier.getClassIdentity(trace.get(event_pos - 1));
                 String name_current = classifier.getClassIdentity(trace.get(event_pos));
                 String name_next = classifier.getClassIdentity(trace.get(event_pos + 1));
@@ -69,23 +102,39 @@ public class WrapperLabelFilter<T> {
                     }
                 }
 
+                Double val;
+                if((val = benefits.get(node_current)) == null) {
+                    val = 0.0;
+                    benefits.put(node_current, val);
+                }
+
+                double found = 0;
                 for(Edge<T> edge : automaton.getEdges()) {
-                    Double val;
                     if(edge.getSource().equals(node_previous) && edge.getTarget().equals(node_current)) {
-                        if((val = benefits.get(node_current)) == null) {
-                            val = 0.0;
-                        }
-                        val++;
-                        benefits.put(node_current, val);
+                        found += automaton.getEdgeFrequency(edge);
                     }
                     if(edge.getSource().equals(node_current) && edge.getTarget().equals(node_next)) {
-                        if((val = benefits.get(node_current)) == null) {
-                            val = 0.0;
-                        }
-                        val++;
-                        benefits.put(node_current, val);
+                        found = automaton.getEdgeFrequency(edge);
                     }
                 }
+                if(found > 0) {
+                    val = benefits.get(node_current);
+                    val += found;
+                    benefits.put(node_current, val);
+                }
+
+//                for(Edge<T> edge : automaton.getEdges()) {
+//                    if(edge.getSource().equals(node_previous) && edge.getTarget().equals(node_current)) {
+//                        val = benefits.get(node_current);
+//                        val++;
+//                        benefits.put(node_current, val);
+//                    }
+//                    if(edge.getSource().equals(node_current) && edge.getTarget().equals(node_next)) {
+//                        val = benefits.get(node_current);
+//                        val++;
+//                        benefits.put(node_current, val);
+//                    }
+//                }
             }
         }
 
@@ -116,15 +165,23 @@ public class WrapperLabelFilter<T> {
                     }
                 }
 
+                Double val;
+                if((val = drawbacks.get(node_current)) == null) {
+                    val = 0.0;
+                    drawbacks.put(node_current, val);
+                }
+
+                double found = 0.0;
                 for(Edge<T> edge : automaton.getEdges()) {
-                    Double val;
                     if(edge.getSource().equals(node_previous) && edge.getTarget().equals(node_next)) {
-                        if((val = drawbacks.get(node_current)) == null) {
-                            val = 0.0;
-                        }
-                        val++;
-                        drawbacks.put(node_current, val);
+                        found = automaton.getEdgeFrequency(edge);
+                        break;
                     }
+                }
+                if(found > 0) {
+                    val = drawbacks.get(node_current);
+                    val += found;
+                    drawbacks.put(node_current, val);
                 }
             }
         }
@@ -159,10 +216,13 @@ public class WrapperLabelFilter<T> {
         // Set objective: summation of all edges (Equation 1 Paper)
         ILPSolverExpression obj = solver.createExpression();
         for(int i = 0; i < nodes.length; i++) {
-            obj.addTerm(nodes[i], benefits.get(nodeList.get(i)));
-            obj.addTerm(negNodes[i], drawbacks.get(nodeList.get(i)));
+            if(benefits.containsKey(nodeList.get(i))) {
+                obj.addTerm(nodes[i], benefits.get(nodeList.get(i)));
+                obj.addTerm(negNodes[i], drawbacks.get(nodeList.get(i)));
+            }
         }
         solver.setObjectiveFunction(obj);
+        solver.setMaximize();
 
         for(int k = 0; k < edgeList.size(); k++) {
             for(int i = 0; i < nodeList.size(); i++) {
@@ -186,6 +246,21 @@ public class WrapperLabelFilter<T> {
             expr.addTerm(nodes[i], 1.0);
             expr.addTerm(negNodes[i], 1.0);
             solver.addConstraint(expr, ILPSolver.Operator.EQUAL, 1.0, "");
+        }
+
+        for(int i = 0; i < nodeList.size(); i++) {
+            int input = 0;
+            int output = 0;
+            for(int k = 0; k < edgeList.size(); k++) {
+                if(edgeList.get(k).getSource().equals(nodeList.get(i))) output++;
+                if(edgeList.get(k).getTarget().equals(nodeList.get(i))) input++;
+            }
+
+            if(input == 1 && output == 1 && nodeList.get(i).getFrequency() > 1) {
+                ILPSolverExpression expr = solver.createExpression();
+                expr.addTerm(nodes[i], 1.0);
+                solver.addConstraint(expr, ILPSolver.Operator.EQUAL, 1.0, "");
+            }
         }
 
         // Optimize model
