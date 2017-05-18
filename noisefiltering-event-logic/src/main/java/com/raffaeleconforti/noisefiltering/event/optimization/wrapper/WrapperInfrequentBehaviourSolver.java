@@ -230,7 +230,7 @@ public class WrapperInfrequentBehaviourSolver<T> {
 
         // Optimize model
         solver.solve();
-//        System.out.println(solver.printProblem());
+        System.out.println(solver.printProblem());
         ILPSolver.Status status = solver.getStatus();
 
         if (status == ILPSolver.Status.OPTIMAL) {

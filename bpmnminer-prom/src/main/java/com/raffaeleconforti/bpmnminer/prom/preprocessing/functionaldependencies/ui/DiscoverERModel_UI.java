@@ -121,6 +121,7 @@ public class DiscoverERModel_UI {
         }
 
         // and initialize conceptual model with entities
+        discoverERmodel.setPrimaryKeysEntityName(primaryKeys_entityName);
         ConceptualModel concModel = discoverERmodel.createConceptualModel(group, data);
 
 		/*

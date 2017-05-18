@@ -22,7 +22,7 @@ public class InfrequentBehaviourTest {
     public static void main(String[] args) throws Exception {
         XLog log = LogImporter.importFromFile(new XFactoryNaiveImpl(), "/Volumes/Data/SharedFolder/Logs/ArtificialLess.xes.gz");
 
-        XLog filtered1 = test(log, true, false);
+        XLog filtered1 = test(log, false, false);
         LogImporter.exportToFile("/Volumes/Data/SharedFolder/Logs/ArtificialLess1.xes.gz", filtered1);
 //        test(log, false);
 

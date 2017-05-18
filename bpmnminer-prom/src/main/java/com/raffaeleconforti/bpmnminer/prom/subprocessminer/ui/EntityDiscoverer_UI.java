@@ -34,13 +34,26 @@ public class EntityDiscoverer_UI {
 
         // show ui to user to confirm/select artifacts
         List<Entity> groupEntities = null;
+//        if(!all) {
+//            if(topEnt.size() > 0 || nonTopEnt.size() > 0) {
+//                TraceGeneration_UI_subprocesses artGui = new TraceGeneration_UI_subprocesses(topEnt, nonTopEnt, all);
+//                TaskListener.InteractionResult guiResult = context.showWizard("BPMN Miner > Confirm SubProcesses", true, true, artGui);
+//                if (guiResult == TaskListener.InteractionResult.CANCEL) {
+//                    throw new ExecutionCancelledException();
+//                }
+//
+//                // get user selection
+//                groupEntities = artGui.getSelection();
+//            }else {
+//                groupEntities = new ArrayList<Entity>();
+//            }
+//        }
+
+//        groupEntities = entityDiscoverer.setGroupEntities(concModel, groupEntities, all);
+
         if(!all) {
             if(topEnt.size() > 0 || nonTopEnt.size() > 0) {
                 TraceGeneration_UI_subprocesses artGui = new TraceGeneration_UI_subprocesses(topEnt, nonTopEnt, all);
-                TaskListener.InteractionResult guiResult = context.showWizard("BPMN Miner > Confirm SubProcesses", true, true, artGui);
-                if (guiResult == TaskListener.InteractionResult.CANCEL) {
-                    throw new ExecutionCancelledException();
-                }
 
                 // get user selection
                 groupEntities = artGui.getSelection();
