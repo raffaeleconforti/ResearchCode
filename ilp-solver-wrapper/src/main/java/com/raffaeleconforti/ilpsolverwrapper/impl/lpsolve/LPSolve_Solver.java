@@ -21,10 +21,11 @@ import java.util.regex.Pattern;
  */
 public class LPSolve_Solver implements ILPSolver {
 
+    public static final double INFINITY = 1.0E30;//1.0E100D;
 
     private final int MAX_EXP = 20;
     private int max_exp = MAX_EXP;
-    public static final double INFINITY = 1.0E30;//1.0E100D;
+    private boolean alwaysFeasible = false;
 
     private LpSolve lp;
     private List<LPSolve_Variable> variables = new ArrayList<>();
@@ -37,6 +38,11 @@ public class LPSolve_Solver implements ILPSolver {
     @Override
     public double getInfinity() {
         return INFINITY;
+    }
+
+    @Override
+    public void setAlwaysFeasible(boolean isAlwaysFeasible) {
+        alwaysFeasible = isAlwaysFeasible;
     }
 
     private double infinity() {
@@ -183,7 +189,7 @@ public class LPSolve_Solver implements ILPSolver {
 
             lp.setVerbose(LpSolve.IMPORTANT);
             status = lp.solve();
-            if(status == LpSolve.NUMFAILURE || (max_exp != MAX_EXP && status == LpSolve.INFEASIBLE)) {
+            if(status == LpSolve.NUMFAILURE || (status == LpSolve.INFEASIBLE && (max_exp != MAX_EXP || alwaysFeasible))) {
                 System.out.print("NUM FAILURE with infinity = " + infinity());
                 if(max_exp > 0) max_exp--;
                 System.out.println(" using " + infinity());

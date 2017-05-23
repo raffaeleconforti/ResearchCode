@@ -31,6 +31,11 @@ public class Gurobi_Solver implements ILPSolver {
     }
 
     @Override
+    public void setAlwaysFeasible(boolean isAlwaysFeasible) {
+
+    }
+
+    @Override
     public void createModel() {
         try {
             env = new GRBEnv("qp.noisefiltering");

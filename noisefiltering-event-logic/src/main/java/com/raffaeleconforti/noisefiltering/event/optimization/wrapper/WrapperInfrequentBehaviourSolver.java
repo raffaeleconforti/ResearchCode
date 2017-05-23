@@ -38,6 +38,7 @@ public class WrapperInfrequentBehaviourSolver<T> {
         List<Node<T>> nodeList = new ArrayList<Node<T>>(automaton.getNodes());
 
         solver.createModel();
+        solver.setAlwaysFeasible(true);
 
         // Create variables
         ILPSolverVariable[] edges = new ILPSolverVariable[edgeList.size()];
@@ -230,7 +231,7 @@ public class WrapperInfrequentBehaviourSolver<T> {
 
         // Optimize model
         solver.solve();
-        System.out.println(solver.printProblem());
+//        System.out.println(solver.printProblem());
         ILPSolver.Status status = solver.getStatus();
 
         if (status == ILPSolver.Status.OPTIMAL) {

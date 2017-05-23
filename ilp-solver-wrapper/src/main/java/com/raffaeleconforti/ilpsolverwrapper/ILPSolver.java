@@ -10,6 +10,7 @@ public interface ILPSolver {
     enum Status {OPTIMAL, INFEASIBLE, UNBOUNDED, ERROR}
 
     double getInfinity();
+    void setAlwaysFeasible(boolean isAlwaysFeasible);
     void createModel();
     ILPSolverVariable addVariable(double lowerBound, double upperBound, double objectiveCoefficient, VariableType variableType, String variableName);
     ILPSolverExpression createExpression();
