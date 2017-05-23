@@ -1,14 +1,11 @@
-package com.raffaeleconforti.hyperparamoptimized;
+package com.raffaeleconforti.wrappers;
 
 import au.edu.qut.processmining.miners.splitminer.SplitMiner;
 import au.edu.qut.processmining.miners.splitminer.ui.dfgp.DFGPUIResult;
 import au.edu.qut.processmining.miners.splitminer.ui.miner.SplitMinerUIResult;
-import au.edu.qut.promplugins.SplitMinerPlugin;
-import com.raffaeleconforti.context.FakePluginContext;
 import com.raffaeleconforti.conversion.bpmn.BPMNToPetriNetConverter;
 import com.raffaeleconforti.conversion.petrinet.PetriNetToBPMNConverter;
 import com.raffaeleconforti.marking.MarkingDiscoverer;
-import com.raffaeleconforti.measurements.Measure;
 import com.raffaeleconforti.measurements.impl.AlignmentBasedFitness;
 import com.raffaeleconforti.measurements.impl.AlignmentBasedPrecision;
 import com.raffaeleconforti.wrapper.MiningAlgorithm;
@@ -18,7 +15,6 @@ import org.deckfour.xes.model.XLog;
 import org.processmining.contexts.uitopia.UIContext;
 import org.processmining.contexts.uitopia.UIPluginContext;
 import org.processmining.contexts.uitopia.annotations.UITopiaVariant;
-import org.processmining.framework.plugin.DoNotCreateNewInstance;
 import org.processmining.framework.plugin.annotations.Plugin;
 import org.processmining.framework.plugin.annotations.PluginVariant;
 import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
@@ -45,7 +41,12 @@ public class HyperParamOptimizedSplitMiner implements MiningAlgorithm {
 
     public enum BestOn {FIT, PREC, FSCORE}
 
-    static double[] pt_values={0.05, 0.10, 0.25, 0.50, 0.75, 1.00};
+    private static double STEP = 0.1D;
+    private static double MIN = 0.1D;
+    private static double MAX = 1.0D;
+
+//    static double[] pt_values={0.05, 0.10, 0.25, 0.50, 0.75, 1.00};
+//    static double[] pt_values={0.10, 0.40, 0.70, 1.00};
 
     @UITopiaVariant(affiliation = UITopiaVariant.EHV,
             author = "Adriano Augusto",
@@ -58,14 +59,15 @@ public class HyperParamOptimizedSplitMiner implements MiningAlgorithm {
 
     @Override
     public PetrinetWithMarking minePetrinet(UIPluginContext context, XLog log, boolean structure) {
-        return discoverBestOn(context, log, structure, HyperParamOptimizedSplitMiner.BestOn.PREC);
+        return discoverBestOn(context, log, structure, BestOn.FSCORE);
     }
 
     public PetrinetWithMarking discoverBestOn(UIPluginContext context, XLog log, boolean structure, BestOn metric) {
-        Map<Double, PetrinetWithMarking> models = new HashMap<>();
-        Map<Double, Double> fitness = new HashMap<>();
-        Map<Double, Double> precision = new HashMap<>();
-        Map<Double, Double> fscore = new HashMap<>();
+        Map<String, PetrinetWithMarking> models = new HashMap<>();
+        Map<Double, String> fitness = new HashMap<>();
+        Map<Double, String> precision = new HashMap<>();
+        Map<Double, String> fscore = new HashMap<>();
+        String combination;
 
         SplitMiner yam = new SplitMiner();
         BPMNDiagram bpmn;
@@ -80,52 +82,62 @@ public class HyperParamOptimizedSplitMiner implements MiningAlgorithm {
         Double score;
 
         Double bestValue;
-        Double bestThreshold;
+        String bestCombination = null;
 
-        for (Double p_threshold : pt_values) {
-            try {
-                bpmn = yam.mineBPMNModel(log, 1.0, p_threshold, DFGPUIResult.FilterType.WTH, true, SplitMinerUIResult.StructuringTime.NONE);
-                petrinet = convertToPetrinet(context, bpmn);
-                models.put(p_threshold, petrinet);
+        Double p_threshold;
+        Double f_threshold = MIN;
+        do {
+            p_threshold = MIN;
+            do {
+                combination = ":p:" + p_threshold + ":f:" + f_threshold;
+                try {
+                    bpmn = yam.mineBPMNModel(log, f_threshold, p_threshold, DFGPUIResult.FilterType.WTH, true, true, SplitMinerUIResult.StructuringTime.NONE);
+                    petrinet = convertToPetrinet(context, bpmn);
+                    models.put(combination, petrinet);
 
-                fit = fitnessCalculator.computeMeasurement(context, eventNameClassifier, petrinet, this, log).getValue();
-                prec = precisionCalculator.computeMeasurement(context, eventNameClassifier, petrinet, this, log).getValue();
+                    fit = fitnessCalculator.computeMeasurement(context, eventNameClassifier, petrinet, this, log).getValue();
+                    prec = precisionCalculator.computeMeasurement(context, eventNameClassifier, petrinet, this, log).getValue();
 
-                if( fit.isNaN() ) fit = 0.0;
-                if( prec.isNaN() ) prec = 0.0;
-                score = (fit*prec*2)/(fit+prec);
+                    if (fit.isNaN()) fit = 0.0;
+                    if (prec.isNaN()) prec = 0.0;
+                    score = (fit * prec * 2) / (fit + prec);
+                    if(score.isNaN()) score = 0.0;
 
-                fitness.put(fit, p_threshold);
-                precision.put(prec, p_threshold);
-                fscore.put(score, p_threshold);
+                    fitness.put(fit, combination);
+                    precision.put(prec, combination);
+                    fscore.put(score, combination);
 
-                System.out.println("DEBUG - fitness @ " + p_threshold + " : " + fit);
-                System.out.println("DEBUG - precision @ " + p_threshold + " : " + prec);
-                System.out.println("DEBUG - f-score @ " + p_threshold + " : " + score);
-            } catch (Exception e) {
-                System.out.println("ERROR - splitminer output model broken @ " + p_threshold);
-                fitness.put(0.0, p_threshold);
-                precision.put(0.0, p_threshold);
-                fscore.put(0.0, p_threshold);
-            }
-        }
+                    System.out.println("RESULT - @ " + combination);
+                    System.out.println(fit);
+                    System.out.println(prec);
+                    System.out.println(score);
+                } catch (Exception e) {
+                    System.out.println("ERROR - splitminer output model broken @ " + combination);
+                    fitness.put(0.0D, combination);
+                    precision.put(0.0D, combination);
+                    fscore.put(0.0D, combination);
+                }
+
+                p_threshold += STEP;
+            } while ( p_threshold <= MAX );
+            f_threshold += STEP;
+        } while( f_threshold <= MAX );
 
         switch ( metric ) {
             case FIT:
                 bestValue = Collections.max(fitness.keySet());
-                bestThreshold = fitness.get(bestValue);
+                bestCombination = fitness.get(bestValue);
                 break;
             case PREC: bestValue = Collections.max(precision.keySet());
-                bestThreshold = precision.get(bestValue);
+                bestCombination = precision.get(bestValue);
                 break;
             case FSCORE: bestValue = Collections.max(fscore.keySet());
-                bestThreshold = fscore.get(bestValue);
+                bestCombination = fscore.get(bestValue);
                 break;
-            default: bestThreshold = 0.05;
         }
 
-        System.out.println("DEBUG - best result @ " + bestThreshold);
-        return models.get(bestThreshold);
+        System.out.println("DEBUG - best result @ " + bestCombination);
+        return models.get(bestCombination);
     }
 
     private PetrinetWithMarking convertToPetrinet(UIPluginContext context, BPMNDiagram diagram) {

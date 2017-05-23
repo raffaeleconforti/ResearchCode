@@ -19,7 +19,7 @@
     <dependencies>
         <dependency>
             <groupId>com.raffaeleconforti</groupId>
-            <artifactId>hyperparamoptimized-splitminer</artifactId>
+            <artifactId>hyperparamoptimized-wrappers</artifactId>
         </dependency>
         <dependency>
             <groupId>com.raffaeleconforti</groupId>

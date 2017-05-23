@@ -1,5 +1,6 @@
 package com.raffaeleconforti.wrapper.impl;
 
+import com.raffaeleconforti.conversion.bpmn.BPMNToPetriNetConverter;
 import com.raffaeleconforti.conversion.petrinet.PetriNetToBPMNConverter;
 import com.raffaeleconforti.wrapper.LogPreprocessing;
 import com.raffaeleconforti.wrapper.MiningAlgorithm;
@@ -15,6 +16,7 @@ import org.processmining.models.graphbased.directed.petrinet.Petrinet;
 import org.processmining.models.semantics.petrinet.Marking;
 import org.processmining.plugins.bpmnminer.causalnet.CausalNet;
 import org.processmining.plugins.bpmnminer.converter.CausalNetToPetrinet;
+import org.processmining.plugins.bpmnminer.miner.BPMNMiner;
 import org.processmining.plugins.bpmnminer.plugins.BPMNMinerPlugin;
 import org.processmining.plugins.bpmnminer.types.MinerSettings;
 import org.processmining.plugins.bpmnminer.ui.FullParameterPanel;
@@ -42,8 +44,28 @@ public class FodinaAlgorithmWrapper implements MiningAlgorithm {
 
     @Override
     public PetrinetWithMarking minePetrinet(UIPluginContext context, XLog log, boolean structure) {
-        LogPreprocessing logPreprocessing = new LogPreprocessing();
-        log = logPreprocessing.preprocessLog(context, log);
+        return convertToPetrinet(context, mineBPMNDiagram(context, log, structure));
+    }
+
+    private PetrinetWithMarking convertToPetrinet(UIPluginContext context, BPMNDiagram diagram) {
+
+        Object[] result = BPMNToPetriNetConverter.convert(diagram);
+
+        if(result[1] == null) result[1] = PetriNetToBPMNConverter.guessInitialMarking((Petrinet) result[0]);
+        if(result[2] == null) result[2] = PetriNetToBPMNConverter.guessFinalMarking((Petrinet) result[0]);
+
+        if(result[1] == null) result[1] = MarkingDiscoverer.constructInitialMarking(context, (Petrinet) result[0]);
+        else MarkingDiscoverer.createInitialMarkingConnection(context, (Petrinet) result[0], (Marking) result[1]);
+
+        if(result[2] == null) result[2] = MarkingDiscoverer.constructFinalMarking(context, (Petrinet) result[0]);
+        else MarkingDiscoverer.createFinalMarkingConnection(context, (Petrinet) result[0], (Marking) result[1]);
+        System.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out)));
+
+        return new PetrinetWithMarking((Petrinet) result[0], (Marking) result[1], (Marking) result[2]);
+    }
+
+    @Override
+    public BPMNDiagram mineBPMNDiagram(UIPluginContext context, XLog log, boolean structure) {
 
         System.setOut(new PrintStream(new OutputStream() {
             @Override
@@ -68,24 +90,12 @@ public class FodinaAlgorithmWrapper implements MiningAlgorithm {
             context.showConfiguration("Miner Parameters", parameters);
             minerSettings = parameters.getSettings();
         }
-        Object[] bpmnResults = BPMNMinerPlugin.runMiner(context, log, minerSettings);
-        CausalNet net = (CausalNet) bpmnResults[0];
 
-        Object[] result = CausalNetToPetrinet.convert(context, net);
-        logPreprocessing.removedAddedElements((Petrinet) result[0]);
-
-        MarkingDiscoverer.createInitialMarkingConnection(context, (Petrinet) result[0], (Marking) result[1]);
+        BPMNMiner miner = new BPMNMiner(log, minerSettings);
+        miner.mine();
 
         System.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out)));
-
-        return new PetrinetWithMarking((Petrinet) result[0], (Marking) result[1], MarkingDiscoverer.constructFinalMarking(context, (Petrinet) result[0]));
-
-    }
-
-    @Override
-    public BPMNDiagram mineBPMNDiagram(UIPluginContext context, XLog log, boolean structure) {
-        PetrinetWithMarking petrinetWithMarking = minePetrinet(context, log, structure);
-        return PetriNetToBPMNConverter.convert(petrinetWithMarking.getPetrinet(), petrinetWithMarking.getInitialMarking(), petrinetWithMarking.getFinalMarking(), true);
+        return miner.getBPMNDiagram();
     }
 
     @Override
