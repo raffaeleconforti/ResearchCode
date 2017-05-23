@@ -160,6 +160,15 @@ public class LPSolve_Solver implements ILPSolver {
     public void solve() {
         try {
             double[] row;
+
+            row = reduceInfinity(objectiveFunction.getRow());
+            lp.setObjFnex(objectiveFunction.getSize(), row, objectiveFunction.getColno());
+            if(minimize) {
+                lp.setMinim();
+            }else {
+                lp.setMaxim();
+            }
+
             lp.setAddRowmode(true);
 
             for(LPSolve_Constraint constraint : constraints) {
@@ -171,19 +180,13 @@ public class LPSolve_Solver implements ILPSolver {
 
             lp.setAddRowmode(false);
 
-            row = reduceInfinity(objectiveFunction.getRow());
-            lp.setObjFnex(objectiveFunction.getSize(), row, objectiveFunction.getColno());
-            if(minimize) {
-                lp.setMinim();
-            }else {
-                lp.setMaxim();
-            }
+
 
             problem = saveProblem();
 
             lp.setVerbose(LpSolve.IMPORTANT);
             status = lp.solve();
-            if(status == LpSolve.NUMFAILURE || (max_exp != MAX_EXP && status == LpSolve.INFEASIBLE)) {
+            if(status == LpSolve.NUMFAILURE || status == LpSolve.INFEASIBLE) {
                 System.out.print("NUM FAILURE with infinity = " + infinity());
                 if(max_exp > 0) max_exp--;
                 System.out.println(" using " + infinity());
