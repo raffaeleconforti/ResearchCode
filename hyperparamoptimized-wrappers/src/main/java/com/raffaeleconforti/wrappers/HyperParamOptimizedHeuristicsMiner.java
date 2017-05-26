@@ -28,9 +28,9 @@ import java.util.*;
  */
 public class HyperParamOptimizedHeuristicsMiner implements MiningAlgorithm {
 
-        private static double STEP = 0.05;
-        private static double MIN = 0.0;
-        private static double MAX = 1.0;
+        private static double STEP = 0.10D;
+        private static double MIN = 0.00D;
+        private static double MAX = 1.01D;
 
         public PetrinetWithMarking minePetrinet(UIPluginContext context, XLog log) {
             return minePetrinet(context, log, false);
@@ -135,8 +135,8 @@ public class HyperParamOptimizedHeuristicsMiner implements MiningAlgorithm {
                     rtb_threshold += STEP;
                 } while (rtb_threshold <= MAX);
 
-                if(longDistance) break;
-                else longDistance = true;
+//                if(longDistance) break;
+//                else longDistance = true;
             } while (longDistance);
 
             bestValue = Collections.max(fscore.keySet());
@@ -155,12 +155,11 @@ public class HyperParamOptimizedHeuristicsMiner implements MiningAlgorithm {
 
         @Override
         public String getAlgorithmName() {
-            return "Naive HyperParam-Optimized Heuristics Miner 6.0 Infrequent";
+            return "Naive HyperParam-Optimized Heuristics Miner 6.0";
         }
 
         @Override
         public String getAcronym() {
             return "HPO-HM6";
         }
-
 }

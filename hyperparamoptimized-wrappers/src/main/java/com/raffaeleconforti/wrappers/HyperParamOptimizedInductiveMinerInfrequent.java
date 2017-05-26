@@ -30,9 +30,9 @@ import java.util.Map;
 
 public class HyperParamOptimizedInductiveMinerInfrequent implements MiningAlgorithm {
 
-    private static float STEP = 0.05F;
-    private static float MIN = 0.0F;
-    private static float MAX = 1.0F;
+    private static float STEP = 0.050F;
+    private static float MIN = 0.00F;
+    private static float MAX = 1.010F;
 
     public PetrinetWithMarking minePetrinet(UIPluginContext context, XLog log) {
         return minePetrinet(context, log, false);
