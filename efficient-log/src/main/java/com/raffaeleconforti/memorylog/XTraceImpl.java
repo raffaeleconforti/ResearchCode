@@ -176,8 +176,8 @@ public class XTraceImpl implements XTrace {
     public boolean contains(Object o) {
         if(o instanceof XEvent) {
             XEvent event = (XEvent) o;
-            Integer i = eventToInt.get(event);
-            if(i != null) {
+            int i = eventToInt.get(event);
+            if(i != 0) {
                 for(int j : deCompress()) {
                     if(i == j) return true;
                 }
@@ -214,8 +214,8 @@ public class XTraceImpl implements XTrace {
 
     @Override
     public boolean add(XEvent xEvent) {
-        Integer val;
-        if((val = eventToInt.get(xEvent)) == null) {
+        int val;
+        if((val = eventToInt.get(xEvent)) == 0) {
             val = counter[0];
             eventToInt.put(xEvent, counter[0]);
             intToEvent.put(counter[0], xEvent);
@@ -231,10 +231,10 @@ public class XTraceImpl implements XTrace {
 
     @Override
     public boolean remove(Object o) {
-        Integer val;
+        int val;
         if(o instanceof XEvent) {
             XEvent event = (XEvent) o;
-            if ((val = eventToInt.get(event)) != null && contains(event)) {
+            if ((val = eventToInt.get(event)) != 0 && contains(event)) {
                 int[] array = deCompress();
                 int[] newArray = new int[array.length - 1];
                 int pos = 0;
@@ -306,8 +306,8 @@ public class XTraceImpl implements XTrace {
 
     @Override
     public XEvent set(int index, XEvent element) {
-        Integer val;
-        if((val = eventToInt.get(element)) == null) {
+        int val;
+        if((val = eventToInt.get(element)) == 0) {
             val = counter[0];
             eventToInt.put(element, counter[0]);
             intToEvent.put(counter[0], element);
@@ -322,8 +322,8 @@ public class XTraceImpl implements XTrace {
 
     @Override
     public void add(int index, XEvent element) {
-        Integer val;
-        if((val = eventToInt.get(element)) == null) {
+        int val;
+        if((val = eventToInt.get(element)) == 0) {
             val = counter[0];
             eventToInt.put(element, counter[0]);
             intToEvent.put(counter[0], element);
@@ -368,8 +368,8 @@ public class XTraceImpl implements XTrace {
     public int indexOf(Object o) {
         if(o instanceof XEvent) {
             XEvent event = (XEvent) o;
-            Integer i = eventToInt.get(event);
-            if(i != null) {
+            int i = eventToInt.get(event);
+            if(i != 0) {
                 int[] array = deCompress();
                 for(int j = 0; j < array.length; j++) {
                     if(i == array[j]) return j;
@@ -384,8 +384,8 @@ public class XTraceImpl implements XTrace {
     public int lastIndexOf(Object o) {
         if(o instanceof XEvent) {
             XEvent event = (XEvent) o;
-            Integer i = eventToInt.get(event);
-            if(i != null) {
+            int i = eventToInt.get(event);
+            if(i != 0) {
                 int[] array = deCompress();
                 for(int j = array.length - 1; j >= 0; j--) {
                     if(i == array[j]) return j;

@@ -14,6 +14,7 @@ import org.deckfour.xes.classification.XEventNameClassifier;
 import org.deckfour.xes.extension.std.XConceptExtension;
 import org.deckfour.xes.extension.std.XTimeExtension;
 import org.deckfour.xes.factory.XFactory;
+import org.deckfour.xes.factory.XFactoryNaiveImpl;
 import org.deckfour.xes.model.XLog;
 
 import java.text.SimpleDateFormat;
@@ -44,7 +45,7 @@ public class TimeStampFixerSmartExecutor {
 
     public XLog filterLog(XLog log, int limitExtensive, int approach) {
 
-        XFactory factory = new XFactoryMemoryImpl();
+        XFactory factory = new XFactoryNaiveImpl();//XFactoryMemoryImpl();
         LogCloner logCloner = new LogCloner(factory);
 
         XLog res = logCloner.cloneLog(log);

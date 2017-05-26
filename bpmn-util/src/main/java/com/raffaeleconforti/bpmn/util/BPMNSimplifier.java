@@ -299,8 +299,14 @@ public class BPMNSimplifier {
     }
 
     public static BPMNDiagram renameGateways(BPMNDiagram diagram, String preLabel) {
+        int i = 1;
         for (Gateway gateway : diagram.getGateways()) {
-            gateway.getAttributeMap().put(AttributeMap.LABEL, preLabel + gateway.getLabel());
+            if(gateway.getLabel().isEmpty()) {
+                gateway.getAttributeMap().put(AttributeMap.LABEL, preLabel + gateway.getLabel() + "_" + i);
+                i++;
+            }else {
+                gateway.getAttributeMap().put(AttributeMap.LABEL, preLabel + gateway.getLabel());
+            }
         }
         return diagram;
     }

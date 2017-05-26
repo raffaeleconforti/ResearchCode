@@ -7,7 +7,7 @@
     <parent>
         <artifactId>research-code</artifactId>
         <groupId>com.raffaeleconforti</groupId>
-        <version>1.0.20170522</version>
+        <version>1.0.20170526</version>
         <relativePath>../</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -109,18 +109,18 @@
             <!--<groupId>com.raffaeleconforti</groupId>-->
             <!--<artifactId>kernel-sn</artifactId>-->
         <!--</dependency>-->
-        <!--<dependency>-->
-            <!--<groupId>com.raffaeleconforti</groupId>-->
-            <!--<artifactId>noisefiltering-timestamp-logic</artifactId>-->
-        <!--</dependency>-->
-        <!--<dependency>-->
-            <!--<groupId>com.raffaeleconforti</groupId>-->
-            <!--<artifactId>noisefiltering-timestamp-commandline</artifactId>-->
-        <!--</dependency>-->
-        <!--<dependency>-->
-            <!--<groupId>com.raffaeleconforti</groupId>-->
-            <!--<artifactId>noisefiltering-timestamp-prom</artifactId>-->
-        <!--</dependency>-->
+        <dependency>
+            <groupId>com.raffaeleconforti</groupId>
+            <artifactId>noisefiltering-timestamp-logic</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.raffaeleconforti</groupId>
+            <artifactId>noisefiltering-timestamp-commandline</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.raffaeleconforti</groupId>
+            <artifactId>noisefiltering-timestamp-prom</artifactId>
+        </dependency>
         <dependency>
             <groupId>com.raffaeleconforti</groupId>
             <artifactId>prom-util</artifactId>
