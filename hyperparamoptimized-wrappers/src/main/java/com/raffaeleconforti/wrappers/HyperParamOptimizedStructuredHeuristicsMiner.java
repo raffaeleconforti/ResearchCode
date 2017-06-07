@@ -8,6 +8,7 @@ import com.raffaeleconforti.measurements.impl.AlignmentBasedFitness;
 import com.raffaeleconforti.measurements.impl.AlignmentBasedPrecision;
 import com.raffaeleconforti.wrapper.LogPreprocessing;
 import com.raffaeleconforti.wrapper.MiningAlgorithm;
+import com.raffaeleconforti.wrapper.MiningSettings;
 import com.raffaeleconforti.wrapper.PetrinetWithMarking;
 import org.deckfour.xes.classification.XEventClassifier;
 import org.deckfour.xes.classification.XEventNameClassifier;
@@ -35,11 +36,11 @@ public class HyperParamOptimizedStructuredHeuristicsMiner implements MiningAlgor
     private static double MAX = 1.01D;
 
     public PetrinetWithMarking minePetrinet(UIPluginContext context, XLog log) {
-        return minePetrinet(context, log, false);
+        return minePetrinet(context, log, false, null);
     }
 
     @Override
-    public PetrinetWithMarking minePetrinet(UIPluginContext context, XLog log, boolean structure) {
+    public PetrinetWithMarking minePetrinet(UIPluginContext context, XLog log, boolean structure, MiningSettings params) {
         return discoverBestOn(context, log, structure);
     }
 
@@ -99,7 +100,7 @@ public class HyperParamOptimizedStructuredHeuristicsMiner implements MiningAlgor
 
                         HeuristicsNet heuristicsNet = FlexibleHeuristicsMinerPlugin.run(context, log, minerSettings);
                         Object[] result = HeuristicsNetToPetriNetConverter.converter(context, heuristicsNet);
-                        logPreprocessing.removedAddedElements((Petrinet) result[0]);
+//                        logPreprocessing.removedAddedElements((Petrinet) result[0]);
 
                         if(result[1] == null) result[1] = MarkingDiscoverer.constructInitialMarking(context, (Petrinet) result[0]);
                         else MarkingDiscoverer.createInitialMarkingConnection(context, (Petrinet) result[0], (Marking) result[1]);
@@ -109,6 +110,9 @@ public class HyperParamOptimizedStructuredHeuristicsMiner implements MiningAlgor
                         structuredDiagram = ss.structureDiagram(diagram, "ASTAR", 100, 500, 10, 100, 2, true, true, true);
                         result = BPMNToPetriNetConverter.convert(structuredDiagram);
                         petrinet = new PetrinetWithMarking((Petrinet) result[0], (Marking) result[1], (Marking) result[2]);
+
+                        MarkingDiscoverer.createInitialMarkingConnection(context, (Petrinet) result[0], (Marking) result[1]);
+                        MarkingDiscoverer.createFinalMarkingConnection(context, (Petrinet) result[0], (Marking) result[2]);
 
                         models.put(combination, petrinet);
 
@@ -155,7 +159,7 @@ public class HyperParamOptimizedStructuredHeuristicsMiner implements MiningAlgor
         return models.get(bestCombination);
     }
 
-    public BPMNDiagram mineBPMNDiagram(UIPluginContext context, XLog log, boolean structure) {
+    public BPMNDiagram mineBPMNDiagram(UIPluginContext context, XLog log, boolean structure, MiningSettings params) {
         BPMNDiagram output = null;
         PetrinetWithMarking petrinet = minePetrinet(context, log);
         output = PetriNetToBPMNConverter.convert(petrinet.getPetrinet(), petrinet.getInitialMarking(), petrinet.getFinalMarking(), false);

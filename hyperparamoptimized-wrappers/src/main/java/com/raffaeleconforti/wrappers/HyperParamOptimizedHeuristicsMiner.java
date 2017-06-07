@@ -6,6 +6,7 @@ import com.raffaeleconforti.measurements.impl.AlignmentBasedFitness;
 import com.raffaeleconforti.measurements.impl.AlignmentBasedPrecision;
 import com.raffaeleconforti.wrapper.LogPreprocessing;
 import com.raffaeleconforti.wrapper.MiningAlgorithm;
+import com.raffaeleconforti.wrapper.MiningSettings;
 import com.raffaeleconforti.wrapper.PetrinetWithMarking;
 import org.deckfour.xes.classification.XEventClassifier;
 import org.deckfour.xes.classification.XEventNameClassifier;
@@ -33,11 +34,11 @@ public class HyperParamOptimizedHeuristicsMiner implements MiningAlgorithm {
         private static double MAX = 1.01D;
 
         public PetrinetWithMarking minePetrinet(UIPluginContext context, XLog log) {
-            return minePetrinet(context, log, false);
+            return minePetrinet(context, log, false, null);
         }
 
         @Override
-        public PetrinetWithMarking minePetrinet(UIPluginContext context, XLog log, boolean structure) {
+        public PetrinetWithMarking minePetrinet(UIPluginContext context, XLog log, boolean structure, MiningSettings params) {
             return discoverBestOn(context, log, structure);
         }
 
@@ -95,7 +96,7 @@ public class HyperParamOptimizedHeuristicsMiner implements MiningAlgorithm {
 
                             HeuristicsNet heuristicsNet = FlexibleHeuristicsMinerPlugin.run(context, log, minerSettings);
                             Object[] result = HeuristicsNetToPetriNetConverter.converter(context, heuristicsNet);
-                            logPreprocessing.removedAddedElements((Petrinet) result[0]);
+//                            logPreprocessing.removedAddedElements((Petrinet) result[0]);
 
                             if(result[1] == null) result[1] = MarkingDiscoverer.constructInitialMarking(context, (Petrinet) result[0]);
                             else MarkingDiscoverer.createInitialMarkingConnection(context, (Petrinet) result[0], (Marking) result[1]);
@@ -146,7 +147,7 @@ public class HyperParamOptimizedHeuristicsMiner implements MiningAlgorithm {
             return models.get(bestCombination);
         }
 
-        public BPMNDiagram mineBPMNDiagram(UIPluginContext context, XLog log, boolean structure) {
+        public BPMNDiagram mineBPMNDiagram(UIPluginContext context, XLog log, boolean structure, MiningSettings params) {
             BPMNDiagram output = null;
             PetrinetWithMarking petrinet = minePetrinet(context, log);
             output = PetriNetToBPMNConverter.convert(petrinet.getPetrinet(), petrinet.getInitialMarking(), petrinet.getFinalMarking(), false);

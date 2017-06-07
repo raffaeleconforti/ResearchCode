@@ -5,6 +5,9 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.*;
 
+import au.edu.qut.processmining.miners.splitminer.SplitMiner;
+import au.edu.qut.processmining.miners.splitminer.ui.dfgp.DFGPUIResult;
+import au.edu.qut.processmining.miners.splitminer.ui.miner.SplitMinerUIResult;
 import com.raffaeleconforti.benchmark.logic.Benchmark;
 import com.raffaeleconforti.benchmark.logic.MeasurementAlgorithmDiscoverer;
 import com.raffaeleconforti.benchmark.logic.MiningAlgorithmDiscoverer;
@@ -133,18 +136,26 @@ public class BenchmarkCommandline {
         int icmd = 0;
 
 //        try {
-//            YAM yam = new YAM();
-//            XLog log = importFromFile(new XFactoryNaiveImpl(), args[0]);
-//            BPMNDiagram output = yam.mineBPMNModel(log, 1.0, 0.05, false, YAMUIResult.StructuringTime.NONE);
+//
+//            double epsilon = Double.valueOf(args[0]);
+//            double eta = Double.valueOf(args[1]);
+//
+//            SplitMiner yam = new SplitMiner();
+//            XLog log = importFromFile(new XFactoryNaiveImpl(), args[2]);
+//            BPMNDiagram output = yam.mineBPMNModel(log, eta, epsilon, DFGPUIResult.FilterType.WTH, true, false, SplitMinerUIResult.StructuringTime.NONE);
 //
 //            BpmnExportPlugin bpmnExportPlugin = new BpmnExportPlugin();
 //            UIContext context = new UIContext();
 //            UIPluginContext uiPluginContext = context.getMainPluginContext();
-//            bpmnExportPlugin.export(uiPluginContext, output, new File(args[1] + ".bpmn"));
+//            bpmnExportPlugin.export(uiPluginContext, output, new File(args[3] + ".bpmn"));
 //            return;
-//        } catch( Error e ) {
+//        } catch( Throwable e ) {
 //            System.out.println("ERROR: wrong usage.");
-//            System.out.println("USAGE: java -jar splitminer.jar 'logpath\\log.[xes|xes.gz|mxml]' 'outputpath\\outputname' ");
+//            System.out.println("USAGE: java -jar splitminer.jar e n 'logpath\\log.[xes|xes.gz|mxml]' 'outputpath\\outputname' ");
+//            System.out.println("PARAM: e = double in [0,1] : parallelism threshold (epsilon)");
+//            System.out.println("PARAM: n = double in [0,1] : percentile for frequency threshold (eta)");
+//            System.out.println("EXAMPLE: java -jar splitminer.jar 0.1 0.4 .\\logs\\SEPSIS.xes.gz .\\outputs\\SEPSIS");
+//            e.printStackTrace();
 //            return;
 //        }
 

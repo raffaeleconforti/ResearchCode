@@ -51,7 +51,7 @@ public class XFoldAlignmentBasedPrecision implements MeasurementAlgorithm {
             }
 
             try {
-                petrinetWithMarking = miningAlgorithm.minePetrinet(pluginContext, log1, false);
+                petrinetWithMarking = miningAlgorithm.minePetrinet(pluginContext, log1, false, null);
                 Double p = alignmentBasedPrecision.computeMeasurement(pluginContext, xEventClassifier, petrinetWithMarking, miningAlgorithm, log).getValue();
                 precision += (p != null)?p:0.0;
                 System.out.println("DEBUG - " + (i+1) + "/" + fold + " -fold precision: " + p);

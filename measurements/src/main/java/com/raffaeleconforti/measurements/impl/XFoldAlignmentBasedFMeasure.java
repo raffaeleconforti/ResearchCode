@@ -47,8 +47,8 @@ public class XFoldAlignmentBasedFMeasure implements MeasurementAlgorithm {
             return measure;
         }
 
-        fitness = xFoldAlignmentBasedFitness.computeMeasurement(pluginContext, xEventClassifier, null, miningAlgorithm, log).getValue();
-        precision = xFoldAlignmentBasedPrecision.computeMeasurement(pluginContext, xEventClassifier, null, miningAlgorithm, log).getValue();
+        fitness = xFoldAlignmentBasedFitness.computeMeasurement(pluginContext, xEventClassifier, petrinetWithMarking, miningAlgorithm, log).getValue();
+        precision = xFoldAlignmentBasedPrecision.computeMeasurement(pluginContext, xEventClassifier, petrinetWithMarking, miningAlgorithm, log).getValue();
         f_measure = 2*(fitness*precision)/(fitness+precision);
 
         measure.addMeasure(getAcronym(), String.format("%.2f", f_measure));

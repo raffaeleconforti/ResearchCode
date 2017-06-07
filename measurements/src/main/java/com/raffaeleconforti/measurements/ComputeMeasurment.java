@@ -415,7 +415,7 @@ public class ComputeMeasurment {
     }
 
     private PetrinetWithMarking discoverPetrinet(UIPluginContext context, MiningAlgorithm miningAlgorithm, XLog log, boolean isStructured) {
-        PetrinetWithMarking petrinetWithMarking = miningAlgorithm.minePetrinet(context, log, isStructured);
+        PetrinetWithMarking petrinetWithMarking = miningAlgorithm.minePetrinet(context, log, isStructured, null);
         Petrinet petrinet = petrinetWithMarking.getPetrinet();
         Marking initialMarking = petrinetWithMarking.getInitialMarking();
         Marking finalMarking = constructFinalMarking(petrinet);

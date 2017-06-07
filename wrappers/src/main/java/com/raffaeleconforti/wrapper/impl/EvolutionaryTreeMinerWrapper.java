@@ -3,6 +3,7 @@ package com.raffaeleconforti.wrapper.impl;
 import com.raffaeleconforti.conversion.petrinet.PetriNetToBPMNConverter;
 import com.raffaeleconforti.wrapper.LogPreprocessing;
 import com.raffaeleconforti.wrapper.MiningAlgorithm;
+import com.raffaeleconforti.wrapper.MiningSettings;
 import com.raffaeleconforti.wrapper.PetrinetWithMarking;
 import com.raffaeleconforti.marking.MarkingDiscoverer;
 import nl.tue.astar.AStarThread.Canceller;
@@ -51,11 +52,11 @@ public class EvolutionaryTreeMinerWrapper implements MiningAlgorithm {
             pack = "Noise Filtering")
     @PluginVariant(variantLabel = "Evolutionary Tree Miner Wrapper", requiredParameterLabels = {0})
     public PetrinetWithMarking minePetrinet(UIPluginContext context, XLog log) {
-        return minePetrinet(context, log, false);
+        return minePetrinet(context, log, false, null);
     }
 
     @Override
-    public PetrinetWithMarking minePetrinet(UIPluginContext context, XLog log, boolean structure) {
+    public PetrinetWithMarking minePetrinet(UIPluginContext context, XLog log, boolean structure, MiningSettings params) {
         try {
             LogPreprocessing logPreprocessing = new LogPreprocessing();
             log = logPreprocessing.preprocessLog(context, log);
@@ -77,17 +78,17 @@ public class EvolutionaryTreeMinerWrapper implements MiningAlgorithm {
                 Random rng = new Random(123456);
                 CentralRegistry registry = new CentralRegistry(context, log, classifier, rng);
 
-                ETMParam params = new ETMParam(registry, null, null, 20, 5);
-                params.addTerminationCondition(new ExternalTerminationCondition());
+                ETMParam iParams = new ETMParam(registry, null, null, 20, 5);
+                iParams.addTerminationCondition(new ExternalTerminationCondition());
 
 //                params.setFactory(new SequenceFactory(registry));
                 Map<TreeFactoryAbstract, Double> otherFactories = new HashMap<TreeFactoryAbstract, Double>();
                 otherFactories.put(new IntelligentTreeFactory(registry), 0.05);
-                params.setFactory(new TreeFactoryCoordinator(registry, 0.95, otherFactories));
+                iParams.setFactory(new TreeFactoryCoordinator(registry, 0.95, otherFactories));
 
                 ArrayList evolutionObservers = new ArrayList();
                 evolutionObservers.add(new EvolutionLogger(context,registry, false));
-                params.setEvolutionObservers(evolutionObservers);
+                iParams.setEvolutionObservers(evolutionObservers);
 
                 Canceller canceller = ProMCancelTerminationCondition.buildDummyCanceller();
 
@@ -103,8 +104,8 @@ public class EvolutionaryTreeMinerWrapper implements MiningAlgorithm {
                 weightedFitnessAlg.put(su, Double.valueOf(1));
 
                 OverallFitness of = new OverallFitness(registry, weightedFitnessAlg);
-                params.setMaxThreads(Runtime.getRuntime().availableProcessors());
-                params.setFitnessEvaluator(new MultiThreadedFitnessEvaluator(registry, of, params.getMaxThreads()));
+                iParams.setMaxThreads(Runtime.getRuntime().availableProcessors());
+                iParams.setFitnessEvaluator(new MultiThreadedFitnessEvaluator(registry, of, iParams.getMaxThreads()));
 
                 ArrayList evolutionaryOperators = new ArrayList();
                 evolutionaryOperators.add(new TreeCrossover(1, new Probability(0.25D)));
@@ -127,15 +128,15 @@ public class EvolutionaryTreeMinerWrapper implements MiningAlgorithm {
                 TreeMutationCoordinator dumbCoordinator = new TreeMutationCoordinator(dumbMutators, false);
                 GuidedTreeMutationCoordinator smartCoordinator = new GuidedTreeMutationCoordinator(registry, 0.25D, true, smartMutators, dumbCoordinator);
                 evolutionaryOperators.add(smartCoordinator);
-                params.setEvolutionaryOperators(evolutionaryOperators);
+                iParams.setEvolutionaryOperators(evolutionaryOperators);
 
-                params.setSelectionStrategy(new SigmaScaling());
-                params.addTerminationConditionMaxGen(1000);
-                params.addTerminationConditionTargetFitness(1, params.getFitnessEvaluator().isNatural());
+                iParams.setSelectionStrategy(new SigmaScaling());
+                iParams.addTerminationConditionMaxGen(1000);
+                iParams.addTerminationConditionTargetFitness(1, iParams.getFitnessEvaluator().isNatural());
 
-                params.addTerminationConditionMaxDuration(3600000); //1 hour
+                iParams.addTerminationConditionMaxDuration(3600000); //1 hour
 
-                ETM etm = new ETM(params);
+                ETM etm = new ETM(iParams);
                 etm.run();
                 List stopped = etm.getSatisfiedTerminationConditions();
                 Iterator tree = stopped.iterator();
@@ -146,7 +147,7 @@ public class EvolutionaryTreeMinerWrapper implements MiningAlgorithm {
                 }
 
                 NAryTree tree1 = etm.getResult();
-                processTree = NAryTreeToProcessTree.convert(params.getCentralRegistry().getEventClasses(), tree1, "Process tree discovered by the ETM algorithm");
+                processTree = NAryTreeToProcessTree.convert(iParams.getCentralRegistry().getEventClasses(), tree1, "Process tree discovered by the ETM algorithm");
 //            }else {;
 //                ETMPlugin etmPlugin = new ETMPlugin();
 //                processTree = etmPlugin.withoutSeed(context, log);
@@ -170,8 +171,8 @@ public class EvolutionaryTreeMinerWrapper implements MiningAlgorithm {
     }
 
     @Override
-    public BPMNDiagram mineBPMNDiagram(UIPluginContext context, XLog log, boolean structure) {
-        PetrinetWithMarking petrinetWithMarking = minePetrinet(context, log, structure);
+    public BPMNDiagram mineBPMNDiagram(UIPluginContext context, XLog log, boolean structure, MiningSettings params) {
+        PetrinetWithMarking petrinetWithMarking = minePetrinet(context, log, structure, params);
         return PetriNetToBPMNConverter.convert(petrinetWithMarking.getPetrinet(), petrinetWithMarking.getInitialMarking(), petrinetWithMarking.getFinalMarking(), true);
     }
 

@@ -24,22 +24,22 @@ public class BPMNMiner {
 
         if (selectedAlgorithm == SelectMinerResult.ALPHAPOS) {
             System.out.println("Using Alpha Miner");
-            result = new AlphaPlusWrapper().mineBPMNDiagram(context, log, false);
+            result = new AlphaPlusWrapper().mineBPMNDiagram(context, log, false, null);
         } else if (selectedAlgorithm == SelectMinerResult.ILPPOS) {
             System.out.println("Using ILP Miner");
-            result = new ILPAlgorithmWrapper().mineBPMNDiagram(context, log, false);
+            result = new ILPAlgorithmWrapper().mineBPMNDiagram(context, log, false, null);
         } else if (selectedAlgorithm == SelectMinerResult.IMPOS) {
             System.out.println("Using Inductive Miner");
-            result = new InductiveMinerIMfWrapper().mineBPMNDiagram(context, log, false);
+            result = new InductiveMinerIMfWrapper().mineBPMNDiagram(context, log, false, null);
         } else if (selectedAlgorithm == SelectMinerResult.HMPOS5) {
             System.out.println("Using Heuristics Miner 5.2");
-            result = new Heuristics52AlgorithmWrapper().mineBPMNDiagram(context, log, false);
+            result = new Heuristics52AlgorithmWrapper().mineBPMNDiagram(context, log, false, null);
         } else if (selectedAlgorithm == SelectMinerResult.SMPOS) {
             System.out.println("Using Split Miner");
-            result = new SplitMinerWrapper().mineBPMNDiagram(context, log, false);
+            result = new SplitMinerWrapper().mineBPMNDiagram(context, log, false, null);
         } else if (selectedAlgorithm == SelectMinerResult.HMPOS6) {
             System.out.println("Using Heuristics Miner 6");
-            result = new HeuristicsAlgorithmWrapper().mineBPMNDiagram(context, log, false);
+            result = new HeuristicsAlgorithmWrapper().mineBPMNDiagram(context, log, false, null);
         }
         result = BPMNCleaner.clean(result);
         result = BPMNSimplifier.renameStartAndEndEvents(result, startEndEventPreName);

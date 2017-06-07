@@ -7,6 +7,7 @@ import com.raffaeleconforti.measurements.impl.AlignmentBasedFitness;
 import com.raffaeleconforti.measurements.impl.AlignmentBasedPrecision;
 import com.raffaeleconforti.wrapper.LogPreprocessing;
 import com.raffaeleconforti.wrapper.MiningAlgorithm;
+import com.raffaeleconforti.wrapper.MiningSettings;
 import com.raffaeleconforti.wrapper.PetrinetWithMarking;
 import org.deckfour.xes.classification.XEventNameClassifier;
 import org.deckfour.xes.model.XLog;
@@ -16,7 +17,7 @@ import org.processmining.models.graphbased.directed.petrinet.Petrinet;
 import org.processmining.models.semantics.petrinet.Marking;
 import org.processmining.plugins.bpmnminer.causalnet.CausalNet;
 import org.processmining.plugins.bpmnminer.converter.CausalNetToPetrinet;
-import org.processmining.plugins.bpmnminer.miner.BPMNMiner;
+import org.processmining.plugins.bpmnminer.miner.FodinaMiner;
 import org.processmining.plugins.bpmnminer.plugins.BPMNMinerPlugin;
 import org.processmining.plugins.bpmnminer.types.MinerSettings;
 import org.processmining.plugins.bpmnminer.ui.FullParameterPanel;
@@ -40,11 +41,11 @@ public class HyperParamOptimizedFodina implements MiningAlgorithm {
     private static double p_MAX = 50.01D;
 
     public PetrinetWithMarking minePetrinet(UIPluginContext context, XLog log) {
-        return minePetrinet(context, log, false);
+        return minePetrinet(context, log, false, null);
     }
 
     @Override
-    public PetrinetWithMarking minePetrinet(UIPluginContext context, XLog log, boolean structure) {
+    public PetrinetWithMarking minePetrinet(UIPluginContext context, XLog log, boolean structure, MiningSettings params) {
         return discoverBestOn(context, log, structure);
     }
 
@@ -72,7 +73,7 @@ public class HyperParamOptimizedFodina implements MiningAlgorithm {
         String combination = null;
 
         LogPreprocessing logPreprocessing = new LogPreprocessing();
-        log = logPreprocessing.preprocessLog(context, log);
+        XLog plog = logPreprocessing.preprocessLog(context, log);
 
         double d_threshold;
         double p_threshold;
@@ -93,9 +94,19 @@ public class HyperParamOptimizedFodina implements MiningAlgorithm {
                             @Override
                             public void write(int b) throws IOException {}
                         }));
-                        BPMNMiner miner = new BPMNMiner(log, minerSettings);
-                        miner.mine();
-                        petrinet = convertToPetrinet(context, miner.getBPMNDiagram());
+
+                        Object[] bpmnResults = BPMNMinerPlugin.runMiner(context, plog, minerSettings);
+                        CausalNet net = (CausalNet) bpmnResults[0];
+
+                        Object[] result = CausalNetToPetrinet.convert(context, net);
+                        logPreprocessing.removedAddedElements((Petrinet) result[0]);
+
+                        MarkingDiscoverer.createInitialMarkingConnection(context, (Petrinet) result[0], (Marking) result[1]);
+
+                        System.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out)));
+
+                        petrinet = new PetrinetWithMarking((Petrinet) result[0], (Marking) result[1], MarkingDiscoverer.constructFinalMarking(context, (Petrinet) result[0]));
+
                         models.put(combination, petrinet);
 
                         fit = fitnessCalculator.computeMeasurement(context, eventNameClassifier, petrinet, this, log).getValue();
@@ -139,7 +150,7 @@ public class HyperParamOptimizedFodina implements MiningAlgorithm {
         return models.get(bestCombination);
     }
 
-    public BPMNDiagram mineBPMNDiagram(UIPluginContext context, XLog log, boolean structure) {
+    public BPMNDiagram mineBPMNDiagram(UIPluginContext context, XLog log, boolean structure, MiningSettings params) {
         BPMNDiagram output = null;
         PetrinetWithMarking petrinet = minePetrinet(context, log);
         output = PetriNetToBPMNConverter.convert(petrinet.getPetrinet(), petrinet.getInitialMarking(), petrinet.getFinalMarking(), false);

@@ -27,7 +27,7 @@ public class BPMNComplexity implements MeasurementAlgorithm {
         try {
             BPMNDiagram bpmn = PetriNetToBPMNConverter.convert(petrinetWithMarking.getPetrinet(), petrinetWithMarking.getInitialMarking(), petrinetWithMarking.getFinalMarking(), false);
 //            BPMNCleaner.clean(bpmn);
-            BPMNSimplifier.simplify(bpmn);
+//            BPMNSimplifier.simplify(bpmn);
             ComplexityCalculator cc = new ComplexityCalculator(bpmn);
             measure.addMeasure("size", cc.computeSize());
             measure.addMeasure("cfc", cc.computeCFC());
