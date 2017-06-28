@@ -3,7 +3,7 @@ package com.raffaeleconforti.wrapper.impl.inductive;
 import com.raffaeleconforti.conversion.petrinet.PetriNetToBPMNConverter;
 import com.raffaeleconforti.wrapper.LogPreprocessing;
 import com.raffaeleconforti.wrapper.MiningAlgorithm;
-import com.raffaeleconforti.wrapper.MiningSettings;
+import com.raffaeleconforti.wrapper.settings.MiningSettings;
 import com.raffaeleconforti.wrapper.PetrinetWithMarking;
 import org.deckfour.xes.model.XLog;
 import org.processmining.contexts.uitopia.UIPluginContext;
@@ -52,6 +52,12 @@ public class InductiveMinerIMfWrapper implements MiningAlgorithm {
         if(miningParameters == null) {
             miningParameters = new MiningParametersIMf();
         }
+
+        if( params != null ) {
+            if( params.containsParam("noiseThresholdIMf") && params.getParam("noiseThresholdIMf") instanceof Float )
+                miningParameters.setNoiseThreshold((Float)params.getParam("noiseThresholdIMf"));
+        }
+
         Object[] result = miner.minePetriNetParameters(context, log, miningParameters);
         logPreprocessing.removedAddedElements((Petrinet) result[0]);
 

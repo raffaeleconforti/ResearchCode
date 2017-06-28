@@ -5,7 +5,7 @@ import com.raffaeleconforti.conversion.petrinet.PetriNetToBPMNConverter;
 import com.raffaeleconforti.ilpminer.ILPMiner;
 import com.raffaeleconforti.wrapper.LogPreprocessing;
 import com.raffaeleconforti.wrapper.MiningAlgorithm;
-import com.raffaeleconforti.wrapper.MiningSettings;
+import com.raffaeleconforti.wrapper.settings.MiningSettings;
 import com.raffaeleconforti.wrapper.PetrinetWithMarking;
 import com.raffaeleconforti.marking.MarkingDiscoverer;
 import org.deckfour.uitopia.api.event.TaskListener;

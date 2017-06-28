@@ -1,4 +1,4 @@
-package com.raffaeleconforti.wrapper;
+package com.raffaeleconforti.wrapper.settings;
 
 import java.util.HashMap;
 import java.util.Map;

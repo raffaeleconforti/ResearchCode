@@ -7,7 +7,7 @@ import com.raffaeleconforti.log.util.LogReaderClassic;
 import com.raffaeleconforti.marking.MarkingDiscoverer;
 import com.raffaeleconforti.wrapper.LogPreprocessing;
 import com.raffaeleconforti.wrapper.MiningAlgorithm;
-import com.raffaeleconforti.wrapper.MiningSettings;
+import com.raffaeleconforti.wrapper.settings.MiningSettings;
 import com.raffaeleconforti.wrapper.PetrinetWithMarking;
 import org.deckfour.xes.model.XLog;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;

@@ -3,7 +3,7 @@ package com.raffaeleconforti.wrapper.impl;
 import com.raffaeleconforti.conversion.petrinet.PetriNetToBPMNConverter;
 import com.raffaeleconforti.wrapper.LogPreprocessing;
 import com.raffaeleconforti.wrapper.MiningAlgorithm;
-import com.raffaeleconforti.wrapper.MiningSettings;
+import com.raffaeleconforti.wrapper.settings.MiningSettings;
 import com.raffaeleconforti.wrapper.PetrinetWithMarking;
 import com.raffaeleconforti.marking.MarkingDiscoverer;
 import nl.tue.astar.AStarThread.Canceller;
