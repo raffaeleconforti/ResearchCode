@@ -109,5 +109,9 @@
             <groupId>org.eclipse.collections</groupId>
             <artifactId>eclipse-collections</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.raffaeleconforti</groupId>
+            <artifactId>measurements</artifactId>
+        </dependency>
     </dependencies>
 </project>

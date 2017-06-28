@@ -1,10 +1,15 @@
 package com.raffaeleconforti.noisefiltering.timestamp;
 
+import com.raffaeleconforti.context.FakePluginContext;
 import com.raffaeleconforti.log.util.LogImporter;
 import com.raffaeleconforti.log.util.NameExtractor;
 import com.raffaeleconforti.log.util.TraceToString;
+import com.raffaeleconforti.marking.MarkingDiscoverer;
+import com.raffaeleconforti.measurements.Measure;
+import com.raffaeleconforti.measurements.impl.AlignmentBasedFitness;
 import com.raffaeleconforti.noisefiltering.timestamp.check.TimeStampChecker;
 import com.raffaeleconforti.statistics.StatisticsSelector;
+import com.raffaeleconforti.wrapper.PetrinetWithMarking;
 import org.deckfour.xes.factory.XFactoryNaiveImpl;
 import org.deckfour.xes.model.XAttributeTimestamp;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
@@ -16,6 +21,12 @@ import org.deckfour.xes.extension.std.XTimeExtension;
 import org.deckfour.xes.model.XEvent;
 import org.deckfour.xes.model.XLog;
 import org.deckfour.xes.model.XTrace;
+import org.processmining.acceptingpetrinet.models.impl.AcceptingPetriNetImpl;
+import org.processmining.acceptingpetrinet.plugins.ImportAcceptingPetriNetPlugin;
+import org.processmining.contexts.uitopia.UIPluginContext;
+import org.processmining.framework.plugin.PluginContext;
+import org.processmining.models.graphbased.directed.petrinet.Petrinet;
+import org.processmining.models.semantics.petrinet.Marking;
 
 import java.io.FileWriter;
 import java.text.DecimalFormat;
@@ -31,7 +42,40 @@ public class TimeStampFilterChecker {
     XConceptExtension xce = XConceptExtension.instance();
     XTimeExtension xte = XTimeExtension.instance();
 
+    //Graph
     public static void main(String[] args) throws Exception {
+        String path = "/Volumes/Data/Dropbox/LaTex/2017/Timestamp Repair/Logs/Experiments/";
+        String logExtension = ".xes.gz";
+
+        String[] typeLogs = new String[] {"Event", "Trace", "UniqueTrace"};
+        String[] typeFilters = new String[] {"", " ILP", "D", "R"};
+
+        String[] typeExperiments = new String[] {"0.05", "0.10", "0.15", "0.20", "0.25", "0.30", "0.35", "0.40"};
+
+        TimeStampFilterChecker timeStampFilterChecker = new TimeStampFilterChecker();
+
+        UIPluginContext context = new FakePluginContext();
+        ImportAcceptingPetriNetPlugin importAcceptingPetriNetPlugin = new ImportAcceptingPetriNetPlugin();
+        Petrinet petrinet = ((AcceptingPetriNetImpl) importAcceptingPetriNetPlugin.importFile(context, "/Volumes/Data/Dropbox/LaTex/2017/Timestamp Repair/Logs/Experiments/TimeExperiments.pnml")).getNet();
+        Marking initialMarking = MarkingDiscoverer.constructInitialMarking(context, petrinet);
+        Marking finalMarking = MarkingDiscoverer.constructFinalMarking(context, petrinet);
+        PetrinetWithMarking petrinetWithMarking = new PetrinetWithMarking(petrinet, initialMarking, finalMarking);
+
+        for(String typeLog : typeLogs) {
+            for(String typeExperiment : typeExperiments) {
+                String n = "";
+                for(String typeFilter : typeFilters) {
+                    XLog filteredLog = LogImporter.importFromFile(new XFactoryNaiveImpl(), path + typeLog + "/" + typeLog + typeExperiment + typeFilter + logExtension);
+
+                    AlignmentBasedFitness alignmentBasedFitness = new AlignmentBasedFitness();
+                    Measure measure = alignmentBasedFitness.computeMeasurement(context, new XEventNameClassifier(), petrinetWithMarking, null, filteredLog);
+                    System.out.println(typeLog + "/" + typeLog + typeExperiment + typeFilter +" " + measure.getValue());
+                }
+            }
+        }
+    }
+
+    public static void main4(String[] args) throws Exception {
         String path = "/Volumes/Data/Dropbox/LaTex/2016/Timestamp Repair/Logs/Experiments/RealLife/";
         String logExtension = ".xes.gz";
 
