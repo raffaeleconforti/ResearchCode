@@ -6,9 +6,13 @@ import com.raffaeleconforti.memorylog.XFactoryMemoryImpl;
 import com.raffaeleconforti.noisefiltering.event.InfrequentBehaviourFilter;
 import com.raffaeleconforti.noisefiltering.timestamp.permutation.PermutationTechnique;
 import org.deckfour.xes.classification.XEventNameClassifier;
+import org.deckfour.xes.extension.std.XOrganizationalExtension;
 import org.deckfour.xes.factory.XFactoryNaiveImpl;
+import org.deckfour.xes.model.XEvent;
 import org.deckfour.xes.model.XLog;
 import org.deckfour.xes.model.XTrace;
+
+import java.util.StringTokenizer;
 
 /**
  * Created by Raffaele Conforti (conforti.raffaele@gmail.com) on 20/4/17.
@@ -16,6 +20,34 @@ import org.deckfour.xes.model.XTrace;
 public class TimestampFixerTest {
 
     public static void main(String[] args) throws Exception {
+        XLog log = LogImporter.importFromFile(new XFactoryNaiveImpl(), "/Volumes/Data/Dropbox/Consultancies/Cineca-UniParma/u-gov/logs/Log_CG_DG/Result/Arcs/Vendite/Vendite_50_Instances.xes.gz");
+
+        for(XTrace trace : log) {
+            for(XEvent event : trace) {
+                String resource = XOrganizationalExtension.instance().extractResource(event);
+                resource = resource.replace("@unipr.it", "");
+                resource = resource.replace("@cineca.it", "");
+                resource = resource.replace(".", " ");
+                StringTokenizer st = new StringTokenizer(resource, " ");
+                String new_resource = "<html><b><center><p style=\"color:navy\">";
+                while (st.hasMoreTokens()) {
+                    new_resource += capitalize(st.nextToken());
+                    if(st.hasMoreTokens()) new_resource += "<br>";
+                }
+                new_resource += "</center></b></p></html>";
+                XOrganizationalExtension.instance().assignResource(event, new_resource);
+            }
+        }
+
+        LogImporter.exportToFile("/Volumes/Data/Dropbox/Consultancies/Cineca-UniParma/u-gov/logs/Log_CG_DG/Result/Arcs/Vendite/Vendite_50_Instances2.xes.gz", log);
+    }
+
+    public static String capitalize(String s) {
+        if (s.length() == 0) return s;
+        return s.substring(0, 1).toUpperCase() + s.substring(1).toLowerCase();
+    }
+
+    public static void main2(String[] args) throws Exception {
         XLog log = LogImporter.importFromFile(new XFactoryNaiveImpl(), "/Volumes/Data/SharedFolder/Logs/ArtificialLess.xes.gz");
 
         LogCloner logCloner = new LogCloner(new XFactoryMemoryImpl());
