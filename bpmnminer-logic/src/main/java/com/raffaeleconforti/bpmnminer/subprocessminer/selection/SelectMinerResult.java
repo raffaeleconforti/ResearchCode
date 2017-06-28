@@ -1,5 +1,7 @@
 package com.raffaeleconforti.bpmnminer.subprocessminer.selection;
 
+import com.raffaeleconforti.wrapper.settings.MiningSettings;
+
 /**
  * Created by Raffaele Conforti on 27/02/14.
  */
@@ -20,6 +22,7 @@ public class SelectMinerResult {
     public static final int ILPPOS = 5;
 
     private int selectedAlgorithm;
+    private MiningSettings params;
     private double timerEventPercentage;
     private double timerEventTolerance;
     private double interruptingEventTolerance;
@@ -28,6 +31,7 @@ public class SelectMinerResult {
     private double noiseThreshold;
 
     public SelectMinerResult(int selectedAlgorithm,
+                             MiningSettings params,
                              double interruptingEventTolerance,
                              double multiInstancePercentage,
                              double multiInstanceTolerance,
@@ -35,6 +39,7 @@ public class SelectMinerResult {
                              double timerEventTolerance,
                              double noiseThreshold) {
         this.selectedAlgorithm = selectedAlgorithm;
+        this.params = params;
         this.timerEventPercentage = timerEventPercentage;
         this.timerEventTolerance = timerEventTolerance;
         this.interruptingEventTolerance = interruptingEventTolerance;
@@ -50,6 +55,9 @@ public class SelectMinerResult {
     public void setSelectedAlgorithm(int selectedAlgorithm) {
         this.selectedAlgorithm = selectedAlgorithm;
     }
+
+    public MiningSettings getMiningSettings() { return params; }
+    public void setMiningSettings(MiningSettings params) { this.params = params; }
 
     public double getTimerEventPercentage() {
         return timerEventPercentage;

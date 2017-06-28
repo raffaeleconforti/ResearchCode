@@ -4,7 +4,7 @@ import com.raffaeleconforti.context.FakePluginContext;
 import com.raffaeleconforti.conversion.petrinet.PetriNetToBPMNConverter;
 import com.raffaeleconforti.wrapper.LogPreprocessing;
 import com.raffaeleconforti.wrapper.MiningAlgorithm;
-import com.raffaeleconforti.wrapper.MiningSettings;
+import com.raffaeleconforti.wrapper.settings.MiningSettings;
 import com.raffaeleconforti.wrapper.PetrinetWithMarking;
 import com.raffaeleconforti.marking.MarkingDiscoverer;
 import org.deckfour.xes.classification.XEventClassifier;
@@ -70,6 +70,30 @@ public class HeuristicsAlgorithmWrapper implements MiningAlgorithm {
             context.showConfiguration("Heuristics Miner Parameters", parameters);
             settings = parameters.getSettings();
         }
+
+        if( params != null ) {
+            if( params.containsParam("dependencyThresholdHM6") && params.getParam("dependencyThresholdHM6") instanceof Double )
+            settings.setDependencyThreshold((Double) params.getParam("dependencyThresholdHM6"));
+
+            if( params.containsParam("L1lThresholdHM6") && params.getParam("L1lThresholdHM6") instanceof Double )
+            settings.setL1lThreshold((Double) params.getParam("L1lThresholdHM6"));
+
+            if( params.containsParam("L2lThresholdHM6") && params.getParam("L2lThresholdHM6") instanceof Double )
+            settings.setL2lThreshold((Double) params.getParam("L2lThresholdHM6"));
+
+            if( params.containsParam("longDepThresholdHM6") && params.getParam("longDepThresholdHM6") instanceof Double )
+            settings.setLongDistanceThreshold((Double) params.getParam("longDepThresholdHM6"));
+
+            if( params.containsParam("relativeToBestThresholdHM6") && params.getParam("relativeToBestThresholdHM6") instanceof Double )
+            settings.setRelativeToBestThreshold((Double) params.getParam("relativeToBestThresholdHM6"));
+
+            if( params.containsParam("allConnectedHM6") && params.getParam("allConnectedHM6") instanceof Boolean )
+            settings.setUseAllConnectedHeuristics((Boolean) params.getParam("allConnectedHM6"));
+
+            if( params.containsParam("longDependencyHM6") && params.getParam("longDependencyHM6") instanceof Boolean )
+            settings.setUseLongDistanceDependency((Boolean) params.getParam("longDependencyHM6"));
+        }
+
         HeuristicsNet heuristicsNet = FlexibleHeuristicsMinerPlugin.run(context, log, settings);
         Object[] result = HeuristicsNetToPetriNetConverter.converter(context, heuristicsNet);
         logPreprocessing.removedAddedElements((Petrinet) result[0]);

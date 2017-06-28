@@ -1,5 +1,6 @@
 package com.raffaeleconforti.wrapper;
 
+import com.raffaeleconforti.wrapper.settings.MiningSettings;
 import org.deckfour.xes.model.XLog;
 import org.processmining.contexts.uitopia.UIPluginContext;
 import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;

@@ -22,6 +22,7 @@ import com.raffaeleconforti.foreignkeydiscovery.util.EntityPrimaryKeyConverter;
 import com.raffaeleconforti.log.util.LogCloner;
 import com.raffaeleconforti.log.util.LogModifier;
 import com.raffaeleconforti.log.util.LogOptimizer;
+import com.raffaeleconforti.wrapper.settings.MiningSettings;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 import org.deckfour.xes.extension.std.XConceptExtension;
@@ -79,6 +80,7 @@ public class BPMNSubProcessMiner {
         LogExtractor logExtractor = new LogExtractor(logOptimizer);
 
         int selectedAlgorithm = guiResult.getSelectedAlgorithm();
+        MiningSettings params = guiResult.getMiningSettings();
         double timerEventPercentage = guiResult.getTimerEventPercentage();
         double timerEventTolerance = guiResult.getTimerEventTolerance();
         double interruptingEventTolerance = guiResult.getInterruptingEventTolerance();
@@ -90,7 +92,7 @@ public class BPMNSubProcessMiner {
         if(concModel == null) {
             long time = System.nanoTime();
             rawlog = logMod.insertArtificialStartAndEndEvent(rawlog);
-            BPMNDiagram model = bpmnMiner.mineBPMNDiagram(context, rawlog, null, selectedAlgorithm, false, commandline);
+            BPMNDiagram model = bpmnMiner.mineBPMNDiagram(context, rawlog, null, selectedAlgorithm, params, false, commandline);
             System.out.println("Mining Time = " + (System.nanoTime() - time));
             model = BPMNModifier.removeUnecessaryLabels(model);
             return model;
@@ -264,7 +266,7 @@ public class BPMNSubProcessMiner {
                         System.out.println("Logs for Mining Generated");
 
                         System.out.println("Generating Process Models...");
-                        generateProcessModels(mappingSubprocesses, mappingEntityArtifact, (Tree) tree.clone(), minerResults, logs, bpmnDiagramEntityUnifiedMap, selectedAlgorithm, commandline);
+                        generateProcessModels(mappingSubprocesses, mappingEntityArtifact, (Tree) tree.clone(), minerResults, logs, bpmnDiagramEntityUnifiedMap, selectedAlgorithm, params, commandline);
                         System.out.println("Process Models Generated");
 
                         BPMNDiagram mainModel = null;
@@ -1105,7 +1107,7 @@ public class BPMNSubProcessMiner {
     }
 
     private void generateProcessModels(Map<Set<String>, Integer> mappingSubprocesses, Map<Entity, Set<String>> mappingEntityArtifact, Tree tree,
-                                       List<BPMNDiagram> minerResults, Map<Entity, XLog> logs, Map<BPMNDiagram, Entity> bpmnDiagramEntityUnifiedMap, int selectedAlgorithm, boolean commandline) throws EmptyLogException, ExecutionCancelledException {
+                                       List<BPMNDiagram> minerResults, Map<Entity, XLog> logs, Map<BPMNDiagram, Entity> bpmnDiagramEntityUnifiedMap, int selectedAlgorithm, MiningSettings params, boolean commandline) throws EmptyLogException, ExecutionCancelledException {
 
         List<Tree.Node> leaves;
         int subprocessPos = 1;
@@ -1124,7 +1126,7 @@ public class BPMNSubProcessMiner {
                 if(log.size() > 0) {
 
                     System.out.println("Starting mining...");
-                    BPMNDiagram result = bpmnMiner.mineBPMNDiagram(pluginContext, log, "SubProcess " + subprocessPos, selectedAlgorithm, true, commandline);
+                    BPMNDiagram result = bpmnMiner.mineBPMNDiagram(pluginContext, log, "SubProcess " + subprocessPos, selectedAlgorithm, params, true, commandline);
                     System.out.println("Mining completed");
 
                     minerResults.add(result);

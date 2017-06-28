@@ -8,7 +8,7 @@ import com.raffaeleconforti.context.FakePluginContext;
 import com.raffaeleconforti.conversion.bpmn.BPMNToPetriNetConverter;
 import com.raffaeleconforti.conversion.petrinet.PetriNetToBPMNConverter;
 import com.raffaeleconforti.wrapper.MiningAlgorithm;
-import com.raffaeleconforti.wrapper.MiningSettings;
+import com.raffaeleconforti.wrapper.settings.MiningSettings;
 import com.raffaeleconforti.wrapper.PetrinetWithMarking;
 import com.raffaeleconforti.marking.MarkingDiscoverer;
 import org.deckfour.xes.model.XLog;
@@ -21,7 +21,6 @@ import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
 import org.processmining.models.graphbased.directed.petrinet.Petrinet;
 import org.processmining.models.semantics.petrinet.Marking;
 import org.processmining.plugins.bpmn.plugins.BpmnExportPlugin;
-import org.processmining.plugins.bpmnminer.types.MinerSettings;
 
 import java.io.File;
 import java.io.FileDescriptor;
@@ -66,11 +65,23 @@ public class SplitMinerWrapper implements MiningAlgorithm {
     }
 
     public BPMNDiagram mineBPMNDiagram(UIPluginContext context, XLog log, boolean structure, MiningSettings params) {
-        BPMNDiagram output = null;
+        BPMNDiagram output;
+        Double eta = SplitMinerUIResult.FREQUENCY_THRESHOLD;
+        Double epsilon = SplitMinerUIResult.PARALLELISMS_THRESHOLD;
+        Boolean replaceORs = true;
+
+        if( params != null ) {
+            if( params.containsParam("epsilonSM") && params.getParam("epsilonSM") instanceof Double )
+                epsilon = (Double) params.getParam("epsilonSM");
+            if( params.containsParam("etaSM") && params.getParam("etaSM") instanceof Double )
+                eta = (Double) params.getParam("etaSM");
+            if( params.containsParam("replaceORsSM") && params.getParam("replaceORsSM") instanceof Boolean )
+                replaceORs = (Boolean) params.getParam("replaceORsSM");
+        }
 
         if(context instanceof FakePluginContext) {
             SplitMiner yam = new SplitMiner();
-            output = yam.mineBPMNModel(log, 0.4, 0.1, DFGPUIResult.FilterType.WTH, true, true, SplitMinerUIResult.StructuringTime.NONE);
+            output = yam.mineBPMNModel(log, eta, epsilon, DFGPUIResult.FilterType.WTH, true, replaceORs, SplitMinerUIResult.StructuringTime.NONE);
 //            export(output, "log_"+System.currentTimeMillis());
         } else {
             output = SplitMinerPlugin.discoverBPMNModelWithSplitMiner(context, log);

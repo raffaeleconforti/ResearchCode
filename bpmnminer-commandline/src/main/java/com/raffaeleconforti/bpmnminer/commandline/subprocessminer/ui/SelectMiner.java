@@ -29,7 +29,7 @@ public class SelectMiner {
         double initialTimerTolerance = 0.0;
 		double initialNoiseThreshold = 0.3;
 
-        result = new SelectMinerResult(0, initialEventTolerance, initialMultiinstancePercentage, initialMultiinstanceTolerance, initialTimerPercentage, initialTimerTolerance, initialNoiseThreshold);
+        result = new SelectMinerResult(0, null, initialEventTolerance, initialMultiinstancePercentage, initialMultiinstanceTolerance, initialTimerPercentage, initialTimerTolerance, initialNoiseThreshold);
 
 		String token = null;
 
@@ -190,7 +190,7 @@ public class SelectMiner {
     }
 
     public SelectMinerResult getSelectedAlgorithm() {
-        result = new SelectMinerResult(selectedAlgorithm, interruptingEventTolerance, multiInstancePercentage, multiInstanceTolerance, timerEventPercentage, timerEventTolerance, noiseThreshold);
+        result = new SelectMinerResult(selectedAlgorithm, null, interruptingEventTolerance, multiInstancePercentage, multiInstanceTolerance, timerEventPercentage, timerEventTolerance, noiseThreshold);
         return result;
     }
 

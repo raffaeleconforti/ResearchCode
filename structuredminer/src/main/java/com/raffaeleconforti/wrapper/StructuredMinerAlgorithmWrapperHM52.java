@@ -7,6 +7,7 @@ import com.raffaeleconforti.marking.MarkingDiscoverer;
 import com.raffaeleconforti.structuredminer.miner.StructuredMiner;
 import com.raffaeleconforti.structuredminer.ui.SettingsStructuredMiner;
 import com.raffaeleconforti.structuredminer.ui.SettingsStructuredMinerUI;
+import com.raffaeleconforti.wrapper.settings.MiningSettings;
 import org.deckfour.xes.model.XLog;
 import org.processmining.contexts.uitopia.UIPluginContext;
 import org.processmining.contexts.uitopia.annotations.UITopiaVariant;

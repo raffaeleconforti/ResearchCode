@@ -4,6 +4,7 @@ import au.edu.qut.bpmn.structuring.StructuringService;
 import com.raffaeleconforti.bpmnminer.prom.BPMNMinerPlugin;
 import com.raffaeleconforti.conversion.bpmn.BPMNToPetriNetConverter;
 import com.raffaeleconforti.conversion.petrinet.PetriNetToBPMNConverter;
+import com.raffaeleconforti.wrapper.settings.MiningSettings;
 import org.deckfour.xes.model.XLog;
 import org.processmining.contexts.uitopia.UIPluginContext;
 import org.processmining.contexts.uitopia.annotations.UITopiaVariant;
