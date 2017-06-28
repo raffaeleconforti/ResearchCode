@@ -6,6 +6,7 @@ import com.raffaeleconforti.measurements.impl.AlignmentBasedFitness;
 import com.raffaeleconforti.measurements.impl.AlignmentBasedPrecision;
 import com.raffaeleconforti.wrapper.LogPreprocessing;
 import com.raffaeleconforti.wrapper.MiningAlgorithm;
+import com.raffaeleconforti.wrapper.MiningSettings;
 import com.raffaeleconforti.wrapper.PetrinetWithMarking;
 import org.deckfour.xes.classification.XEventClassifier;
 import org.deckfour.xes.classification.XEventNameClassifier;
@@ -28,16 +29,16 @@ import java.util.*;
  */
 public class HyperParamOptimizedHeuristicsMiner implements MiningAlgorithm {
 
-        private static double STEP = 0.05;
-        private static double MIN = 0.0;
-        private static double MAX = 1.0;
+        private static double STEP = 0.10D;
+        private static double MIN = 0.00D;
+        private static double MAX = 1.01D;
 
         public PetrinetWithMarking minePetrinet(UIPluginContext context, XLog log) {
-            return minePetrinet(context, log, false);
+            return minePetrinet(context, log, false, null);
         }
 
         @Override
-        public PetrinetWithMarking minePetrinet(UIPluginContext context, XLog log, boolean structure) {
+        public PetrinetWithMarking minePetrinet(UIPluginContext context, XLog log, boolean structure, MiningSettings params) {
             return discoverBestOn(context, log, structure);
         }
 
@@ -95,7 +96,7 @@ public class HyperParamOptimizedHeuristicsMiner implements MiningAlgorithm {
 
                             HeuristicsNet heuristicsNet = FlexibleHeuristicsMinerPlugin.run(context, log, minerSettings);
                             Object[] result = HeuristicsNetToPetriNetConverter.converter(context, heuristicsNet);
-                            logPreprocessing.removedAddedElements((Petrinet) result[0]);
+//                            logPreprocessing.removedAddedElements((Petrinet) result[0]);
 
                             if(result[1] == null) result[1] = MarkingDiscoverer.constructInitialMarking(context, (Petrinet) result[0]);
                             else MarkingDiscoverer.createInitialMarkingConnection(context, (Petrinet) result[0], (Marking) result[1]);
@@ -135,8 +136,8 @@ public class HyperParamOptimizedHeuristicsMiner implements MiningAlgorithm {
                     rtb_threshold += STEP;
                 } while (rtb_threshold <= MAX);
 
-                if(longDistance) break;
-                else longDistance = true;
+//                if(longDistance) break;
+//                else longDistance = true;
             } while (longDistance);
 
             bestValue = Collections.max(fscore.keySet());
@@ -146,7 +147,7 @@ public class HyperParamOptimizedHeuristicsMiner implements MiningAlgorithm {
             return models.get(bestCombination);
         }
 
-        public BPMNDiagram mineBPMNDiagram(UIPluginContext context, XLog log, boolean structure) {
+        public BPMNDiagram mineBPMNDiagram(UIPluginContext context, XLog log, boolean structure, MiningSettings params) {
             BPMNDiagram output = null;
             PetrinetWithMarking petrinet = minePetrinet(context, log);
             output = PetriNetToBPMNConverter.convert(petrinet.getPetrinet(), petrinet.getInitialMarking(), petrinet.getFinalMarking(), false);
@@ -155,12 +156,11 @@ public class HyperParamOptimizedHeuristicsMiner implements MiningAlgorithm {
 
         @Override
         public String getAlgorithmName() {
-            return "Naive HyperParam-Optimized Heuristics Miner 6.0 Infrequent";
+            return "Naive HyperParam-Optimized Heuristics Miner 6.0";
         }
 
         @Override
         public String getAcronym() {
             return "HPO-HM6";
         }
-
 }

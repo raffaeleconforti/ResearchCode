@@ -9,6 +9,7 @@ import com.raffaeleconforti.marking.MarkingDiscoverer;
 import com.raffaeleconforti.measurements.impl.AlignmentBasedFitness;
 import com.raffaeleconforti.measurements.impl.AlignmentBasedPrecision;
 import com.raffaeleconforti.wrapper.MiningAlgorithm;
+import com.raffaeleconforti.wrapper.MiningSettings;
 import com.raffaeleconforti.wrapper.PetrinetWithMarking;
 import org.deckfour.xes.classification.XEventNameClassifier;
 import org.deckfour.xes.model.XLog;
@@ -41,9 +42,13 @@ public class HyperParamOptimizedSplitMiner implements MiningAlgorithm {
 
     public enum BestOn {FIT, PREC, FSCORE}
 
-    private static double STEP = 0.1D;
-    private static double MIN = 0.1D;
-    private static double MAX = 1.0D;
+    private static double p_STEP = 0.10D;
+    private static double p_MIN = 0.00D;
+    private static double p_MAX = 1.05D;
+
+    private static double f_STEP = 0.10D;
+    private static double f_MIN = 0.10D;
+    private static double f_MAX = 1.05D;
 
 //    static double[] pt_values={0.05, 0.10, 0.25, 0.50, 0.75, 1.00};
 //    static double[] pt_values={0.10, 0.40, 0.70, 1.00};
@@ -54,11 +59,11 @@ public class HyperParamOptimizedSplitMiner implements MiningAlgorithm {
             pack = "bpmntk-osgi")
     @PluginVariant(variantLabel = "Naive HyperParam-Optimized Split Miner Wrapper", requiredParameterLabels = {0})
     public PetrinetWithMarking minePetrinet(UIPluginContext context, XLog log) {
-        return minePetrinet(context, log, false);
+        return minePetrinet(context, log, false, null);
     }
 
     @Override
-    public PetrinetWithMarking minePetrinet(UIPluginContext context, XLog log, boolean structure) {
+    public PetrinetWithMarking minePetrinet(UIPluginContext context, XLog log, boolean structure, MiningSettings params) {
         return discoverBestOn(context, log, structure, BestOn.FSCORE);
     }
 
@@ -85,9 +90,9 @@ public class HyperParamOptimizedSplitMiner implements MiningAlgorithm {
         String bestCombination = null;
 
         Double p_threshold;
-        Double f_threshold = MIN;
+        Double f_threshold = f_MIN;
         do {
-            p_threshold = MIN;
+            p_threshold = p_MIN;
             do {
                 combination = ":p:" + p_threshold + ":f:" + f_threshold;
                 try {
@@ -118,10 +123,10 @@ public class HyperParamOptimizedSplitMiner implements MiningAlgorithm {
                     fscore.put(0.0D, combination);
                 }
 
-                p_threshold += STEP;
-            } while ( p_threshold <= MAX );
-            f_threshold += STEP;
-        } while( f_threshold <= MAX );
+                p_threshold += p_STEP;
+            } while ( p_threshold <= p_MAX );
+            f_threshold += f_STEP;
+        } while( f_threshold <= f_MAX );
 
         switch ( metric ) {
             case FIT:
@@ -157,7 +162,7 @@ public class HyperParamOptimizedSplitMiner implements MiningAlgorithm {
         return new PetrinetWithMarking((Petrinet) result[0], (Marking) result[1], (Marking) result[2]);
     }
 
-    public BPMNDiagram mineBPMNDiagram(UIPluginContext context, XLog log, boolean structure) {
+    public BPMNDiagram mineBPMNDiagram(UIPluginContext context, XLog log, boolean structure, MiningSettings params) {
         BPMNDiagram output = null;
         PetrinetWithMarking petrinet = minePetrinet(context, log);
         output = PetriNetToBPMNConverter.convert(petrinet.getPetrinet(), petrinet.getInitialMarking(), petrinet.getFinalMarking(), false);

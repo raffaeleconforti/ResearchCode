@@ -8,6 +8,7 @@ import com.raffaeleconforti.context.FakePluginContext;
 import com.raffaeleconforti.conversion.bpmn.BPMNToPetriNetConverter;
 import com.raffaeleconforti.conversion.petrinet.PetriNetToBPMNConverter;
 import com.raffaeleconforti.wrapper.MiningAlgorithm;
+import com.raffaeleconforti.wrapper.MiningSettings;
 import com.raffaeleconforti.wrapper.PetrinetWithMarking;
 import com.raffaeleconforti.marking.MarkingDiscoverer;
 import org.deckfour.xes.model.XLog;
@@ -20,6 +21,7 @@ import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
 import org.processmining.models.graphbased.directed.petrinet.Petrinet;
 import org.processmining.models.semantics.petrinet.Marking;
 import org.processmining.plugins.bpmn.plugins.BpmnExportPlugin;
+import org.processmining.plugins.bpmnminer.types.MinerSettings;
 
 import java.io.File;
 import java.io.FileDescriptor;
@@ -41,12 +43,12 @@ public class SplitMinerWrapper implements MiningAlgorithm {
             pack = "bpmntk-osgi")
     @PluginVariant(variantLabel = "Split Miner Wrapper", requiredParameterLabels = {0})
     public PetrinetWithMarking minePetrinet(UIPluginContext context, XLog log) {
-        return minePetrinet(context, log, false);
+        return minePetrinet(context, log, false, null);
     }
 
     @Override
-    public PetrinetWithMarking minePetrinet(UIPluginContext context, XLog log, boolean structure) {
-        BPMNDiagram diagram = this.mineBPMNDiagram(context, log, structure);
+    public PetrinetWithMarking minePetrinet(UIPluginContext context, XLog log, boolean structure, MiningSettings params) {
+        BPMNDiagram diagram = this.mineBPMNDiagram(context, log, structure, params);
 
         Object[] result = BPMNToPetriNetConverter.convert(diagram);
 
@@ -63,12 +65,12 @@ public class SplitMinerWrapper implements MiningAlgorithm {
         return new PetrinetWithMarking((Petrinet) result[0], (Marking) result[1], (Marking) result[2]);
     }
 
-    public BPMNDiagram mineBPMNDiagram(UIPluginContext context, XLog log, boolean structure) {
+    public BPMNDiagram mineBPMNDiagram(UIPluginContext context, XLog log, boolean structure, MiningSettings params) {
         BPMNDiagram output = null;
 
         if(context instanceof FakePluginContext) {
             SplitMiner yam = new SplitMiner();
-            output = yam.mineBPMNModel(log, 0.0, 1.0, DFGPUIResult.FilterType.WTH, true, true, SplitMinerUIResult.StructuringTime.NONE);
+            output = yam.mineBPMNModel(log, 0.4, 0.1, DFGPUIResult.FilterType.WTH, true, true, SplitMinerUIResult.StructuringTime.NONE);
 //            export(output, "log_"+System.currentTimeMillis());
         } else {
             output = SplitMinerPlugin.discoverBPMNModelWithSplitMiner(context, log);

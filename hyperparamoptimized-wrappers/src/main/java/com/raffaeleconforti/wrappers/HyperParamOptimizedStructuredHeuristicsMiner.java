@@ -1,5 +1,6 @@
 package com.raffaeleconforti.wrappers;
 
+import au.edu.qut.bpmn.structuring.StructuringService;
 import com.raffaeleconforti.conversion.bpmn.BPMNToPetriNetConverter;
 import com.raffaeleconforti.conversion.petrinet.PetriNetToBPMNConverter;
 import com.raffaeleconforti.marking.MarkingDiscoverer;
@@ -9,36 +10,30 @@ import com.raffaeleconforti.wrapper.LogPreprocessing;
 import com.raffaeleconforti.wrapper.MiningAlgorithm;
 import com.raffaeleconforti.wrapper.MiningSettings;
 import com.raffaeleconforti.wrapper.PetrinetWithMarking;
+import org.deckfour.xes.classification.XEventClassifier;
 import org.deckfour.xes.classification.XEventNameClassifier;
 import org.deckfour.xes.model.XLog;
 import org.processmining.contexts.uitopia.UIPluginContext;
 import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
 import org.processmining.models.graphbased.directed.petrinet.Petrinet;
+import org.processmining.models.heuristics.HeuristicsNet;
 import org.processmining.models.semantics.petrinet.Marking;
-import org.processmining.plugins.bpmnminer.causalnet.CausalNet;
-import org.processmining.plugins.bpmnminer.converter.CausalNetToPetrinet;
-import org.processmining.plugins.bpmnminer.miner.FodinaMiner;
-import org.processmining.plugins.bpmnminer.plugins.BPMNMinerPlugin;
-import org.processmining.plugins.bpmnminer.types.MinerSettings;
-import org.processmining.plugins.bpmnminer.ui.FullParameterPanel;
+import org.processmining.plugins.heuristicsnet.miner.heuristics.converter.HeuristicsNetToPetriNetConverter;
+import org.processmining.plugins.heuristicsnet.miner.heuristics.miner.FlexibleHeuristicsMinerPlugin;
+import org.processmining.plugins.heuristicsnet.miner.heuristics.miner.gui.ParametersPanel;
+import org.processmining.plugins.heuristicsnet.miner.heuristics.miner.settings.HeuristicsMinerSettings;
 
 import java.io.*;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
- * Created by Adriano on 5/18/2017.
+ * Created by Adriano on 5/19/2017.
  */
-public class HyperParamOptimizedFodina implements MiningAlgorithm {
+public class HyperParamOptimizedStructuredHeuristicsMiner implements MiningAlgorithm {
 
-    private static double d_STEP = 0.10D;
-    private static double d_MIN = 0.00D;
-    private static double d_MAX = 1.01D;
-
-    private static double p_STEP = 10.0D;
-    private static double p_MIN = -50.0D;
-    private static double p_MAX = 50.01D;
+    private static double STEP = 0.10D;
+    private static double MIN = 0.00D;
+    private static double MAX = 1.01D;
 
     public PetrinetWithMarking minePetrinet(UIPluginContext context, XLog log) {
         return minePetrinet(context, log, false, null);
@@ -56,12 +51,14 @@ public class HyperParamOptimizedFodina implements MiningAlgorithm {
         Map<Double, String> fscore = new HashMap<>();
 
 
-        MinerSettings minerSettings = new MinerSettings();
         PetrinetWithMarking petrinet;
 
         AlignmentBasedFitness fitnessCalculator = new AlignmentBasedFitness();
         AlignmentBasedPrecision precisionCalculator = new AlignmentBasedPrecision();
         XEventNameClassifier eventNameClassifier = new XEventNameClassifier();
+
+        LogPreprocessing logPreprocessing = new LogPreprocessing();
+        log = logPreprocessing.preprocessLog(context, log);
 
         Double fit;
         Double prec;
@@ -72,45 +69,57 @@ public class HyperParamOptimizedFodina implements MiningAlgorithm {
 
         String combination = null;
 
-        LogPreprocessing logPreprocessing = new LogPreprocessing();
-        XLog plog = logPreprocessing.preprocessLog(context, log);
-
         double d_threshold;
-        double p_threshold;
+        double rtb_threshold;
         boolean longDistance = false;
 
+        BPMNDiagram diagram, structuredDiagram;
+        StructuringService ss = new StructuringService();
+
+        Collection<XEventClassifier> classifiers = new HashSet();
+        classifiers.add(new XEventNameClassifier());
+        HeuristicsMinerSettings minerSettings;
+        ParametersPanel parameters = new ParametersPanel(classifiers);
+        minerSettings = parameters.getSettings();
+
         do {
-            minerSettings.useLongDistanceDependency = longDistance;
-            p_threshold = p_MIN;
+            minerSettings.setUseLongDistanceDependency(longDistance);
+            rtb_threshold = MIN;
             do {
-                minerSettings.patternThreshold = p_threshold;
-                d_threshold = d_MIN;
+                minerSettings.setRelativeToBestThreshold(rtb_threshold);
+                d_threshold = MIN;
                 do {
-                    combination = ":p:" + p_threshold + ":d:" + d_threshold + ":l:" + longDistance;
+                    combination = ":p:" + rtb_threshold + ":d:" + d_threshold + ":l:" + longDistance;
                     try {
-                        minerSettings.dependencyThreshold = d_threshold;
+                        minerSettings.setDependencyThreshold(d_threshold);
 
                         System.setOut(new PrintStream(new OutputStream() {
                             @Override
                             public void write(int b) throws IOException {}
                         }));
 
-                        Object[] bpmnResults = BPMNMinerPlugin.runMiner(context, plog, minerSettings);
-                        CausalNet net = (CausalNet) bpmnResults[0];
+                        HeuristicsNet heuristicsNet = FlexibleHeuristicsMinerPlugin.run(context, log, minerSettings);
+                        Object[] result = HeuristicsNetToPetriNetConverter.converter(context, heuristicsNet);
+//                        logPreprocessing.removedAddedElements((Petrinet) result[0]);
 
-                        Object[] result = CausalNetToPetrinet.convert(context, net);
-                        logPreprocessing.removedAddedElements((Petrinet) result[0]);
+                        if(result[1] == null) result[1] = MarkingDiscoverer.constructInitialMarking(context, (Petrinet) result[0]);
+                        else MarkingDiscoverer.createInitialMarkingConnection(context, (Petrinet) result[0], (Marking) result[1]);
+                        Marking finalMarking = MarkingDiscoverer.constructFinalMarking(context, (Petrinet) result[0]);
+
+                        diagram = PetriNetToBPMNConverter.convert((Petrinet) result[0], (Marking) result[1], finalMarking, false);
+                        structuredDiagram = ss.structureDiagram(diagram, "ASTAR", 100, 500, 10, 100, 2, true, true, true);
+                        result = BPMNToPetriNetConverter.convert(structuredDiagram);
+                        petrinet = new PetrinetWithMarking((Petrinet) result[0], (Marking) result[1], (Marking) result[2]);
 
                         MarkingDiscoverer.createInitialMarkingConnection(context, (Petrinet) result[0], (Marking) result[1]);
-
-                        System.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out)));
-
-                        petrinet = new PetrinetWithMarking((Petrinet) result[0], (Marking) result[1], MarkingDiscoverer.constructFinalMarking(context, (Petrinet) result[0]));
+                        MarkingDiscoverer.createFinalMarkingConnection(context, (Petrinet) result[0], (Marking) result[2]);
 
                         models.put(combination, petrinet);
 
                         fit = fitnessCalculator.computeMeasurement(context, eventNameClassifier, petrinet, this, log).getValue();
                         prec = precisionCalculator.computeMeasurement(context, eventNameClassifier, petrinet, this, log).getValue();
+
+                        System.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out)));
 
                         if (fit.isNaN()) fit = 0.0;
                         if (prec.isNaN()) prec = 0.0;
@@ -127,20 +136,20 @@ public class HyperParamOptimizedFodina implements MiningAlgorithm {
                         System.out.println(score);
 
                     } catch (Exception e) {
-                        System.out.println("ERROR - Fodina output model broken @ " + combination);
+                        System.out.println("ERROR - S-Heuristics Miner output model broken @ " + combination);
                         fitness.put(0.0, combination);
                         precision.put(0.0, combination);
                         fscore.put(0.0, combination);
                     }
 
-                    d_threshold += d_STEP;
-                } while (d_threshold <= d_MAX);
+                    d_threshold += STEP;
+                } while (d_threshold <= MAX);
 
-                p_threshold += p_STEP;
-            } while (p_threshold <= p_MAX);
+                rtb_threshold += STEP;
+            } while (rtb_threshold <= MAX);
 
-//            if(longDistance) break;
-//            else longDistance = true;
+//                if(longDistance) break;
+//                else longDistance = true;
         } while (longDistance);
 
         bestValue = Collections.max(fscore.keySet());
@@ -157,31 +166,14 @@ public class HyperParamOptimizedFodina implements MiningAlgorithm {
         return output;
     }
 
-    private PetrinetWithMarking convertToPetrinet(UIPluginContext context, BPMNDiagram diagram) {
-
-        Object[] result = BPMNToPetriNetConverter.convert(diagram);
-
-        if(result[1] == null) result[1] = PetriNetToBPMNConverter.guessInitialMarking((Petrinet) result[0]);
-        if(result[2] == null) result[2] = PetriNetToBPMNConverter.guessFinalMarking((Petrinet) result[0]);
-
-        if(result[1] == null) result[1] = MarkingDiscoverer.constructInitialMarking(context, (Petrinet) result[0]);
-        else MarkingDiscoverer.createInitialMarkingConnection(context, (Petrinet) result[0], (Marking) result[1]);
-
-        if(result[2] == null) result[2] = MarkingDiscoverer.constructFinalMarking(context, (Petrinet) result[0]);
-        else MarkingDiscoverer.createFinalMarkingConnection(context, (Petrinet) result[0], (Marking) result[1]);
-        System.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out)));
-
-        return new PetrinetWithMarking((Petrinet) result[0], (Marking) result[1], (Marking) result[2]);
-    }
-
     @Override
     public String getAlgorithmName() {
-        return "Naive HyperParam-Optimized Fodina";
+        return "Naive HyperParam-Optimized Structured Heuristics Miner";
     }
 
     @Override
     public String getAcronym() {
-        return "HPO-FO";
+        return "HPO-SHM";
     }
 
 }

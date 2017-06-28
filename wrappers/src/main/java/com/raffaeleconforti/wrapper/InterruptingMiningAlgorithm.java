@@ -19,7 +19,7 @@ public class InterruptingMiningAlgorithm {
         this.timeout = timeout;
     }
 
-    public PetrinetWithMarking minePetrinet(UIPluginContext context, XLog log, boolean structure) {
+    public PetrinetWithMarking minePetrinet(UIPluginContext context, XLog log, boolean structure, MiningSettings params) {
         final PetrinetWithMarking[] petrinetWithMarking = new PetrinetWithMarking[1];
 
         Runnable runnable = new Runnable() {
@@ -31,7 +31,7 @@ public class InterruptingMiningAlgorithm {
                 }));
 
                 try {
-                    petrinetWithMarking[0] = miningAlgorithm.minePetrinet(context, log, structure);
+                    petrinetWithMarking[0] = miningAlgorithm.minePetrinet(context, log, structure, null);
                 } catch (Exception e) {
 
                 }
@@ -71,8 +71,8 @@ public class InterruptingMiningAlgorithm {
         return petrinetWithMarking[0];
     }
 
-    public BPMNDiagram mineBPMNDiagram(UIPluginContext context, XLog log, boolean structure) {
-        return miningAlgorithm.mineBPMNDiagram(context, log, structure);
+    public BPMNDiagram mineBPMNDiagram(UIPluginContext context, XLog log, boolean structure, MiningSettings params) {
+        return miningAlgorithm.mineBPMNDiagram(context, log, structure, params);
     }
 
     public String getAlgorithmName() {

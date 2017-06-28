@@ -9,8 +9,8 @@ import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
  */
 public interface MiningAlgorithm {
 
-    PetrinetWithMarking minePetrinet(UIPluginContext context, XLog log, boolean structure);
-    BPMNDiagram mineBPMNDiagram(UIPluginContext context, XLog log, boolean structure);
+    PetrinetWithMarking minePetrinet(UIPluginContext context, XLog log, boolean structure, MiningSettings params);
+    BPMNDiagram mineBPMNDiagram(UIPluginContext context, XLog log, boolean structure, MiningSettings params);
     String getAlgorithmName();
     String getAcronym();
 

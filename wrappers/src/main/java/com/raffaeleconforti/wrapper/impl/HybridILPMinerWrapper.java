@@ -2,6 +2,7 @@ package com.raffaeleconforti.wrapper.impl;
 
 import com.raffaeleconforti.conversion.petrinet.PetriNetToBPMNConverter;
 import com.raffaeleconforti.wrapper.MiningAlgorithm;
+import com.raffaeleconforti.wrapper.MiningSettings;
 import com.raffaeleconforti.wrapper.PetrinetWithMarking;
 import org.deckfour.xes.classification.XEventAndClassifier;
 import org.deckfour.xes.classification.XEventClassifier;
@@ -26,7 +27,7 @@ import java.util.HashSet;
 public class HybridILPMinerWrapper implements MiningAlgorithm {
 
     @Override
-    public PetrinetWithMarking minePetrinet(UIPluginContext context, XLog log, boolean structure) {
+    public PetrinetWithMarking minePetrinet(UIPluginContext context, XLog log, boolean structure, MiningSettings params) {
         PetrinetWithMarking petrinet = null;
 
         try {
@@ -61,7 +62,7 @@ public class HybridILPMinerWrapper implements MiningAlgorithm {
             lpConstraints.add(LPConstraintType.NO_TRIVIAL_REGION);
             lpConstraints.add(LPConstraintType.THEORY_OF_REGIONS);
 
-            XLogHybridILPMinerParametersImpl params = new XLogHybridILPMinerParametersImpl( context,
+            XLogHybridILPMinerParametersImpl iParams = new XLogHybridILPMinerParametersImpl( context,
                                                                                             LPEngine.EngineType.LPSOLVE,
                                                                                             discoveryStrategy,
                                                                                             NetClass.PT_NET,
@@ -73,7 +74,7 @@ public class HybridILPMinerWrapper implements MiningAlgorithm {
                                                                                             log,
                                                                                             eventClassifier);
 
-            result = HybridILPMinerPlugin.applyParams(context, log, params);
+            result = HybridILPMinerPlugin.applyParams(context, log, iParams);
             System.out.println("DEBUG - trying to set petrinet: " + result);
             if( (result[0] instanceof Petrinet) && (result[1] instanceof Marking) ) {
                 petrinet = new PetrinetWithMarking( (Petrinet)result[0], (Marking)result[1], (Marking)result[1]);
@@ -92,8 +93,8 @@ public class HybridILPMinerWrapper implements MiningAlgorithm {
     }
 
     @Override
-    public BPMNDiagram mineBPMNDiagram(UIPluginContext context, XLog log, boolean structure) {
-        PetrinetWithMarking petrinetWithMarking = minePetrinet(context, log, structure);
+    public BPMNDiagram mineBPMNDiagram(UIPluginContext context, XLog log, boolean structure, MiningSettings params) {
+        PetrinetWithMarking petrinetWithMarking = minePetrinet(context, log, structure, params);
         return PetriNetToBPMNConverter.convert(petrinetWithMarking.getPetrinet(), petrinetWithMarking.getInitialMarking(), petrinetWithMarking.getFinalMarking(), true);
     }
 

@@ -6,6 +6,7 @@ import com.raffaeleconforti.measurements.impl.AlignmentBasedFitness;
 import com.raffaeleconforti.measurements.impl.AlignmentBasedPrecision;
 import com.raffaeleconforti.wrapper.LogPreprocessing;
 import com.raffaeleconforti.wrapper.MiningAlgorithm;
+import com.raffaeleconforti.wrapper.MiningSettings;
 import com.raffaeleconforti.wrapper.PetrinetWithMarking;
 import org.deckfour.xes.classification.XEventNameClassifier;
 import org.deckfour.xes.model.XLog;
@@ -30,16 +31,16 @@ import java.util.Map;
 
 public class HyperParamOptimizedInductiveMinerInfrequent implements MiningAlgorithm {
 
-    private static float STEP = 0.05F;
-    private static float MIN = 0.0F;
-    private static float MAX = 1.0F;
+    private static float STEP = 0.050F;
+    private static float MIN = 0.00F;
+    private static float MAX = 1.010F;
 
     public PetrinetWithMarking minePetrinet(UIPluginContext context, XLog log) {
-        return minePetrinet(context, log, false);
+        return minePetrinet(context, log, false, null);
     }
 
     @Override
-    public PetrinetWithMarking minePetrinet(UIPluginContext context, XLog log, boolean structure) {
+    public PetrinetWithMarking minePetrinet(UIPluginContext context, XLog log, boolean structure, MiningSettings params) {
         return discoverBestOn(context, log, structure);
     }
 
@@ -74,7 +75,7 @@ public class HyperParamOptimizedInductiveMinerInfrequent implements MiningAlgori
 
                 miningParameters.setNoiseThreshold(threshold);
                 Object[] result = miner.minePetriNetParameters(context, log, miningParameters);
-                logPreprocessing.removedAddedElements((Petrinet) result[0]);
+//                logPreprocessing.removedAddedElements((Petrinet) result[0]);
 
                 System.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out)));
                 petrinet = new PetrinetWithMarking((Petrinet) result[0], (Marking) result[1], (Marking) result[2]);
@@ -113,7 +114,7 @@ public class HyperParamOptimizedInductiveMinerInfrequent implements MiningAlgori
         return models.get(bestThreshold);
     }
 
-    public BPMNDiagram mineBPMNDiagram(UIPluginContext context, XLog log, boolean structure) {
+    public BPMNDiagram mineBPMNDiagram(UIPluginContext context, XLog log, boolean structure, MiningSettings params) {
         BPMNDiagram output = null;
         PetrinetWithMarking petrinet = minePetrinet(context, log);
         output = PetriNetToBPMNConverter.convert(petrinet.getPetrinet(), petrinet.getInitialMarking(), petrinet.getFinalMarking(), false);

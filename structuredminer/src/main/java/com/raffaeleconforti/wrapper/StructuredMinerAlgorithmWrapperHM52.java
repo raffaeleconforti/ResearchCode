@@ -32,11 +32,11 @@ public class StructuredMinerAlgorithmWrapperHM52 implements MiningAlgorithm {
             pack = "Noise Filtering")
     @PluginVariant(variantLabel = "Structured Miner Wrapper", requiredParameterLabels = {0})
     public PetrinetWithMarking minePetrinet(UIPluginContext context, XLog log) {
-        return minePetrinet(context, log, false);
+        return minePetrinet(context, log, false, null);
     }
 
     @Override
-    public PetrinetWithMarking minePetrinet(UIPluginContext context, XLog log, boolean structure) {
+    public PetrinetWithMarking minePetrinet(UIPluginContext context, XLog log, boolean structure, MiningSettings params) {
         System.setOut(new PrintStream(new OutputStream() {
             @Override
             public void write(int b) throws IOException {}
@@ -68,8 +68,8 @@ public class StructuredMinerAlgorithmWrapperHM52 implements MiningAlgorithm {
     }
 
     @Override
-    public BPMNDiagram mineBPMNDiagram(UIPluginContext context, XLog log, boolean structure) {
-        PetrinetWithMarking petrinetWithMarking = minePetrinet(context, log, structure);
+    public BPMNDiagram mineBPMNDiagram(UIPluginContext context, XLog log, boolean structure, MiningSettings params) {
+        PetrinetWithMarking petrinetWithMarking = minePetrinet(context, log, structure, params);
         return PetriNetToBPMNConverter.convert(petrinetWithMarking.getPetrinet(), petrinetWithMarking.getInitialMarking(), petrinetWithMarking.getFinalMarking(), true);
     }
 

@@ -7,6 +7,7 @@ import com.raffaeleconforti.log.util.LogCloner;
 import com.raffaeleconforti.measurements.Measure;
 import com.raffaeleconforti.measurements.MeasurementAlgorithm;
 import com.raffaeleconforti.measurements.impl.AlignmentBasedFMeasure;
+import com.raffaeleconforti.measurements.impl.BPMNComplexity;
 import com.raffaeleconforti.wrapper.MiningAlgorithm;
 import com.raffaeleconforti.wrapper.PetrinetWithMarking;
 import com.raffaeleconforti.wrapper.StructuredMinerAlgorithmWrapperHM52;
@@ -31,6 +32,7 @@ import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 import org.processmining.acceptingpetrinet.models.impl.AcceptingPetriNetImpl;
 import org.processmining.acceptingpetrinet.plugins.ExportAcceptingPetriNetPlugin;
 import org.processmining.contexts.uitopia.UIPluginContext;
+import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
 
 import java.io.*;
 import java.util.*;
@@ -154,7 +156,7 @@ public class Benchmark {
                     long sTime = System.currentTimeMillis();
                     logCloner = new LogCloner(new XFactoryNaiveImpl());
                     XLog miningLog = logCloner.cloneLog(log);
-                    PetrinetWithMarking petrinetWithMarking = miningAlgorithm.minePetrinet(fakePluginContext, miningLog, false);
+                    PetrinetWithMarking petrinetWithMarking = miningAlgorithm.minePetrinet(fakePluginContext, miningLog, false, null);
                     long execTime = System.currentTimeMillis() - sTime;
                     measures.get(miningAlgorithmName).get(logName).put("_exec-t", Long.toString(execTime));
                     System.out.println("DEBUG - mining time: " + execTime + "ms");
@@ -171,12 +173,11 @@ public class Benchmark {
                             XLog measuringLog = logCloner.cloneLog(log);
                             sTime = System.currentTimeMillis();
 //                            if(measurementAlgorithm instanceof BPMNComplexity) {
-//                                BPMNDiagram diagram = miningAlgorithm.mineBPMNDiagram(fakePluginContext, miningLog, false);
+//                                BPMNDiagram diagram = miningAlgorithm.mineBPMNDiagram(fakePluginContext, miningLog, false, null);
 //                                sTime = System.currentTimeMillis();
 //                                measure = ((BPMNComplexity) measurementAlgorithm).computeMeasurementBPMN(diagram);
 //                            } else
-
-                            measure = measurementAlgorithm.computeMeasurement(fakePluginContext, xEventClassifier, petrinetWithMarking, miningAlgorithm, measuringLog);
+                                measure = measurementAlgorithm.computeMeasurement(fakePluginContext, xEventClassifier, petrinetWithMarking, miningAlgorithm, measuringLog);
 
                             execTime = System.currentTimeMillis() - sTime;
                             if (measurementAlgorithm.isMultimetrics()) {
@@ -199,6 +200,7 @@ public class Benchmark {
                         } catch(Exception e) {
                             System.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out)));
                             System.out.println("ERROR - mining: " + miningAlgorithmName + " - " + measurementAlgorithmName);
+//                            e.printStackTrace();
                             measures.get(miningAlgorithmName).remove(logName);
                         }
                     }
@@ -370,7 +372,7 @@ public class Benchmark {
         try {
             for( MiningAlgorithm ma : miningAlgorithms ) {
 
-                PetrinetWithMarking petrinet = ma.minePetrinet(fakePluginContext, mLog, false);
+                PetrinetWithMarking petrinet = ma.minePetrinet(fakePluginContext, mLog, false, null);
                 benchmark.exportPetrinet(fakePluginContext, petrinet, "./" + ma.getAcronym() + "_pn.pnml");
                 Measure measure = alignmentBasedFMeasure.computeMeasurement(fakePluginContext, xEventClassifier, petrinet, ma, eLog);
 

@@ -46,7 +46,7 @@ public class StructuredMiner {
 //        PetrinetWithMarking petrinet = miningAlgorithm.minePetrinet(context, log, false);
 
 //        BPMNDiagram diagram = PetriNetToBPMNConverter.convert(petrinet.getPetrinet(), petrinet.getInitialMarking(), petrinet.getFinalMarking(), true);
-        BPMNDiagram diagram = miningAlgorithm.mineBPMNDiagram(context, log, false);
+        BPMNDiagram diagram = miningAlgorithm.mineBPMNDiagram(context, log, false, null);
         diagram = BPMNCleaner.clean(diagram);
         diagram = structureDiagram(diagram);
 
