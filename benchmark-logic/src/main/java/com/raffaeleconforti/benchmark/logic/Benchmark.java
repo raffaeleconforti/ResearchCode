@@ -1,9 +1,11 @@
 package com.raffaeleconforti.benchmark.logic;
 
+import au.edu.qut.petrinet.tools.PetrinetImporter;
 import au.edu.qut.processmining.log.LogParser;
 import au.edu.qut.processmining.log.SimpleLog;
 import com.raffaeleconforti.context.FakePluginContext;
 import com.raffaeleconforti.log.util.LogCloner;
+import com.raffaeleconforti.marking.MarkingDiscoverer;
 import com.raffaeleconforti.measurements.Measure;
 import com.raffaeleconforti.measurements.MeasurementAlgorithm;
 import com.raffaeleconforti.measurements.impl.AlignmentBasedFMeasure;
@@ -33,6 +35,9 @@ import org.processmining.acceptingpetrinet.models.impl.AcceptingPetriNetImpl;
 import org.processmining.acceptingpetrinet.plugins.ExportAcceptingPetriNetPlugin;
 import org.processmining.contexts.uitopia.UIPluginContext;
 import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
+import org.processmining.models.graphbased.directed.petrinet.Petrinet;
+import org.processmining.models.semantics.petrinet.Marking;
+import org.processmining.plugins.pnml.importing.PnmlImportNet;
 
 import java.io.*;
 import java.util.*;
@@ -352,6 +357,37 @@ public class Benchmark {
             System.out.println("ERROR - something went wrong while writing the excel sheet: " + e.getMessage());
             e.printStackTrace();
         }
+    }
+
+    public static void computeFScoreFromPetrinet(String modelPath, String logPath) {
+        FakePluginContext fakePluginContext = new FakePluginContext();
+        Petrinet net = null;
+
+        AlignmentBasedFMeasure alignmentBasedFMeasure = new AlignmentBasedFMeasure();
+        Benchmark benchmark = new Benchmark();
+        PnmlImportNet pnmli = new PnmlImportNet();
+
+        try {
+            Object o = pnmli.importFile(fakePluginContext, modelPath);
+            if(o instanceof Object[] && (((Object[])o)[0] instanceof Petrinet) ) net = (Petrinet)((Object[])o)[0];
+            else {
+                System.out.println("DEBUG - class: " + o.getClass().getSimpleName());
+                return;
+            }
+
+            Marking initMarking = MarkingDiscoverer.constructInitialMarking(fakePluginContext, net);
+            Marking finalMarking = MarkingDiscoverer.constructFinalMarking(fakePluginContext, net);
+            PetrinetWithMarking petrinet = new PetrinetWithMarking(net, initMarking, finalMarking);
+            XLog log = benchmark.loadLog(logPath);
+
+             Measure measure = alignmentBasedFMeasure.computeMeasurement(fakePluginContext, xEventClassifier, petrinet, null, log);
+             for( String metric : measure.getMetrics() ) System.out.println("RESULT - " + metric + " : " + measure.getMetricValue(metric));
+        } catch ( Exception e ) {
+            System.out.println("ERROR - " + e.getMessage());
+            e.printStackTrace();
+            return;
+        }
+
     }
 
 

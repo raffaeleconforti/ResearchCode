@@ -96,7 +96,7 @@ public class HyperParamOptimizedSplitMiner implements MiningAlgorithm {
             do {
                 combination = ":p:" + p_threshold + ":f:" + f_threshold;
                 try {
-                    bpmn = yam.mineBPMNModel(log, f_threshold, p_threshold, DFGPUIResult.FilterType.WTH, true, true, SplitMinerUIResult.StructuringTime.NONE);
+                    bpmn = yam.mineBPMNModel(log, f_threshold, p_threshold, DFGPUIResult.FilterType.FWG, true, true, SplitMinerUIResult.StructuringTime.NONE);
                     petrinet = convertToPetrinet(context, bpmn);
                     models.put(combination, petrinet);
 

@@ -169,6 +169,11 @@ public class BenchmarkCommandline {
             return;
         }
 
+        if( (args.length == 3) && (args[0].equalsIgnoreCase("-fscore"))) {
+            Benchmark.computeFScoreFromPetrinet(args[1], args[2]);
+            return;
+        }
+
         if( (args.length == 3) && (args[0].equalsIgnoreCase("-jfitnprec"))) {
             Benchmark.computeFitnessNPrecision(args[1], args[2]);
             return;
