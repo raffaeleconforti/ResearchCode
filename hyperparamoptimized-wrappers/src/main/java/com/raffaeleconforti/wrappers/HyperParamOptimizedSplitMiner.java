@@ -117,6 +117,7 @@ public class HyperParamOptimizedSplitMiner implements MiningAlgorithm {
                     System.out.println(prec);
                     System.out.println(score);
                 } catch (Exception e) {
+                    e.printStackTrace();
                     System.out.println("ERROR - splitminer output model broken @ " + combination);
                     fitness.put(0.0D, combination);
                     precision.put(0.0D, combination);
