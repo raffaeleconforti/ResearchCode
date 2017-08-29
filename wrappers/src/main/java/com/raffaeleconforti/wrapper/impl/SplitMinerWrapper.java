@@ -81,7 +81,7 @@ public class SplitMinerWrapper implements MiningAlgorithm {
 
         if(context instanceof FakePluginContext) {
             SplitMiner yam = new SplitMiner();
-            output = yam.mineBPMNModel(log, eta, epsilon, DFGPUIResult.FilterType.WTH, true, replaceORs, SplitMinerUIResult.StructuringTime.NONE);
+            output = yam.mineBPMNModel(log, 0.4, epsilon, DFGPUIResult.FilterType.FWG, true, replaceORs, SplitMinerUIResult.StructuringTime.NONE);
 //            export(output, "log_"+System.currentTimeMillis());
         } else {
             output = SplitMinerPlugin.discoverBPMNModelWithSplitMiner(context, log);
