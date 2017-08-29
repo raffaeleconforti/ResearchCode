@@ -9,6 +9,9 @@ import org.processmining.models.graphbased.directed.petrinet.elements.Place;
 import org.processmining.models.graphbased.directed.petrinet.elements.Transition;
 import org.processmining.models.semantics.petrinet.Marking;
 
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * Created by Raffaele Conforti (conforti.raffaele@gmail.com) on 28/10/2016.
  */
@@ -90,6 +93,54 @@ public class MarkingDiscoverer {
         }
 
         createFinalMarkingConnection(context, petrinet, finalMarking);
+        return finalMarking;
+    }
+
+    public static Set<Marking> constructFinalMarkings(PluginContext context, Petrinet petrinet) {
+        Set<Marking> finalMarking = new HashSet<>();
+        for(Place p : petrinet.getPlaces()) {
+            int out = 0;
+            for(PetrinetEdge edge : petrinet.getEdges()) {
+                if(edge.getSource().equals(p)) {
+                    out++;
+                }
+            }
+            if(out == 0) {
+                Marking m = new Marking();
+                m.add(p);
+                finalMarking.add(m);
+            }
+        }
+
+        if(finalMarking.size() == 0) {
+            for(Place p : petrinet.getPlaces()) {
+                if(p.getLabel().equalsIgnoreCase("sink") ||
+                        p.getLabel().equalsIgnoreCase("end") ||
+                        p.getLabel().equalsIgnoreCase("final")) {
+                    Marking m = new Marking();
+                    m.add(p);
+                    finalMarking.add(m);
+                }
+            }
+        }
+
+        if(finalMarking.size() == 0) {
+            for(Transition t : petrinet.getTransitions()) {
+                if(t.getLabel().toLowerCase().contains("end")) {
+                    for(PetrinetEdge e : petrinet.getEdges()) {
+                        if(e.getSource().equals(t)) {
+                            Marking m = new Marking();
+                            m.add((Place) e.getTarget());
+                            finalMarking.add(m);
+                        }
+                    }
+                }
+            }
+        }
+
+        for (Marking m: finalMarking) {
+            createFinalMarkingConnection(context, petrinet, m);
+        }
         return finalMarking;
     }
 

@@ -26,6 +26,7 @@ import org.processmining.plugins.heuristicsnet.miner.heuristics.miner.settings.H
 import java.io.*;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Created by conforti on 20/02/15.
@@ -102,10 +103,15 @@ public class HeuristicsAlgorithmWrapper implements MiningAlgorithm {
         else MarkingDiscoverer.createInitialMarkingConnection(context, (Petrinet) result[0], (Marking) result[1]);
 
         Marking finalMarking = MarkingDiscoverer.constructFinalMarking(context, (Petrinet) result[0]);
+        Set<Marking> finalMarkings = MarkingDiscoverer.constructFinalMarkings(context, (Petrinet) result[0]);
 
         System.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out)));
 
-        return new PetrinetWithMarking((Petrinet) result[0], (Marking) result[1], finalMarking);
+        if(finalMarkings.size() > 1) {
+            return new PetrinetWithMarking((Petrinet) result[0], (Marking) result[1], finalMarkings);
+        }else {
+            return new PetrinetWithMarking((Petrinet) result[0], (Marking) result[1], finalMarking);
+        }
     }
 
     @Override
