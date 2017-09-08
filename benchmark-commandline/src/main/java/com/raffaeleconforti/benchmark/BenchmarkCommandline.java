@@ -134,31 +134,31 @@ public class BenchmarkCommandline {
         long measurementTimeout = 3600000;
 
         int icmd = 0;
+/*
+        try {
 
-//        try {
-//
-//            double epsilon = Double.valueOf(args[0]);
-//            double eta = Double.valueOf(args[1]);
-//
-//            SplitMiner yam = new SplitMiner();
-//            XLog log = importFromFile(new XFactoryNaiveImpl(), args[2]);
-//            BPMNDiagram output = yam.mineBPMNModel(log, eta, epsilon, DFGPUIResult.FilterType.WTH, true, false, SplitMinerUIResult.StructuringTime.NONE);
-//
-//            BpmnExportPlugin bpmnExportPlugin = new BpmnExportPlugin();
-//            UIContext context = new UIContext();
-//            UIPluginContext uiPluginContext = context.getMainPluginContext();
-//            bpmnExportPlugin.export(uiPluginContext, output, new File(args[3] + ".bpmn"));
-//            return;
-//        } catch( Throwable e ) {
-//            System.out.println("ERROR: wrong usage.");
-//            System.out.println("USAGE: java -jar splitminer.jar e n 'logpath\\log.[xes|xes.gz|mxml]' 'outputpath\\outputname' ");
-//            System.out.println("PARAM: e = double in [0,1] : parallelism threshold (epsilon)");
-//            System.out.println("PARAM: n = double in [0,1] : percentile for frequency threshold (eta)");
-//            System.out.println("EXAMPLE: java -jar splitminer.jar 0.1 0.4 .\\logs\\SEPSIS.xes.gz .\\outputs\\SEPSIS");
-//            e.printStackTrace();
-//            return;
-//        }
+            double epsilon = Double.valueOf(args[0]);
+            double eta = Double.valueOf(args[1]);
 
+            SplitMiner yam = new SplitMiner();
+            XLog log = importFromFile(new XFactoryNaiveImpl(), args[2]);
+            BPMNDiagram output = yam.mineBPMNModel(log, eta, epsilon, DFGPUIResult.FilterType.FWG, true, true, true, SplitMinerUIResult.StructuringTime.NONE);
+
+            BpmnExportPlugin bpmnExportPlugin = new BpmnExportPlugin();
+            UIContext context = new UIContext();
+            UIPluginContext uiPluginContext = context.getMainPluginContext();
+            bpmnExportPlugin.export(uiPluginContext, output, new File(args[3] + ".bpmn"));
+            return;
+        } catch( Throwable e ) {
+            System.out.println("ERROR: wrong usage.");
+            System.out.println("USAGE: java -jar splitminer.jar e n 'logpath\\log.[xes|xes.gz|mxml]' 'outputpath\\outputname' ");
+            System.out.println("PARAM: e = double in [0,1] : parallelism threshold (epsilon)");
+            System.out.println("PARAM: n = double in [0,1] : percentile for frequency threshold (eta)");
+            System.out.println("EXAMPLE: java -jar splitminer.jar 0.1 0.4 .\\logs\\SEPSIS.xes.gz .\\outputs\\SEPSIS");
+            e.printStackTrace();
+            return;
+        }
+*/
         if( (args.length == 2) && (args[0].equalsIgnoreCase("-logsa"))) {
             Benchmark.logsAnalysis(args[1]);
             return;
