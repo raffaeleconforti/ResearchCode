@@ -24,9 +24,10 @@ public class BPMNSimplifier {
             oldSize = size;
             BPMNSimplifier.removeConnectedStartEndEvent(diagram);
             BPMNSimplifier.removeHTMLfromAllActivitiesProcess(diagram);
+            BPMNSimplifier.insertStartAndEndEventsIfMissing(diagram);
             BPMNSimplifier.removeArtificialNodes(diagram);
             BPMNSimplifier.removeLoopedXOR(diagram);
-            BPMNSimplifier.replaceShortLoopsWithSelfLoops(diagram);
+//            BPMNSimplifier.replaceShortLoopsWithSelfLoops(diagram);
             BPMNSimplifier.fixANDGateway(diagram);
             BPMNSimplifier.removeUselessSubProcesses(diagram);
             BPMNSimplifier.removeGatewaysUseless(diagram, diagram.getGateways());

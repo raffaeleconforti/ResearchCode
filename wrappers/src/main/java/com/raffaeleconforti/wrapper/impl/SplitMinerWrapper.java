@@ -69,6 +69,7 @@ public class SplitMinerWrapper implements MiningAlgorithm {
         Double eta = SplitMinerUIResult.FREQUENCY_THRESHOLD;
         Double epsilon = SplitMinerUIResult.PARALLELISMS_THRESHOLD;
         Boolean replaceORs = true;
+        Boolean removeSelfLoops = true;
 
         if( params != null ) {
             if( params.containsParam("epsilonSM") && params.getParam("epsilonSM") instanceof Double )
@@ -77,11 +78,13 @@ public class SplitMinerWrapper implements MiningAlgorithm {
                 eta = (Double) params.getParam("etaSM");
             if( params.containsParam("replaceORsSM") && params.getParam("replaceORsSM") instanceof Boolean )
                 replaceORs = (Boolean) params.getParam("replaceORsSM");
+            if( params.containsParam("removeSelfLoops") && params.getParam("removeSelfLoops") instanceof Boolean )
+                removeSelfLoops = (Boolean) params.getParam("removeSelfLoops");
         }
 
         if(context instanceof FakePluginContext) {
             SplitMiner yam = new SplitMiner();
-            output = yam.mineBPMNModel(log, 0.4, epsilon, DFGPUIResult.FilterType.FWG, true, replaceORs, SplitMinerUIResult.StructuringTime.NONE);
+            output = yam.mineBPMNModel(log, 0.4, epsilon, DFGPUIResult.FilterType.FWG, true, replaceORs, removeSelfLoops, SplitMinerUIResult.StructuringTime.NONE);
 //            export(output, "log_"+System.currentTimeMillis());
         } else {
             output = SplitMinerPlugin.discoverBPMNModelWithSplitMiner(context, log);
