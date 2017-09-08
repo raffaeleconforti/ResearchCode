@@ -61,7 +61,7 @@
         <module>noisefiltering-timestamp-commandline</module>
         <module>noisefiltering-timestamp-prom</module>
 
-        <module>test</module>
+        <!--<module>test</module>-->
         <!--<module>design-structure-matrix</module>-->
         <module>prom6</module>
         <module>cnminer-wrapper</module>
@@ -109,7 +109,7 @@
         <flanagan.version>20151114</flanagan.version>
 
         <commons-math3.version>3.6</commons-math3.version>
-        <bpmntk-osgi.version>1.0-20170830</bpmntk-osgi.version>
+        <bpmntk-osgi.version>1.0-20170908</bpmntk-osgi.version>
         <bpstruct.version>0.1.117</bpstruct.version>
         <jbpt.version>0.2.77</jbpt.version>
 
