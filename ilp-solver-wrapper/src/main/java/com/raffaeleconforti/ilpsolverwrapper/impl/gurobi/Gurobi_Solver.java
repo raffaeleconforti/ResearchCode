@@ -18,7 +18,7 @@ import java.util.List;
  */
 public class Gurobi_Solver implements ILPSolver {
 
-    public static final double INFINITY = 1.0E30;
+    public static final double INFINITY = Math.pow(2, 31) - 1;//1.0E30;//1.0E100D;
 
     private GRBEnv env;
     private GRBModel model;
@@ -176,7 +176,7 @@ public class Gurobi_Solver implements ILPSolver {
             int status = model.get(GRB.IntAttr.Status);
             if(status == GRB.OPTIMAL) return Status.OPTIMAL;
             else if(status == GRB.INFEASIBLE) return Status.INFEASIBLE;
-            else if(status == GRB.UNBOUNDED || status == GRB.INF_OR_UNBD) return Status.INFEASIBLE;
+            else if(status == GRB.UNBOUNDED || status == GRB.INF_OR_UNBD) return Status.UNBOUNDED;
             else return Status.ERROR;
         } catch (GRBException e) {
             e.printStackTrace();

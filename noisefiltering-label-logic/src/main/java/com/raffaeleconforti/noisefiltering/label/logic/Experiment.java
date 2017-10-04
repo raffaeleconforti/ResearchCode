@@ -12,6 +12,7 @@ import com.raffaeleconforti.wrapper.MiningAlgorithm;
 import com.raffaeleconforti.wrapper.PetrinetWithMarking;
 import com.raffaeleconforti.wrapper.impl.heuristics.HeuristicsAlgorithmWrapper;
 import com.raffaeleconforti.wrapper.impl.inductive.InductiveMinerIMfWrapper;
+import com.raffaeleconforti.wrapper.settings.MiningSettings;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -125,7 +126,7 @@ public class Experiment {
                         System.out.println("DEBUG - measuring on mining algorithm: " + miningAlgorithmName);
                         long sTime = System.currentTimeMillis();
 
-                        PetrinetWithMarking petrinetWithMarking = miningAlgorithm.minePetrinet(fakePluginContext, log, false);
+                        PetrinetWithMarking petrinetWithMarking = miningAlgorithm.minePetrinet(fakePluginContext, log, false, null);
 //                        ExportAcceptingPetriNetPlugin exportAcceptingPetriNetPlugin = new ExportAcceptingPetriNetPlugin();
 //                        exportAcceptingPetriNetPlugin.export(
 //                                fakePluginContext,

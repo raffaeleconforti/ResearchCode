@@ -21,6 +21,9 @@ public interface EventDistributionCalculator {
 
     double computeLikelihood(List<XEvent> trace);
 
+    double computeEnrichedLikelihood(List<XEvent> trace);
+    void updateEnrichedLikelihood(XEvent event1, XEvent event2);
+
     double computeLikelihood(List<XEvent> list, double best);
 
     Map<String, Double> computeLikelihoodNextEvent(String activity);

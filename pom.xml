@@ -61,7 +61,7 @@
         <module>noisefiltering-timestamp-commandline</module>
         <module>noisefiltering-timestamp-prom</module>
 
-        <!--<module>test</module>-->
+        <module>test</module>
         <!--<module>design-structure-matrix</module>-->
         <module>prom6</module>
         <module>cnminer-wrapper</module>
@@ -383,7 +383,7 @@
             <dependency>
                 <groupId>com.gurobi</groupId>
                 <artifactId>gurobi</artifactId>
-                <version>7.02</version>
+                <version>7.51</version>
             </dependency>
             <dependency>
                 <groupId>net.sourceforge.lpsolve</groupId>

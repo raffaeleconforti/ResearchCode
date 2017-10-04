@@ -21,7 +21,7 @@ import java.util.regex.Pattern;
  */
 public class LPSolve_Solver implements ILPSolver {
 
-    public static final double INFINITY = 1.0E30;//1.0E100D;
+    public static final double INFINITY = Math.pow(2, 31) - 1;//1.0E30;//1.0E100D;
 
     private final int MAX_EXP = 20;
     private int max_exp = MAX_EXP;
@@ -46,7 +46,8 @@ public class LPSolve_Solver implements ILPSolver {
     }
 
     private double infinity() {
-        return Double.parseDouble("1.0E" + max_exp);
+        //return Double.parseDouble("1.0E" + max_exp);
+        return Math.pow(2, max_exp) - 1;
     }
 
     @Override

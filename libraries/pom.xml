@@ -1387,9 +1387,9 @@
                         <configuration>
                             <groupId>com.gurobi</groupId>
                             <artifactId>gurobi</artifactId>
-                            <version>7.02</version>
+                            <version>7.51</version>
                             <packaging>jar</packaging>
-                            <file>${project.build.sourceDirectory}/gurobi-702.jar</file>
+                            <file>${project.build.sourceDirectory}/gurobi-751.jar</file>
                             <generatePom>true</generatePom>
                         </configuration>
                     </execution>

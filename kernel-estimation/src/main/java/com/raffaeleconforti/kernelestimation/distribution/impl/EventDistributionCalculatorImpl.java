@@ -41,6 +41,9 @@ public class EventDistributionCalculatorImpl implements EventDistributionCalcula
     protected Map<String, Double> likelihood = new UnifiedMap<>();
     protected Cache<XTrace, Double> likelihoodCache = new SelfCleaningCache();
 
+    protected Map<String, Map<String, Integer>> enrichedDistribution = new UnifiedMap<>();
+    protected Map<String, Map<String, Integer>> enrichedDistributionReverse = new UnifiedMap<>();
+
     public EventDistributionCalculatorImpl(XLog log, XEventClassifier xEventClassifier) {
         this.log = log;
         this.nameExtractor = new NameExtractor(xEventClassifier);
@@ -212,6 +215,57 @@ public class EventDistributionCalculatorImpl implements EventDistributionCalcula
         return likelihood;
     }
 
+    public double computeEnrichedLikelihood(List<XEvent> trace) {
+        double likelihood = computeLikelihood(trace);
+        if(likelihood == 0.0) {
+            XEvent last = null;
+            String lastName;
+            for(int i = 0; i < trace.size(); i++) {
+                XEvent event = trace.get(i);
+                if(last != null) {
+                    lastName = getEventName(last);
+                    String eventName = getEventName(event);
+                    double tmp = computeLikelihoodAcceptZero(lastName, eventName);
+                    if(tmp == 0) {
+                        initiator = i-1;
+                        terminator = i;
+                        return 0;
+                    }
+                    likelihood *= tmp;
+                }
+                last = event;
+            }
+        }
+        return likelihood;
+    }
+
+    public void updateEnrichedLikelihood(XEvent event1, XEvent event2) {
+        String eventName1 = getEventName(event1);
+        String eventName2 = getEventName(event2);
+
+        Map<String, Integer> map;
+        if ((map = enrichedDistribution.get(eventName1)) == null) {
+            map = new UnifiedMap<>();
+        }
+        Integer i;
+        if ((i = map.get(eventName2)) == null) {
+            i = 0;
+        }
+        i++;
+        map.put(eventName2, i);
+        enrichedDistribution.put(eventName1, map);
+
+        if ((map = enrichedDistributionReverse.get(eventName2)) == null) {
+            map = new UnifiedMap<>();
+        }
+        if ((i = map.get(eventName1)) == null) {
+            i = 0;
+        }
+        i++;
+        map.put(eventName1, i);
+        enrichedDistributionReverse.put(eventName2, map);
+    }
+
     public double computeLikelihood(List<XEvent> trace, double limit) {
         double likelihood = 1;
         XEvent previous = null;
@@ -244,8 +298,16 @@ public class EventDistributionCalculatorImpl implements EventDistributionCalcula
         return d;
     }
 
+    protected double computeEnrichedLikelihood(String originator, String follower) {
+        return computeEnrichedLikelihood(originator, follower) * computeEnrichedReverseLikelihood(follower, originator);
+    }
+
     protected double computeLikelihoodAcceptZero(String originator, String follower) {
         return computeNormalLikelihoodAcceptZero(originator, follower) * computeReverseLikelihoodAcceptZero(follower, originator);
+    }
+
+    protected double computeEnrichedLikelihoodAcceptZero(String originator, String follower) {
+        return computeEnrichedNormalLikelihoodAcceptZero(originator, follower) * computeEnrichedReverseLikelihoodAcceptZero(follower, originator);
     }
 
     protected double computeNormalLikelihood(String originator, String follower) {
@@ -259,6 +321,11 @@ public class EventDistributionCalculatorImpl implements EventDistributionCalcula
         return res;
     }
 
+    protected double computeEnrichedNormalLikelihood(String originator, String follower) {
+        Map<String, Integer> map = enrichedDistribution.get(originator);
+        return computeLikelihood(map, follower);
+    }
+
     protected double computeReverseLikelihood(String originator, String follower) {
         Double res;
         String s = originator + "+|+" + follower;
@@ -268,6 +335,11 @@ public class EventDistributionCalculatorImpl implements EventDistributionCalcula
             distributionReverseCache.put(s, res);
         }
         return res;
+    }
+
+    protected double computeEnrichedReverseLikelihood(String originator, String follower) {
+        Map<String, Integer> map = enrichedDistributionReverse.get(originator);
+        return computeLikelihood(map, follower);
     }
 
     protected double computeNormalLikelihoodAcceptZero(String originator, String follower) {
@@ -281,6 +353,11 @@ public class EventDistributionCalculatorImpl implements EventDistributionCalcula
         return res;
     }
 
+    protected double computeEnrichedNormalLikelihoodAcceptZero(String originator, String follower) {
+        Map<String, Integer> map = enrichedDistribution.get(originator);
+        return computeLikelihoodAcceptZero(map, follower);
+    }
+
     protected double computeReverseLikelihoodAcceptZero(String originator, String follower) {
         Double res;
         String s = originator + "+|+" + follower;
@@ -290,6 +367,11 @@ public class EventDistributionCalculatorImpl implements EventDistributionCalcula
             distributionReverseZeroCache.put(s, res);
         }
         return res;
+    }
+
+    protected double computeEnrichedReverseLikelihoodAcceptZero(String originator, String follower) {
+        Map<String, Integer> map = enrichedDistributionReverse.get(originator);
+        return computeLikelihoodAcceptZero(map, follower);
     }
 
     protected double computeLikelihood(Map<String, Integer> map, String follower) {

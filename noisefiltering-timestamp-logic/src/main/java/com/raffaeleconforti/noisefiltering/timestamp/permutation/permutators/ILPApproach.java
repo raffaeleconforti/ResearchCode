@@ -132,12 +132,41 @@ public class ILPApproach implements PermutationTechnique {
                     list.add(1, eventsArray[j]);
                     likeloods[i][j] = eventDistributionCalculator.computeLikelihood(list);
                     if(i == eventsArray.length - 1 && j == eventsArray.length - 2) {
-                        likeloods[i][j] = 1;
+                        likeloods[i][j] = 1.0;
                     }
-                    if(likeloods[i][j] > 0) numberOfArcs++;
+                    if(likeloods[i][j] > 0.0) {
+                        numberOfArcs++;
+//                        likeloods[i][j] *= 10.0;
+                    }
                     numberOfArcswithZero++;
                 }else {
-                    likeloods[i][j] = 0;
+                    likeloods[i][j] = 0.0;
+                }
+            }
+        }
+    }
+
+    private void computeEnrichedLikelihoods() {
+        numberOfArcs = 0;
+        numberOfArcswithZero = 0;
+        List<XEvent> list = new ArrayList<>(2);
+        for(int i = 0; i < eventsArray.length; i++) {
+            for(int j = 0; j < eventsArray.length; j++) {
+                if(i != j) {
+                    list.clear();
+                    list.add(0, eventsArray[i]);
+                    list.add(1, eventsArray[j]);
+                    likeloods[i][j] = eventDistributionCalculator.computeEnrichedLikelihood(list);
+                    if(i == eventsArray.length - 1 && j == eventsArray.length - 2) {
+                        likeloods[i][j] = 1.0;
+                    }
+                    if(likeloods[i][j] > 0.0) {
+                        numberOfArcs++;
+//                        likeloods[i][j] *= 10.0;
+                    }
+                    numberOfArcswithZero++;
+                }else {
+                    likeloods[i][j] = 0.0;
                 }
             }
         }
@@ -150,167 +179,184 @@ public class ILPApproach implements PermutationTechnique {
     public Set<List<XEvent>> findBestStartEnd(boolean includeZero) {
         List<XEvent> list = new ArrayList<>();
 
-        solver.createModel();
+        if(includeZero) computeEnrichedLikelihoods();
 
-        int numberOfU = eventsArray.length - 1;
-        int numberOfX = includeZero? numberOfArcswithZero : numberOfArcs;
-        int numberOfVariables = numberOfX + numberOfU;
+        if(numberOfArcs > 0) {
+            solver.createModel();
 
-        // Create variables
-        ILPSolverVariable[] vars = new ILPSolverVariable[numberOfVariables];
-        int count = 0;
-        // Create variables X
-        for(int i = 0; i < eventsArray.length; i++) {
-            for(int j = 0; j < eventsArray.length; j++) {
-                if(i != j && (includeZero || likeloods[i][j] > 0.0)) {
-                    vars[count] = solver.addVariable(0.0, 1.0, 0.0, ILPSolver.VariableType.BINARY, "X_" + i + "_" + j);
-                    count++;
-                }
-            }
-        }
+            int numberOfU = eventsArray.length - 1;
+            int numberOfX = includeZero ? numberOfArcswithZero : numberOfArcs;
+            int numberOfVariables = numberOfX + numberOfU;
 
-        // Create variables U
-        for(int i = 0; i < eventsArray.length; i++) {
-            if(i != eventsArray.length - 2) {
-                System.out.print("U_" + i + " = " + XConceptExtension.instance().extractName(eventsArray[i]) + ", ");
-                vars[count] = solver.addVariable(0.0, numberOfU, 0.0, ILPSolver.VariableType.INTEGER, "U_" + i);
-                count++;
-            }
-        }
-        System.out.println();
-
-        // Integrate new variables
-        solver.integrateVariables();
-
-        // Set objective: summation of all edges
-        ILPSolverExpression obj = solver.createExpression();
-        count = 0;
-        int closeLoop = -1;
-        for(int i = 0; i < eventsArray.length; i++) {
-            for(int j = 0; j < eventsArray.length; j++) {
-                if(i == eventsArray.length - 1 && j == eventsArray.length - 2) {
-                    closeLoop = count;
-                }
-                if(i != j && (includeZero || likeloods[i][j] > 0.0)) {
-                    obj.addTerm(vars[count], likeloods[i][j] > 0 ? likeloods[i][j] : -numberOfU);
-                    count++;
-                }
-            }
-        }
-        solver.setObjectiveFunction(obj);
-        solver.setMaximize();
-
-        // Add constraint: set Sum X_ij = 1 ForAll i
-        count = 0;
-        for(int i = 0; i < eventsArray.length; i++) {
-            ILPSolverExpression expr = solver.createExpression();
-            for (int j = 0; j < eventsArray.length; j++) {
-                if(i != j && (includeZero || likeloods[i][j] > 0.0)) {
-                    expr.addTerm(vars[count], 1.0);
-                    count++;
-                }
-            }
-            solver.addConstraint(expr, ILPSolver.Operator.EQUAL, 1.0, "ForAll_"+i+"_j");
-        }
-
-        // Add constraint: set Sum X_ij = 1 ForAll j
-        for(int k = 0; k < eventsArray.length; k++) {
-            ILPSolverExpression expr = solver.createExpression();
-            count = 0;
+            // Create variables
+            ILPSolverVariable[] vars = new ILPSolverVariable[numberOfVariables];
+            int count = 0;
+            // Create variables X
             for (int i = 0; i < eventsArray.length; i++) {
-                for(int j = 0; j < eventsArray.length; j++) {
-                    if(i != j && (includeZero || likeloods[i][j] > 0.0)) {
-                        if(j == k) {
-                            expr.addTerm(vars[count], 1.0);
-                        }
+                for (int j = 0; j < eventsArray.length; j++) {
+                    if (i != j && (includeZero || likeloods[i][j] > 0.0)) {
+                        vars[count] = solver.addVariable(0.0, 1.0, 0.0, ILPSolver.VariableType.BINARY, "X_" + i + "_" + j);
                         count++;
                     }
                 }
             }
-            solver.addConstraint(expr, ILPSolver.Operator.EQUAL, 1.0, "ForAll_i_"+k);
-        }
 
-        // Add constraint: u_i - u_j + NX_ij <= N - 1 ForAll i j with i != 1 and j != 1
-        count = 0;
-        for (int i = 0; i < eventsArray.length; i++) {
-            for(int j = 0; j < eventsArray.length; j++) {
-                if(i != j && (includeZero || likeloods[i][j] > 0.0)) {
-                    if (i != eventsArray.length - 2 && j != eventsArray.length - 2) {
-                        ILPSolverExpression expr = solver.createExpression();
-
-                        if (i != eventsArray.length - 1) {
-                            expr.addTerm(vars[numberOfX + i], 1.0);
-                        } else {
-                            expr.addTerm(vars[vars.length - 1], 1.0);
-                        }
-
-                        if (j != eventsArray.length - 1) {
-                            expr.addTerm(vars[numberOfX + j], -1.0);
-                        } else {
-                            expr.addTerm(vars[vars.length - 1], -1.0);
-                        }
-
-                        expr.addTerm(vars[count], numberOfU);
-                        solver.addConstraint(expr, ILPSolver.Operator.LESS_EQUAL, numberOfU - 1, "NX_" + i + "_" + j);
-                    }
+            // Create variables U
+            for (int i = 0; i < eventsArray.length; i++) {
+                if (i != eventsArray.length - 2) {
+                    System.out.print("U_" + i + " = " + XConceptExtension.instance().extractName(eventsArray[i]) + ", ");
+                    vars[count] = solver.addVariable(0.0, numberOfU, 0.0, ILPSolver.VariableType.INTEGER, "U_" + i);
                     count++;
                 }
             }
-        }
+            System.out.println();
 
-        ILPSolverExpression expr = solver.createExpression();
-        expr.addTerm(vars[closeLoop], 1.0);
-        solver.addConstraint(expr, ILPSolver.Operator.EQUAL, 1.0, "ForAll_end_start");
+            // Integrate new variables
+            solver.integrateVariables();
 
-        // Optimize model
-        solver.solve();
-        ILPSolver.Status status = solver.getStatus();
-        if(status == ILPSolver.Status.OPTIMAL) {
-//                for (int i = 0; i < vars.length - numberOfU; i++) {
-//                    System.out.print(vars[i].get(ILPSolver.VariableType.StringAttr.VarName) + "=" + vars[i].get(ILPSolver.VariableType.DoubleAttr.X) + ", ");
-//                }
-//                for (int i = vars.length - numberOfU; i < vars.length; i++) {
-//                    System.out.print(vars[i].get(ILPSolver.VariableType.StringAttr.VarName) + "=" + vars[i].get(ILPSolver.VariableType.DoubleAttr.X) + ", ");
-//                }
-//                System.out.println();
+            // Set objective: summation of all edges
+            ILPSolverExpression obj = solver.createExpression();
+            count = 0;
+            int closeLoop = -1;
+            for (int i = 0; i < eventsArray.length; i++) {
+                for (int j = 0; j < eventsArray.length; j++) {
+                    if (i == eventsArray.length - 1 && j == eventsArray.length - 2) {
+                        closeLoop = count;
+                    }
+                    if (i != j && (includeZero || likeloods[i][j] > 0.0)) {
+                        obj.addTerm(vars[count], likeloods[i][j] > 0.0 ? likeloods[i][j] : -numberOfU);
+                        count++;
+                    }
+                }
+            }
+            solver.setObjectiveFunction(obj);
+            solver.setMaximize();
 
-            // Identify Sequence Events
-            int correct = 0;
-            // Identify Sequence Events
-            int currentSource = eventsArray.length - 2;
-            double[] solution = solver.getSolutionVariables(vars);
-            while (currentSource != eventsArray.length - 1) {
+            // Add constraint: set Sum X_ij = 1 ForAll i
+            count = 0;
+            for (int i = 0; i < eventsArray.length; i++) {
+                ILPSolverExpression expr = solver.createExpression();
+                for (int j = 0; j < eventsArray.length; j++) {
+                    if (i != j && (includeZero || likeloods[i][j] > 0.0)) {
+                        expr.addTerm(vars[count], 1.0);
+                        count++;
+                    }
+                }
+                solver.addConstraint(expr, ILPSolver.Operator.EQUAL, 1.0, "ForAll_" + i + "_j");
+            }
+
+            // Add constraint: set Sum X_ij = 1 ForAll j
+            for (int k = 0; k < eventsArray.length; k++) {
+                ILPSolverExpression expr = solver.createExpression();
                 count = 0;
-                outter:
                 for (int i = 0; i < eventsArray.length; i++) {
                     for (int j = 0; j < eventsArray.length; j++) {
-                        if(i != j && (includeZero || likeloods[i][j] > 0.0)) {
-                            if (currentSource == i) {
-                                if (solution[count] > 0) {
-                                    correct++;
-                                    if (i != eventsArray.length - 2) {
-                                        list.add(eventsArray[i]);
-                                    }
-                                    currentSource = j;
-                                    break outter;
-                                }
+                        if (i != j && (includeZero || likeloods[i][j] > 0.0)) {
+                            if (j == k) {
+                                expr.addTerm(vars[count], 1.0);
                             }
                             count++;
                         }
                     }
                 }
+                solver.addConstraint(expr, ILPSolver.Operator.EQUAL, 1.0, "ForAll_i_" + k);
             }
-            if (correct - 1 != list.size()) System.out.println("error");
-            else System.out.println("Solved");
-        }else {
-            System.out.println("error");
-            if(status == ILPSolver.Status.INFEASIBLE) System.out.println("INFEASIBLE");
+
+            // Add constraint: u_i - u_j + NX_ij <= N - 1 ForAll i j with i != 1 and j != 1
+            count = 0;
+            for (int i = 0; i < eventsArray.length; i++) {
+                for (int j = 0; j < eventsArray.length; j++) {
+                    if (i != j && (includeZero || likeloods[i][j] > 0.0)) {
+                        if (i != eventsArray.length - 2 && j != eventsArray.length - 2) {
+                            ILPSolverExpression expr = solver.createExpression();
+
+                            if (i != eventsArray.length - 1) {
+                                expr.addTerm(vars[numberOfX + i], 1.0);
+                            } else {
+                                expr.addTerm(vars[vars.length - 1], 1.0);
+                            }
+
+                            if (j != eventsArray.length - 1) {
+                                expr.addTerm(vars[numberOfX + j], -1.0);
+                            } else {
+                                expr.addTerm(vars[vars.length - 1], -1.0);
+                            }
+
+                            expr.addTerm(vars[count], numberOfU);
+                            solver.addConstraint(expr, ILPSolver.Operator.LESS_EQUAL, numberOfU - 1, "NX_" + i + "_" + j);
+                        }
+                        count++;
+                    }
+                }
+            }
+
+            ILPSolverExpression expr = solver.createExpression();
+            expr.addTerm(vars[closeLoop], 1.0);
+            solver.addConstraint(expr, ILPSolver.Operator.EQUAL, 1.0, "ForAll_end_start");
+
+            // Optimize model
+            solver.solve();
+            ILPSolver.Status status = solver.getStatus();
+            if (status == ILPSolver.Status.OPTIMAL) {
+    //                for (int i = 0; i < vars.length - numberOfU; i++) {
+    //                    System.out.print(vars[i].get(ILPSolver.VariableType.StringAttr.VarName) + "=" + vars[i].get(ILPSolver.VariableType.DoubleAttr.X) + ", ");
+    //                }
+    //                for (int i = vars.length - numberOfU; i < vars.length; i++) {
+    //                    System.out.print(vars[i].get(ILPSolver.VariableType.StringAttr.VarName) + "=" + vars[i].get(ILPSolver.VariableType.DoubleAttr.X) + ", ");
+    //                }
+    //                System.out.println();
+
+                // Identify Sequence Events
+                int correct = 0;
+                // Identify Sequence Events
+                int currentSource = eventsArray.length - 2;
+                double[] solution = solver.getSolutionVariables(vars);
+                while (currentSource != eventsArray.length - 1) {
+                    count = 0;
+                    outter:
+                    for (int i = 0; i < eventsArray.length; i++) {
+                        for (int j = 0; j < eventsArray.length; j++) {
+                            if (i != j && (includeZero || likeloods[i][j] > 0.0)) {
+                                if (currentSource == i) {
+                                    if (solution[count] > 0) {
+                                        correct++;
+                                        if (i != eventsArray.length - 2) {
+                                            list.add(eventsArray[i]);
+                                        }
+                                        currentSource = j;
+                                        break outter;
+                                    }
+                                }
+                                count++;
+                            }
+                        }
+                    }
+                }
+                if (correct - 1 != list.size()) System.out.println("error");
+                else System.out.println("Solved with value " + solver.getSolutionValue());
+            } else {
+                System.out.println("error");
+                if (status == ILPSolver.Status.INFEASIBLE) System.out.println("INFEASIBLE");
+            }
+            // Dispose of model and environment
+            solver.dispose();
         }
-        // Dispose of model and environment
-        solver.dispose();
 
         Set<List<XEvent>> set = new UnifiedSet<>();
-        if(list.size() > 0) set.add(list);
+        if(list.size() > 0) {
+            set.add(list);
+            List<XEvent> list1 = new ArrayList<>(2);
+            for(int i = 0; i < list.size() - 1; i++) {
+                list1.clear();
+                list1.add(0, list.get(i));
+                list1.add(1, list.get(i + 1));
+                double likelihood = eventDistributionCalculator.computeLikelihood(list);
+                if (likelihood == 0) {
+                    System.out.println("Updating Enriched Likelihood");
+                    eventDistributionCalculator.updateEnrichedLikelihood(list.get(i), list.get(i + 1));
+                }
+            }
+        }
 
         System.out.println("findBestStartEnd " + set.size());
         if(includeZero) return set;
