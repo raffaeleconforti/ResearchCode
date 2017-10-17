@@ -5,11 +5,17 @@ import com.raffaeleconforti.wrapper.PetrinetWithMarking;
 import org.deckfour.xes.classification.XEventClassifier;
 import org.deckfour.xes.model.XLog;
 import org.processmining.contexts.uitopia.UIPluginContext;
+import org.processmining.processtree.ProcessTree;
 
 /**
  * Created by Raffaele Conforti (conforti.raffaele@gmail.com) on 18/10/2016.
  */
 public interface MeasurementAlgorithm {
+
+    Measure computeMeasurement(UIPluginContext pluginContext,
+                               XEventClassifier xEventClassifier,
+                               ProcessTree processTree,
+                               MiningAlgorithm miningAlgorithm, XLog log);
 
     Measure computeMeasurement(UIPluginContext pluginContext,
                               XEventClassifier xEventClassifier,

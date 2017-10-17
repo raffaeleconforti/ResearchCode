@@ -10,11 +10,17 @@ import org.deckfour.xes.classification.XEventClassifier;
 import org.deckfour.xes.model.XLog;
 import org.processmining.contexts.uitopia.UIPluginContext;
 import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
+import org.processmining.processtree.ProcessTree;
 
 /**
  * Created by Adriano on 19/10/2016.
  */
 public class CFCComplexity  implements MeasurementAlgorithm {
+
+    @Override
+    public Measure computeMeasurement(UIPluginContext pluginContext, XEventClassifier xEventClassifier, ProcessTree processTree, MiningAlgorithm miningAlgorithm, XLog log) {
+        return null;
+    }
 
     @Override
     public boolean isMultimetrics() { return true; }

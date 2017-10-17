@@ -14,6 +14,8 @@ import org.processmining.contexts.uitopia.annotations.UITopiaVariant;
 import org.processmining.framework.plugin.annotations.Plugin;
 import org.processmining.framework.plugin.annotations.PluginVariant;
 import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
+import org.processmining.plugins.InductiveMiner.mining.MiningParametersIMa;
+import org.processmining.plugins.InductiveMiner.plugins.IMProcessTree;
 import org.processmining.plugins.etm.CentralRegistry;
 import org.processmining.plugins.etm.ETM;
 import org.processmining.plugins.etm.factory.TreeFactoryAbstract;
@@ -36,6 +38,7 @@ import org.uncommons.maths.random.Probability;
 import org.uncommonseditedbyjoosbuijs.watchmaker.framework.TerminationCondition;
 import org.uncommonseditedbyjoosbuijs.watchmaker.framework.selection.SigmaScaling;
 
+import java.io.*;
 import java.util.*;
 
 /**
@@ -53,6 +56,111 @@ public class EvolutionaryTreeMinerWrapper implements MiningAlgorithm {
     @PluginVariant(variantLabel = "Evolutionary Tree Miner Wrapper", requiredParameterLabels = {0})
     public PetrinetWithMarking minePetrinet(UIPluginContext context, XLog log) {
         return minePetrinet(context, log, false, null);
+    }
+
+    @Override
+    public boolean canMineProcessTree() {
+        return true;
+    }
+
+    @Override
+    public ProcessTree mineProcessTree(UIPluginContext context, XLog log, boolean structure, MiningSettings params) {
+        LogPreprocessing logPreprocessing = new LogPreprocessing();
+        log = logPreprocessing.preprocessLog(context, log);
+
+//            System.setOut(new PrintStream(new OutputStream() {
+//                @Override
+//                public void write(int b) throws IOException {}
+//            }));
+
+        ProcessTree processTree;
+//            if(context instanceof FakePluginContext) {
+//                UIContext uiContext = new UIContext();
+//                PluginManagerImpl.initialize(UIPluginContext.class);
+//                uiContext.initialize();
+//                PluginContext pluginContext = uiContext.getMainPluginContext();
+
+        XEventClassifier classifier = new XEventNameClassifier();
+
+        Random rng = new Random(123456);
+        CentralRegistry registry = new CentralRegistry(context, log, classifier, rng);
+
+        ETMParam iParams = new ETMParam(registry, null, null, 20, 5);
+        iParams.addTerminationCondition(new ExternalTerminationCondition());
+
+//                params.setFactory(new SequenceFactory(registry));
+        Map<TreeFactoryAbstract, Double> otherFactories = new HashMap<TreeFactoryAbstract, Double>();
+        otherFactories.put(new IntelligentTreeFactory(registry), 0.05);
+        iParams.setFactory(new TreeFactoryCoordinator(registry, 0.95, otherFactories));
+
+        ArrayList evolutionObservers = new ArrayList();
+        evolutionObservers.add(new EvolutionLogger(context,registry, false));
+        iParams.setEvolutionObservers(evolutionObservers);
+
+        Canceller canceller = ProMCancelTerminationCondition.buildDummyCanceller();
+
+        FitnessReplay fr = new FitnessReplay(registry, canceller, 1D, -1.0D);
+        PrecisionEscEdges pe = new PrecisionEscEdges(registry);
+        Generalization ge = new Generalization(registry);
+        SimplicityUselessNodes su = new SimplicityUselessNodes();
+        LinkedHashMap weightedFitnessAlg = new LinkedHashMap();
+
+        weightedFitnessAlg.put(fr, Double.valueOf(10));
+        weightedFitnessAlg.put(pe, Double.valueOf(5));
+        weightedFitnessAlg.put(ge, Double.valueOf(1));
+        weightedFitnessAlg.put(su, Double.valueOf(1));
+
+        OverallFitness of = new OverallFitness(registry, weightedFitnessAlg);
+        iParams.setMaxThreads(Runtime.getRuntime().availableProcessors());
+        iParams.setFitnessEvaluator(new MultiThreadedFitnessEvaluator(registry, of, iParams.getMaxThreads()));
+
+        ArrayList evolutionaryOperators = new ArrayList();
+        evolutionaryOperators.add(new TreeCrossover(1, new Probability(0.25D)));
+
+        LinkedHashMap smartMutators = new LinkedHashMap();
+        smartMutators.put(new MutateSingleNodeGuided(registry), Double.valueOf(0.25D));
+        smartMutators.put(new InsertActivityGuided(registry), 1.);
+        smartMutators.put(new MutateLeafClassGuided(registry), 1.);
+        smartMutators.put(new MutateOperatorTypeGuided(registry), 1.);
+        smartMutators.put(new RemoveActivityGuided(registry), 1.);
+
+        LinkedHashMap dumbMutators = new LinkedHashMap();
+        dumbMutators.put(new ReplaceTreeBySequenceMutation(registry), Double.valueOf(0.25)); //random tree creation
+        dumbMutators.put(new AddNodeRandom(registry), Double.valueOf(1.0D)); //random node addition
+        dumbMutators.put(new RemoveSubtreeRandom(registry), Double.valueOf(1.0D)); //random node removal
+        dumbMutators.put(new MutateSingleNodeRandom(registry), Double.valueOf(1.0D)); //random node mutation
+        dumbMutators.put(new NormalizationMutation(registry), Double.valueOf(0.1D)); //normalization
+        dumbMutators.put(new RemoveUselessNode(registry), Double.valueOf(0.1D)); //useless node removal
+
+        TreeMutationCoordinator dumbCoordinator = new TreeMutationCoordinator(dumbMutators, false);
+        GuidedTreeMutationCoordinator smartCoordinator = new GuidedTreeMutationCoordinator(registry, 0.25D, true, smartMutators, dumbCoordinator);
+        evolutionaryOperators.add(smartCoordinator);
+        iParams.setEvolutionaryOperators(evolutionaryOperators);
+
+        iParams.setSelectionStrategy(new SigmaScaling());
+        iParams.addTerminationConditionMaxGen(1000);
+        iParams.addTerminationConditionTargetFitness(1, iParams.getFitnessEvaluator().isNatural());
+
+        iParams.addTerminationConditionMaxDuration(3600000); //1 hour
+
+        ETM etm = new ETM(iParams);
+        etm.run();
+        List stopped = etm.getSatisfiedTerminationConditions();
+        Iterator tree = stopped.iterator();
+
+        while(tree.hasNext()) {
+            TerminationCondition cond = (TerminationCondition)tree.next();
+            System.out.println(cond.toString());
+        }
+
+        NAryTree tree1 = etm.getResult();
+        processTree = NAryTreeToProcessTree.convert(iParams.getCentralRegistry().getEventClasses(), tree1, "Process tree discovered by the ETM algorithm");
+
+        logPreprocessing.removedAddedElements(processTree);
+
+        System.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out)));
+
+        return processTree;
     }
 
     @Override

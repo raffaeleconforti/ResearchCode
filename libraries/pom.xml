@@ -994,6 +994,22 @@
                     </execution>
 
                     <execution>
+                        <id>install-scomp-checker</id>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                        <configuration>
+                            <groupId>au.qut.apromore</groupId>
+                            <artifactId>scomp-checker</artifactId>
+                            <version>20171017</version>
+                            <packaging>jar</packaging>
+                            <file>src/main/java/scomp-checker-20171017.jar</file>
+                            <generatePom>true</generatePom>
+                        </configuration>
+                    </execution>
+
+                    <execution>
                         <id>install-heuristicsminer</id>
                         <phase>install</phase>
                         <goals>

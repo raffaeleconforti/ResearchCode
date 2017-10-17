@@ -3,13 +3,16 @@ package com.raffaeleconforti.noisefiltering.label.logic;
 import com.raffaeleconforti.benchmark.logic.MeasurementAlgorithmDiscoverer;
 import com.raffaeleconforti.benchmark.logic.MiningAlgorithmDiscoverer;
 import com.raffaeleconforti.context.FakePluginContext;
+import com.raffaeleconforti.log.util.LogAnalyser;
 import com.raffaeleconforti.log.util.LogCloner;
 import com.raffaeleconforti.log.util.LogImporter;
 import com.raffaeleconforti.measurements.Measure;
 import com.raffaeleconforti.measurements.MeasurementAlgorithm;
 import com.raffaeleconforti.measurements.impl.AlignmentBasedFMeasure;
+import com.raffaeleconforti.measurements.impl.ProjectedFMeasure;
 import com.raffaeleconforti.wrapper.MiningAlgorithm;
 import com.raffaeleconforti.wrapper.PetrinetWithMarking;
+import com.raffaeleconforti.wrapper.impl.SplitMinerWrapper;
 import com.raffaeleconforti.wrapper.impl.heuristics.HeuristicsAlgorithmWrapper;
 import com.raffaeleconforti.wrapper.impl.inductive.InductiveMinerIMfWrapper;
 import com.raffaeleconforti.wrapper.settings.MiningSettings;
@@ -24,6 +27,11 @@ import org.deckfour.xes.in.XesXmlGZIPParser;
 import org.deckfour.xes.model.XLog;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
+import org.processmining.acceptingpetrinet.models.impl.AcceptingPetriNetImpl;
+import org.processmining.acceptingpetrinet.plugins.ExportAcceptingPetriNetPlugin;
+import org.processmining.plugins.InductiveMiner.plugins.IMProcessTree;
+import org.processmining.processtree.ProcessTree;
+import org.processmining.processtree.conversion.ProcessTree2Petrinet;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -32,6 +40,7 @@ import java.util.*;
 
 import static com.raffaeleconforti.log.util.LogImporter.importFromFile;
 import static com.raffaeleconforti.log.util.LogImporter.importFromInputStream;
+import static org.processmining.models.causalnet.CausalNetAnnotations.parameters;
 
 /**
  * Created by Raffaele Conforti (conforti.raffaele@gmail.com) on 18/10/2016.
@@ -99,9 +108,20 @@ public class Experiment {
         for(int i = lognames.length - 1; i >= 0; i--) {
 //        for(int i = 0; i < lognames.length; i++) {
             String logName = lognames[i];
-            if(!logName.endsWith("(Label).xes.gz")) continue;
-//            if(!logName.contains("2012")) continue;
+            if(logName.endsWith(LabelFilter.testName + ".xes.gz")) continue;
+//            if(!logName.endsWith("BPI2011 (Label CoV CS).xes.gz")) continue;
+//            if(logName.contains("Road")) continue;
+//            if(logName.contains("2015-5")) continue;
+//            if(logName.contains("2015-4")) continue;
+//            if(logName.contains("2015-3")) continue;
+//            if(logName.contains("2015-2")) continue;
+//            if(logName.contains("2015-1")) continue;
+//            if(logName.contains("2014")) continue;
+//            if(logName.contains("2012")) continue;
+//            if(logName.contains("2011")) continue;
             XLog rawlog = loadLog(logsInput.get(logName));
+//            rawlog.getClassifiers().clear();
+//            LogImporter.exportToFile(logName, rawlog);
 
             String original = null;
             if(logName.contains(" ")) original = logName.substring(0, logName.indexOf(" ")) + ".xes.gz";
@@ -113,12 +133,17 @@ public class Experiment {
             }
 
             measures.put(logName, new HashMap<>());
-            System.out.println("DEBUG - measuring on log: " + logName);
+            int labels = LogAnalyser.getUniqueActivities(rawlog, xEventClassifier).size();
+            System.out.println("DEBUG - measuring on log: " + logName + " " + labels);
 
             for (MiningAlgorithm miningAlgorithm : miningAlgorithms) {
-                log = logCloner.cloneLog(rawlog);
-                String miningAlgorithmName = miningAlgorithm.getAlgorithmName();
-                if(miningAlgorithm instanceof InductiveMinerIMfWrapper || miningAlgorithm instanceof HeuristicsAlgorithmWrapper) {
+                if(miningAlgorithm instanceof InductiveMinerIMfWrapper) {
+//                if(miningAlgorithm instanceof HeuristicsAlgorithmWrapper) {
+//                if(miningAlgorithm instanceof SplitMinerWrapper) {
+
+                    log = logCloner.cloneLog(rawlog);
+                    String miningAlgorithmName = miningAlgorithm.getAlgorithmName();
+
                     String measurementAlgorithmName = "NULL";
                     measures.get(logName).put(miningAlgorithmName, new HashMap<>());
 
@@ -126,7 +151,28 @@ public class Experiment {
                         System.out.println("DEBUG - measuring on mining algorithm: " + miningAlgorithmName);
                         long sTime = System.currentTimeMillis();
 
-                        PetrinetWithMarking petrinetWithMarking = miningAlgorithm.minePetrinet(fakePluginContext, log, false, null);
+                        MiningSettings miningSettings = new MiningSettings();
+                        miningSettings.setParam("noiseThresholdIMf", 0F);
+
+                        PetrinetWithMarking petrinetWithMarking = null;
+                        ProcessTree processTree = null;
+                        if(miningAlgorithm.canMineProcessTree()) {
+                            processTree = miningAlgorithm.mineProcessTree(fakePluginContext, log, false, miningSettings);
+//                            ProcessTree2Petrinet.PetrinetWithMarkings pn = null;
+//
+//                            try {
+//                                pn = ProcessTree2Petrinet.convert(processTree);
+//                            } catch (ProcessTree2Petrinet.NotYetImplementedException var6) {
+//                                var6.printStackTrace();
+//                            } catch (ProcessTree2Petrinet.InvalidProcessTreeException var7) {
+//                                var7.printStackTrace();
+//                            }
+//
+//                            petrinetWithMarking = new PetrinetWithMarking(pn.petrinet, pn.initialMarking, pn.finalMarking);
+                        } else{
+                            petrinetWithMarking = miningAlgorithm.minePetrinet(fakePluginContext, log, false, miningSettings);
+                        }
+
 //                        ExportAcceptingPetriNetPlugin exportAcceptingPetriNetPlugin = new ExportAcceptingPetriNetPlugin();
 //                        exportAcceptingPetriNetPlugin.export(
 //                                fakePluginContext,
@@ -137,12 +183,19 @@ public class Experiment {
                         measures.get(logName).get(miningAlgorithmName).put("ExecTime", Long.toString(execTime));
 
                         for (MeasurementAlgorithm measurementAlgorithm : measurementAlgorithms) {
-                            if (measurementAlgorithm instanceof AlignmentBasedFMeasure) {
+                            if (measurementAlgorithm instanceof ProjectedFMeasure) {
+//                            if (measurementAlgorithm instanceof AlignmentBasedFMeasure) {
                                 measurementAlgorithmName = measurementAlgorithm.getMeasurementName();
                                 System.out.println("DEBUG - measuring: " + measurementAlgorithmName);
 
-                                Measure measure = measurementAlgorithm.computeMeasurement(fakePluginContext, xEventClassifier,
-                                        petrinetWithMarking, miningAlgorithm, refLog);
+                                Measure measure;
+                                if(miningAlgorithm.canMineProcessTree()) {
+                                    measure = measurementAlgorithm.computeMeasurement(fakePluginContext, xEventClassifier,
+                                            processTree, miningAlgorithm, refLog);
+                                }else {
+                                    measure = measurementAlgorithm.computeMeasurement(fakePluginContext, xEventClassifier,
+                                            petrinetWithMarking, miningAlgorithm, refLog);
+                                }
 
                                 String fmeasure = measure.getMetricValue("Projected FMeasure");
                                 String fitness = measure.getMetricValue("Projected Fitness");
@@ -152,7 +205,7 @@ public class Experiment {
                                 measures.get(logName).get(miningAlgorithmName).put("Projected Fitness", fitness);
                                 measures.get(logName).get(miningAlgorithmName).put("Projected Precision", precision);
 
-                                System.out.println("DEBUG - " + measurementAlgorithmName + " : " + measure);
+                                System.out.println("DEBUG - " + measurementAlgorithmName + measure);
                             }
                         }
 
@@ -164,8 +217,6 @@ public class Experiment {
                 }
             }
         }
-
-        publishResults();
     }
 
     private void loadLogs() {
@@ -199,9 +250,9 @@ public class Experiment {
     private XLog loadLog(Object o) {
         try {
             if(o instanceof String) {
-                return importFromFile(new XFactoryNaiveImpl(), (String) o);
+                return LogImporter.importFromFile(new XFactoryNaiveImpl(), (String) o);
             }else if(o instanceof InputStream){
-                return importFromInputStream((InputStream) o, new XesXmlGZIPParser(new XFactoryNaiveImpl()));
+                return LogImporter.importFromInputStream((InputStream) o, new XesXmlGZIPParser(new XFactoryNaiveImpl()));
             }
         } catch (Exception e) {
             e.printStackTrace();

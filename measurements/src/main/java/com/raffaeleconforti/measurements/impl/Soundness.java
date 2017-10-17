@@ -9,12 +9,19 @@ import org.deckfour.xes.classification.XEventClassifier;
 import org.deckfour.xes.model.XLog;
 import org.processmining.contexts.uitopia.UIPluginContext;
 import org.processmining.models.graphbased.directed.petrinet.Petrinet;
+import org.processmining.processtree.ProcessTree;
 
 
 /**
  * Created by Adriano on 23/11/2016.
  */
 public class Soundness implements MeasurementAlgorithm {
+
+    @Override
+    public Measure computeMeasurement(UIPluginContext pluginContext, XEventClassifier xEventClassifier, ProcessTree processTree, MiningAlgorithm miningAlgorithm, XLog log) {
+        return null;
+    }
+
     @Override
     public Measure computeMeasurement(UIPluginContext pluginContext, XEventClassifier xEventClassifier, PetrinetWithMarking petrinetWithMarking, MiningAlgorithm miningAlgorithm, XLog log) {
         Measure measure = new Measure();

@@ -22,6 +22,7 @@ import org.processmining.plugins.ilpminer.ILPMinerSettings;
 import org.processmining.plugins.ilpminer.ILPMinerUI;
 import org.processmining.plugins.log.logabstraction.LogRelations;
 import org.processmining.plugins.log.logabstraction.implementations.AlphaLogRelationsImpl;
+import org.processmining.processtree.ProcessTree;
 
 /**
  * Created by conforti on 20/02/15.
@@ -40,6 +41,16 @@ public class ILPAlgorithmWrapper implements MiningAlgorithm {
     @PluginVariant(variantLabel = "ILP Miner Wrapper", requiredParameterLabels = {0})
     public PetrinetWithMarking minePetrinet(UIPluginContext context, XLog log) {
         return minePetrinet(context, log, false, null);
+    }
+
+    @Override
+    public boolean canMineProcessTree() {
+        return false;
+    }
+
+    @Override
+    public ProcessTree mineProcessTree(UIPluginContext context, XLog log, boolean structure, MiningSettings params) {
+        return null;
     }
 
     @Override

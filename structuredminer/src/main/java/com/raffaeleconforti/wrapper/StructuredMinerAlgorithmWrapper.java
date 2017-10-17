@@ -17,6 +17,7 @@ import org.processmining.framework.plugin.annotations.PluginVariant;
 import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
 import org.processmining.models.graphbased.directed.petrinet.Petrinet;
 import org.processmining.models.semantics.petrinet.Marking;
+import org.processmining.processtree.ProcessTree;
 
 import java.io.*;
 
@@ -35,6 +36,16 @@ public class StructuredMinerAlgorithmWrapper implements MiningAlgorithm {
     @PluginVariant(variantLabel = "Structured Miner Wrapper", requiredParameterLabels = {0})
     public PetrinetWithMarking minePetrinet(UIPluginContext context, XLog log) {
         return minePetrinet(context, log, false, null);
+    }
+
+    @Override
+    public boolean canMineProcessTree() {
+        return false;
+    }
+
+    @Override
+    public ProcessTree mineProcessTree(UIPluginContext context, XLog log, boolean structure, MiningSettings params) {
+        return null;
     }
 
     @Override

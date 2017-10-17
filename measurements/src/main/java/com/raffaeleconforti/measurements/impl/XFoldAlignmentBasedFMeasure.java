@@ -11,6 +11,7 @@ import org.deckfour.xes.factory.XFactoryNaiveImpl;
 import org.deckfour.xes.model.XLog;
 import org.deckfour.xes.model.XTrace;
 import org.processmining.contexts.uitopia.UIPluginContext;
+import org.processmining.processtree.ProcessTree;
 
 import java.util.Random;
 
@@ -26,6 +27,11 @@ public class XFoldAlignmentBasedFMeasure implements MeasurementAlgorithm {
 
     @Override
     public boolean isMultimetrics() { return true; }
+
+    @Override
+    public Measure computeMeasurement(UIPluginContext pluginContext, XEventClassifier xEventClassifier, ProcessTree processTree, MiningAlgorithm miningAlgorithm, XLog log) {
+        return null;
+    }
 
     @Override
     public Measure computeMeasurement(UIPluginContext pluginContext, XEventClassifier xEventClassifier, PetrinetWithMarking petrinetWithMarking, MiningAlgorithm miningAlgorithm, XLog log) {

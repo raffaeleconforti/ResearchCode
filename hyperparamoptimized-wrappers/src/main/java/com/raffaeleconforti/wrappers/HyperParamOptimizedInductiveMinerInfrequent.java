@@ -17,6 +17,7 @@ import org.processmining.models.semantics.petrinet.Marking;
 import org.processmining.plugins.InductiveMiner.mining.MiningParameters;
 import org.processmining.plugins.InductiveMiner.mining.MiningParametersIMf;
 import org.processmining.plugins.InductiveMiner.plugins.IMPetriNet;
+import org.processmining.processtree.ProcessTree;
 
 import java.io.FileDescriptor;
 import java.io.FileOutputStream;
@@ -34,6 +35,16 @@ public class HyperParamOptimizedInductiveMinerInfrequent implements MiningAlgori
 
     public PetrinetWithMarking minePetrinet(UIPluginContext context, XLog log) {
         return minePetrinet(context, log, false, null);
+    }
+
+    @Override
+    public boolean canMineProcessTree() {
+        return false;
+    }
+
+    @Override
+    public ProcessTree mineProcessTree(UIPluginContext context, XLog log, boolean structure, MiningSettings params) {
+        return null;
     }
 
     @Override

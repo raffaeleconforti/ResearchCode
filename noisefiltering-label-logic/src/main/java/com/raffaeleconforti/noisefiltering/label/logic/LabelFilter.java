@@ -2,35 +2,25 @@ package com.raffaeleconforti.noisefiltering.label.logic;
 
 import com.raffaeleconforti.automaton.Automaton;
 import com.raffaeleconforti.automaton.AutomatonFactory;
-import com.raffaeleconforti.automaton.Edge;
-import com.raffaeleconforti.automaton.Node;
 import com.raffaeleconforti.log.util.*;
 import com.raffaeleconforti.statistics.StatisticsSelector;
 import com.raffaeleconforti.statistics.StatisticsSelector.StatisticsMeasures;
+import org.apache.commons.lang3.ArrayUtils;
 import org.deckfour.xes.classification.*;
 import org.deckfour.xes.extension.std.XConceptExtension;
 import org.deckfour.xes.extension.std.XTimeExtension;
 import org.deckfour.xes.factory.XFactory;
 import org.deckfour.xes.factory.XFactoryNaiveImpl;
-import org.deckfour.xes.info.XLogInfo;
-import org.deckfour.xes.info.XLogInfoFactory;
 import org.deckfour.xes.model.XEvent;
 import org.deckfour.xes.model.XLog;
 import org.deckfour.xes.model.XTrace;
 import org.eclipse.collections.api.iterator.IntIterator;
 import org.eclipse.collections.api.iterator.MutableIntIterator;
-import org.eclipse.collections.impl.list.mutable.primitive.DoubleArrayList;
+import org.eclipse.collections.api.tuple.primitive.IntDoublePair;
 import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
-import org.eclipse.collections.impl.map.mutable.UnifiedMap;
-import org.eclipse.collections.impl.map.mutable.primitive.IntIntHashMap;
-import org.eclipse.collections.impl.map.mutable.primitive.IntObjectHashMap;
-import org.eclipse.collections.impl.map.mutable.primitive.ObjectDoubleHashMap;
-import org.eclipse.collections.impl.map.mutable.primitive.ObjectIntHashMap;
+import org.eclipse.collections.impl.map.mutable.primitive.*;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 import org.eclipse.collections.impl.set.mutable.primitive.IntHashSet;
-import org.processmining.framework.util.Pair;
-import org.processmining.plugins.log.logabstraction.LogRelations;
-import org.processmining.plugins.log.logabstraction.factories.LogRelationsFactory;
 
 import java.util.*;
 
@@ -39,89 +29,41 @@ import java.util.*;
  */
 public class LabelFilter {
     private static final XConceptExtension xce = XConceptExtension.instance();
-    private final AutomatonFactory automatonFactory;
-    private Automaton<Integer> automaton;
     private final XEventClassifier xEventClassifier;
 
-    private double event_distance = 0.674490;
-    private double trace_distance = 0.674490;
     private int label_removed;
 
     private final StatisticsSelector statisticsSelector = new StatisticsSelector();
 
-    private final ObjectDoubleHashMap traceFrequencyMap = new ObjectDoubleHashMap();
-    private final ObjectDoubleHashMap uniqueTraceFrequencyMap = new ObjectDoubleHashMap();
-//    private final ObjectDoubleHashMap minimizedTraceFrequencyMap = new ObjectDoubleHashMap();
-//    private final ObjectDoubleHashMap minimizedUniqueTraceFrequencyMap = new ObjectDoubleHashMap();
-
-    private final Set<String> unique_traces = new UnifiedSet<>();
-//    private final Set<String> minimized_unique_traces = new UnifiedSet<>();
-
     private final ObjectIntHashMap<String> stringToIntMap = new ObjectIntHashMap<>();
     private final IntObjectHashMap<String> intToStringMap = new IntObjectHashMap<>();
 
-//    private final UnifiedMap<IntArrayList, IntArrayList> minimized_traces = new UnifiedMap<>();
-
     private int events = 1;
+    public static String testName = "(Label Bagging)";
 
-    private StatisticsMeasures center = StatisticsMeasures.MEAN;
-    private StatisticsMeasures left_distance_from_center = StatisticsMeasures.LEFT_SD;
-    private StatisticsMeasures right_distance_from_center = StatisticsMeasures.RIGHT_SD;
+    private final int CoD = 0;
+    private final int CoV = 1;
+    private final int IoD = 2;
+    private final int M = 3;
+    private final int QCoD = 4;
+    private final int QM = 5;
+    private final int N = 6;
 
-    private double upperlimit_events_frequency_in_log = 0.66;
-    private double lowerlimit_events_frequency_in_log = 0.33;
-
-    private double upperlimit_events_frequency_in_trace = 0.66;
-    private double lowerlimit_events_frequency_in_trace = 0.33;
-
-    private double upperlimit_events_frequency_in_unique_trace = 0.66;
-    private double lowerlimit_events_frequency_in_unique_trace = 0.33;
-
-    private double upperlimit_product = 0.66;
-    private double lowerlimit_product = 0.33;
-
-//    private double upperlimit_events_frequency_in_minimized_trace = 0.66;
-//    private double lowerlimit_events_frequency_in_minimized_trace = 0.33;
-//
-//    private double upperlimit_events_frequency_in_minimized_unique_trace = 0.66;
-//    private double lowerlimit_events_frequency_in_minimized_unique_trace = 0.33;
-
-    private double mean_events_frequency_in_log = 0;
-    private double left_sd_events_frequency_in_log = 0;
-    private double right_sd_events_frequency_in_log = 0;
-
-    private double mean_events_frequency_in_traces = 0;
-    private double left_sd_events_frequency_in_traces = 0;
-    private double right_sd_events_frequency_in_traces = 0;
-
-    private double mean_events_frequency_in_unique_trace = 0;
-    private double left_sd_events_frequency_in_unique_trace = 0;
-    private double right_sd_events_frequency_in_unique_trace = 0;
-
-    private double mean_product = 0;
-    private double left_sd_product = 0;
-    private double right_sd_product = 0;
-
-//    private double mean_events_frequency_in_minimized_traces = 0;
-//    private double left_sd_events_frequency_in_minimized_traces = 0;
-//    private double right_sd_events_frequency_in_minimized_traces = 0;
-//
-//    private double mean_events_frequency_in_minimized_unique_trace = 0;
-//    private double left_sd_events_frequency_in_minimized_unique_trace = 0;
-//    private double right_sd_events_frequency_in_minimized_unique_trace = 0;
-
+    private static String logName;
 
     public static void main(String[] args) throws Exception {
         XFactory factory = new XFactoryNaiveImpl();
 //        String[] logNames = new String[] {"BPI2012"};
         String[] logNames = new String[] {"BPI2011", "BPI2012", "BPI2014", "BPI2015-1", "BPI2015-2", "BPI2015-3", "BPI2015-4", "BPI2015-5", "Road"};
-        for(String logName : logNames) {
+
+        for(int i = logNames.length - 1; i >= 0; i--) {
+            logName = logNames[i];
             XLog log = LogImporter.importFromFile(factory, "/Volumes/Data/SharedFolder/Logs/Label/" + logName + ".xes.gz");
             LogModifier logModifier = new LogModifier(factory, XConceptExtension.instance(), XTimeExtension.instance(), new LogOptimizer());
             logModifier.insertArtificialStartAndEndEvent(log);
 
             LabelFilter labelFilter = new LabelFilter(
-                    new XEventAndClassifier(new XEventNameClassifier(), new XEventLifeTransClassifier()));
+                    new XEventAndClassifier(new XEventNameClassifier()));//, new XEventLifeTransClassifier()));
 
             log = labelFilter.filterLog(log);
 
@@ -129,7 +71,7 @@ public class LabelFilter {
 
             if (labelFilter.label_removed > 0) {
                 log = logModifier.removeArtificialStartAndEndEvent(log);
-                LogImporter.exportToFile("/Volumes/Data/SharedFolder/Logs/Label/" + logName + " (Label).xes.gz", log);
+                LogImporter.exportToFile("/Volumes/Data/SharedFolder/Logs/Label/" + logName + " " + testName + ".xes.gz", log);
             }
         }
     }
@@ -155,104 +97,209 @@ public class LabelFilter {
         return codedLog;
     }
 
-    private XLog decodeLog(List<IntArrayList> log) {
-        XFactory xFactory = new XFactoryNaiveImpl();
-        XLog decodedLog = xFactory.createLog();
-        for(IntArrayList trace : log) {
-            XTrace decodedTrace = xFactory.createTrace();
-            for(int event : trace.toArray()) {
-                XEvent decodedEvent = xFactory.createEvent();
-                xEventClassifier.setName(intToStringMap.get(event));
-                decodedTrace.add(decodedEvent);
-            }
-            decodedLog.add(decodedTrace);
-        }
-        return decodedLog;
-    }
-
     public LabelFilter(XEventClassifier xEventClassifier) {
         this.xEventClassifier = xEventClassifier;
-        automatonFactory = new AutomatonFactory(xEventClassifier);
     }
-
-//    public XLog filterLog(XLog log) {
-//        List<IntArrayList> convertedLog = codeLog(log);
-//        IntHashSet removed = new IntHashSet();
-//        IntHashSet removedTotal = new IntHashSet();
-//
-//        IntHashSet infrequentLabels = identifySuperInfrequentLabels(convertedLog);
-//        IntIntHashMap map = removeSuperInfrequentLabels(convertedLog, infrequentLabels);
-//        removed.addAll(infrequentLabels);
-//        removedTotal.addAll(removed);
-//
-//        IntIterator intIterator = map.keySet().intIterator();
-//        while(intIterator.hasNext()) {
-//            int label = intIterator.next();
-//            String labelName = intToStringMap.get(label);
-//            System.out.println("Infrequent: " + labelName + " removed " + map.get(label) + " times");
-//        }
-//
-//        do {
-//            removed.clear();
-//            Integer label = identifyLabel(convertedLog);
-//            while (label != null) {
-//                removed.add(label);
-//                int rem = 0;
-//                for (IntArrayList trace : convertedLog) {
-//                    MutableIntIterator iterator = trace.intIterator();
-//                    while (iterator.hasNext()) {
-//                        if (label == iterator.next()) {
-//                            iterator.remove();
-//                            rem++;
-//                        }
-//                    }
-//                }
-//                System.out.println(intToStringMap.get(label) + " removed " + rem + " times");
-//                label = identifyLabel(convertedLog);
-//            }
-//
-//            removedTotal.addAll(removed);
-//            label_removed = removedTotal.size();
-//            System.out.println("Removed " + label_removed);// + " out of " + candidates.size());
-//        }while (removed.size() > 0);
-//
-//        log = matchLogs(log, removedTotal);
-//        return log;
-//    }
 
     public XLog filterLog(XLog log) {
         List<IntArrayList> convertedLog = codeLog(log);
         IntHashSet removed = new IntHashSet();
-        IntHashSet removedTotal = new IntHashSet();
 
-        IntHashSet infrequentLabels = identifySuperInfrequentLabels(convertedLog);
-        IntIntHashMap map = removeSuperInfrequentLabels(convertedLog, infrequentLabels);
-        removed.addAll(infrequentLabels);
-        removedTotal.addAll(removed);
+        IntDoubleHashMap activityCountSingle = new IntDoubleHashMap();
+        IntDoubleHashMap activityCountSingle2 = new IntDoubleHashMap();
+        IntDoubleHashMap activityCount = new IntDoubleHashMap();
+        IntDoubleHashMap activityCount2 = new IntDoubleHashMap();
+        IntDoubleHashMap activityProd = new IntDoubleHashMap();
 
-        IntIterator intIterator = map.keySet().intIterator();
-        while(intIterator.hasNext()) {
-            int label = intIterator.next();
-            String labelName = intToStringMap.get(label);
-            System.out.println("Infrequent: " + labelName + " removed " + map.get(label) + " times");
+        for(IntArrayList trace : convertedLog) {
+            IntHashSet visited = new IntHashSet();
+            IntDoubleHashMap activityRepetitions = new IntDoubleHashMap();
+
+            for(int i : trace.toArray()) {
+                if(!visited.contains(i)) {
+                    visited.add(i);
+                    activityCountSingle.addToValue(i, 1);
+                    activityCountSingle2.addToValue(i, 1);
+                }
+                activityCount.addToValue(i, 1);
+                activityCount2.addToValue(i, 1);
+                activityRepetitions.addToValue(i, 1);
+            }
+        }
+        for(int activity : activityCountSingle.keySet().toArray()) {
+            activityProd.put(activity, (activityCount.get(activity) / activityCountSingle.get(activity)));
         }
 
-        IntHashSet labels = identifyLabels(convertedLog);
-        for (IntArrayList trace : convertedLog) {
-            MutableIntIterator iterator = trace.intIterator();
-            while (iterator.hasNext()) {
-                if (labels.contains(iterator.next())) {
-                    iterator.remove();
-                }
+        for(int activity : activityCount.keySet().toArray()) {
+            if (activityCountSingle.get(activity) == convertedLog.size()) {
+                activityCountSingle.remove(activity);
+                activityCount.remove(activity);
             }
         }
 
-        removedTotal.addAll(labels);
-        label_removed = removedTotal.size();
+        double cut_A = activityCount.average();
+        double cut_single_A = activityCountSingle.average();
+        double cut_prod_A = activityProd.average();
+
+        for(int activity : activityCount.keySet().toArray()) {
+//            if((activityProd.get(activity) > cut_prod_A || activityCountSingle.get(activity) < cut_single_A) && activityCount.get(activity) > cut_A) {
+            if((activityCountSingle.get(activity) < cut_single_A) && activityCount.get(activity) > cut_A) {
+                activityCount.remove(activity);
+//                saved.add(activity);
+//                System.out.println(intToStringMap.get(activity));
+            }
+        }
+
+        cut_A = activityCount.average();
+        double cut_M = findCut(activityCount.keyValuesView().toList(), M);
+        double cut_single_M = findCut(activityCountSingle.keyValuesView().toList(), M);
+
+        for(int activity : activityCountSingle2.keySet().toArray()) {
+            int count = 0;
+
+            if(activityCount2.get(activity) <= cut_M) {
+                count++;
+            }
+
+            if(activityCountSingle2.get(activity) <= cut_single_M) {
+                count++;
+            }
+
+            if(activityCount2.get(activity) > cut_A || activityCountSingle2.get(activity) > cut_single_A) {
+                count--;
+            }
+
+            if(count > 1) removed.add(activity);
+        }
+
+        IntIntHashMap map = removeInfrequentLabels(convertedLog, removed);
+
+        IntIterator intIterator = map.keySet().intIterator();
+        int highest = 0;
+        while(intIterator.hasNext()) {
+            int label = intIterator.next();
+            String labelName = intToStringMap.get(label);
+            highest = Math.max(highest, map.get(label));
+//            System.out.println("Infrequent: " + labelName + " removed " + map.get(label) + " times");
+        }
+
+        label_removed = removed.size();
+
+        System.out.println("Log " + logName);
+        System.out.println("Highest " + highest);
         System.out.println("Removed " + label_removed);
 
-        log = matchLogs(log, removedTotal);
+        log = matchLogs(log, removed);
         return log;
+    }
+
+    private double findCut(List<IntDoublePair> list, int measure) {
+        double[] full_list = new double[list.size()];
+        for(int i = 0; i < list.size(); i ++) {
+            full_list[i] = list.get(i).getTwo();
+        }
+        Arrays.sort(full_list);
+        ArrayUtils.reverse(full_list);
+
+        int top = findBestTop(full_list, measure);
+        return full_list[top];
+    }
+
+    private int findBestTop(double[] full_list, int measure) {
+        double best_qcd = Double.MAX_VALUE;
+        int best_top = 0;
+
+        double[] log_normal_full_list = new double[full_list.length];
+        for(int i = 0; i < full_list.length; i++) {
+            log_normal_full_list[i] = full_list[i];//Math.log10(full_list[i]);
+        }
+
+        for(int j = 0; j < log_normal_full_list.length; j++) {
+            while(j < log_normal_full_list.length - 1 && log_normal_full_list[j] == log_normal_full_list[j + 1]) {
+                j++;
+            }
+
+            double[] current_top_list = Arrays.copyOfRange(log_normal_full_list, 0, j + 1);
+            double[] current_bottom_list = Arrays.copyOfRange(log_normal_full_list, j + 1, log_normal_full_list.length);
+
+            double qcd = computeDistance(current_top_list, current_bottom_list, measure);
+            if (qcd <= best_qcd) {
+                best_qcd = qcd;
+                best_top = j;
+            }
+        }
+
+        return (best_top < log_normal_full_list.length - 1) ? best_top + 1 : best_top;
+    }
+
+    private double computeDistance(double[] list1, double[] list2, int measure) {
+        double mean_1 = statisticsSelector.evaluate(StatisticsMeasures.MEAN, null, list1);
+//        double standard_deviation_1 = statisticsSelector.evaluate(StatisticsMeasures.SD, mean_1, list1);
+//        double coefficient_of_variation_1 = standard_deviation_1 / mean_1;
+//
+        double mean_2 = statisticsSelector.evaluate(StatisticsMeasures.MEAN, null, list2);
+//        double standard_deviation_2 = statisticsSelector.evaluate(StatisticsMeasures.SD, mean_2, list2);
+//        double coefficient_of_variation_2 = standard_deviation_2 / mean_2;
+//
+//
+//        double index_of_dispersion_1 = Math.pow(standard_deviation_1, 2) / mean_1;
+//        double index_of_dispersion_2 = Math.pow(standard_deviation_2, 2) / mean_2;
+//
+//
+//        double median_1 = statisticsSelector.evaluate(StatisticsMeasures.MEDIAN, null, list1);
+//        double median_absolute_deviation_1 = statisticsSelector.evaluate(StatisticsMeasures.MAD, median_1, list1);
+//        double coefficient_of_dispersion_1 = median_absolute_deviation_1 / median_1;
+//
+//        double median_2 = statisticsSelector.evaluate(StatisticsMeasures.MEDIAN, null, list2);
+//        double median_absolute_deviation_2 = statisticsSelector.evaluate(StatisticsMeasures.MAD, median_2, list2);
+//        double coefficient_of_dispersion_2 = median_absolute_deviation_2 / median_2;
+//
+//
+//        double quartile3_1 = statisticsSelector.evaluate(StatisticsMeasures.PERCENTILE, 0.75, list1);
+//        double quartile1_1 = statisticsSelector.evaluate(StatisticsMeasures.PERCENTILE, 0.25, list1);
+//        double quartile_coefficient_of_dispersion_1 = (quartile3_1 - quartile1_1) / (quartile3_1 + quartile1_1);
+//
+//        double quartile3_2 = statisticsSelector.evaluate(StatisticsMeasures.PERCENTILE, 0.75, list2);
+//        double quartile1_2 = statisticsSelector.evaluate(StatisticsMeasures.PERCENTILE, 0.25, list2);
+//        double quartile_coefficient_of_dispersion_2 = (quartile3_2 - quartile1_2) / (quartile3_2 + quartile1_2);
+
+
+        double max_1 = statisticsSelector.evaluate(StatisticsMeasures.MAX, null, list1);
+        double min_1 = statisticsSelector.evaluate(StatisticsMeasures.MIN, null, list1);
+        double max_2 = statisticsSelector.evaluate(StatisticsMeasures.MAX, null, list2);
+        double min_2 = statisticsSelector.evaluate(StatisticsMeasures.MIN, null, list2);
+
+
+//        double[] list = new double[list1.length + list2.length];
+//        for(int i = 0; i < list1.length; i++) list[i] = list1[i];
+//        for(int i = 0; i < list2.length; i++) list[i + list1.length] = list2[i];
+//        double mean = statisticsSelector.evaluate(StatisticsMeasures.MEAN, null, list);
+//        double standard_deviation = statisticsSelector.evaluate(StatisticsMeasures.SD, mean, list);
+//        double snr = mean / standard_deviation;
+//        double snr_1 = mean_1 / standard_deviation_1;
+//        double snr_2 = mean_2 / standard_deviation_2;
+//        double noise = Double.MAX_VALUE;
+//        double avg_noise = (snr_1 + snr_2) / 2;//((snr_1 * list1.length / list.length) + (snr_2 * list2.length / list.length)) / 2;
+//        if(standard_deviation_1 > 0 && standard_deviation_2 > 0 && snr_1 > 1 && snr_2 > 1 && snr < snr_1) noise = -avg_noise;
+
+
+
+//        double coefficient_of_dispersion = (coefficient_of_dispersion_1 + coefficient_of_dispersion_2) / 2;
+//        double coefficient_of_variation = (coefficient_of_variation_1 + coefficient_of_variation_2) / 2;
+//        double index_of_dispersion = (index_of_dispersion_1 + index_of_dispersion_2) / 2;
+        double m = - ((min_1 - max_2) / (mean_1 - mean_2));
+//        double quartile_coefficient_of_dispersion = (quartile_coefficient_of_dispersion_1 + quartile_coefficient_of_dispersion_2) / 2;
+//        double qm = 1 - (Math.abs((Math.abs(quartile3_1 + quartile1_1) / 2) - (Math.abs(quartile3_2 + quartile1_2) / 2)) / (max_1 - min_2));
+
+//        if(measure == CoD) return coefficient_of_dispersion;
+//        else if(measure == CoV) return coefficient_of_variation;
+//        else if(measure == IoD) return index_of_dispersion;
+//        else
+            if(measure == M) return m;
+//        else if(measure == N) return noise;
+//        else if(measure == QCoD) return quartile_coefficient_of_dispersion;
+//        else if(measure == QM) return qm;
+        else return 0;
     }
 
     private XLog matchLogs(XLog log, IntHashSet removed) {
@@ -262,39 +309,7 @@ public class LabelFilter {
         return log;
     }
 
-    private IntHashSet identifySuperInfrequentLabels(List<IntArrayList> log) {
-        automaton = automatonFactory.generate(log);
-        Set<Node<Integer>> nodes = automaton.getNodes();
-        IntHashSet labels = new IntHashSet();
-
-        Comparator<Integer> comparator = createComparator(log);
-        Set<String> traces = new UnifiedSet<>();
-        for(IntArrayList list : log) {
-            traces.add(TraceToString.listToString(list, comparator));
-        }
-
-        discoverLogStatistics(log);
-        discoverAverages();
-
-        double min_events_in_log = lowerlimit_events_frequency_in_log * mean_events_frequency_in_log;
-        double min_events_in_trace = lowerlimit_events_frequency_in_trace * mean_events_frequency_in_traces;
-        double min_events_in_unique_trace = lowerlimit_events_frequency_in_unique_trace * mean_events_frequency_in_unique_trace;
-//        double min_events_in_minimized_trace = lowerlimit_events_frequency_in_minimized_trace * mean_events_frequency_in_minimized_traces;
-//        double min_events_in_minimized_unique_trace = lowerlimit_events_frequency_in_minimized_unique_trace * mean_events_frequency_in_minimized_unique_trace;
-
-//        double node_threshold = Math.min(Math.min(min_events_in_log, min_events_in_trace), min_events_in_unique_trace);
-        double node_threshold = lowerlimit_events_frequency_in_trace * lowerlimit_events_frequency_in_unique_trace * Math.min(mean_events_frequency_in_traces, mean_events_frequency_in_unique_trace);
-
-        for (Node<Integer> node : nodes) {
-            if(automaton.getNodeFrequency(node) < node_threshold) {
-//                labels.add(node.getData());
-            }
-        }
-
-        return labels;
-    }
-
-    private IntIntHashMap removeSuperInfrequentLabels(List<IntArrayList> log, IntHashSet infrequentLabels) {
+    private IntIntHashMap removeInfrequentLabels(List<IntArrayList> log, IntHashSet infrequentLabels) {
         IntIntHashMap map = new IntIntHashMap();
         for (IntArrayList trace : log) {
             MutableIntIterator iterator = trace.intIterator();
@@ -309,457 +324,6 @@ public class LabelFilter {
             }
         }
         return map;
-    }
-
-    private void discoverLogStatistics(List<IntArrayList> log) {
-        traceFrequencyMap.clear();
-        uniqueTraceFrequencyMap.clear();
-        unique_traces.clear();
-//        minimizedTraceFrequencyMap.clear();
-//        minimizedUniqueTraceFrequencyMap.clear();
-//        minimized_unique_traces.clear();
-
-        Comparator<Integer> comparator = createComparator(log);
-
-        IntHashSet visited = new IntHashSet();
-        IntHashSet uniqueVisited = new IntHashSet();
-        IntHashSet minimized_visited = new IntHashSet();
-        IntHashSet minimized_uniqueVisited = new IntHashSet();
-        String t, minimized_t;
-        for (IntArrayList trace : log) {
-            visited.clear();
-            uniqueVisited.clear();
-            minimized_visited.clear();
-            minimized_uniqueVisited.clear();
-
-            t = TraceToString.listToString(trace, comparator);
-//            IntArrayList minimized_trace = minimizeTrace(trace);
-//            minimized_t = TraceToString.listToString(minimized_trace, comparator);
-
-            boolean justAdded = false;
-//            boolean justAddedMinimized = false;
-            if(unique_traces.add(t)) {
-                justAdded = true;
-            }
-//            if(minimized_unique_traces.add(minimized_t)) {
-//                justAddedMinimized = true;
-//            }
-
-            Integer nameCurrent = null;
-            for (int i = 1; i < trace.size() - 1; i++) {
-                Integer tmpCurrent = trace.get(i);
-                if(nameCurrent == null || !nameCurrent.equals(tmpCurrent)) {
-                    nameCurrent = tmpCurrent;
-
-                    if (visited.add(nameCurrent)) {
-                        traceFrequencyMap.put(nameCurrent, traceFrequencyMap.get(nameCurrent) + 1);
-                    }
-                    if (justAdded) {
-                        if (uniqueVisited.add(nameCurrent)) {
-                            uniqueTraceFrequencyMap.put(nameCurrent, uniqueTraceFrequencyMap.get(nameCurrent) + 1);
-                        }
-                    }
-                }
-            }
-
-//            nameCurrent = null;
-//            for (int i = 1; i < minimized_trace.size() - 1; i++) {
-//                Integer tmpCurrent = minimized_trace.get(i);
-//                if(nameCurrent == null || !nameCurrent.equals(tmpCurrent)) {
-//                    nameCurrent = tmpCurrent;
-//
-//                    if (minimized_visited.add(nameCurrent)) {
-//                        minimizedTraceFrequencyMap.put(nameCurrent, minimizedTraceFrequencyMap.get(nameCurrent) + 1);
-//                    }
-//                    if (justAddedMinimized) {
-//                        if (minimized_uniqueVisited.add(nameCurrent)) {
-//                            minimizedUniqueTraceFrequencyMap.put(nameCurrent, minimizedUniqueTraceFrequencyMap.get(nameCurrent) + 1);
-//                        }
-//                    }
-//                }
-//            }
-        }
-    }
-
-    private Comparator<Integer> createComparator(List<IntArrayList> log) {
-        IntObjectHashMap<IntHashSet> parallel = discoverParallelRelations(log);
-
-        return new Comparator<Integer>() {
-            final IntObjectHashMap cache = new IntObjectHashMap();
-            @Override
-            public int compare(Integer o1, Integer o2) {
-                int val = codeTwoEvents(o1, o2);
-                Integer res;
-                if((res = (Integer) cache.get(val)) != null) {
-                    return res;
-                }else {
-                    IntHashSet concurrent;
-                    if ((concurrent = parallel.get(o1)) != null) {
-                        if (concurrent.contains(o2)) {
-                            res = o1.compareTo(o2);
-                            cache.put(val, res);
-                            return res;
-                        }
-                    }
-                    cache.put(val, 0);
-                    return 0;
-                }
-            }
-        };
-    }
-
-    private IntObjectHashMap<IntHashSet> discoverParallelRelations(List<IntArrayList> log) {
-        XLog decodedLog = decodeLog(log);
-        XLogInfo logInfo = XLogInfoFactory.createLogInfo(decodedLog, new XEventNameClassifier());
-        LogRelations logRelations = LogRelationsFactory.constructAlphaLogRelations(decodedLog, logInfo);
-        Map<String, Set<String>> parallel = new UnifiedMap<>();
-        for(Map.Entry<Pair<XEventClass, XEventClass>, Double> entry : logRelations.getParallelRelations().entrySet()) {
-            Set<String> concurrent;
-            String key = entry.getKey().getFirst().toString();
-            String value = entry.getKey().getSecond().toString();
-            if((concurrent = parallel.get(key)) == null) {
-                concurrent = new UnifiedSet<>();
-                parallel.put(key, concurrent);
-            }
-            concurrent.add(value);
-        }
-
-        for(String key : parallel.keySet()) {
-            Set<String> concurrent = parallel.get(key);
-            Set<String> update = new UnifiedSet<>(concurrent);
-            for(String key2 : concurrent) {
-                if(!key.equals(key2)) {
-                    Set<String> concurrent2 = parallel.get(key2);
-                    update.addAll(concurrent2);
-                    concurrent2.addAll(update);
-                }
-            }
-        }
-
-        IntObjectHashMap<IntHashSet> par = new IntObjectHashMap<>();
-        for(String key : parallel.keySet()) {
-            int k = stringToIntMap.get(key);
-            IntHashSet set = new IntHashSet();
-            Set<String> concurrent = parallel.get(key);
-            for(String key2 : concurrent) {
-                int v = stringToIntMap.get(key2);
-                set.add(v);
-            }
-            par.put(k, set);
-        }
-        return par;
-    }
-
-    private void discoverAverages() {
-        Set<Node<Integer>> nodes = automaton.getNodes();
-        DoubleArrayList event_frequency = new DoubleArrayList(nodes.size());
-        DoubleArrayList trace_frequency = new DoubleArrayList(nodes.size());
-        DoubleArrayList unique_trace_frequency = new DoubleArrayList(nodes.size());
-        DoubleArrayList product_frequency = new DoubleArrayList(nodes.size());
-//        DoubleArrayList minimized_trace_frequency = new DoubleArrayList(nodes.size());
-//        DoubleArrayList minimized_unique_trace_frequency = new DoubleArrayList(nodes.size());
-
-        for (Node<Integer> node : nodes) {
-            event_frequency.add(automaton.getNodeFrequency(node));
-            trace_frequency.add(traceFrequencyMap.get(node.getData()));
-            unique_trace_frequency.add(uniqueTraceFrequencyMap.get(node.getData()));
-
-//            product_frequency.add(automaton.getNodeFrequency(node) * traceFrequencyMap.get(node.getData()) * uniqueTraceFrequencyMap.get(node.getData()));
-//            product_frequency.add(traceFrequencyMap.get(node.getData()) * uniqueTraceFrequencyMap.get(node.getData()));
-//            product_frequency.add(automaton.getNodeFrequency(node) * traceFrequencyMap.get(node.getData()));
-//            product_frequency.add(automaton.getNodeFrequency(node) * uniqueTraceFrequencyMap.get(node.getData()));
-//            product_frequency.add(automaton.getNodeFrequency(node));
-//            product_frequency.add(traceFrequencyMap.get(node.getData()));
-            product_frequency.add(uniqueTraceFrequencyMap.get(node.getData()));
-
-//            minimized_trace_frequency.add(minimizedTraceFrequencyMap.get(node.getData()));
-//            minimized_unique_trace_frequency.add(minimizedUniqueTraceFrequencyMap.get(node.getData()));
-        }
-
-        mean_events_frequency_in_log = statisticsSelector.evaluate(center, null, event_frequency.toArray());
-        left_sd_events_frequency_in_log = statisticsSelector.evaluate(left_distance_from_center, mean_events_frequency_in_log, event_frequency.toArray());
-        right_sd_events_frequency_in_log = statisticsSelector.evaluate(right_distance_from_center, mean_events_frequency_in_log, event_frequency.toArray());
-
-        mean_events_frequency_in_traces = statisticsSelector.evaluate(center, null, trace_frequency.toArray());
-        left_sd_events_frequency_in_traces = statisticsSelector.evaluate(left_distance_from_center, mean_events_frequency_in_traces, trace_frequency.toArray());
-        right_sd_events_frequency_in_traces = statisticsSelector.evaluate(right_distance_from_center, mean_events_frequency_in_traces, trace_frequency.toArray());
-
-        mean_events_frequency_in_unique_trace = statisticsSelector.evaluate(center, null, unique_trace_frequency.toArray());
-        left_sd_events_frequency_in_unique_trace = statisticsSelector.evaluate(left_distance_from_center, mean_events_frequency_in_unique_trace, unique_trace_frequency.toArray());
-        right_sd_events_frequency_in_unique_trace = statisticsSelector.evaluate(right_distance_from_center, mean_events_frequency_in_unique_trace, unique_trace_frequency.toArray());
-
-        mean_product = statisticsSelector.evaluate(center, null, product_frequency.toArray());
-        left_sd_product = statisticsSelector.evaluate(left_distance_from_center, mean_product, product_frequency.toArray());
-        right_sd_product = statisticsSelector.evaluate(right_distance_from_center, mean_product, product_frequency.toArray());
-
-//        mean_events_frequency_in_minimized_traces = statisticsSelector.evaluate(center, null, minimized_trace_frequency.toArray());
-//        left_sd_events_frequency_in_minimized_traces = statisticsSelector.evaluate(left_distance_from_center, mean_events_frequency_in_minimized_traces, minimized_trace_frequency.toArray());
-//        right_sd_events_frequency_in_minimized_traces = statisticsSelector.evaluate(right_distance_from_center, mean_events_frequency_in_minimized_traces, minimized_trace_frequency.toArray());
-//
-//        mean_events_frequency_in_minimized_unique_trace = statisticsSelector.evaluate(center, null, minimized_unique_trace_frequency.toArray());
-//        left_sd_events_frequency_in_minimized_unique_trace = statisticsSelector.evaluate(left_distance_from_center, mean_events_frequency_in_minimized_unique_trace, minimized_unique_trace_frequency.toArray());
-//        right_sd_events_frequency_in_minimized_unique_trace = statisticsSelector.evaluate(right_distance_from_center, mean_events_frequency_in_minimized_unique_trace, minimized_unique_trace_frequency.toArray());
-
-        lowerlimit_events_frequency_in_log = (mean_events_frequency_in_log - event_distance * left_sd_events_frequency_in_log) / mean_events_frequency_in_log;
-        upperlimit_events_frequency_in_log = (mean_events_frequency_in_log + event_distance * right_sd_events_frequency_in_log) / mean_events_frequency_in_log;
-
-        lowerlimit_events_frequency_in_trace = (mean_events_frequency_in_traces - trace_distance * left_sd_events_frequency_in_traces) / mean_events_frequency_in_traces;
-        upperlimit_events_frequency_in_trace = (mean_events_frequency_in_traces + trace_distance * right_sd_events_frequency_in_traces) / mean_events_frequency_in_traces;
-
-        lowerlimit_events_frequency_in_unique_trace = (mean_events_frequency_in_unique_trace - trace_distance * left_sd_events_frequency_in_unique_trace) / mean_events_frequency_in_unique_trace;
-        upperlimit_events_frequency_in_unique_trace = (mean_events_frequency_in_unique_trace + trace_distance * right_sd_events_frequency_in_unique_trace) / mean_events_frequency_in_unique_trace;
-
-        lowerlimit_product = (mean_product - trace_distance * left_sd_product) / mean_product;
-        upperlimit_product = (mean_product + trace_distance * right_sd_product) / mean_product;
-
-//        lowerlimit_events_frequency_in_minimized_trace = (mean_events_frequency_in_minimized_traces - left_sd_events_frequency_in_minimized_traces) / mean_events_frequency_in_minimized_traces;
-//        upperlimit_events_frequency_in_minimized_trace = (mean_events_frequency_in_minimized_traces + right_sd_events_frequency_in_minimized_traces) / mean_events_frequency_in_minimized_traces;
-//
-//        lowerlimit_events_frequency_in_minimized_unique_trace = (mean_events_frequency_in_minimized_unique_trace - left_sd_events_frequency_in_minimized_unique_trace) / mean_events_frequency_in_minimized_unique_trace;
-//        upperlimit_events_frequency_in_minimized_unique_trace = (mean_events_frequency_in_minimized_unique_trace + right_sd_events_frequency_in_minimized_unique_trace) / mean_events_frequency_in_minimized_unique_trace;
-    }
-
-    private Integer identifyLabel(List<IntArrayList> log) {
-        automaton = automatonFactory.generate(log);
-        discoverLogStatistics(log);
-        discoverAverages();
-
-        Integer bestLabel = null;
-        double best = 1;
-
-        Set<Node<Integer>> nodes = automaton.getNodes();
-        for (Node<Integer> node : nodes) {
-            if(node.getData().equals(stringToIntMap.get("ArtificialStartEvent+"))) continue;
-            if(node.getData().equals(stringToIntMap.get("ArtificialEndEvent+"))) continue;
-
-            double events_frequency_in_log = automaton.getNodeFrequency(node);
-            double events_frequency_in_traces = traceFrequencyMap.get(node.getData());
-            double events_frequency_in_unique_traces = uniqueTraceFrequencyMap.get(node.getData());
-//            double events_frequency_in_minimized_traces = minimizedTraceFrequencyMap.get(node.getData());
-//            double events_frequency_in_minimized_unique_traces = minimizedUniqueTraceFrequencyMap.get(node.getData());
-
-            int incoming_edges = get_incoming_edges(node).size();
-            int outgoing_edges = get_outgoing_edges(node).size();
-
-//            double removability = removability(events_frequency_in_log, events_frequency_in_unique_traces, events_frequency_in_traces, events_frequency_in_minimized_traces, events_frequency_in_minimized_unique_traces, incoming_edges, outgoing_edges);
-            double removability = removability(events_frequency_in_log, events_frequency_in_unique_traces, events_frequency_in_traces, incoming_edges, outgoing_edges);
-
-            if (best > removability) {
-                best = removability;
-                bestLabel = node.getData();
-            }
-        }
-        System.out.println(best);
-        return bestLabel;
-    }
-
-    private IntHashSet identifyLabels(List<IntArrayList> log) {
-        automaton = automatonFactory.generate(log);
-        IntHashSet labels = new IntHashSet();
-        discoverLogStatistics(log);
-        discoverAverages();
-
-        Integer bestLabel = null;
-        double best = 1;
-
-        Set<Node<Integer>> nodes = automaton.getNodes();
-        for (Node<Integer> node : nodes) {
-            if(node.getData().equals(stringToIntMap.get("ArtificialStartEvent+"))) continue;
-            if(node.getData().equals(stringToIntMap.get("ArtificialEndEvent+"))) continue;
-
-            double events_frequency_in_log = automaton.getNodeFrequency(node);
-            double events_frequency_in_traces = traceFrequencyMap.get(node.getData());
-            double events_frequency_in_unique_traces = uniqueTraceFrequencyMap.get(node.getData());
-//            double events_frequency_in_minimized_traces = minimizedTraceFrequencyMap.get(node.getData());
-//            double events_frequency_in_minimized_unique_traces = minimizedUniqueTraceFrequencyMap.get(node.getData());
-
-            int incoming_edges = get_incoming_edges(node).size();
-            int outgoing_edges = get_outgoing_edges(node).size();
-
-//            double removability = removability(events_frequency_in_log, events_frequency_in_unique_traces, events_frequency_in_traces, events_frequency_in_minimized_traces, events_frequency_in_minimized_unique_traces, incoming_edges, outgoing_edges);
-            double removability = removability(events_frequency_in_log, events_frequency_in_unique_traces, events_frequency_in_traces, incoming_edges, outgoing_edges);
-
-            if (best > removability) {
-                labels.add(node.getData());
-            }
-        }
-        return labels;
-    }
-
-    private Set<Edge<Integer>> get_incoming_edges(Node<Integer> node) {
-        Set<Edge<Integer>> incoming_edges = new UnifiedSet<>();
-        for(Edge<Integer> edge : automaton.getEdges()) {
-            if(edge.getTarget().equals(node)) {
-                incoming_edges.add(edge);
-            }
-        }
-        return incoming_edges;
-    }
-
-    private Set<Edge<Integer>> get_outgoing_edges(Node<Integer> node) {
-        Set<Edge<Integer>> outgoing_edges = new UnifiedSet<>();
-        for(Edge<Integer> edge : automaton.getEdges()) {
-            if(edge.getSource().equals(node)) {
-                outgoing_edges.add(edge);
-            }
-        }
-        return outgoing_edges;
-    }
-
-//    private double removability(double events_frequency_in_log, double events_frequency_in_traces, double events_frequency_in_unique_traces, double events_frequency_in_minimized_traces, double events_frequency_in_minimized_unique_traces, int incoming_edges, int outgoing_edges) {
-    private double removability(double events_frequency_in_log, double events_frequency_in_traces, double events_frequency_in_unique_traces, int incoming_edges, int outgoing_edges) {
-        double res = 0;
-        double value = 1;
-
-//        double product = events_frequency_in_log * events_frequency_in_traces * events_frequency_in_unique_traces;
-//        double product = events_frequency_in_traces * events_frequency_in_unique_traces;
-//        double product = events_frequency_in_log * events_frequency_in_traces;
-//        double product = events_frequency_in_log * events_frequency_in_unique_traces;
-//        double product = events_frequency_in_log;
-//        double product = events_frequency_in_traces;
-        double product = events_frequency_in_unique_traces;
-
-        double ratio_product = scale(product / mean_product, 0, 2);
-
-        double ratio_events_frequency_in_log = scale(events_frequency_in_log / mean_events_frequency_in_log, 0, 2);
-        double ratio_events_frequency_in_traces = scale(events_frequency_in_traces / mean_events_frequency_in_traces, 0, 2);
-        double ratio_events_frequency_in_unique_traces = scale(events_frequency_in_unique_traces / mean_events_frequency_in_unique_trace, 0, 2);
-
-        if(ratio_product < lowerlimit_product) {
-            res++;
-            value *= ratio_product;
-        }
-
-//        if(incoming_edges == 1 || outgoing_edges == 1) res = -1;
-//
-//        if(ratio_events_frequency_in_log > upperlimit_events_frequency_in_log) res--;
-//        else if(ratio_events_frequency_in_log < lowerlimit_events_frequency_in_log) {
-//            res++;
-//            value *= ratio_events_frequency_in_log;
-//        }
-//
-//        if(ratio_events_frequency_in_traces > upperlimit_events_frequency_in_trace) res--;
-//        else if(ratio_events_frequency_in_traces < lowerlimit_events_frequency_in_trace) {
-//            res++;
-//            value *= ratio_events_frequency_in_traces;
-//        }
-//
-//        if(ratio_events_frequency_in_unique_traces > upperlimit_events_frequency_in_unique_trace) res--;
-//        else if(ratio_events_frequency_in_unique_traces < lowerlimit_events_frequency_in_unique_trace) {
-//            res++;
-//            value *= ratio_events_frequency_in_unique_traces;
-//        }
-
-
-//        if(ratio_events_frequency_in_minimized_traces > upperlimit_events_frequency_in_minimized_trace) res--;
-//        else if(ratio_events_frequency_in_minimized_traces < lowerlimit_events_frequency_in_minimized_trace) {
-//            res++;
-//        }
-//        value *= ratio_events_frequency_in_minimized_traces;
-//
-//        if(ratio_events_frequency_in_minimized_unique_traces > upperlimit_events_frequency_in_minimized_unique_trace) res--;
-//        else if(ratio_events_frequency_in_minimized_unique_traces < lowerlimit_events_frequency_in_minimized_unique_trace) {
-//            res++;
-//        }
-//        value *= ratio_events_frequency_in_minimized_unique_traces;
-
-        if(res > 0) return value;
-        return 2;
-    }
-
-    private double scale(double value, double min, double max) {
-        return Math.min(max, Math.max(min, value));
-    }
-
-    private int codeTwoEvents(int event1, int event2) {
-        return (int) (event1 * Math.pow(10, Integer.toString(events).length()) + event2);
-    }
-
-//    private IntArrayList minimizeTrace(IntArrayList trace) {
-//        IntArrayList minimized_trace;
-//        if((minimized_trace = minimized_traces.get(trace)) == null) {
-//            minimized_trace = new IntArrayList();
-//            IntHashSet direct_follow_relations = getDirectFollowRelations(trace);
-//
-//            IntHashSet existing_direct_follow_relations = new IntHashSet();
-//            IntHashSet existing_long_distance_relations = new IntHashSet();
-//
-//            minimized_trace.add(trace.get(0));
-//            for (int i = 1; i < trace.size(); i++) {
-//                int current = trace.get(i);
-//                int newDFR = getNewDirectFollowRelations(existing_direct_follow_relations, minimized_trace, current);
-//                IntHashSet newLDR = getNewLongDistanceRelations(existing_long_distance_relations, minimized_trace, current);
-//                if (newDFR > -1 || newLDR.size() > 0) {
-//                    minimized_trace.add(current);
-//                    if (newDFR > -1) existing_direct_follow_relations.add(newDFR);
-//                    existing_long_distance_relations.addAll(newLDR);
-//                } else if (i < trace.size() - 1) {
-//                    if (!direct_follow_relations.contains(codeTwoEvents(minimized_trace.getLast(), trace.get(i + 1)))) {
-//                        minimized_trace.add(current);
-//                    } else if (!existing_direct_follow_relations.contains(codeTwoEvents(current, trace.get(i + 1)))) {
-//                        minimized_trace.add(current);
-//                    }
-//                }
-//            }
-//
-//            minimized_traces.put(trace, minimized_trace);
-//        }
-//        return minimized_trace;
-//    }
-
-    private IntHashSet getDirectFollowRelations(IntArrayList trace) {
-        IntHashSet direct_follow_relations = new IntHashSet();
-        for(int i = 0; i < trace.size() - 1; i++) {
-            int current = trace.get(i);
-            int next = trace.get(i + 1);
-            int code = codeTwoEvents(current, next);
-            direct_follow_relations.add(code);
-        }
-
-        return  direct_follow_relations;
-    }
-
-    private IntHashSet getDirectFollowRelations(IntHashSet existing_direct_follow_relations, IntArrayList trace) {
-        for(int i = trace.size() - 2; i >= 0 && i < trace.size() - 1; i++) {
-            int current = trace.get(i);
-            int next = trace.get(i + 1);
-            int code = codeTwoEvents(current, next);
-            existing_direct_follow_relations.add(code);
-        }
-
-        return  existing_direct_follow_relations;
-    }
-
-    private int getNewDirectFollowRelations(IntHashSet existing_direct_follow_relations, IntArrayList trace, int event_to_insert) {
-        int direct_follow_relation = codeTwoEvents(trace.getLast(), event_to_insert);
-        if(getDirectFollowRelations(existing_direct_follow_relations, trace).contains(direct_follow_relation)) return -1;
-        else return direct_follow_relation;
-    }
-
-    private IntHashSet getLongDistanceRelations(IntArrayList trace) {
-        IntHashSet long_distance_relations = new IntHashSet();
-
-        for(int i = 0; i < trace.size(); i++) {
-            int current = trace.get(i);
-            for(int j = i + 2; j < trace.size(); j++) {
-                int next = trace.get(j);
-                int code = codeTwoEvents(current, next);
-                long_distance_relations.add(code);
-            }
-        }
-
-        return long_distance_relations;
-    }
-
-    private IntHashSet getNewLongDistanceRelations(IntHashSet existing_long_distance_relations, IntArrayList trace, int event_to_insert) {
-        IntHashSet new_long_distance_relations = new IntHashSet();
-        for(int i = 0; i < trace.size() - 1; i++) {
-            int current = trace.get(i);
-            int code = codeTwoEvents(current, event_to_insert);
-            if(!existing_long_distance_relations.contains(code)) new_long_distance_relations.add(code);
-        }
-
-        return new_long_distance_relations;
     }
 
 }

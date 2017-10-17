@@ -19,6 +19,7 @@ import org.processmining.plugins.bpmnminer.causalnet.CausalNet;
 import org.processmining.plugins.bpmnminer.converter.CausalNetToPetrinet;
 import org.processmining.plugins.bpmnminer.plugins.BPMNMinerPlugin;
 import org.processmining.plugins.bpmnminer.types.MinerSettings;
+import org.processmining.processtree.ProcessTree;
 
 import java.io.*;
 import java.util.Collections;
@@ -40,6 +41,16 @@ public class HyperParamOptimizedFodina implements MiningAlgorithm {
 
     public PetrinetWithMarking minePetrinet(UIPluginContext context, XLog log) {
         return minePetrinet(context, log, false, null);
+    }
+
+    @Override
+    public boolean canMineProcessTree() {
+        return false;
+    }
+
+    @Override
+    public ProcessTree mineProcessTree(UIPluginContext context, XLog log, boolean structure, MiningSettings params) {
+        return null;
     }
 
     @Override

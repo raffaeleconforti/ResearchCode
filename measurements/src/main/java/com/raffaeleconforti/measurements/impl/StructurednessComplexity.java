@@ -10,6 +10,7 @@ import org.deckfour.xes.classification.XEventClassifier;
 import org.deckfour.xes.model.XLog;
 import org.processmining.contexts.uitopia.UIPluginContext;
 import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
+import org.processmining.processtree.ProcessTree;
 
 /**
  * Created by Adriano on 19/10/2016.
@@ -18,6 +19,11 @@ public class StructurednessComplexity implements MeasurementAlgorithm {
 
     @Override
     public boolean isMultimetrics() { return true; }
+
+    @Override
+    public Measure computeMeasurement(UIPluginContext pluginContext, XEventClassifier xEventClassifier, ProcessTree processTree, MiningAlgorithm miningAlgorithm, XLog log) {
+        return null;
+    }
 
     @Override
     public Measure computeMeasurement(UIPluginContext pluginContext, XEventClassifier xEventClassifier, PetrinetWithMarking petrinetWithMarking, MiningAlgorithm miningAlgorithm, XLog log) {

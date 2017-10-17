@@ -14,6 +14,7 @@ import org.processmining.plugins.multietc.res.MultiETCResult;
 import org.processmining.plugins.multietc.sett.MultiETCSettings;
 import org.processmining.plugins.petrinet.replayresult.PNRepResult;
 import org.processmining.plugins.replayer.replayresult.SyncReplayResult;
+import org.processmining.processtree.ProcessTree;
 
 import java.io.*;
 
@@ -25,6 +26,11 @@ public class AlignmentBasedFMeasure implements MeasurementAlgorithm {
 
     @Override
     public boolean isMultimetrics() { return true; }
+
+    @Override
+    public Measure computeMeasurement(UIPluginContext pluginContext, XEventClassifier xEventClassifier, ProcessTree processTree, MiningAlgorithm miningAlgorithm, XLog log) {
+        return null;
+    }
 
     @Override
     public Measure computeMeasurement(UIPluginContext pluginContext, XEventClassifier xEventClassifier, PetrinetWithMarking petrinetWithMarking, MiningAlgorithm miningAlgorithm, XLog log) {

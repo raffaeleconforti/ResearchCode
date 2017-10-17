@@ -22,6 +22,7 @@ import org.processmining.models.graphbased.directed.petrinet.Petrinet;
 import org.processmining.models.graphbased.directed.petrinet.elements.Place;
 import org.processmining.models.graphbased.directed.petrinet.elements.Transition;
 import org.processmining.models.graphbased.directed.petrinet.impl.PetrinetImpl;
+import org.processmining.processtree.ProcessTree;
 
 import java.io.*;
 
@@ -40,6 +41,16 @@ public class AlphaDollarAlgorithmWrapper implements MiningAlgorithm {
     @PluginVariant(variantLabel = "Alpha Dollar Algorithm Wrapper", requiredParameterLabels = {0})
     public PetrinetWithMarking minePetrinet(UIPluginContext context, XLog log) {
         return minePetrinet(context, log, false, null);
+    }
+
+    @Override
+    public boolean canMineProcessTree() {
+        return false;
+    }
+
+    @Override
+    public ProcessTree mineProcessTree(UIPluginContext context, XLog log, boolean structure, MiningSettings params) {
+        return null;
     }
 
     @Override

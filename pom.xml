@@ -442,6 +442,11 @@
                 <artifactId>jbpt</artifactId>
                 <version>${jbpt.version}</version>
             </dependency>
+            <dependency>
+                <groupId>au.qut.apromore</groupId>
+                <artifactId>scomp-checker</artifactId>
+                <version>20171017</version>
+            </dependency>
 
             <!-- ProM6.5 -->
             <dependency>

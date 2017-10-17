@@ -18,6 +18,7 @@ import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
 import org.processmining.models.graphbased.directed.petrinet.Petrinet;
 import org.processmining.models.semantics.petrinet.Marking;
 import org.processmining.hybridilpminer.plugins.HybridILPMinerPlugin;
+import org.processmining.processtree.ProcessTree;
 
 import java.util.HashSet;
 
@@ -25,6 +26,16 @@ import java.util.HashSet;
  * Created by Adriano on 7/12/2016.
  */
 public class HybridILPMinerWrapper implements MiningAlgorithm {
+
+    @Override
+    public boolean canMineProcessTree() {
+        return false;
+    }
+
+    @Override
+    public ProcessTree mineProcessTree(UIPluginContext context, XLog log, boolean structure, MiningSettings params) {
+        return null;
+    }
 
     @Override
     public PetrinetWithMarking minePetrinet(UIPluginContext context, XLog log, boolean structure, MiningSettings params) {

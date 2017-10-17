@@ -18,8 +18,13 @@ import org.processmining.models.graphbased.directed.petrinet.elements.Transition
 import org.processmining.plugins.log.logfilters.LogFilter;
 import org.processmining.plugins.log.logfilters.LogFilterException;
 import org.processmining.plugins.log.logfilters.XTraceEditor;
+import org.processmining.processtree.Node;
+import org.processmining.processtree.ProcessTree;
+import org.processmining.processtree.impl.AbstractBlock;
+import org.processmining.processtree.impl.AbstractTask;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by conforti on 28/01/2016.
@@ -61,6 +66,33 @@ public class LogPreprocessing {
             } else if (t.getLabel().toLowerCase().endsWith("+start")) {
                 t.getAttributeMap().put(AttributeMap.LABEL, t.getLabel().substring(0, t.getLabel().toLowerCase().indexOf("+start")));
             }
+        }
+    }
+
+    public void removedAddedElements(ProcessTree processTree) {
+        List<Node> remove = new ArrayList<>();
+        for (Node n : processTree.getNodes()) {
+            if(n instanceof AbstractTask) {
+                AbstractTask t = (AbstractTask) n;
+                if (t.getName().contains(startLabel)) {
+                    remove.add(t);
+                } else if (t.getName().contains(endLabel)) {
+                    remove.add(t);
+                } else if (t.getName().toLowerCase().endsWith("+complete")) {
+                    t.setName(t.getName().substring(0, t.getName().toLowerCase().indexOf("+complete")));
+                } else if (t.getName().toLowerCase().endsWith("+start")) {
+                    t.setName(t.getName().substring(0, t.getName().toLowerCase().indexOf("+start")));
+                }
+            }
+        }
+
+        for(Node n : remove) {
+            AbstractBlock parent = (AbstractBlock) n.getIncomingEdges().get(0).getSource();
+            parent.removeOutgoingEdge(n.getIncomingEdges().get(0));
+            processTree.removeEdge(n.getIncomingEdges().get(0));
+            processTree.removeNode(n);
+            boolean test = processTree.getNodes().contains(n);
+            System.out.println(test);
         }
     }
 

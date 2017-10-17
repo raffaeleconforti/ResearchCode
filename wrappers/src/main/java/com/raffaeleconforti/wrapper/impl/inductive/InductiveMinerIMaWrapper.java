@@ -16,6 +16,8 @@ import org.processmining.models.semantics.petrinet.Marking;
 import org.processmining.plugins.InductiveMiner.mining.MiningParameters;
 import org.processmining.plugins.InductiveMiner.mining.MiningParametersIMa;
 import org.processmining.plugins.InductiveMiner.plugins.IMPetriNet;
+import org.processmining.plugins.InductiveMiner.plugins.IMProcessTree;
+import org.processmining.processtree.ProcessTree;
 
 import java.io.*;
 
@@ -36,6 +38,33 @@ public class InductiveMinerIMaWrapper implements MiningAlgorithm {
     @PluginVariant(variantLabel = "Inductive Miner IMa Wrapper", requiredParameterLabels = {0})
     public PetrinetWithMarking minePetrinet(UIPluginContext context, XLog log) {
         return minePetrinet(context, log, false, null);
+    }
+
+    @Override
+    public boolean canMineProcessTree() {
+        return true;
+    }
+
+    @Override
+    public ProcessTree mineProcessTree(UIPluginContext context, XLog log, boolean structure, MiningSettings params) {
+        LogPreprocessing logPreprocessing = new LogPreprocessing();
+        log = logPreprocessing.preprocessLog(context, log);
+
+        System.setOut(new PrintStream(new OutputStream() {
+            @Override
+            public void write(int b) throws IOException {}
+        }));
+
+        IMProcessTree miner = new IMProcessTree();
+        if(miningParameters == null) {
+            miningParameters = new MiningParametersIMa();
+        }
+        ProcessTree result = miner.mineProcessTree(log, miningParameters);
+        logPreprocessing.removedAddedElements(result);
+
+        System.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out)));
+
+        return result;
     }
 
     @Override

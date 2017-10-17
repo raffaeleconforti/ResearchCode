@@ -23,6 +23,7 @@ import org.processmining.models.graphbased.directed.petrinet.elements.Transition
 import org.processmining.models.graphbased.directed.petrinet.impl.PetrinetImpl;
 
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
+import org.processmining.processtree.ProcessTree;
 
 /**
  * Created by conforti on 20/02/15.
@@ -39,6 +40,16 @@ public class HeuristicsDollarAlgorithmWrapper implements MiningAlgorithm {
     @PluginVariant(variantLabel = "Heuristics Dollar Algorithm Wrapper", requiredParameterLabels = {0})
     public PetrinetWithMarking minePetrinet(UIPluginContext context, XLog log) {
         return minePetrinet(context, log, false, null);
+    }
+
+    @Override
+    public boolean canMineProcessTree() {
+        return false;
+    }
+
+    @Override
+    public ProcessTree mineProcessTree(UIPluginContext context, XLog log, boolean structure, MiningSettings params) {
+        return null;
     }
 
     @Override

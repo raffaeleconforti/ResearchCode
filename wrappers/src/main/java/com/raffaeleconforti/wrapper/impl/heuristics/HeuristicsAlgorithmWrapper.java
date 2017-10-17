@@ -22,6 +22,7 @@ import org.processmining.plugins.heuristicsnet.miner.heuristics.converter.Heuris
 import org.processmining.plugins.heuristicsnet.miner.heuristics.miner.FlexibleHeuristicsMinerPlugin;
 import org.processmining.plugins.heuristicsnet.miner.heuristics.miner.gui.ParametersPanel;
 import org.processmining.plugins.heuristicsnet.miner.heuristics.miner.settings.HeuristicsMinerSettings;
+import org.processmining.processtree.ProcessTree;
 
 import java.io.*;
 import java.util.Collection;
@@ -45,6 +46,16 @@ public class HeuristicsAlgorithmWrapper implements MiningAlgorithm {
     @PluginVariant(variantLabel = "Heuristics Miner Wrapper", requiredParameterLabels = {0})
     public PetrinetWithMarking minePetrinet(UIPluginContext context, XLog log) {
         return minePetrinet(context, log, false, null);
+    }
+
+    @Override
+    public boolean canMineProcessTree() {
+        return false;
+    }
+
+    @Override
+    public ProcessTree mineProcessTree(UIPluginContext context, XLog log, boolean structure, MiningSettings params) {
+        return null;
     }
 
     @Override

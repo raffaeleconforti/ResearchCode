@@ -13,6 +13,7 @@ import org.processmining.plugins.multietc.plugins.MultiETCPlugin;
 import org.processmining.plugins.multietc.res.MultiETCResult;
 import org.processmining.plugins.multietc.sett.MultiETCSettings;
 import org.processmining.plugins.petrinet.replayresult.PNRepResult;
+import org.processmining.processtree.ProcessTree;
 
 import java.io.*;
 
@@ -24,6 +25,11 @@ public class AlignmentBasedPrecision implements MeasurementAlgorithm {
 
     @Override
     public boolean isMultimetrics() { return false; }
+
+    @Override
+    public Measure computeMeasurement(UIPluginContext pluginContext, XEventClassifier xEventClassifier, ProcessTree processTree, MiningAlgorithm miningAlgorithm, XLog log) {
+        return null;
+    }
 
     @Override
     public Measure computeMeasurement(UIPluginContext pluginContext, XEventClassifier xEventClassifier, PetrinetWithMarking petrinetWithMarking, MiningAlgorithm miningAlgorithm, XLog log) {

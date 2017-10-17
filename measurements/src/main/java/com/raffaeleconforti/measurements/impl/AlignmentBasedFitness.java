@@ -24,6 +24,7 @@ import org.processmining.plugins.petrinet.replayer.algorithms.IPNReplayParameter
 import org.processmining.plugins.petrinet.replayer.algorithms.costbasedcomplete.CostBasedCompleteParam;
 import org.processmining.plugins.petrinet.replayresult.PNRepResult;
 import org.processmining.plugins.replayer.replayresult.SyncReplayResult;
+import org.processmining.processtree.ProcessTree;
 
 import java.io.*;
 import java.util.Map;
@@ -35,6 +36,11 @@ public class AlignmentBasedFitness implements MeasurementAlgorithm {
 
     @Override
     public boolean isMultimetrics() { return false; }
+
+    @Override
+    public Measure computeMeasurement(UIPluginContext pluginContext, XEventClassifier xEventClassifier, ProcessTree processTree, MiningAlgorithm miningAlgorithm, XLog log) {
+        return null;
+    }
 
     @Override
     public Measure computeMeasurement(UIPluginContext pluginContext, XEventClassifier xEventClassifier, PetrinetWithMarking petrinetWithMarking, MiningAlgorithm miningAlgorithm, XLog log) {
