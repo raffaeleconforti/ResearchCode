@@ -1,9 +1,10 @@
-package com.raffaeleconforti.impl;
+package com.raffaeleconforti.wrapper.impl;
 
 import com.raffaeleconforti.conversion.petrinet.PetriNetToBPMNConverter;
 import com.raffaeleconforti.wrapper.MiningAlgorithm;
 import com.raffaeleconforti.wrapper.settings.MiningSettings;
 import com.raffaeleconforti.wrapper.PetrinetWithMarking;
+import org.deckfour.xes.classification.XEventClassifier;
 import org.deckfour.xes.model.XLog;
 import org.processmining.contexts.uitopia.UIPluginContext;
 import org.processmining.models.flexiblemodel.Flex;
@@ -13,13 +14,24 @@ import org.processmining.models.semantics.petrinet.Marking;
 import org.processmining.plugins.core.CNMining;
 import org.processmining.plugins.core.Settings;
 import org.processmining.plugins.flex.converter.PNFromFlex;
+import org.processmining.processtree.ProcessTree;
 
 /**
  * Created by Adriano on 7/12/2016.
  */
 public class CNMinerWrapper implements MiningAlgorithm {
     @Override
-    public PetrinetWithMarking minePetrinet(UIPluginContext context, XLog log, boolean structure, MiningSettings params) {
+    public boolean canMineProcessTree() {
+        return false;
+    }
+
+    @Override
+    public ProcessTree mineProcessTree(UIPluginContext context, XLog log, boolean structure, MiningSettings params, XEventClassifier xEventClassifier) {
+        return null;
+    }
+
+    @Override
+    public PetrinetWithMarking minePetrinet(UIPluginContext context, XLog log, boolean structure, MiningSettings params, XEventClassifier xEventClassifier) {
         PetrinetWithMarking petrinet = null;
         CNMining cnminer;
 
@@ -56,8 +68,8 @@ public class CNMinerWrapper implements MiningAlgorithm {
     }
 
     @Override
-    public BPMNDiagram mineBPMNDiagram(UIPluginContext context, XLog log, boolean structure, MiningSettings params) {
-        PetrinetWithMarking petrinetWithMarking = minePetrinet(context, log, structure, params);
+    public BPMNDiagram mineBPMNDiagram(UIPluginContext context, XLog log, boolean structure, MiningSettings params, XEventClassifier xEventClassifier) {
+        PetrinetWithMarking petrinetWithMarking = minePetrinet(context, log, structure, params, xEventClassifier);
         return PetriNetToBPMNConverter.convert(petrinetWithMarking.getPetrinet(), petrinetWithMarking.getInitialMarking(), petrinetWithMarking.getFinalMarking(), true);
     }
 

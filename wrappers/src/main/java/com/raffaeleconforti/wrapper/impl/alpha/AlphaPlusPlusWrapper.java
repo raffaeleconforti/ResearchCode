@@ -6,6 +6,7 @@ import com.raffaeleconforti.wrapper.MiningAlgorithm;
 import com.raffaeleconforti.wrapper.settings.MiningSettings;
 import com.raffaeleconforti.wrapper.PetrinetWithMarking;
 import com.raffaeleconforti.marking.MarkingDiscoverer;
+import org.deckfour.xes.classification.XEventClassifier;
 import org.deckfour.xes.classification.XEventNameClassifier;
 import org.deckfour.xes.model.XLog;
 import org.processmining.alphaminer.algorithms.AlphaMinerFactory;
@@ -36,7 +37,7 @@ public class AlphaPlusPlusWrapper implements MiningAlgorithm {
             pack = "Noise Filtering")
     @PluginVariant(requiredParameterLabels = {0})
     public PetrinetWithMarking minePetrinet(UIPluginContext context, XLog log) {
-        return minePetrinet(context, log, false, null);
+        return minePetrinet(context, log, false, null, new XEventNameClassifier());
     }
 
     @Override
@@ -45,19 +46,19 @@ public class AlphaPlusPlusWrapper implements MiningAlgorithm {
     }
 
     @Override
-    public ProcessTree mineProcessTree(UIPluginContext context, XLog log, boolean structure, MiningSettings params) {
+    public ProcessTree mineProcessTree(UIPluginContext context, XLog log, boolean structure, MiningSettings params, XEventClassifier xEventClassifier) {
         return null;
     }
 
     @Override
-    public PetrinetWithMarking minePetrinet(UIPluginContext context, XLog log, boolean structure, MiningSettings params) {
+    public PetrinetWithMarking minePetrinet(UIPluginContext context, XLog log, boolean structure, MiningSettings params, XEventClassifier xEventClassifier) {
         LogPreprocessing logPreprocessing = new LogPreprocessing();
         log = logPreprocessing.preprocessLog(context, log);
 
         // Call the miner
         AlphaMinerParameters parameters = new AlphaPlusMinerParameters(AlphaVersion.PLUS_PLUS);
         AlphaMinerFactory factory = new AlphaMinerFactory();
-        Pair<Petrinet, Marking> pair = factory.createAlphaMiner(log, new XEventNameClassifier(), parameters).run();
+        Pair<Petrinet, Marking> pair = factory.createAlphaMiner(log, xEventClassifier, parameters).run();
         logPreprocessing.removedAddedElements(pair.getFirst());
 
         MarkingDiscoverer.createInitialMarkingConnection(context, pair.getFirst(), pair.getSecond());
@@ -65,8 +66,8 @@ public class AlphaPlusPlusWrapper implements MiningAlgorithm {
     }
 
     @Override
-    public BPMNDiagram mineBPMNDiagram(UIPluginContext context, XLog log, boolean structure, MiningSettings params) {
-        PetrinetWithMarking petrinetWithMarking = minePetrinet(context, log, structure, params);
+    public BPMNDiagram mineBPMNDiagram(UIPluginContext context, XLog log, boolean structure, MiningSettings params, XEventClassifier xEventClassifier) {
+        PetrinetWithMarking petrinetWithMarking = minePetrinet(context, log, structure, params, xEventClassifier);
         return PetriNetToBPMNConverter.convert(petrinetWithMarking.getPetrinet(), petrinetWithMarking.getInitialMarking(), petrinetWithMarking.getFinalMarking(), true);
     }
 

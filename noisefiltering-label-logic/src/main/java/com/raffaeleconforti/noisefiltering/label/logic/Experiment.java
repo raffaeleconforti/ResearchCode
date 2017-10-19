@@ -8,12 +8,9 @@ import com.raffaeleconforti.log.util.LogCloner;
 import com.raffaeleconforti.log.util.LogImporter;
 import com.raffaeleconforti.measurements.Measure;
 import com.raffaeleconforti.measurements.MeasurementAlgorithm;
-import com.raffaeleconforti.measurements.impl.AlignmentBasedFMeasure;
 import com.raffaeleconforti.measurements.impl.ProjectedFMeasure;
 import com.raffaeleconforti.wrapper.MiningAlgorithm;
 import com.raffaeleconforti.wrapper.PetrinetWithMarking;
-import com.raffaeleconforti.wrapper.impl.SplitMinerWrapper;
-import com.raffaeleconforti.wrapper.impl.heuristics.HeuristicsAlgorithmWrapper;
 import com.raffaeleconforti.wrapper.impl.inductive.InductiveMinerIMfWrapper;
 import com.raffaeleconforti.wrapper.settings.MiningSettings;
 import org.apache.poi.hssf.usermodel.HSSFRow;
@@ -21,15 +18,13 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.deckfour.xes.classification.XEventAndClassifier;
 import org.deckfour.xes.classification.XEventClassifier;
+import org.deckfour.xes.classification.XEventLifeTransClassifier;
 import org.deckfour.xes.classification.XEventNameClassifier;
 import org.deckfour.xes.factory.XFactoryNaiveImpl;
 import org.deckfour.xes.in.XesXmlGZIPParser;
 import org.deckfour.xes.model.XLog;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
-import org.processmining.acceptingpetrinet.models.impl.AcceptingPetriNetImpl;
-import org.processmining.acceptingpetrinet.plugins.ExportAcceptingPetriNetPlugin;
-import org.processmining.plugins.InductiveMiner.plugins.IMProcessTree;
 import org.processmining.processtree.ProcessTree;
 import org.processmining.processtree.conversion.ProcessTree2Petrinet;
 
@@ -37,10 +32,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.util.*;
-
-import static com.raffaeleconforti.log.util.LogImporter.importFromFile;
-import static com.raffaeleconforti.log.util.LogImporter.importFromInputStream;
-import static org.processmining.models.causalnet.CausalNetAnnotations.parameters;
 
 /**
  * Created by Raffaele Conforti (conforti.raffaele@gmail.com) on 18/10/2016.
@@ -74,7 +65,8 @@ public class Experiment {
     }
 
     private void performBenchmarkFromLogInput(Set<String> packages, Map<String, Object> logsInput) throws Exception {
-        XEventClassifier xEventClassifier = new XEventAndClassifier(new XEventNameClassifier());
+//        XEventClassifier xEventClassifier = new XEventAndClassifier(new XEventNameClassifier());
+        XEventClassifier xEventClassifier = new XEventAndClassifier(new XEventNameClassifier(), new XEventLifeTransClassifier());
         FakePluginContext fakePluginContext = new FakePluginContext();
 
         /* retrieving all the mining algorithms */
@@ -108,16 +100,17 @@ public class Experiment {
         for(int i = lognames.length - 1; i >= 0; i--) {
 //        for(int i = 0; i < lognames.length; i++) {
             String logName = lognames[i];
-            if(logName.endsWith(LabelFilter.testName + ".xes.gz")) continue;
+            if(!logName.endsWith(LabelFilter.testName + ".xes.gz")) continue;
 //            if(!logName.endsWith("BPI2011 (Label CoV CS).xes.gz")) continue;
 //            if(logName.contains("Road")) continue;
+//            if(!logName.contains("2017")) continue;
 //            if(logName.contains("2015-5")) continue;
 //            if(logName.contains("2015-4")) continue;
 //            if(logName.contains("2015-3")) continue;
 //            if(logName.contains("2015-2")) continue;
 //            if(logName.contains("2015-1")) continue;
 //            if(logName.contains("2014")) continue;
-//            if(logName.contains("2012")) continue;
+//            if(!logName.contains("2012")) continue;
 //            if(logName.contains("2011")) continue;
             XLog rawlog = loadLog(logsInput.get(logName));
 //            rawlog.getClassifiers().clear();
@@ -157,7 +150,7 @@ public class Experiment {
                         PetrinetWithMarking petrinetWithMarking = null;
                         ProcessTree processTree = null;
                         if(miningAlgorithm.canMineProcessTree()) {
-                            processTree = miningAlgorithm.mineProcessTree(fakePluginContext, log, false, miningSettings);
+                            processTree = miningAlgorithm.mineProcessTree(fakePluginContext, log, false, miningSettings, xEventClassifier);
 //                            ProcessTree2Petrinet.PetrinetWithMarkings pn = null;
 //
 //                            try {
@@ -170,7 +163,7 @@ public class Experiment {
 //
 //                            petrinetWithMarking = new PetrinetWithMarking(pn.petrinet, pn.initialMarking, pn.finalMarking);
                         } else{
-                            petrinetWithMarking = miningAlgorithm.minePetrinet(fakePluginContext, log, false, miningSettings);
+                            petrinetWithMarking = miningAlgorithm.minePetrinet(fakePluginContext, log, false, miningSettings, xEventClassifier);
                         }
 
 //                        ExportAcceptingPetriNetPlugin exportAcceptingPetriNetPlugin = new ExportAcceptingPetriNetPlugin();

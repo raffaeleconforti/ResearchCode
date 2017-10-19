@@ -55,7 +55,7 @@ public class EvolutionaryTreeMinerWrapper implements MiningAlgorithm {
             pack = "Noise Filtering")
     @PluginVariant(variantLabel = "Evolutionary Tree Miner Wrapper", requiredParameterLabels = {0})
     public PetrinetWithMarking minePetrinet(UIPluginContext context, XLog log) {
-        return minePetrinet(context, log, false, null);
+        return minePetrinet(context, log, false, null, new XEventNameClassifier());
     }
 
     @Override
@@ -64,7 +64,7 @@ public class EvolutionaryTreeMinerWrapper implements MiningAlgorithm {
     }
 
     @Override
-    public ProcessTree mineProcessTree(UIPluginContext context, XLog log, boolean structure, MiningSettings params) {
+    public ProcessTree mineProcessTree(UIPluginContext context, XLog log, boolean structure, MiningSettings params, XEventClassifier xEventClassifier) {
         LogPreprocessing logPreprocessing = new LogPreprocessing();
         log = logPreprocessing.preprocessLog(context, log);
 
@@ -80,7 +80,7 @@ public class EvolutionaryTreeMinerWrapper implements MiningAlgorithm {
 //                uiContext.initialize();
 //                PluginContext pluginContext = uiContext.getMainPluginContext();
 
-        XEventClassifier classifier = new XEventNameClassifier();
+        XEventClassifier classifier = xEventClassifier;
 
         Random rng = new Random(123456);
         CentralRegistry registry = new CentralRegistry(context, log, classifier, rng);
@@ -164,7 +164,7 @@ public class EvolutionaryTreeMinerWrapper implements MiningAlgorithm {
     }
 
     @Override
-    public PetrinetWithMarking minePetrinet(UIPluginContext context, XLog log, boolean structure, MiningSettings params) {
+    public PetrinetWithMarking minePetrinet(UIPluginContext context, XLog log, boolean structure, MiningSettings params, XEventClassifier xEventClassifier) {
         try {
             LogPreprocessing logPreprocessing = new LogPreprocessing();
             log = logPreprocessing.preprocessLog(context, log);
@@ -181,7 +181,7 @@ public class EvolutionaryTreeMinerWrapper implements MiningAlgorithm {
 //                uiContext.initialize();
 //                PluginContext pluginContext = uiContext.getMainPluginContext();
 
-                XEventClassifier classifier = new XEventNameClassifier();
+                XEventClassifier classifier = xEventClassifier;
 
                 Random rng = new Random(123456);
                 CentralRegistry registry = new CentralRegistry(context, log, classifier, rng);
@@ -279,8 +279,8 @@ public class EvolutionaryTreeMinerWrapper implements MiningAlgorithm {
     }
 
     @Override
-    public BPMNDiagram mineBPMNDiagram(UIPluginContext context, XLog log, boolean structure, MiningSettings params) {
-        PetrinetWithMarking petrinetWithMarking = minePetrinet(context, log, structure, params);
+    public BPMNDiagram mineBPMNDiagram(UIPluginContext context, XLog log, boolean structure, MiningSettings params, XEventClassifier xEventClassifier) {
+        PetrinetWithMarking petrinetWithMarking = minePetrinet(context, log, structure, params, xEventClassifier);
         return PetriNetToBPMNConverter.convert(petrinetWithMarking.getPetrinet(), petrinetWithMarking.getInitialMarking(), petrinetWithMarking.getFinalMarking(), true);
     }
 

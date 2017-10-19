@@ -161,7 +161,7 @@ public class Benchmark {
                     long sTime = System.currentTimeMillis();
                     logCloner = new LogCloner(new XFactoryNaiveImpl());
                     XLog miningLog = logCloner.cloneLog(log);
-                    PetrinetWithMarking petrinetWithMarking = miningAlgorithm.minePetrinet(fakePluginContext, miningLog, false, null);
+                    PetrinetWithMarking petrinetWithMarking = miningAlgorithm.minePetrinet(fakePluginContext, miningLog, false, null, xEventClassifier);
                     long execTime = System.currentTimeMillis() - sTime;
                     measures.get(miningAlgorithmName).get(logName).put("_exec-t", Long.toString(execTime));
                     System.out.println("DEBUG - mining time: " + execTime + "ms");
@@ -408,7 +408,7 @@ public class Benchmark {
         try {
             for( MiningAlgorithm ma : miningAlgorithms ) {
 
-                PetrinetWithMarking petrinet = ma.minePetrinet(fakePluginContext, mLog, false, null);
+                PetrinetWithMarking petrinet = ma.minePetrinet(fakePluginContext, mLog, false, null, xEventClassifier);
                 benchmark.exportPetrinet(fakePluginContext, petrinet, "./" + ma.getAcronym() + "_pn.pnml");
                 Measure measure = alignmentBasedFMeasure.computeMeasurement(fakePluginContext, xEventClassifier, petrinet, ma, eLog);
 

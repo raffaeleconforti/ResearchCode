@@ -61,7 +61,7 @@ public class FrequentBehaviourFilter {
         BPMNMiner bpmnMiner = new BPMNMiner();
         BPMNDiagram diagram = null;
         try {
-            diagram = bpmnMiner.mineBPMNDiagram(context, res, null, SelectMinerResult.IMPOS, null, false, false);
+            diagram = bpmnMiner.mineBPMNDiagram(context, res, null, SelectMinerResult.IMPOS, null, false, false, xEventClassifier);
         } catch (ExecutionCancelledException e) {
             context.getFutureResult(0).cancel(true);
             return null;
@@ -91,7 +91,7 @@ public class FrequentBehaviourFilter {
         BPMNMiner bpmnMiner = new BPMNMiner();
         BPMNDiagram diagram = null;
         try {
-            diagram = bpmnMiner.mineBPMNDiagram(context, res, null, SelectMinerResult.IMPOS, null, false, false);
+            diagram = bpmnMiner.mineBPMNDiagram(context, res, null, SelectMinerResult.IMPOS, null, false, false, xEventClassifier);
         } catch (ExecutionCancelledException e) {
             context.getFutureResult(0).cancel(true);
             return null;

@@ -54,23 +54,24 @@ public class LabelFilter {
     public static void main(String[] args) throws Exception {
         XFactory factory = new XFactoryNaiveImpl();
 //        String[] logNames = new String[] {"BPI2012"};
-        String[] logNames = new String[] {"BPI2011", "BPI2012", "BPI2014", "BPI2015-1", "BPI2015-2", "BPI2015-3", "BPI2015-4", "BPI2015-5", "Road"};
+        String[] logNames = new String[] {"BPI2011", "BPI2012", "BPI2013_cp", "BPI2013_i", "BPI2014", "BPI2015-1", "BPI2015-2", "BPI2015-3", "BPI2015-4", "BPI2015-5", "BPI2017", "Road", "Sepsis"};
 
         for(int i = logNames.length - 1; i >= 0; i--) {
             logName = logNames[i];
             XLog log = LogImporter.importFromFile(factory, "/Volumes/Data/SharedFolder/Logs/Label/" + logName + ".xes.gz");
-            LogModifier logModifier = new LogModifier(factory, XConceptExtension.instance(), XTimeExtension.instance(), new LogOptimizer());
-            logModifier.insertArtificialStartAndEndEvent(log);
+//            LogModifier logModifier = new LogModifier(factory, XConceptExtension.instance(), XTimeExtension.instance(), new LogOptimizer());
+//            logModifier.insertArtificialStartAndEndEvent(log);
 
             LabelFilter labelFilter = new LabelFilter(
-                    new XEventAndClassifier(new XEventNameClassifier()));//, new XEventLifeTransClassifier()));
+//                    new XEventAndClassifier(new XEventNameClassifier()));
+                    new XEventAndClassifier(new XEventNameClassifier(), new XEventLifeTransClassifier()));
 
             log = labelFilter.filterLog(log);
 
             xce.assignName(log, xce.extractName(log) + " (Label)");
 
             if (labelFilter.label_removed > 0) {
-                log = logModifier.removeArtificialStartAndEndEvent(log);
+//                log = logModifier.removeArtificialStartAndEndEvent(log);
                 LogImporter.exportToFile("/Volumes/Data/SharedFolder/Logs/Label/" + logName + " " + testName + ".xes.gz", log);
             }
         }
@@ -104,11 +105,14 @@ public class LabelFilter {
     public XLog filterLog(XLog log) {
         List<IntArrayList> convertedLog = codeLog(log);
         IntHashSet removed = new IntHashSet();
+        IntHashSet save = new IntHashSet();
 
-        IntDoubleHashMap activityCountSingle = new IntDoubleHashMap();
+        IntDoubleHashMap activityCountSingle1 = new IntDoubleHashMap();
         IntDoubleHashMap activityCountSingle2 = new IntDoubleHashMap();
-        IntDoubleHashMap activityCount = new IntDoubleHashMap();
+        IntDoubleHashMap activityCountSingle3 = new IntDoubleHashMap();
+        IntDoubleHashMap activityCount1 = new IntDoubleHashMap();
         IntDoubleHashMap activityCount2 = new IntDoubleHashMap();
+        IntDoubleHashMap activityCount3 = new IntDoubleHashMap();
         IntDoubleHashMap activityProd = new IntDoubleHashMap();
 
         for(IntArrayList trace : convertedLog) {
@@ -118,58 +122,82 @@ public class LabelFilter {
             for(int i : trace.toArray()) {
                 if(!visited.contains(i)) {
                     visited.add(i);
-                    activityCountSingle.addToValue(i, 1);
+                    activityCountSingle1.addToValue(i, 1);
                     activityCountSingle2.addToValue(i, 1);
+                    activityCountSingle3.addToValue(i, 1);
                 }
-                activityCount.addToValue(i, 1);
+                activityCount1.addToValue(i, 1);
                 activityCount2.addToValue(i, 1);
+                activityCount3.addToValue(i, 1);
                 activityRepetitions.addToValue(i, 1);
             }
         }
-        for(int activity : activityCountSingle.keySet().toArray()) {
-            activityProd.put(activity, (activityCount.get(activity) / activityCountSingle.get(activity)));
+        for(int activity : activityCountSingle1.keySet().toArray()) {
+            activityProd.put(activity, (activityCount1.get(activity) / activityCountSingle1.get(activity)));
         }
 
-        for(int activity : activityCount.keySet().toArray()) {
-            if (activityCountSingle.get(activity) == convertedLog.size()) {
-                activityCountSingle.remove(activity);
-                activityCount.remove(activity);
+        double cut_A = activityCount1.average();
+        double cut_single_A = activityCountSingle1.average();
+        double cut_M = findCut(activityCount1.keyValuesView().toList(), M);
+        double cut_single_M = findCut(activityCountSingle1.keyValuesView().toList(), M);
+
+        for(int activity : activityCountSingle1.keySet().toArray()) {
+            if (activityCountSingle1.get(activity) == convertedLog.size()) {
+                activityCountSingle1.remove(activity);
+                activityCount1.remove(activity);
+                activityCountSingle2.remove(activity);
+                activityCount2.remove(activity);
+                save.add(activity);
+                System.out.println("Saved because in every trace: " + intToStringMap.get(activity));
             }
         }
 
-        double cut_A = activityCount.average();
-        double cut_single_A = activityCountSingle.average();
-        double cut_prod_A = activityProd.average();
+        cut_A = activityCount1.average();
+        cut_single_A = activityCountSingle1.average();
+        cut_M = findCut(activityCount1.keyValuesView().toList(), M);
+        cut_single_M = findCut(activityCountSingle1.keyValuesView().toList(), M);
 
-        for(int activity : activityCount.keySet().toArray()) {
-//            if((activityProd.get(activity) > cut_prod_A || activityCountSingle.get(activity) < cut_single_A) && activityCount.get(activity) > cut_A) {
-            if((activityCountSingle.get(activity) < cut_single_A) && activityCount.get(activity) > cut_A) {
-                activityCount.remove(activity);
-//                saved.add(activity);
-//                System.out.println(intToStringMap.get(activity));
+        for(int activity : activityCountSingle2.keySet().toArray()) {
+            if(activityCountSingle2.get(activity) <= cut_single_M && activityCount2.get(activity) > cut_A){
+                System.out.println("Saved because Exceptional A: " + intToStringMap.get(activity) + " - in " + activityCount2.get(activity) + " traces, executed " + activityCountSingle2.get(activity) + " times");
+                activityCount2.remove(activity);
+                activityCountSingle2.remove(activity);
+                save.add(activity);
+            }
+            else
+            if(activityCountSingle2.get(activity) > cut_single_A && activityCount2.get(activity) <= cut_M) {
+                System.out.println("Saved because Exceptional B: " + intToStringMap.get(activity) + " - in " + activityCount2.get(activity) + " traces, executed " + activityCountSingle2.get(activity) + " times");
+                activityCount2.remove(activity);
+                activityCountSingle2.remove(activity);
+                save.add(activity);
             }
         }
 
-        cut_A = activityCount.average();
-        double cut_M = findCut(activityCount.keyValuesView().toList(), M);
-        double cut_single_M = findCut(activityCountSingle.keyValuesView().toList(), M);
+//        cut_M = activityCount2.average();
+//        cut_single_M = activityCountSingle2.average();
+        cut_M = findCut(activityCount2.keyValuesView().toList(), M);
+        cut_single_M = findCut(activityCountSingle2.keyValuesView().toList(), M);
 
         for(int activity : activityCountSingle2.keySet().toArray()) {
             int count = 0;
 
-            if(activityCount2.get(activity) <= cut_M) {
+            if(activityCount3.get(activity) <= cut_M) {
                 count++;
             }
 
-            if(activityCountSingle2.get(activity) <= cut_single_M) {
+            if(activityCountSingle3.get(activity) <= cut_single_M) {
                 count++;
             }
 
-            if(activityCount2.get(activity) > cut_A || activityCountSingle2.get(activity) > cut_single_A) {
-                count--;
+            if(count > 0) {
+//                if (save.contains(activity)) {
+//                    count--;
+//                    System.out.println("Removable but saved: " + intToStringMap.get(activity) + " - in " + activityCount3.get(activity) + " traces, executed " + activityCountSingle3.get(activity) + " times");
+//                }else {
+                    removed.add(activity);
+                    System.out.println("Removed: " + intToStringMap.get(activity) + " - in " + activityCount3.get(activity) + " traces, executed " + activityCountSingle3.get(activity) + " times");
+//                }
             }
-
-            if(count > 1) removed.add(activity);
         }
 
         IntIntHashMap map = removeInfrequentLabels(convertedLog, removed);
@@ -246,13 +274,13 @@ public class LabelFilter {
 //        double index_of_dispersion_2 = Math.pow(standard_deviation_2, 2) / mean_2;
 //
 //
-//        double median_1 = statisticsSelector.evaluate(StatisticsMeasures.MEDIAN, null, list1);
-//        double median_absolute_deviation_1 = statisticsSelector.evaluate(StatisticsMeasures.MAD, median_1, list1);
-//        double coefficient_of_dispersion_1 = median_absolute_deviation_1 / median_1;
-//
-//        double median_2 = statisticsSelector.evaluate(StatisticsMeasures.MEDIAN, null, list2);
-//        double median_absolute_deviation_2 = statisticsSelector.evaluate(StatisticsMeasures.MAD, median_2, list2);
-//        double coefficient_of_dispersion_2 = median_absolute_deviation_2 / median_2;
+        double median_1 = statisticsSelector.evaluate(StatisticsMeasures.MEDIAN, null, list1);
+        double median_absolute_deviation_1 = statisticsSelector.evaluate(StatisticsMeasures.MAD, median_1, list1);
+        double coefficient_of_dispersion_1 = median_absolute_deviation_1 / median_1;
+
+        double median_2 = statisticsSelector.evaluate(StatisticsMeasures.MEDIAN, null, list2);
+        double median_absolute_deviation_2 = statisticsSelector.evaluate(StatisticsMeasures.MAD, median_2, list2);
+        double coefficient_of_dispersion_2 = median_absolute_deviation_2 / median_2;
 //
 //
 //        double quartile3_1 = statisticsSelector.evaluate(StatisticsMeasures.PERCENTILE, 0.75, list1);
@@ -284,18 +312,17 @@ public class LabelFilter {
 
 
 
-//        double coefficient_of_dispersion = (coefficient_of_dispersion_1 + coefficient_of_dispersion_2) / 2;
+        double coefficient_of_dispersion = (coefficient_of_dispersion_1 + coefficient_of_dispersion_2) / 2;
 //        double coefficient_of_variation = (coefficient_of_variation_1 + coefficient_of_variation_2) / 2;
 //        double index_of_dispersion = (index_of_dispersion_1 + index_of_dispersion_2) / 2;
         double m = - ((min_1 - max_2) / (mean_1 - mean_2));
 //        double quartile_coefficient_of_dispersion = (quartile_coefficient_of_dispersion_1 + quartile_coefficient_of_dispersion_2) / 2;
 //        double qm = 1 - (Math.abs((Math.abs(quartile3_1 + quartile1_1) / 2) - (Math.abs(quartile3_2 + quartile1_2) / 2)) / (max_1 - min_2));
 
-//        if(measure == CoD) return coefficient_of_dispersion;
+        if(measure == CoD) return coefficient_of_dispersion;
 //        else if(measure == CoV) return coefficient_of_variation;
 //        else if(measure == IoD) return index_of_dispersion;
-//        else
-            if(measure == M) return m;
+        else if(measure == M) return m;
 //        else if(measure == N) return noise;
 //        else if(measure == QCoD) return quartile_coefficient_of_dispersion;
 //        else if(measure == QM) return qm;

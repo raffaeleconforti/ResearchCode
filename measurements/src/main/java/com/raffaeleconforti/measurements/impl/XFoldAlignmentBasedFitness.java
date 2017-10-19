@@ -57,7 +57,7 @@ public class XFoldAlignmentBasedFitness implements MeasurementAlgorithm {
             }
 
             try {
-                petrinetWithMarking = miningAlgorithm.minePetrinet(pluginContext, log1, false, null);
+                petrinetWithMarking = miningAlgorithm.minePetrinet(pluginContext, log1, false, null, xEventClassifier);
                 Double f = alignmentBasedFitness.computeMeasurement(pluginContext, xEventClassifier, petrinetWithMarking, miningAlgorithm, logs[i]).getValue();
                 fitness += (f != null)?f:0.0;
                 System.out.println("DEBUG - " + (i+1) + "/" + fold + " -fold fitness: " + f);

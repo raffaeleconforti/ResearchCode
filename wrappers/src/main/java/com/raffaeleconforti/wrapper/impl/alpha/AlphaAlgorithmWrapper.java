@@ -6,6 +6,8 @@ import com.raffaeleconforti.wrapper.LogPreprocessing;
 import com.raffaeleconforti.wrapper.MiningAlgorithm;
 import com.raffaeleconforti.wrapper.settings.MiningSettings;
 import com.raffaeleconforti.wrapper.PetrinetWithMarking;
+import org.deckfour.xes.classification.XEventClassifier;
+import org.deckfour.xes.classification.XEventNameClassifier;
 import org.deckfour.xes.info.XLogInfo;
 import org.deckfour.xes.info.XLogInfoFactory;
 import org.deckfour.xes.model.XLog;
@@ -35,7 +37,7 @@ public class AlphaAlgorithmWrapper implements MiningAlgorithm {
             pack = "Noise Filtering")
     @PluginVariant(variantLabel = "Alpha Algorithm Wrapper", requiredParameterLabels = {0})
     public PetrinetWithMarking minePetrinet(UIPluginContext context, XLog log) {
-        return minePetrinet(context, log, false, null);
+        return minePetrinet(context, log, false, null, new XEventNameClassifier());
     }
 
     @Override
@@ -44,12 +46,12 @@ public class AlphaAlgorithmWrapper implements MiningAlgorithm {
     }
 
     @Override
-    public ProcessTree mineProcessTree(UIPluginContext context, XLog log, boolean structure, MiningSettings params) {
+    public ProcessTree mineProcessTree(UIPluginContext context, XLog log, boolean structure, MiningSettings params, XEventClassifier xEventClassifier) {
         return null;
     }
 
     @Override
-    public PetrinetWithMarking minePetrinet(UIPluginContext context, XLog log, boolean structure, MiningSettings params) {
+    public PetrinetWithMarking minePetrinet(UIPluginContext context, XLog log, boolean structure, MiningSettings params, XEventClassifier xEventClassifier) {
         try {
             LogPreprocessing logPreprocessing = new LogPreprocessing();
             log = logPreprocessing.preprocessLog(context, log);
@@ -74,8 +76,8 @@ public class AlphaAlgorithmWrapper implements MiningAlgorithm {
     }
 
     @Override
-    public BPMNDiagram mineBPMNDiagram(UIPluginContext context, XLog log, boolean structure, MiningSettings params) {
-        PetrinetWithMarking petrinetWithMarking = minePetrinet(context, log, structure, params);
+    public BPMNDiagram mineBPMNDiagram(UIPluginContext context, XLog log, boolean structure, MiningSettings params, XEventClassifier xEventClassifier) {
+        PetrinetWithMarking petrinetWithMarking = minePetrinet(context, log, structure, params, xEventClassifier);
         return PetriNetToBPMNConverter.convert(petrinetWithMarking.getPetrinet(), petrinetWithMarking.getInitialMarking(), petrinetWithMarking.getFinalMarking(), true);
     }
 

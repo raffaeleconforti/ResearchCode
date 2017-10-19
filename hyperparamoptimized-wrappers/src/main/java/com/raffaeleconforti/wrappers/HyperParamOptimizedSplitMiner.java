@@ -11,6 +11,7 @@ import com.raffaeleconforti.measurements.impl.AlignmentBasedPrecision;
 import com.raffaeleconforti.wrapper.MiningAlgorithm;
 import com.raffaeleconforti.wrapper.settings.MiningSettings;
 import com.raffaeleconforti.wrapper.PetrinetWithMarking;
+import org.deckfour.xes.classification.XEventClassifier;
 import org.deckfour.xes.classification.XEventNameClassifier;
 import org.deckfour.xes.model.XLog;
 import org.processmining.contexts.uitopia.UIContext;
@@ -60,7 +61,7 @@ public class HyperParamOptimizedSplitMiner implements MiningAlgorithm {
             pack = "bpmntk-osgi")
     @PluginVariant(variantLabel = "Naive HyperParam-Optimized Split Miner Wrapper", requiredParameterLabels = {0})
     public PetrinetWithMarking minePetrinet(UIPluginContext context, XLog log) {
-        return minePetrinet(context, log, false, null);
+        return minePetrinet(context, log, false, null, new XEventNameClassifier());
     }
 
     @Override
@@ -69,16 +70,16 @@ public class HyperParamOptimizedSplitMiner implements MiningAlgorithm {
     }
 
     @Override
-    public ProcessTree mineProcessTree(UIPluginContext context, XLog log, boolean structure, MiningSettings params) {
+    public ProcessTree mineProcessTree(UIPluginContext context, XLog log, boolean structure, MiningSettings params, XEventClassifier xEventClassifier) {
         return null;
     }
 
     @Override
-    public PetrinetWithMarking minePetrinet(UIPluginContext context, XLog log, boolean structure, MiningSettings params) {
-        return discoverBestOn(context, log, structure, BestOn.FSCORE);
+    public PetrinetWithMarking minePetrinet(UIPluginContext context, XLog log, boolean structure, MiningSettings params, XEventClassifier xEventClassifier) {
+        return discoverBestOn(context, log, structure, BestOn.FSCORE, xEventClassifier);
     }
 
-    public PetrinetWithMarking discoverBestOn(UIPluginContext context, XLog log, boolean structure, BestOn metric) {
+    public PetrinetWithMarking discoverBestOn(UIPluginContext context, XLog log, boolean structure, BestOn metric, XEventClassifier xEventClassifier) {
         Map<String, PetrinetWithMarking> models = new HashMap<>();
         Map<Double, String> fitness = new HashMap<>();
         Map<Double, String> precision = new HashMap<>();
@@ -91,7 +92,7 @@ public class HyperParamOptimizedSplitMiner implements MiningAlgorithm {
 
         AlignmentBasedFitness fitnessCalculator = new AlignmentBasedFitness();
         AlignmentBasedPrecision precisionCalculator = new AlignmentBasedPrecision();
-        XEventNameClassifier eventNameClassifier = new XEventNameClassifier();
+        XEventClassifier eventNameClassifier = xEventClassifier;
 
         Double fit;
         Double prec;
@@ -174,9 +175,9 @@ public class HyperParamOptimizedSplitMiner implements MiningAlgorithm {
         return new PetrinetWithMarking((Petrinet) result[0], (Marking) result[1], (Marking) result[2]);
     }
 
-    public BPMNDiagram mineBPMNDiagram(UIPluginContext context, XLog log, boolean structure, MiningSettings params) {
+    public BPMNDiagram mineBPMNDiagram(UIPluginContext context, XLog log, boolean structure, MiningSettings params, XEventClassifier xEventClassifier) {
         BPMNDiagram output = null;
-        PetrinetWithMarking petrinet = minePetrinet(context, log);
+        PetrinetWithMarking petrinet = minePetrinet(context, log, structure, params,xEventClassifier);
         output = PetriNetToBPMNConverter.convert(petrinet.getPetrinet(), petrinet.getInitialMarking(), petrinet.getFinalMarking(), false);
         return output;
     }

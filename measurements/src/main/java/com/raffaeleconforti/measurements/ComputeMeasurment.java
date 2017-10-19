@@ -179,7 +179,7 @@ public class ComputeMeasurment {
                 new AlphaAlgorithmWrapper(), new Heuristics52AlgorithmWrapper(), new EvolutionaryTreeMinerWrapper(),
                 new StructuredMinerAlgorithmWrapper()};
 
-        petrinetWithMarking = discoverPetrinet(context, miningAlgorithms[miningAlgorithm], trainingLog, false);
+        petrinetWithMarking = discoverPetrinet(context, miningAlgorithms[miningAlgorithm], trainingLog, false, xEventClassifier);
         Petrinet petrinet = petrinetWithMarking.getPetrinet();
 
         return compute(context, result, petrinet, miningAlgorithm);
@@ -414,8 +414,8 @@ public class ComputeMeasurment {
         return "";
     }
 
-    private PetrinetWithMarking discoverPetrinet(UIPluginContext context, MiningAlgorithm miningAlgorithm, XLog log, boolean isStructured) {
-        PetrinetWithMarking petrinetWithMarking = miningAlgorithm.minePetrinet(context, log, isStructured, null);
+    private PetrinetWithMarking discoverPetrinet(UIPluginContext context, MiningAlgorithm miningAlgorithm, XLog log, boolean isStructured, XEventClassifier xEventClassifier) {
+        PetrinetWithMarking petrinetWithMarking = miningAlgorithm.minePetrinet(context, log, isStructured, null, xEventClassifier);
         Petrinet petrinet = petrinetWithMarking.getPetrinet();
         Marking initialMarking = petrinetWithMarking.getInitialMarking();
         Marking finalMarking = constructFinalMarking(petrinet);
@@ -444,7 +444,7 @@ public class ComputeMeasurment {
     private double computePrecision(UIPluginContext context, MiningAlgorithm miningAlgorithm, boolean isStructured) {
         MultiETCPlugin multiETCPlugin = new MultiETCPlugin();
 
-        if(petrinetWithMarking == null) petrinetWithMarking = discoverPetrinet(context, miningAlgorithm, trainingLog, isStructured);
+        if(petrinetWithMarking == null) petrinetWithMarking = discoverPetrinet(context, miningAlgorithm, trainingLog, isStructured, xEventClassifier);
         Petrinet petrinet = petrinetWithMarking.getPetrinet();
         MultiETCSettings settings = new MultiETCSettings();
         settings.put(MultiETCSettings.ALGORITHM, MultiETCSettings.Algorithm.ALIGN_1);
@@ -465,7 +465,7 @@ public class ComputeMeasurment {
     }
 
     private double computeFitness(UIPluginContext context, MiningAlgorithm miningAlgorithm, boolean isStructured) {
-        if(petrinetWithMarking == null) petrinetWithMarking = discoverPetrinet(context, miningAlgorithm, trainingLog, isStructured);
+        if(petrinetWithMarking == null) petrinetWithMarking = discoverPetrinet(context, miningAlgorithm, trainingLog, isStructured, xEventClassifier);
         long time = System.nanoTime();
         pnRepResult = computeFitness(context, petrinetWithMarking, validatingLog);
         System.out.println("TIME " + (System.nanoTime() - time));
@@ -549,7 +549,7 @@ public class ComputeMeasurment {
                 context.getProvidedObjectManager().createProvidedObject("ValidatingLogFold" + i, logs[i], XLog.class, context);
                 context.getGlobalContext().getResourceManager().getResourceForInstance(logs[i]).setFavorite(true);
 
-                PetrinetWithMarking petrinetWithMarking = discoverPetrinet(context, miningAlgorithm, log1, isStructured);
+                PetrinetWithMarking petrinetWithMarking = discoverPetrinet(context, miningAlgorithm, log1, isStructured, xEventClassifier);
                 if(isStructured) {
                     petrinetWithMarking = structurePetriNet(context, petrinetWithMarking);
                 }
@@ -579,7 +579,7 @@ public class ComputeMeasurment {
                     }
                 }
 
-                PetrinetWithMarking petrinetWithMarking = discoverPetrinet(context, miningAlgorithm, log1, isStructured);
+                PetrinetWithMarking petrinetWithMarking = discoverPetrinet(context, miningAlgorithm, log1, isStructured, xEventClassifier);
                 if(isStructured) {
                     petrinetWithMarking = structurePetriNet(context, petrinetWithMarking);
                 }

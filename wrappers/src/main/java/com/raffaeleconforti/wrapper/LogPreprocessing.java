@@ -61,10 +61,10 @@ public class LogPreprocessing {
             } else if (t.getLabel().contains(endLabel)) {
                 t.setInvisible(true);
                 t.getAttributeMap().put(AttributeMap.LABEL, "sink");
-            } else if (t.getLabel().toLowerCase().endsWith("+complete")) {
-                t.getAttributeMap().put(AttributeMap.LABEL, t.getLabel().substring(0, t.getLabel().toLowerCase().indexOf("+complete")));
-            } else if (t.getLabel().toLowerCase().endsWith("+start")) {
-                t.getAttributeMap().put(AttributeMap.LABEL, t.getLabel().substring(0, t.getLabel().toLowerCase().indexOf("+start")));
+//            } else if (t.getLabel().toLowerCase().endsWith("+complete")) {
+//                t.getAttributeMap().put(AttributeMap.LABEL, t.getLabel().substring(0, t.getLabel().toLowerCase().indexOf("+complete")));
+//            } else if (t.getLabel().toLowerCase().endsWith("+start")) {
+//                t.getAttributeMap().put(AttributeMap.LABEL, t.getLabel().substring(0, t.getLabel().toLowerCase().indexOf("+start")));
             }
         }
     }
@@ -78,10 +78,10 @@ public class LogPreprocessing {
                     remove.add(t);
                 } else if (t.getName().contains(endLabel)) {
                     remove.add(t);
-                } else if (t.getName().toLowerCase().endsWith("+complete")) {
-                    t.setName(t.getName().substring(0, t.getName().toLowerCase().indexOf("+complete")));
-                } else if (t.getName().toLowerCase().endsWith("+start")) {
-                    t.setName(t.getName().substring(0, t.getName().toLowerCase().indexOf("+start")));
+//                } else if (t.getName().toLowerCase().endsWith("+complete")) {
+//                    t.setName(t.getName().substring(0, t.getName().toLowerCase().indexOf("+complete")));
+//                } else if (t.getName().toLowerCase().endsWith("+start")) {
+//                    t.setName(t.getName().substring(0, t.getName().toLowerCase().indexOf("+start")));
                 }
             }
         }

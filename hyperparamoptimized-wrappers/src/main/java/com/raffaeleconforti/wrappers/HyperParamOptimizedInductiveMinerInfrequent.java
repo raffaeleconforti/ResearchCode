@@ -8,6 +8,7 @@ import com.raffaeleconforti.wrapper.LogPreprocessing;
 import com.raffaeleconforti.wrapper.MiningAlgorithm;
 import com.raffaeleconforti.wrapper.settings.MiningSettings;
 import com.raffaeleconforti.wrapper.PetrinetWithMarking;
+import org.deckfour.xes.classification.XEventClassifier;
 import org.deckfour.xes.classification.XEventNameClassifier;
 import org.deckfour.xes.model.XLog;
 import org.processmining.contexts.uitopia.UIPluginContext;
@@ -34,7 +35,7 @@ public class HyperParamOptimizedInductiveMinerInfrequent implements MiningAlgori
     private static float MAX = 1.010F;
 
     public PetrinetWithMarking minePetrinet(UIPluginContext context, XLog log) {
-        return minePetrinet(context, log, false, null);
+        return minePetrinet(context, log, false, null, new XEventNameClassifier());
     }
 
     @Override
@@ -43,16 +44,16 @@ public class HyperParamOptimizedInductiveMinerInfrequent implements MiningAlgori
     }
 
     @Override
-    public ProcessTree mineProcessTree(UIPluginContext context, XLog log, boolean structure, MiningSettings params) {
+    public ProcessTree mineProcessTree(UIPluginContext context, XLog log, boolean structure, MiningSettings params, XEventClassifier xEventClassifier) {
         return null;
     }
 
     @Override
-    public PetrinetWithMarking minePetrinet(UIPluginContext context, XLog log, boolean structure, MiningSettings params) {
-        return discoverBestOn(context, log, structure);
+    public PetrinetWithMarking minePetrinet(UIPluginContext context, XLog log, boolean structure, MiningSettings params, XEventClassifier xEventClassifier) {
+        return discoverBestOn(context, log, structure, xEventClassifier);
     }
 
-    public PetrinetWithMarking discoverBestOn(UIPluginContext context, XLog log, boolean structure) {
+    public PetrinetWithMarking discoverBestOn(UIPluginContext context, XLog log, boolean structure, XEventClassifier xEventClassifier) {
         Map<Float, PetrinetWithMarking> models = new HashMap<>();
         Map<Double, Float> fitness = new HashMap<>();
         Map<Double, Float> precision = new HashMap<>();
@@ -64,7 +65,7 @@ public class HyperParamOptimizedInductiveMinerInfrequent implements MiningAlgori
 
         AlignmentBasedFitness fitnessCalculator = new AlignmentBasedFitness();
         AlignmentBasedPrecision precisionCalculator = new AlignmentBasedPrecision();
-        XEventNameClassifier eventNameClassifier = new XEventNameClassifier();
+        XEventClassifier eventNameClassifier = xEventClassifier;
 
         LogPreprocessing logPreprocessing = new LogPreprocessing();
         log = logPreprocessing.preprocessLog(context, log);
@@ -122,9 +123,9 @@ public class HyperParamOptimizedInductiveMinerInfrequent implements MiningAlgori
         return models.get(bestThreshold);
     }
 
-    public BPMNDiagram mineBPMNDiagram(UIPluginContext context, XLog log, boolean structure, MiningSettings params) {
+    public BPMNDiagram mineBPMNDiagram(UIPluginContext context, XLog log, boolean structure, MiningSettings params, XEventClassifier xEventClassifier) {
         BPMNDiagram output = null;
-        PetrinetWithMarking petrinet = minePetrinet(context, log);
+        PetrinetWithMarking petrinet = minePetrinet(context, log, structure, params, xEventClassifier);
         output = PetriNetToBPMNConverter.convert(petrinet.getPetrinet(), petrinet.getInitialMarking(), petrinet.getFinalMarking(), false);
         return output;
     }

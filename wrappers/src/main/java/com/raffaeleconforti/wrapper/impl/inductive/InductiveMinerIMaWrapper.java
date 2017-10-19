@@ -5,6 +5,8 @@ import com.raffaeleconforti.wrapper.LogPreprocessing;
 import com.raffaeleconforti.wrapper.MiningAlgorithm;
 import com.raffaeleconforti.wrapper.settings.MiningSettings;
 import com.raffaeleconforti.wrapper.PetrinetWithMarking;
+import org.deckfour.xes.classification.XEventClassifier;
+import org.deckfour.xes.classification.XEventNameClassifier;
 import org.deckfour.xes.model.XLog;
 import org.processmining.contexts.uitopia.UIPluginContext;
 import org.processmining.contexts.uitopia.annotations.UITopiaVariant;
@@ -37,7 +39,7 @@ public class InductiveMinerIMaWrapper implements MiningAlgorithm {
             pack = "Noise Filtering")
     @PluginVariant(variantLabel = "Inductive Miner IMa Wrapper", requiredParameterLabels = {0})
     public PetrinetWithMarking minePetrinet(UIPluginContext context, XLog log) {
-        return minePetrinet(context, log, false, null);
+        return minePetrinet(context, log, false, null, new XEventNameClassifier());
     }
 
     @Override
@@ -46,7 +48,7 @@ public class InductiveMinerIMaWrapper implements MiningAlgorithm {
     }
 
     @Override
-    public ProcessTree mineProcessTree(UIPluginContext context, XLog log, boolean structure, MiningSettings params) {
+    public ProcessTree mineProcessTree(UIPluginContext context, XLog log, boolean structure, MiningSettings params, XEventClassifier xEventClassifier) {
         LogPreprocessing logPreprocessing = new LogPreprocessing();
         log = logPreprocessing.preprocessLog(context, log);
 
@@ -58,6 +60,7 @@ public class InductiveMinerIMaWrapper implements MiningAlgorithm {
         IMProcessTree miner = new IMProcessTree();
         if(miningParameters == null) {
             miningParameters = new MiningParametersIMa();
+            miningParameters.setClassifier(xEventClassifier);
         }
         ProcessTree result = miner.mineProcessTree(log, miningParameters);
         logPreprocessing.removedAddedElements(result);
@@ -68,7 +71,7 @@ public class InductiveMinerIMaWrapper implements MiningAlgorithm {
     }
 
     @Override
-    public PetrinetWithMarking minePetrinet(UIPluginContext context, XLog log, boolean structure, MiningSettings params) {
+    public PetrinetWithMarking minePetrinet(UIPluginContext context, XLog log, boolean structure, MiningSettings params, XEventClassifier xEventClassifier) {
         LogPreprocessing logPreprocessing = new LogPreprocessing();
         log = logPreprocessing.preprocessLog(context, log);
 
@@ -80,6 +83,7 @@ public class InductiveMinerIMaWrapper implements MiningAlgorithm {
         IMPetriNet miner = new IMPetriNet();
         if(miningParameters == null) {
             miningParameters = new MiningParametersIMa();
+            miningParameters.setClassifier(xEventClassifier);
         }
         Object[] result = miner.minePetriNetParameters(context, log, miningParameters);
         logPreprocessing.removedAddedElements((Petrinet) result[0]);
@@ -90,8 +94,8 @@ public class InductiveMinerIMaWrapper implements MiningAlgorithm {
     }
 
     @Override
-    public BPMNDiagram mineBPMNDiagram(UIPluginContext context, XLog log, boolean structure, MiningSettings params) {
-        PetrinetWithMarking petrinetWithMarking = minePetrinet(context, log, structure, params);
+    public BPMNDiagram mineBPMNDiagram(UIPluginContext context, XLog log, boolean structure, MiningSettings params, XEventClassifier xEventClassifier) {
+        PetrinetWithMarking petrinetWithMarking = minePetrinet(context, log, structure, params, xEventClassifier);
         return PetriNetToBPMNConverter.convert(petrinetWithMarking.getPetrinet(), petrinetWithMarking.getInitialMarking(), petrinetWithMarking.getFinalMarking(), true);
     }
 

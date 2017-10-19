@@ -45,7 +45,7 @@ public class HeuristicsAlgorithmWrapper implements MiningAlgorithm {
             pack = "Noise Filtering")
     @PluginVariant(variantLabel = "Heuristics Miner Wrapper", requiredParameterLabels = {0})
     public PetrinetWithMarking minePetrinet(UIPluginContext context, XLog log) {
-        return minePetrinet(context, log, false, null);
+        return minePetrinet(context, log, false, null, new XEventNameClassifier());
     }
 
     @Override
@@ -54,12 +54,12 @@ public class HeuristicsAlgorithmWrapper implements MiningAlgorithm {
     }
 
     @Override
-    public ProcessTree mineProcessTree(UIPluginContext context, XLog log, boolean structure, MiningSettings params) {
+    public ProcessTree mineProcessTree(UIPluginContext context, XLog log, boolean structure, MiningSettings params, XEventClassifier xEventClassifier) {
         return null;
     }
 
     @Override
-    public PetrinetWithMarking minePetrinet(UIPluginContext context, XLog log, boolean structure, MiningSettings params) {
+    public PetrinetWithMarking minePetrinet(UIPluginContext context, XLog log, boolean structure, MiningSettings params, XEventClassifier xEventClassifier) {
         LogPreprocessing logPreprocessing = new LogPreprocessing();
         log = logPreprocessing.preprocessLog(context, log);
 
@@ -70,12 +70,12 @@ public class HeuristicsAlgorithmWrapper implements MiningAlgorithm {
 
         if(context instanceof FakePluginContext) {
             Collection<XEventClassifier> classifiers = new HashSet();
-            classifiers.add(new XEventNameClassifier());
+            classifiers.add(xEventClassifier);
             ParametersPanel parameters = new ParametersPanel(classifiers);
             settings = parameters.getSettings();
         }else {
             Collection<XEventClassifier> classifiers = new HashSet();
-            classifiers.add(new XEventNameClassifier());
+            classifiers.add(xEventClassifier);
             ParametersPanel parameters = new ParametersPanel(classifiers);
             parameters.removeAndThreshold();
 
@@ -126,8 +126,8 @@ public class HeuristicsAlgorithmWrapper implements MiningAlgorithm {
     }
 
     @Override
-    public BPMNDiagram mineBPMNDiagram(UIPluginContext context, XLog log, boolean structure, MiningSettings params) {
-        PetrinetWithMarking petrinetWithMarking = minePetrinet(context, log, structure, params);
+    public BPMNDiagram mineBPMNDiagram(UIPluginContext context, XLog log, boolean structure, MiningSettings params, XEventClassifier xEventClassifier) {
+        PetrinetWithMarking petrinetWithMarking = minePetrinet(context, log, structure, params, xEventClassifier);
         return PetriNetToBPMNConverter.convert(petrinetWithMarking.getPetrinet(), petrinetWithMarking.getInitialMarking(), petrinetWithMarking.getFinalMarking(), true);
     }
 

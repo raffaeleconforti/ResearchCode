@@ -11,6 +11,7 @@ import com.raffaeleconforti.wrapper.impl.FodinaAlgorithmWrapper;
 import com.raffaeleconforti.wrapper.impl.heuristics.Heuristics52AlgorithmWrapper;
 import com.raffaeleconforti.wrapper.impl.heuristics.HeuristicsAlgorithmWrapper;
 import com.raffaeleconforti.wrapper.impl.heuristics.HeuristicsDollarAlgorithmWrapper;
+import org.deckfour.xes.classification.XEventNameClassifier;
 import org.deckfour.xes.model.XLog;
 import org.processmining.contexts.uitopia.UIPluginContext;
 import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
@@ -46,7 +47,7 @@ public class StructuredMiner {
 //        PetrinetWithMarking petrinet = miningAlgorithm.minePetrinet(context, log, false);
 
 //        BPMNDiagram diagram = PetriNetToBPMNConverter.convert(petrinet.getPetrinet(), petrinet.getInitialMarking(), petrinet.getFinalMarking(), true);
-        BPMNDiagram diagram = miningAlgorithm.mineBPMNDiagram(context, log, false, null);
+        BPMNDiagram diagram = miningAlgorithm.mineBPMNDiagram(context, log, false, null, new XEventNameClassifier());
         diagram = BPMNCleaner.clean(diagram);
         diagram = structureDiagram(diagram);
 

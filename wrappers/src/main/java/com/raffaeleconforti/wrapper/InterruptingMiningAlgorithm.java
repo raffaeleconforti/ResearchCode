@@ -1,6 +1,7 @@
 package com.raffaeleconforti.wrapper;
 
 import com.raffaeleconforti.wrapper.settings.MiningSettings;
+import org.deckfour.xes.classification.XEventClassifier;
 import org.deckfour.xes.model.XLog;
 import org.processmining.contexts.uitopia.UIPluginContext;
 import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
@@ -20,7 +21,7 @@ public class InterruptingMiningAlgorithm {
         this.timeout = timeout;
     }
 
-    public PetrinetWithMarking minePetrinet(UIPluginContext context, XLog log, boolean structure, MiningSettings params) {
+    public PetrinetWithMarking minePetrinet(UIPluginContext context, XLog log, boolean structure, MiningSettings params, XEventClassifier xEventClassifier) {
         final PetrinetWithMarking[] petrinetWithMarking = new PetrinetWithMarking[1];
 
         Runnable runnable = new Runnable() {
@@ -32,7 +33,7 @@ public class InterruptingMiningAlgorithm {
                 }));
 
                 try {
-                    petrinetWithMarking[0] = miningAlgorithm.minePetrinet(context, log, structure, null);
+                    petrinetWithMarking[0] = miningAlgorithm.minePetrinet(context, log, structure, null, xEventClassifier);
                 } catch (Exception e) {
 
                 }
@@ -72,8 +73,8 @@ public class InterruptingMiningAlgorithm {
         return petrinetWithMarking[0];
     }
 
-    public BPMNDiagram mineBPMNDiagram(UIPluginContext context, XLog log, boolean structure, MiningSettings params) {
-        return miningAlgorithm.mineBPMNDiagram(context, log, structure, params);
+    public BPMNDiagram mineBPMNDiagram(UIPluginContext context, XLog log, boolean structure, MiningSettings params, XEventClassifier xEventClassifier) {
+        return miningAlgorithm.mineBPMNDiagram(context, log, structure, params, xEventClassifier);
     }
 
     public String getAlgorithmName() {

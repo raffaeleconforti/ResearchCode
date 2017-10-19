@@ -23,6 +23,8 @@ import com.raffaeleconforti.log.util.LogCloner;
 import com.raffaeleconforti.log.util.LogModifier;
 import com.raffaeleconforti.log.util.LogOptimizer;
 import com.raffaeleconforti.wrapper.settings.MiningSettings;
+import org.deckfour.xes.classification.XEventClassifier;
+import org.deckfour.xes.classification.XEventNameClassifier;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 import org.deckfour.xes.extension.std.XConceptExtension;
@@ -44,6 +46,7 @@ import java.util.*;
 
 public class BPMNSubProcessMiner {
 
+    private final XEventClassifier xEventClassifier = new XEventNameClassifier();
     private static final XFactory factory = new XFactoryNaiveImpl();
     private final XConceptExtension xce = XConceptExtension.instance();
     private final BPMNAnalizer bpmnAnalizer = new BPMNAnalizer(xce);
@@ -92,7 +95,7 @@ public class BPMNSubProcessMiner {
         if(concModel == null) {
             long time = System.nanoTime();
             rawlog = logMod.insertArtificialStartAndEndEvent(rawlog);
-            BPMNDiagram model = bpmnMiner.mineBPMNDiagram(context, rawlog, null, selectedAlgorithm, params, false, commandline);
+            BPMNDiagram model = bpmnMiner.mineBPMNDiagram(context, rawlog, null, selectedAlgorithm, params, false, commandline, xEventClassifier);
             System.out.println("Mining Time = " + (System.nanoTime() - time));
             model = BPMNModifier.removeUnecessaryLabels(model);
             return model;
@@ -1126,7 +1129,7 @@ public class BPMNSubProcessMiner {
                 if(log.size() > 0) {
 
                     System.out.println("Starting mining...");
-                    BPMNDiagram result = bpmnMiner.mineBPMNDiagram(pluginContext, log, "SubProcess " + subprocessPos, selectedAlgorithm, params, true, commandline);
+                    BPMNDiagram result = bpmnMiner.mineBPMNDiagram(pluginContext, log, "SubProcess " + subprocessPos, selectedAlgorithm, params, true, commandline, xEventClassifier);
                     System.out.println("Mining completed");
 
                     minerResults.add(result);

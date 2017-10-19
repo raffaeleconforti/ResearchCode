@@ -11,6 +11,8 @@ import com.raffaeleconforti.wrapper.MiningAlgorithm;
 import com.raffaeleconforti.wrapper.settings.MiningSettings;
 import com.raffaeleconforti.wrapper.PetrinetWithMarking;
 import com.raffaeleconforti.marking.MarkingDiscoverer;
+import org.deckfour.xes.classification.XEventClassifier;
+import org.deckfour.xes.classification.XEventNameClassifier;
 import org.deckfour.xes.model.XLog;
 import org.processmining.contexts.uitopia.UIContext;
 import org.processmining.contexts.uitopia.UIPluginContext;
@@ -43,7 +45,7 @@ public class SplitMinerWrapper implements MiningAlgorithm {
             pack = "bpmntk-osgi")
     @PluginVariant(variantLabel = "Split Miner Wrapper", requiredParameterLabels = {0})
     public PetrinetWithMarking minePetrinet(UIPluginContext context, XLog log) {
-        return minePetrinet(context, log, false, null);
+        return minePetrinet(context, log, false, null, new XEventNameClassifier());
     }
 
     @Override
@@ -52,13 +54,13 @@ public class SplitMinerWrapper implements MiningAlgorithm {
     }
 
     @Override
-    public ProcessTree mineProcessTree(UIPluginContext context, XLog log, boolean structure, MiningSettings params) {
+    public ProcessTree mineProcessTree(UIPluginContext context, XLog log, boolean structure, MiningSettings params, XEventClassifier xEventClassifier) {
         return null;
     }
 
     @Override
-    public PetrinetWithMarking minePetrinet(UIPluginContext context, XLog log, boolean structure, MiningSettings params) {
-        BPMNDiagram diagram = this.mineBPMNDiagram(context, log, structure, params);
+    public PetrinetWithMarking minePetrinet(UIPluginContext context, XLog log, boolean structure, MiningSettings params, XEventClassifier xEventClassifier) {
+        BPMNDiagram diagram = this.mineBPMNDiagram(context, log, structure, params, xEventClassifier);
 
         Object[] result = BPMNToPetriNetConverter.convert(diagram);
 
@@ -75,7 +77,7 @@ public class SplitMinerWrapper implements MiningAlgorithm {
         return new PetrinetWithMarking((Petrinet) result[0], (Marking) result[1], (Marking) result[2]);
     }
 
-    public BPMNDiagram mineBPMNDiagram(UIPluginContext context, XLog log, boolean structure, MiningSettings params) {
+    public BPMNDiagram mineBPMNDiagram(UIPluginContext context, XLog log, boolean structure, MiningSettings params, XEventClassifier xEventClassifier) {
         BPMNDiagram output;
         Double eta = SplitMinerUIResult.FREQUENCY_THRESHOLD;
         Double epsilon = SplitMinerUIResult.PARALLELISMS_THRESHOLD;

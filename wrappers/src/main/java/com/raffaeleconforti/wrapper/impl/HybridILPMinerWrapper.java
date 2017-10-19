@@ -33,12 +33,12 @@ public class HybridILPMinerWrapper implements MiningAlgorithm {
     }
 
     @Override
-    public ProcessTree mineProcessTree(UIPluginContext context, XLog log, boolean structure, MiningSettings params) {
+    public ProcessTree mineProcessTree(UIPluginContext context, XLog log, boolean structure, MiningSettings params, XEventClassifier xEventClassifier) {
         return null;
     }
 
     @Override
-    public PetrinetWithMarking minePetrinet(UIPluginContext context, XLog log, boolean structure, MiningSettings params) {
+    public PetrinetWithMarking minePetrinet(UIPluginContext context, XLog log, boolean structure, MiningSettings params, XEventClassifier xEventClassifier) {
         PetrinetWithMarking petrinet = null;
 
         try {
@@ -47,7 +47,7 @@ public class HybridILPMinerWrapper implements MiningAlgorithm {
             LPFilter lpFilter = new LPFilter();
             lpFilter.setFilterType(LPFilterType.NONE);
 
-            XEventClassifier eventClassifier = new XEventAndClassifier(new XEventNameClassifier(), new XEventLifeTransClassifier());
+            XEventClassifier eventClassifier = xEventClassifier;
 
             DiscoveryStrategy discoveryStrategy = new DiscoveryStrategy(DiscoveryStrategyType.CAUSAL);
             DiscoverCausalActivityGraphParameters graphParams = new DiscoverCausalActivityGraphParameters(log);
@@ -104,8 +104,8 @@ public class HybridILPMinerWrapper implements MiningAlgorithm {
     }
 
     @Override
-    public BPMNDiagram mineBPMNDiagram(UIPluginContext context, XLog log, boolean structure, MiningSettings params) {
-        PetrinetWithMarking petrinetWithMarking = minePetrinet(context, log, structure, params);
+    public BPMNDiagram mineBPMNDiagram(UIPluginContext context, XLog log, boolean structure, MiningSettings params, XEventClassifier xEventClassifier) {
+        PetrinetWithMarking petrinetWithMarking = minePetrinet(context, log, structure, params, xEventClassifier);
         return PetriNetToBPMNConverter.convert(petrinetWithMarking.getPetrinet(), petrinetWithMarking.getInitialMarking(), petrinetWithMarking.getFinalMarking(), true);
     }
 
