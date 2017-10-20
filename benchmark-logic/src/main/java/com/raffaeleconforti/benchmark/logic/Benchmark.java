@@ -457,7 +457,7 @@ public class Benchmark {
         benchmark.loadLogs(path);
         for( String logName : benchmark.inputLogs.keySet() ) {
             log = benchmark.loadLog(benchmark.inputLogs.get(logName));
-            sLogs.add(LogParser.getSimpleLog(log));
+            sLogs.add(LogParser.getSimpleLog(log, xEventClassifier));
         }
 
         totalLogs = sLogs.size();

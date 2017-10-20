@@ -175,8 +175,8 @@ public class LabelFilter {
 
 //        cut_M = activityCount2.average();
 //        cut_single_M = activityCountSingle2.average();
-        cut_M = findCut(activityCount2.keyValuesView().toList(), M);
-        cut_single_M = findCut(activityCountSingle2.keyValuesView().toList(), M);
+//        cut_M = findCut(activityCount2.keyValuesView().toList(), M);
+//        cut_single_M = findCut(activityCountSingle2.keyValuesView().toList(), M);
 
         for(int activity : activityCountSingle2.keySet().toArray()) {
             int count = 0;

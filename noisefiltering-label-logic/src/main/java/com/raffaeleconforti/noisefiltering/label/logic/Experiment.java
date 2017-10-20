@@ -8,9 +8,13 @@ import com.raffaeleconforti.log.util.LogCloner;
 import com.raffaeleconforti.log.util.LogImporter;
 import com.raffaeleconforti.measurements.Measure;
 import com.raffaeleconforti.measurements.MeasurementAlgorithm;
+import com.raffaeleconforti.measurements.impl.AlignmentBasedFMeasure;
 import com.raffaeleconforti.measurements.impl.ProjectedFMeasure;
+import com.raffaeleconforti.soundnesschecker.CheckRelaxedSoundnessWithLola;
 import com.raffaeleconforti.wrapper.MiningAlgorithm;
 import com.raffaeleconforti.wrapper.PetrinetWithMarking;
+import com.raffaeleconforti.wrapper.impl.SplitMinerWrapper;
+import com.raffaeleconforti.wrapper.impl.heuristics.HeuristicsAlgorithmWrapper;
 import com.raffaeleconforti.wrapper.impl.inductive.InductiveMinerIMfWrapper;
 import com.raffaeleconforti.wrapper.settings.MiningSettings;
 import org.apache.poi.hssf.usermodel.HSSFRow;
@@ -25,8 +29,10 @@ import org.deckfour.xes.in.XesXmlGZIPParser;
 import org.deckfour.xes.model.XLog;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
+import org.processmining.acceptingpetrinet.models.AcceptingPetriNet;
+import org.processmining.acceptingpetrinet.models.impl.AcceptingPetriNetImpl;
+import org.processmining.acceptingpetrinet.plugins.ExportAcceptingPetriNetPlugin;
 import org.processmining.processtree.ProcessTree;
-import org.processmining.processtree.conversion.ProcessTree2Petrinet;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -70,27 +76,31 @@ public class Experiment {
         FakePluginContext fakePluginContext = new FakePluginContext();
 
         /* retrieving all the mining algorithms */
-        List<MiningAlgorithm> miningAlgorithms = MiningAlgorithmDiscoverer.discoverAlgorithms(packages);
-        Collections.sort(miningAlgorithms, new Comparator<MiningAlgorithm>() {
-            @Override
-            public int compare(MiningAlgorithm o1, MiningAlgorithm o2) {
-                return o1.getAlgorithmName().compareTo(o2.getAlgorithmName());
-            }
-        });
+//        List<MiningAlgorithm> miningAlgorithms = MiningAlgorithmDiscoverer.discoverAlgorithms(packages);
+//        Collections.sort(miningAlgorithms, new Comparator<MiningAlgorithm>() {
+//            @Override
+//            public int compare(MiningAlgorithm o1, MiningAlgorithm o2) {
+//                return o1.getAlgorithmName().compareTo(o2.getAlgorithmName());
+//            }
+//        });
+        List<MiningAlgorithm> miningAlgorithms = new ArrayList<>();
+        miningAlgorithms.add(new HeuristicsAlgorithmWrapper());
+        miningAlgorithms.add(new InductiveMinerIMfWrapper());
+        miningAlgorithms.add(new SplitMinerWrapper());
 
         /* retrieving all the measuring algorithms */
-        List<MeasurementAlgorithm> measurementAlgorithms = MeasurementAlgorithmDiscoverer.discoverAlgorithms(packages);
-        Collections.sort(measurementAlgorithms, new Comparator<MeasurementAlgorithm>() {
-            @Override
-            public int compare(MeasurementAlgorithm o1, MeasurementAlgorithm o2) {
-                return o2.getMeasurementName().compareTo(o1.getMeasurementName());
-            }
-        });
+//        List<MeasurementAlgorithm> measurementAlgorithms = MeasurementAlgorithmDiscoverer.discoverAlgorithms(packages);
+//        Collections.sort(measurementAlgorithms, new Comparator<MeasurementAlgorithm>() {
+//            @Override
+//            public int compare(MeasurementAlgorithm o1, MeasurementAlgorithm o2) {
+//                return o2.getMeasurementName().compareTo(o1.getMeasurementName());
+//            }
+//        });
+        List<MeasurementAlgorithm> measurementAlgorithms = new ArrayList<>();
+        measurementAlgorithms.add(new AlignmentBasedFMeasure());
+        measurementAlgorithms.add(new ProjectedFMeasure());
 
         measures = new HashMap<>();
-
-        System.out.println("DEBUG - total logs: " + logsInput.keySet().size());
-
 
         /* populating measurements results */
         XLog log;
@@ -98,25 +108,24 @@ public class Experiment {
         String[] lognames = logsInput.keySet().toArray(new String[logsInput.size()]);
         Arrays.sort(lognames);
         for(int i = lognames.length - 1; i >= 0; i--) {
-//        for(int i = 0; i < lognames.length; i++) {
             String logName = lognames[i];
-            if(!logName.endsWith(LabelFilter.testName + ".xes.gz")) continue;
-//            if(!logName.endsWith("BPI2011 (Label CoV CS).xes.gz")) continue;
+//            if(logName.contains("Sepsis")) continue;
 //            if(logName.contains("Road")) continue;
-//            if(!logName.contains("2017")) continue;
+//            if(logName.contains("BPI2017")) continue;
 //            if(logName.contains("2015-5")) continue;
 //            if(logName.contains("2015-4")) continue;
 //            if(logName.contains("2015-3")) continue;
 //            if(logName.contains("2015-2")) continue;
 //            if(logName.contains("2015-1")) continue;
 //            if(logName.contains("2014")) continue;
+//            if(logName.contains("2013_i")) continue;
+//            if(logName.contains("2013_cp")) continue;
 //            if(!logName.contains("2012")) continue;
-//            if(logName.contains("2011")) continue;
+            if(!logName.contains("2011")) continue;
+            if(logName.contains("2011.x")) continue;
             XLog rawlog = loadLog(logsInput.get(logName));
-//            rawlog.getClassifiers().clear();
-//            LogImporter.exportToFile(logName, rawlog);
 
-            String original = null;
+            String original;
             if(logName.contains(" ")) original = logName.substring(0, logName.indexOf(" ")) + ".xes.gz";
             else original = logName;
 
@@ -130,9 +139,9 @@ public class Experiment {
             System.out.println("DEBUG - measuring on log: " + logName + " " + labels);
 
             for (MiningAlgorithm miningAlgorithm : miningAlgorithms) {
-                if(miningAlgorithm instanceof InductiveMinerIMfWrapper) {
 //                if(miningAlgorithm instanceof HeuristicsAlgorithmWrapper) {
-//                if(miningAlgorithm instanceof SplitMinerWrapper) {
+//                if(miningAlgorithm instanceof InductiveMinerIMfWrapper) {
+                if(miningAlgorithm instanceof SplitMinerWrapper) {
 
                     log = logCloner.cloneLog(rawlog);
                     String miningAlgorithmName = miningAlgorithm.getAlgorithmName();
@@ -145,7 +154,7 @@ public class Experiment {
                         long sTime = System.currentTimeMillis();
 
                         MiningSettings miningSettings = new MiningSettings();
-                        miningSettings.setParam("noiseThresholdIMf", 0F);
+//                        miningSettings.setParam("noiseThresholdIMf", 0F);
 
                         PetrinetWithMarking petrinetWithMarking = null;
                         ProcessTree processTree = null;
@@ -166,18 +175,33 @@ public class Experiment {
                             petrinetWithMarking = miningAlgorithm.minePetrinet(fakePluginContext, log, false, miningSettings, xEventClassifier);
                         }
 
+                        AcceptingPetriNet acceptingPetriNet;
+                        if(petrinetWithMarking.getFinalMarkings().size() > 1) {
+                            acceptingPetriNet = new AcceptingPetriNetImpl(petrinetWithMarking.getPetrinet(), petrinetWithMarking.getInitialMarking(), petrinetWithMarking.getFinalMarkings());
+                        }else {
+                            acceptingPetriNet = new AcceptingPetriNetImpl(petrinetWithMarking.getPetrinet(), petrinetWithMarking.getInitialMarking(), petrinetWithMarking.getFinalMarking());
+                        }
+
 //                        ExportAcceptingPetriNetPlugin exportAcceptingPetriNetPlugin = new ExportAcceptingPetriNetPlugin();
 //                        exportAcceptingPetriNetPlugin.export(
 //                                fakePluginContext,
-//                                new AcceptingPetriNetImpl(petrinetWithMarking.getPetrinet(), petrinetWithMarking.getInitialMarking(), petrinetWithMarking.getFinalMarking()),
+//                                acceptingPetriNet,
 //                                new File(extLocation + "/" + logName + "-" + miningAlgorithmName + ".pnml"));
+
+                        if(!CheckRelaxedSoundnessWithLola.isRelaxedSoundAndBounded(acceptingPetriNet)) {
+                            System.out.println("DEBUG - Unbounded or Unsound");
+                            System.out.println("Projected Recall : N.A.");
+                            System.out.println("Projected Precision : N.A.");
+                            System.out.println("Projected f-Measure : N.A.");
+                            continue;
+                        }
 
                         long execTime = System.currentTimeMillis() - sTime;
                         measures.get(logName).get(miningAlgorithmName).put("ExecTime", Long.toString(execTime));
 
                         for (MeasurementAlgorithm measurementAlgorithm : measurementAlgorithms) {
-                            if (measurementAlgorithm instanceof ProjectedFMeasure) {
-//                            if (measurementAlgorithm instanceof AlignmentBasedFMeasure) {
+                            if (measurementAlgorithm instanceof AlignmentBasedFMeasure) {
+//                            if (measurementAlgorithm instanceof ProjectedFMeasure) {
                                 measurementAlgorithmName = measurementAlgorithm.getMeasurementName();
                                 System.out.println("DEBUG - measuring: " + measurementAlgorithmName);
 
@@ -251,56 +275,6 @@ public class Experiment {
             e.printStackTrace();
         }
         return null;
-    }
-
-    private void publishResults() {
-        System.out.println("DEBUG - starting generation of the excel file.");
-        try {
-            String filename = "./benchmark_result_" + Long.toString(System.currentTimeMillis()) + ".xls" ;
-            HSSFWorkbook workbook = new HSSFWorkbook();
-            int rowCounter;
-            int cellCounter;
-            boolean generateHead = true;
-            HSSFSheet sheet = workbook.createSheet("Results");
-
-            /* generating one sheet for each log */
-            for( String logName : measures.keySet() ) {
-                rowCounter = 0;
-
-                HSSFRow rowhead = sheet.createRow((short) rowCounter);
-                rowCounter++;
-
-                for( String miningAlgorithmName : measures.get(logName).keySet() ) {
-                    /* creating the row for this mining algorithm */
-                    HSSFRow row = sheet.createRow((short) rowCounter);
-                    rowCounter++;
-
-                    cellCounter = 0;
-                    if( generateHead ) rowhead.createCell(cellCounter).setCellValue("Log");
-                    row.createCell(cellCounter).setCellValue(logName);
-                    cellCounter++;
-
-                    if( generateHead ) rowhead.createCell(cellCounter).setCellValue("Mining Algorithm");
-                    row.createCell(cellCounter).setCellValue(miningAlgorithmName);
-                    cellCounter++;
-
-                    for( String metricName : measures.get(logName).get(miningAlgorithmName).keySet() ) {
-                        if( generateHead ) rowhead.createCell(cellCounter).setCellValue(metricName);
-                        row.createCell(cellCounter).setCellValue(measures.get(logName).get(miningAlgorithmName).get(metricName));
-                        cellCounter++;
-                    }
-                    generateHead = false;
-                }
-            }
-
-            FileOutputStream fileOut = new FileOutputStream(filename);
-            workbook.write(fileOut);
-            fileOut.close();
-            System.out.println("DEBUG - generation of the excel sheet completed.");
-        } catch ( Exception e ) {
-            System.out.println("ERROR - something went wrong while writing the excel sheet: " + e.getMessage());
-            e.printStackTrace();
-        }
     }
 
 }

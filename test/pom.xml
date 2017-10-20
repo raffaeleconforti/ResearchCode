@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>research-code</artifactId>
+        <groupId>com.raffaeleconforti</groupId>
+        <version>1.0.20171019</version>
+        <relativePath>../</relativePath>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+
+    <artifactId>test</artifactId>
+    <packaging>bundle</packaging>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <extensions>true</extensions>
+                <configuration>
+                    <instructions>
+                        <Embed-Directory>WEB-INF/lib</Embed-Directory>
+                        <Bundle-ClassPath>.,{maven-dependencies},WEB-INF/classes</Bundle-ClassPath>
+                        <Bundle-Name>BPMN-Util OSGI</Bundle-Name>
+                        <Bundle-SymbolicName>com.raffaeleconforti.test</Bundle-SymbolicName>
+                        <Import-Package>
+                            *
+                        </Import-Package>
+                        <Export-Package>
+                            com.raffaeleconforti.test.*
+                        </Export-Package>
+                    </instructions>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-dependencies</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/lib</outputDirectory>
+                            <overWriteIfNewer>true</overWriteIfNewer>
+                            <excludeTransitive>false</excludeTransitive>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.raffaeleconforti</groupId>
+            <artifactId>graph-algorithms</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.deckfour.xes</groupId>
+            <artifactId>OpenXES</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.processmining</groupId>
+            <artifactId>bpmn</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.processmining</groupId>
+            <artifactId>jgraph</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.processmining</groupId>
+            <artifactId>projectedrecallandprecision</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.processmining</groupId>
+            <artifactId>inductiveminer</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.processmining</groupId>
+            <artifactId>processtree</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.raffaeleconforti</groupId>
+            <artifactId>wrappers</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.raffaeleconforti</groupId>
+            <artifactId>benchmark-logic</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.opencsv</groupId>
+            <artifactId>opencsv</artifactId>
+            <version>3.3</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-math3</artifactId>
+            <version>3.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-math3</artifactId>
+        </dependency>
+    </dependencies>
+
+</project>

@@ -92,7 +92,6 @@ public class HyperParamOptimizedSplitMiner implements MiningAlgorithm {
 
         AlignmentBasedFitness fitnessCalculator = new AlignmentBasedFitness();
         AlignmentBasedPrecision precisionCalculator = new AlignmentBasedPrecision();
-        XEventClassifier eventNameClassifier = xEventClassifier;
 
         Double fit;
         Double prec;
@@ -108,12 +107,12 @@ public class HyperParamOptimizedSplitMiner implements MiningAlgorithm {
             do {
                 combination = ":p:" + p_threshold + ":f:" + f_threshold;
                 try {
-                    bpmn = yam.mineBPMNModel(log, f_threshold, p_threshold, DFGPUIResult.FilterType.FWG, true, true, false, SplitMinerUIResult.StructuringTime.NONE);
+                    bpmn = yam.mineBPMNModel(log, xEventClassifier, f_threshold, p_threshold, DFGPUIResult.FilterType.FWG, true, true, false, SplitMinerUIResult.StructuringTime.NONE);
                     petrinet = convertToPetrinet(context, bpmn);
                     models.put(combination, petrinet);
 
-                    fit = fitnessCalculator.computeMeasurement(context, eventNameClassifier, petrinet, this, log).getValue();
-                    prec = precisionCalculator.computeMeasurement(context, eventNameClassifier, petrinet, this, log).getValue();
+                    fit = fitnessCalculator.computeMeasurement(context, xEventClassifier, petrinet, this, log).getValue();
+                    prec = precisionCalculator.computeMeasurement(context, xEventClassifier, petrinet, this, log).getValue();
 
                     if (fit.isNaN()) fit = 0.0;
                     if (prec.isNaN()) prec = 0.0;

@@ -68,6 +68,7 @@
         <module>benchmark-logic</module>
         <module>nlp</module>
         <module>hyperparamoptimized-wrappers</module>
+        <module>soundness-checker</module>
         <!--<module>noisefiltering-label-logic</module>-->
     </modules>
 
@@ -109,7 +110,7 @@
         <flanagan.version>20151114</flanagan.version>
 
         <commons-math3.version>3.6</commons-math3.version>
-        <bpmntk-osgi.version>1.0-20170908</bpmntk-osgi.version>
+        <bpmntk-osgi.version>1.0-20171020</bpmntk-osgi.version>
         <bpstruct.version>0.1.117</bpstruct.version>
         <jbpt.version>0.2.77</jbpt.version>
 
