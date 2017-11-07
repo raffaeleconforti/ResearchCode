@@ -18,7 +18,7 @@ import org.processmining.models.graphbased.directed.petrinet.Petrinet;
 import org.processmining.models.semantics.petrinet.Marking;
 import org.processmining.plugins.bpmnminer.causalnet.CausalNet;
 import org.processmining.plugins.bpmnminer.converter.CausalNetToPetrinet;
-import org.processmining.plugins.bpmnminer.plugins.BPMNMinerPlugin;
+import org.processmining.plugins.bpmnminer.plugins.FodinaMinerPlugin;
 import org.processmining.plugins.bpmnminer.types.MinerSettings;
 import org.processmining.processtree.ProcessTree;
 
@@ -105,7 +105,7 @@ public class HyperParamOptimizedFodina implements MiningAlgorithm {
                             public void write(int b) throws IOException {}
                         }));
 
-                        Object[] bpmnResults = BPMNMinerPlugin.runMiner(context, plog, minerSettings);
+                        Object[] bpmnResults = FodinaMinerPlugin.runMiner(context, plog, minerSettings);
                         CausalNet net = (CausalNet) bpmnResults[0];
 
                         Object[] result = CausalNetToPetrinet.convert(context, net);

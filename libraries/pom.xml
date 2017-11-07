@@ -1437,7 +1437,7 @@
                             <artifactId>fodina</artifactId>
                             <version>${prom.version}</version>
                             <packaging>jar</packaging>
-                            <file>${project.build.sourceDirectory}/fodina-20161216.jar</file>
+                            <file>${project.build.sourceDirectory}/fodina-20171107.jar</file>
                             <generatePom>true</generatePom>
                         </configuration>
                     </execution>
