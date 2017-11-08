@@ -45,14 +45,14 @@
                             <goal>shade</goal>
                         </goals>
                         <configuration>
-                            <artifactSet>
-                                <excludes>
-                                    <exclude>org.processmining:prom5:jar:${prom.version}</exclude>
-                                    <exclude>org.processmining:prom5-lib:jar:${prom.version}</exclude>
-                                    <exclude>org.processmining:prom5-models:jar:${prom.version}</exclude>
-                                    <exclude>org.processmining:prom5-plugins:jar:${prom.version}</exclude>
-                                </excludes>
-                            </artifactSet>
+                            <!--<artifactSet>-->
+                                <!--<excludes>-->
+                                    <!--<exclude>org.processmining:prom5:jar:${prom.version}</exclude>-->
+                                    <!--<exclude>org.processmining:prom5-lib:jar:${prom.version}</exclude>-->
+                                    <!--<exclude>org.processmining:prom5-models:jar:${prom.version}</exclude>-->
+                                    <!--<exclude>org.processmining:prom5-plugins:jar:${prom.version}</exclude>-->
+                                <!--</excludes>-->
+                            <!--</artifactSet>-->
                             <filters>
                                 <filter>
                                     <artifact>*:*</artifact>
@@ -71,29 +71,35 @@
                                         <exclude>**/.svn/**</exclude>
                                     </excludes>
                                 </filter>
-                                <filter>
-                                    <artifact>org.processmining:prom5</artifact>
-                                    <excludes>
-                                        <exclude>org/processmining/**</exclude>
-                                    </excludes>
-                                </filter>
-                                <filter>
-                                    <artifact>org.processmining:prom5-lib</artifact>
-                                    <excludes>
-                                        <exclude>org/processmining/**</exclude>
-                                    </excludes>
-                                </filter>
-                                <filter>
-                                    <artifact>org.processmining:prom5-models</artifact>
-                                    <excludes>
-                                        <exclude>org/processmining/**</exclude>
-                                        <exclude>att/grappa/**</exclude>
-                                    </excludes>
-                                </filter>
+                                <!--<filter>-->
+                                    <!--<artifact>org.processmining:prom5</artifact>-->
+                                    <!--<excludes>-->
+                                        <!--<exclude>org/processmining/**</exclude>-->
+                                    <!--</excludes>-->
+                                <!--</filter>-->
+                                <!--<filter>-->
+                                    <!--<artifact>org.processmining:prom5-lib</artifact>-->
+                                    <!--<excludes>-->
+                                        <!--<exclude>org/processmining/**</exclude>-->
+                                    <!--</excludes>-->
+                                    <!--<includes>-->
+                                        <!--<include>org/processmining/framework/log/AuditTrailEntry</include>-->
+                                        <!--<include>org/processmining/framework/log/LogReader</include>-->
+                                        <!--<include>org/processmining/mining/logabstraction/LogAbstraction</include>-->
+                                        <!--<include>org/processmining/mining/logabstraction/LogRelations</include>-->
+                                    <!--</includes>-->
+                                <!--</filter>-->
+                                <!--<filter>-->
+                                    <!--<artifact>org.processmining:prom5-models</artifact>-->
+                                    <!--<excludes>-->
+                                        <!--<exclude>org/processmining/**</exclude>-->
+                                        <!--<exclude>att/grappa/**</exclude>-->
+                                    <!--</excludes>-->
+                                <!--</filter>-->
                                 <filter>
                                     <artifact>org.processmining:prom5-plugins</artifact>
                                     <excludes>
-                                        <exclude>org/processmining/**</exclude>
+                                        <!--<exclude>org/processmining/**</exclude>-->
                                         <exclude>LogReaderTest</exclude>
                                     </excludes>
                                 </filter>

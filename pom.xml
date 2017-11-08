@@ -64,11 +64,12 @@
 
         <module>test</module>
         <!--<module>design-structure-matrix</module>-->
-        <module>prom6</module>
         <module>benchmark-logic</module>
         <module>nlp</module>
         <module>hyperparamoptimized-wrappers</module>
         <module>soundness-checker</module>
+
+        <module>prom6</module>
         <!--<module>noisefiltering-label-logic</module>-->
     </modules>
 

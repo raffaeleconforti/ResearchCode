@@ -1,6 +1,6 @@
 package com.raffaeleconforti.alphadollar.alphamminer;
 
-import org.processmining.framework.log.LogReader;
+import com.raffaeleconforti.log.util.LogReaderClassic;
 import org.processmining.framework.models.petrinet.PetriNet;
 import org.processmining.mining.logabstraction.LogRelations;
 
@@ -10,7 +10,7 @@ import java.util.Date;
 public class AlphaMMiner {
 	AlphaPPData alphaPPData = new AlphaPPData();
 
-	public PetriNet mine(LogReader log, LogRelations relations, boolean heuristics)	{
+	public PetriNet mine(LogReaderClassic log, LogRelations relations, boolean heuristics)	{
 		ModifiedAlphaPPProcessMiner alphapp = new ModifiedAlphaPPProcessMiner();
 		ModifiedAlphaSharpProcessMiner alphasharp = new ModifiedAlphaSharpProcessMiner();
 		Date d1 = new Date();

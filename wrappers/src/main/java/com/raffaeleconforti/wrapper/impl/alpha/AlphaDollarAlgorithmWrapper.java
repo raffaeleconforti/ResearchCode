@@ -73,7 +73,7 @@ public class AlphaDollarAlgorithmWrapper implements MiningAlgorithm {
         }
 
         LogFile lf = LogFile.getInstance("tmpLog.mxml.gz");
-        PetriNet result = new AlphaMixMiner().mine(LogReaderClassic.createInstance(null, lf));
+        PetriNet result = new AlphaMixMiner().mine((LogReaderClassic) LogReaderClassic.createInstance(null, lf));
         Petrinet petrinet = getPetrinet(result);
         logPreprocessing.removedAddedElements(petrinet);
 

@@ -137,6 +137,10 @@
             <groupId>net.sourceforge.lpsolve</groupId>
             <artifactId>lpsolve</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.raffaeleconforti</groupId>
+            <artifactId>log-util</artifactId>
+        </dependency>
     </dependencies>
 
 </project>

@@ -50,7 +50,7 @@ public class ClassFinder {
                 } catch (IOException ex) {
                     ex.printStackTrace();
                 } catch (UnsatisfiedLinkError ule) {
-
+                    ule.printStackTrace();
                 }
             }
         }
@@ -96,8 +96,7 @@ public class ClassFinder {
                 }
             }
         } catch (Throwable ex) {
-            //blacklisted classes
-//            System.out.println(name);
+//            ex.printStackTrace();
         }
         return null;
     }

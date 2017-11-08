@@ -1,13 +1,13 @@
 package com.raffaeleconforti.alphadollar;
 
 import com.raffaeleconforti.alphadollar.alphamminer.AlphaMMiner;
-import org.processmining.framework.log.LogReader;
+import com.raffaeleconforti.log.util.LogReaderClassic;
 import org.processmining.framework.models.petrinet.PetriNet;
 import org.processmining.mining.logabstraction.*;
 
 public class AlphaMixMiner {
 
-	public PetriNet mine(LogReader logReader) {
+	public PetriNet mine(LogReaderClassic logReader) {
 		if (logReader != null) {
 			// Mine the log for a Petri net.
 			AlphaMMiner miningPlugin = new AlphaMMiner();
@@ -19,7 +19,7 @@ public class AlphaMixMiner {
 		}		
 	}
 
-	public LogRelations getLogRelations(LogReader log) {
+	public LogRelations getLogRelations(LogReaderClassic log) {
 		LogAbstraction logAbstraction = new LogAbstractionImpl(log, true);
 		LogRelations relations = (new MinValueLogRelationBuilder(logAbstraction, 0,
 				log.getLogSummary().getLogEvents())).getLogRelations();
