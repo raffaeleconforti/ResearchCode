@@ -66,7 +66,7 @@ public class HeuristicsDollarAlgorithmWrapper implements MiningAlgorithm {
         }
 
         LogFile lf = LogFile.getInstance("tmpLog.mxml.gz");
-        PetriNet result = new HeuristicsDollarMiner().mine(LogReaderClassic.createInstance(null, lf));
+        PetriNet result = new HeuristicsDollarMiner().mine((LogReaderClassic) LogReaderClassic.createInstance(null, lf));
         Petrinet petrinet = getPetrinet(result);
         logPreprocessing.removedAddedElements(petrinet);
 

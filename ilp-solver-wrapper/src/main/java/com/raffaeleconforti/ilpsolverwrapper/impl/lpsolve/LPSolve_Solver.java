@@ -24,8 +24,8 @@ public class LPSolve_Solver implements ILPSolver {
     public static final double INFINITY = Math.pow(2, 31) - 1;//1.0E30;//1.0E100D;
 
     private final int MAX_EXP = 20;
-    private int max_exp = MAX_EXP;
-    private boolean alwaysFeasible = false;
+    private int max_exp;
+    private boolean alwaysFeasible;
 
     private LpSolve lp;
     private List<LPSolve_Variable> variables;
@@ -55,6 +55,8 @@ public class LPSolve_Solver implements ILPSolver {
         variables = new ArrayList<>();
         constraints = new ArrayList<>();
         minimize = true;
+        alwaysFeasible = false;
+        max_exp = MAX_EXP;
     }
 
     @Override

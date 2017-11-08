@@ -229,8 +229,8 @@ public class ILPApproach implements PermutationTechnique {
                     }
                 }
             }
-            solver.setObjectiveFunction(obj);
             solver.setMaximize();
+            solver.setObjectiveFunction(obj);
 
             // Add constraint: set Sum X_ij = 1 ForAll i
             count = 0;

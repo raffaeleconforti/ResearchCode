@@ -37,12 +37,38 @@ public class ILPWrapperTest {
         solver.integrateVariables();
 
         ILPSolverExpression objectiveFunction = solver.createExpression();
-        objectiveFunction.addTerm(X_0_1, 0.9929947676208064);
+//        objectiveFunction.addTerm(X_0_1, 0.9929947676208064);
+//        objectiveFunction.addTerm(X_0_2, -3.0);
+//        objectiveFunction.addTerm(X_0_3, 1.2311480455524777E-5);
+//        objectiveFunction.addTerm(X_1_0, 1.3290802764486976E-5);
+//        objectiveFunction.addTerm(X_1_2, -3.0);
+//        objectiveFunction.addTerm(X_1_3, 0.9929947676208064);
+//        objectiveFunction.addTerm(X_2_0, -3.0);
+//        objectiveFunction.addTerm(X_2_1, -3.0);
+//        objectiveFunction.addTerm(X_2_3, -3.0);
+//        objectiveFunction.addTerm(X_3_0, -3.0);
+//        objectiveFunction.addTerm(X_3_1, -3.0);
+//        objectiveFunction.addTerm(X_3_2, 1.0);
+
+//        objectiveFunction.addTerm(X_0_1, 0.993);
+//        objectiveFunction.addTerm(X_0_2, -3.0);
+//        objectiveFunction.addTerm(X_0_3, 1.231E-5);
+//        objectiveFunction.addTerm(X_1_0, 1.329E-5);
+//        objectiveFunction.addTerm(X_1_2, -3.0);
+//        objectiveFunction.addTerm(X_1_3, 0.993);
+//        objectiveFunction.addTerm(X_2_0, -3.0);
+//        objectiveFunction.addTerm(X_2_1, -3.0);
+//        objectiveFunction.addTerm(X_2_3, -3.0);
+//        objectiveFunction.addTerm(X_3_0, -3.0);
+//        objectiveFunction.addTerm(X_3_1, -3.0);
+//        objectiveFunction.addTerm(X_3_2, 1.0);
+
+        objectiveFunction.addTerm(X_0_1, 1);
         objectiveFunction.addTerm(X_0_2, -3.0);
-        objectiveFunction.addTerm(X_0_3, 1.2311480455524777E-5);
-        objectiveFunction.addTerm(X_1_0, 1.3290802764486976E-5);
+        objectiveFunction.addTerm(X_0_3, 0);
+        objectiveFunction.addTerm(X_1_0, 0);
         objectiveFunction.addTerm(X_1_2, -3.0);
-        objectiveFunction.addTerm(X_1_3, 0.9929947676208064);
+        objectiveFunction.addTerm(X_1_3, 1);
         objectiveFunction.addTerm(X_2_0, -3.0);
         objectiveFunction.addTerm(X_2_1, -3.0);
         objectiveFunction.addTerm(X_2_3, -3.0);
@@ -50,8 +76,8 @@ public class ILPWrapperTest {
         objectiveFunction.addTerm(X_3_1, -3.0);
         objectiveFunction.addTerm(X_3_2, 1.0);
 
-        solver.setObjectiveFunction(objectiveFunction);
         solver.setMaximize();
+        solver.setObjectiveFunction(objectiveFunction);
 
         ILPSolverExpression expression1 = solver.createExpression();
         expression1.addTerm(X_0_1, 1);
@@ -151,7 +177,8 @@ public class ILPWrapperTest {
         System.out.println(solver.printProblem());
         System.out.println(solver.getStatus());
         System.out.println(solver.getSolutionValue());
-//        System.out.println(Arrays.toString(solver.getSolutionVariables(new ILPSolverVariable[] {y})));
+        System.out.println(Arrays.toString(solver.getSolutionVariables(
+                new ILPSolverVariable[] {X_0_1, X_0_2, X_0_3, X_1_0, X_1_2, X_1_3, X_2_0, X_2_1, X_2_3, X_3_0, X_3_1, X_3_2, U_0, U_1, U_3})));
     }
 
 }
