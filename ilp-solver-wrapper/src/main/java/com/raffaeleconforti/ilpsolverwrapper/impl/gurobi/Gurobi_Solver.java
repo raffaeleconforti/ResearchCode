@@ -22,8 +22,9 @@ public class Gurobi_Solver implements ILPSolver {
 
     private GRBEnv env;
     private GRBModel model;
-    private List<Gurobi_Variable> variables = new ArrayList<>();
-    private boolean minimize = true;
+    private List<Gurobi_Variable> variables;
+    private List<Gurobi_Constraint> constraints;
+    private boolean minimize;
 
     @Override
     public double getInfinity() {
@@ -38,6 +39,10 @@ public class Gurobi_Solver implements ILPSolver {
     @Override
     public void createModel() {
         try {
+            variables = new ArrayList<>();
+            constraints = new ArrayList<>();
+            minimize = true;
+
             env = new GRBEnv("qp.noisefiltering");
             model = new GRBModel(env);
             model.getEnv().set(GRB.IntParam.LogToConsole, 0);
@@ -61,7 +66,9 @@ public class Gurobi_Solver implements ILPSolver {
 //            Gurobi_Variable var = new Gurobi_Variable(model.addVar(-getInfinity(), getInfinity(), 1, gurobiVariableType, variableName), lowerBound, upperBound, variableType, variableName);
 //            variables.add(var);
 //            return var;
-            return new Gurobi_Variable(model.addVar(lowerBound, upperBound, objectiveCoefficient, gurobiVariableType, variableName), lowerBound, upperBound, variableType, variableName);
+            Gurobi_Variable var = new Gurobi_Variable(model.addVar(lowerBound, upperBound, objectiveCoefficient, gurobiVariableType, variableName), lowerBound, upperBound, variableType, variableName);
+            variables.add(var);
+            return var;
         } catch (GRBException e) {
             e.printStackTrace();
         }
@@ -85,7 +92,9 @@ public class Gurobi_Solver implements ILPSolver {
                 case GREATER_EQUAL  : gurobiOperator = GRB.GREATER_EQUAL;
             }
 
-            return new Gurobi_Constraint(model.addConstr(((Gurobi_Expression) expression).getLinearExpression(), gurobiOperator, coefficient, ""));
+            Gurobi_Constraint gurobi_constraint = new Gurobi_Constraint(model.addConstr(((Gurobi_Expression) expression).getLinearExpression(), gurobiOperator, coefficient, ""));
+            constraints.add(gurobi_constraint);
+            return gurobi_constraint;
         } catch (GRBException e) {
             e.printStackTrace();
         }

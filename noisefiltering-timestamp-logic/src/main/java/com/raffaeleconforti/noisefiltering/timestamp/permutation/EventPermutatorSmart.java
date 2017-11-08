@@ -1,6 +1,7 @@
 package com.raffaeleconforti.noisefiltering.timestamp.permutation;
 
 import com.raffaeleconforti.datastructures.cache.Cache;
+import com.raffaeleconforti.datastructures.cache.impl.ManualCache;
 import com.raffaeleconforti.datastructures.cache.impl.SelfCleaningCache;
 import com.raffaeleconforti.kernelestimation.distribution.EventDistributionCalculator;
 import com.raffaeleconforti.log.util.LogCloner;
@@ -31,7 +32,7 @@ public class EventPermutatorSmart implements EventPermutator {
     private final Set<String> duplicatedTraces = new UnifiedSet<>();
     private final Set<String> sequences;
     private final Map<List<String>, Set<List<String>>> patternsMap;
-    private final Cache<List<String>, Set<List<String>>> discoveredPatternsMap = new SelfCleaningCache<>();
+    private final Cache<List<String>, Set<List<String>>> discoveredPatternsMap = new ManualCache<>();//SelfCleaningCache<>();
     private final TimeStampChecker timeStampChecker;
     private final XFactory factory;
     private final int limitExtensive;
@@ -212,7 +213,7 @@ public class EventPermutatorSmart implements EventPermutator {
         }else {
             XEvent start = findStart(trace, events);
             XEvent end = findEnd(trace, start, events);
-            if((permutations = reusePermutations(start, end, events)).size() == 0) {
+//            if((permutations = reusePermutations(start, end, events)).size() == 0) {
                 System.out.println(PermutationTechniqueFactory.getPermutationTechniqueName(approach) + " Approach All!");
                 System.out.println("Start " + nameExtractor.getEventName(start));
                 System.out.println("End " + nameExtractor.getEventName(end));
@@ -224,9 +225,9 @@ public class EventPermutatorSmart implements EventPermutator {
                     System.out.println("Cleaning memory!");
                     discoveredPatternsMap.free();
                 }
-            }else {
-                System.out.println("Reuse Pattern!");
-            }
+//            }else {
+//                System.out.println("Reuse Pattern!");
+//            }
         }
 
         return computeFinalTraces(trace, events, permutations);

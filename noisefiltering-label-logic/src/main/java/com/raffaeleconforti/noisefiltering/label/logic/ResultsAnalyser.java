@@ -20,8 +20,15 @@ public class ResultsAnalyser {
     private static String line;
 
     public static void main(String[] args) {
-        file = new File("/Volumes/Data/Dropbox/LaTex/2017/LabelFiltering/SMProjected.txt");
-        StringBuffer stringBuffer = new StringBuffer();
+//        file = new File("/Volumes/Data/Dropbox/LaTex/2017/LabelFiltering/IMFAlignment.txt");
+//        file = new File("/Volumes/Data/Dropbox/LaTex/2017/LabelFiltering/IMFProjected.txt");
+//        file = new File("/Volumes/Data/Dropbox/LaTex/2017/LabelFiltering/IMAlignment.txt");
+//        file = new File("/Volumes/Data/Dropbox/LaTex/2017/LabelFiltering/IMProjected.txt");
+        file = new File("/Volumes/Data/Dropbox/LaTex/2017/LabelFiltering/HMAlignment.txt");
+//        file = new File("/Volumes/Data/Dropbox/LaTex/2017/LabelFiltering/HMProjected.txt");
+//        file = new File("/Volumes/Data/Dropbox/LaTex/2017/LabelFiltering/SMAlignment.txt");
+//        file = new File("/Volumes/Data/Dropbox/LaTex/2017/LabelFiltering/SMProjected.txt");
+
         List<String> infoFScores = new ArrayList<>();
         List<String> infoFitnesses = new ArrayList<>();
         List<String> infoPrecisions = new ArrayList<>();

@@ -41,13 +41,13 @@ public class AlignmentBasedFMeasure implements MeasurementAlgorithm {
         AlignmentBasedFitness alignmentBasedFitness = new AlignmentBasedFitness();
         AlignmentBasedPrecision alignmentBasedPrecision = new AlignmentBasedPrecision();
 
-        SoundnessChecker checker = new SoundnessChecker(petrinetWithMarking.getPetrinet());
-        if( !checker.isSound() ) {
-            measure.addMeasure(getAcronym(), "-");
-            measure.addMeasure(alignmentBasedFitness.getAcronym(), "-");
-            measure.addMeasure(alignmentBasedPrecision.getAcronym(), "-");
-            return measure;
-        }
+//        SoundnessChecker checker = new SoundnessChecker(petrinetWithMarking.getPetrinet());
+//        if( !checker.isSound() ) {
+//            measure.addMeasure(getAcronym(), "-");
+//            measure.addMeasure(alignmentBasedFitness.getAcronym(), "-");
+//            measure.addMeasure(alignmentBasedPrecision.getAcronym(), "-");
+//            return measure;
+//        }
 
         System.setOut(new PrintStream(new OutputStream() {
             @Override

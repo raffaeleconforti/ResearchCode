@@ -7,6 +7,8 @@ import com.raffaeleconforti.log.util.LogCloner;
 import com.raffaeleconforti.log.util.LogModifier;
 import com.raffaeleconforti.log.util.LogOptimizer;
 import com.raffaeleconforti.memorylog.XFactoryMemoryImpl;
+import com.raffaeleconforti.noisefiltering.event.InfrequentBehaviourFilter;
+import com.raffaeleconforti.noisefiltering.event.infrequentbehaviour.automaton.AutomatonInfrequentBehaviourDetector;
 import com.raffaeleconforti.noisefiltering.timestamp.traceselector.AutomatonBestTraceMatchSelector;
 import org.deckfour.xes.classification.XEventAndClassifier;
 import org.deckfour.xes.classification.XEventClassifier;
@@ -82,16 +84,16 @@ public class TimeStampFixerSmartExecutor {
 
         System.out.println();
 
-        System.out.println("Assignation timestamps started");
-        TimestampsAssigner timestampsAssigner = new TimestampsAssigner(res, xEventClassifier, dateFormatSeconds, timeStampFixerSmart.getDuplicatedTraces(), timeStampFixerSmart.getDuplicatedEvents(), useGurobi, useArcsFrequency);
-        boolean result = timestampsAssigner.assignTimestamps(fixedTraces);
+        System.out.println("Timestamps disambiguation started");
+//        TimestampsAssigner timestampsAssigner = new TimestampsAssigner(res, xEventClassifier, dateFormatSeconds, timeStampFixerSmart.getDuplicatedTraces(), timeStampFixerSmart.getDuplicatedEvents(), useGurobi, useArcsFrequency);
+//        boolean result = timestampsAssigner.assignTimestamps(fixedTraces);
+//
+//        if(!result) {
+//            timestampsAssigner.assignTimestamps();
+//        }
+//        res = logModifier.sortLog(res);
 
-        if(!result) {
-            timestampsAssigner.assignTimestamps();
-        }
-        res = logModifier.sortLog(res);
-
-        System.out.println("Assignation timestamps completed");
+        System.out.println("Timestamps disambiguation completed");
 
         return res;
     }

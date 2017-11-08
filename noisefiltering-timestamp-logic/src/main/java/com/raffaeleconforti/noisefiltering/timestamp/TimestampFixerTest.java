@@ -19,7 +19,7 @@ import java.util.StringTokenizer;
  */
 public class TimestampFixerTest {
 
-    public static void main(String[] args) throws Exception {
+    public static void main1(String[] args) throws Exception {
         XLog log = LogImporter.importFromFile(new XFactoryNaiveImpl(), "/Volumes/Data/Dropbox/Consultancies/Cineca-UniParma/u-gov/logs/Log_CG_DG/Result/Arcs/Vendite/Vendite_50_Instances.xes.gz");
 
         for(XTrace trace : log) {
@@ -47,19 +47,22 @@ public class TimestampFixerTest {
         return s.substring(0, 1).toUpperCase() + s.substring(1).toLowerCase();
     }
 
-    public static void main2(String[] args) throws Exception {
-        XLog log = LogImporter.importFromFile(new XFactoryNaiveImpl(), "/Volumes/Data/SharedFolder/Logs/ArtificialLess.xes.gz");
+    public static void main(String[] args) throws Exception {
+//        XLog log = LogImporter.importFromFile(new XFactoryNaiveImpl(), "/Volumes/Data/SharedFolder/Logs/ArtificialLess.xes.gz");
+        XLog log = LogImporter.importFromFile(new XFactoryNaiveImpl(), "/Volumes/Data/SharedFolder/Logs/Deidentified Cattle Transaction Log.xes.gz");
+//        XLog log = LogImporter.importFromFile(new XFactoryNaiveImpl(), "/Volumes/Data/SharedFolder/Logs/Deidentified Cattle Transaction log (RAF).xes.gz");
 
         LogCloner logCloner = new LogCloner(new XFactoryMemoryImpl());
 
-        TimeStampFixerSmartExecutor timeStampFixerSmartExecutor = new TimeStampFixerSmartExecutor(true, true);
-        timeStampFixerSmartExecutor.filterLog(log, 11, PermutationTechnique.ILP_GUROBI_ARCS);
+        TimeStampFixerSmartExecutor timeStampFixerSmartExecutor = new TimeStampFixerSmartExecutor(false, false);
+//        XLog filtered1 = timeStampFixerSmartExecutor.filterLog(log, 11, PermutationTechnique.ILP_GUROBI);
+        XLog filtered1 = timeStampFixerSmartExecutor.filterLog(log, 11, PermutationTechnique.ILP_LPSOLVE);
 
-        XLog filtered1 = test(log, false, false);
-        LogImporter.exportToFile("/Volumes/Data/SharedFolder/Logs/ArtificialLess1.xes.gz", filtered1);
+//        filtered1 = test(log, false, false);
+        LogImporter.exportToFile("/Volumes/Data/SharedFolder/Logs/Deidentified Cattle Transaction Log2.xes.gz", filtered1);
 //        test(log, false);
 
-//        Node<String> a = new Node<>("A");
+//        Node<String> a = new Node<>("A");964001008185836
 //        Node<String> b = new Node<>("B");
 //        Node<String> c = new Node<>("C");
 //        Node<String> d = new Node<>("D");

@@ -28,10 +28,10 @@ public class LPSolve_Solver implements ILPSolver {
     private boolean alwaysFeasible = false;
 
     private LpSolve lp;
-    private List<LPSolve_Variable> variables = new ArrayList<>();
-    private List<LPSolve_Constraint> constraints = new ArrayList<>();
+    private List<LPSolve_Variable> variables;
+    private List<LPSolve_Constraint> constraints;
     private LPSolve_Constraint objectiveFunction;
-    private boolean minimize = true;
+    private boolean minimize;
     private int status;
     private String problem;
 
@@ -52,7 +52,9 @@ public class LPSolve_Solver implements ILPSolver {
 
     @Override
     public void createModel() {
-
+        variables = new ArrayList<>();
+        constraints = new ArrayList<>();
+        minimize = true;
     }
 
     @Override
