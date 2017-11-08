@@ -18,7 +18,7 @@ import org.processmining.models.graphbased.directed.petrinet.Petrinet;
 import org.processmining.models.semantics.petrinet.Marking;
 import org.processmining.plugins.bpmnminer.causalnet.CausalNet;
 import org.processmining.plugins.bpmnminer.converter.CausalNetToPetrinet;
-import org.processmining.plugins.bpmnminer.plugins.BPMNMinerPlugin;
+import org.processmining.plugins.bpmnminer.plugins.FodinaMinerPlugin;
 import org.processmining.plugins.bpmnminer.types.MinerSettings;
 import org.processmining.plugins.bpmnminer.ui.FullParameterPanel;
 import org.processmining.processtree.ProcessTree;
@@ -83,7 +83,7 @@ public class FodinaAlgorithmWrapper implements MiningAlgorithm {
             context.showConfiguration("Miner Parameters", parameters);
             minerSettings = parameters.getSettings();
         }
-        Object[] bpmnResults = BPMNMinerPlugin.runMiner(context, log, minerSettings);
+        Object[] bpmnResults = FodinaMinerPlugin.runMiner(context, log, minerSettings);
         CausalNet net = (CausalNet) bpmnResults[0];
 
         Object[] result = CausalNetToPetrinet.convert(context, net);
