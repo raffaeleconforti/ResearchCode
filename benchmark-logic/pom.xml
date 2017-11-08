@@ -24,6 +24,14 @@
         </dependency>
         <dependency>
             <groupId>com.raffaeleconforti</groupId>
+            <artifactId>cnminer-wrapper</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.raffaeleconforti</groupId>
+            <artifactId>modified-miners</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.raffaeleconforti</groupId>
             <artifactId>java-util</artifactId>
         </dependency>
         <dependency>

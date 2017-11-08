@@ -28,7 +28,7 @@
                             *
                         </Import-Package>
                         <Export-Package>
-                            com.raffaeleconforti.*
+                            com.raffaeleconforti.wrapper.*
                         </Export-Package>
                     </instructions>
                 </configuration>
@@ -181,11 +181,6 @@
             <groupId>org.processmining</groupId>
             <artifactId>causalmatrixminer</artifactId>
         </dependency>
-
-        <!--<dependency>-->
-            <!--<groupId>it.unical</groupId>-->
-            <!--<artifactId>cnminer</artifactId>-->
-        <!--</dependency>-->
 
         <dependency>
             <groupId>com.raffaeleconforti</groupId>

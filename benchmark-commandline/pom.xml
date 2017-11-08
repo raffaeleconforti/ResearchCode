@@ -104,7 +104,19 @@
                                     </includes>
                                 </filter>
                                 <filter>
+                                    <artifact>com.raffaeleconforti:modified-miners</artifact>
+                                    <includes>
+                                        <include>com/raffaeleconforti/**</include>
+                                    </includes>
+                                </filter>
+                                <filter>
                                     <artifact>com.raffaeleconforti:wrappers</artifact>
+                                    <includes>
+                                        <include>com/raffaeleconforti/**</include>
+                                    </includes>
+                                </filter>
+                                <filter>
+                                    <artifact>com.raffaeleconforti:cnminer-wrapper</artifact>
                                     <includes>
                                         <include>com/raffaeleconforti/**</include>
                                     </includes>

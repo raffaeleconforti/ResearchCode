@@ -12,7 +12,6 @@ import com.raffaeleconforti.wrapper.PetrinetWithMarking;
 import org.deckfour.xes.classification.XEventClassifier;
 import org.deckfour.xes.classification.XEventNameClassifier;
 import org.deckfour.xes.model.XLog;
-import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.processmining.contexts.uitopia.UIPluginContext;
 import org.processmining.contexts.uitopia.annotations.UITopiaVariant;
 import org.processmining.framework.log.LogFile;
@@ -27,6 +26,8 @@ import org.processmining.models.graphbased.directed.petrinet.impl.PetrinetImpl;
 import org.processmining.processtree.ProcessTree;
 
 import java.io.*;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by conforti on 20/02/15.
@@ -94,8 +95,8 @@ public class AlphaDollarAlgorithmWrapper implements MiningAlgorithm {
 
     private Petrinet getPetrinet(PetriNet result) {
         Petrinet petrinet = new PetrinetImpl("Alpha Dollar");
-        UnifiedMap<org.processmining.framework.models.petrinet.Transition, Transition> transitionUnifiedMap = new UnifiedMap<>();
-        UnifiedMap<org.processmining.framework.models.petrinet.Place, Place> placeUnifiedMap = new UnifiedMap<>();
+        Map<org.processmining.framework.models.petrinet.Transition, Transition> transitionUnifiedMap = new HashMap<>();
+        Map<org.processmining.framework.models.petrinet.Place, Place> placeUnifiedMap = new HashMap<>();
 
         for(org.processmining.framework.models.petrinet.Transition t : result.getTransitions()) {
             Transition transition = petrinet.addTransition(t.getLogEvent().getModelElementName());

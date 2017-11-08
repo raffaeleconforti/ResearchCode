@@ -104,9 +104,9 @@ public class DAFSABasedFMeasure implements MeasurementAlgorithm {
 
     @Override
     public String getMeasurementName() {
-        return "Alignment-Based f-Measure";
+        return "DAFSA Alignment-Based f-Measure";
     }
 
     @Override
-    public String getAcronym() {return "(a)f-measure";}
+    public String getAcronym() {return "(d)f-measure";}
 }

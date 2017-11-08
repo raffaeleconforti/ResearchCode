@@ -69,9 +69,9 @@ public class DAFSABasedPrecision implements MeasurementAlgorithm {
 
     @Override
     public String getMeasurementName() {
-        return "Alignment-Based ETC Precision";
+        return "DAFSA Alignment-Based ETC Precision";
     }
 
     @Override
-    public String getAcronym() {return "(a)precision";}
+    public String getAcronym() {return "(d)precision";}
 }

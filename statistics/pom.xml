@@ -11,7 +11,7 @@
     <modelVersion>4.0.0</modelVersion>
 
 
-    <artifactId>outliers</artifactId>
+    <artifactId>statistics</artifactId>
     <packaging>bundle</packaging>
 
     <build>
@@ -24,12 +24,13 @@
                     <instructions>
                         <Bundle-ClassPath>.,{maven-dependencies},WEB-INF/classes</Bundle-ClassPath>
                         <Bundle-Name>Outliers OSGI</Bundle-Name>
-                        <Bundle-SymbolicName>com.raffaeleconforti.outliers</Bundle-SymbolicName>
+                        <Bundle-SymbolicName>com.raffaeleconforti.statistics</Bundle-SymbolicName>
                         <Import-Package>
                             *
                         </Import-Package>
                         <Export-Package>
-                            com.raffaeleconforti.outliers.*
+                            com.raffaeleconforti.outliers.*,
+                            com.raffaeleconforti.statistics.*
                         </Export-Package>
                     </instructions>
                 </configuration>

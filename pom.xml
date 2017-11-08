@@ -45,6 +45,7 @@
         <module>bpmnminer-prom</module>
 
         <module>wrappers</module>
+        <module>cnminer-wrapper</module>
         <module>structuredminer</module>
         <module>structuredminer-commandline</module>
         <module>benchmark-commandline</module>
@@ -64,7 +65,6 @@
         <module>test</module>
         <!--<module>design-structure-matrix</module>-->
         <module>prom6</module>
-        <module>cnminer-wrapper</module>
         <module>benchmark-logic</module>
         <module>nlp</module>
         <module>hyperparamoptimized-wrappers</module>
@@ -132,6 +132,11 @@
             <dependency>
                 <groupId>com.raffaeleconforti</groupId>
                 <artifactId>ilp-solver-wrapper</artifactId>
+                <version>1.0.20171019</version>
+            </dependency>
+            <dependency>
+                <groupId>com.raffaeleconforti</groupId>
+                <artifactId>cnminer-wrapper</artifactId>
                 <version>1.0.20171019</version>
             </dependency>
             <dependency>
@@ -211,7 +216,7 @@
             </dependency>
             <dependency>
                 <groupId>com.raffaeleconforti</groupId>
-                <artifactId>outliers</artifactId>
+                <artifactId>statistics</artifactId>
                 <version>1.0.20171019</version>
             </dependency>
             <dependency>

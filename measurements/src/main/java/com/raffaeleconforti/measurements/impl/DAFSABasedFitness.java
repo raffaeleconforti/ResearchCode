@@ -53,11 +53,11 @@ public class DAFSABasedFitness implements MeasurementAlgorithm {
 
     @Override
     public String getMeasurementName() {
-        return "Alignment-Based Fitness";
+        return "DAFSA Alignment-Based Fitness";
     }
 
     @Override
-    public String getAcronym() {return "(a)fitness";}
+    public String getAcronym() {return "(d)fitness";}
 
     public PNRepResult computeAlignment(PluginContext pluginContext, XEventClassifier xEventClassifier, PetrinetWithMarking petrinetWithMarking, XLog log) {
         if(petrinetWithMarking == null) return null;
