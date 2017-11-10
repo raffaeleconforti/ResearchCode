@@ -53,6 +53,16 @@ public class LogPreprocessing {
         return addArtificialStartAndEndEvents(context, log);
     }
 
+    public void removedLifecycleFromName(Petrinet petrinet) {
+        for (Transition t : petrinet.getTransitions()) {
+            if (t.getLabel().toLowerCase().endsWith("+complete")) {
+                t.getAttributeMap().put(AttributeMap.LABEL, t.getLabel().substring(0, t.getLabel().toLowerCase().indexOf("+complete")));
+            } else if (t.getLabel().toLowerCase().endsWith("+start")) {
+                t.getAttributeMap().put(AttributeMap.LABEL, t.getLabel().substring(0, t.getLabel().toLowerCase().indexOf("+start")));
+            }
+        }
+    }
+
     public void removedAddedElements(Petrinet petrinet) {
         for (Transition t : petrinet.getTransitions()) {
             if (t.getLabel().contains(startLabel)) {
@@ -68,7 +78,6 @@ public class LogPreprocessing {
             }
         }
     }
-
     public void removedAddedElements(ProcessTree processTree) {
         List<Node> remove = new ArrayList<>();
         for (Node n : processTree.getNodes()) {

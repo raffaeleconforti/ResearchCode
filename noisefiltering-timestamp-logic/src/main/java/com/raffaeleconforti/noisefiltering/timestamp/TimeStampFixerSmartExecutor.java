@@ -71,10 +71,16 @@ public class TimeStampFixerSmartExecutor {
         System.out.println(timeStampFixerSmart.getDuplicatedTraces());
         Automaton<String> automaton = automatonFactory.generateForTimeFilter(permutedLog, timeStampFixerSmart.getDuplicatedEvents());
 
+//        InfrequentBehaviourFilter infrequentBehaviourFilter = new InfrequentBehaviourFilter(xEventClassifier);
+//        double[] arcs = infrequentBehaviourFilter.discoverArcs(automaton, 1.0);
+//        AutomatonInfrequentBehaviourDetector automatonInfrequentBehaviourDetector = new AutomatonInfrequentBehaviourDetector(AutomatonInfrequentBehaviourDetector.MAX);
+//        Automaton<String> automatonClean = automatonInfrequentBehaviourDetector.removeInfrequentBehaviour(automaton, automaton.getNodes(), infrequentBehaviourFilter.discoverThreshold(arcs, 0.125), useGurobi, useArcsFrequency);
+
         System.out.println();
 
         System.out.println("Selection best permutation started");
         AutomatonBestTraceMatchSelector automatonBestTraceMatchSelector = new AutomatonBestTraceMatchSelector(permutedLog, xEventClassifier, automaton, timeStampFixerSmart.getDuplicatedTraces(), timeStampFixerSmart.getPossibleTraces(), timeStampFixerSmart.getFaultyEvents(), log.size());
+//        AutomatonBestTraceMatchSelector automatonBestTraceMatchSelector = new AutomatonBestTraceMatchSelector(permutedLog, xEventClassifier, automatonClean, timeStampFixerSmart.getDuplicatedTraces(), timeStampFixerSmart.getPossibleTraces(), timeStampFixerSmart.getFaultyEvents(), log.size());
         List<String> fixedTraces = new ArrayList<String>();
 
         res = automatonBestTraceMatchSelector.selectBestMatchingTraces(new FakePluginContext(), fix, fixedTraces, approach);
@@ -85,13 +91,14 @@ public class TimeStampFixerSmartExecutor {
         System.out.println();
 
         System.out.println("Timestamps disambiguation started");
-//        TimestampsAssigner timestampsAssigner = new TimestampsAssigner(res, xEventClassifier, dateFormatSeconds, timeStampFixerSmart.getDuplicatedTraces(), timeStampFixerSmart.getDuplicatedEvents(), useGurobi, useArcsFrequency);
-//        boolean result = timestampsAssigner.assignTimestamps(fixedTraces);
-//
-//        if(!result) {
-//            timestampsAssigner.assignTimestamps();
-//        }
-//        res = logModifier.sortLog(res);
+        TimestampsAssigner timestampsAssigner = new TimestampsAssigner(res, xEventClassifier, dateFormatSeconds, timeStampFixerSmart.getDuplicatedTraces(), timeStampFixerSmart.getDuplicatedEvents(), useGurobi, useArcsFrequency);
+        boolean result = timestampsAssigner.assignTimestamps(fixedTraces);
+
+        if(!result) {
+            timestampsAssigner.assignTimestamps();
+        }
+        res = logModifier.sortLog(res);
+
 
         System.out.println("Timestamps disambiguation completed");
 

@@ -1,17 +1,30 @@
 package com.raffaeleconforti.noisefiltering.timestamp;
 
+import com.raffaeleconforti.context.FakePluginContext;
 import com.raffaeleconforti.log.util.LogCloner;
 import com.raffaeleconforti.log.util.LogImporter;
+import com.raffaeleconforti.marking.MarkingDiscoverer;
+import com.raffaeleconforti.measurements.Measure;
+import com.raffaeleconforti.measurements.impl.AlignmentBasedFitness;
 import com.raffaeleconforti.memorylog.XFactoryMemoryImpl;
 import com.raffaeleconforti.noisefiltering.event.InfrequentBehaviourFilter;
 import com.raffaeleconforti.noisefiltering.timestamp.permutation.PermutationTechnique;
+import com.raffaeleconforti.wrapper.PetrinetWithMarking;
 import org.deckfour.xes.classification.XEventNameClassifier;
 import org.deckfour.xes.extension.std.XOrganizationalExtension;
 import org.deckfour.xes.factory.XFactoryNaiveImpl;
 import org.deckfour.xes.model.XEvent;
 import org.deckfour.xes.model.XLog;
 import org.deckfour.xes.model.XTrace;
+import org.processmining.acceptingpetrinet.models.impl.AcceptingPetriNetImpl;
+import org.processmining.acceptingpetrinet.plugins.ImportAcceptingPetriNetPlugin;
+import org.processmining.contexts.uitopia.UIPluginContext;
+import org.processmining.models.graphbased.directed.petrinet.Petrinet;
+import org.processmining.models.semantics.petrinet.Marking;
 
+import java.io.FileWriter;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.StringTokenizer;
 
 /**
@@ -19,103 +32,220 @@ import java.util.StringTokenizer;
  */
 public class TimestampFixerTest {
 
-    public static void main1(String[] args) throws Exception {
-        XLog log = LogImporter.importFromFile(new XFactoryNaiveImpl(), "/Volumes/Data/Dropbox/Consultancies/Cineca-UniParma/u-gov/logs/Log_CG_DG/Result/Arcs/Vendite/Vendite_50_Instances.xes.gz");
-
-        for(XTrace trace : log) {
-            for(XEvent event : trace) {
-                String resource = XOrganizationalExtension.instance().extractResource(event);
-                resource = resource.replace("@unipr.it", "");
-                resource = resource.replace("@cineca.it", "");
-                resource = resource.replace(".", " ");
-                StringTokenizer st = new StringTokenizer(resource, " ");
-                String new_resource = "<html><b><center><p style=\"color:navy\">";
-                while (st.hasMoreTokens()) {
-                    new_resource += capitalize(st.nextToken());
-                    if(st.hasMoreTokens()) new_resource += "<br>";
-                }
-                new_resource += "</center></b></p></html>";
-                XOrganizationalExtension.instance().assignResource(event, new_resource);
-            }
-        }
-
-        LogImporter.exportToFile("/Volumes/Data/Dropbox/Consultancies/Cineca-UniParma/u-gov/logs/Log_CG_DG/Result/Arcs/Vendite/Vendite_50_Instances2.xes.gz", log);
-    }
-
-    public static String capitalize(String s) {
-        if (s.length() == 0) return s;
-        return s.substring(0, 1).toUpperCase() + s.substring(1).toLowerCase();
-    }
+    private static boolean useGurobi = true;
 
     public static void main(String[] args) throws Exception {
-//        XLog log = LogImporter.importFromFile(new XFactoryNaiveImpl(), "/Volumes/Data/SharedFolder/Logs/ArtificialLess.xes.gz");
-        XLog log = LogImporter.importFromFile(new XFactoryNaiveImpl(), "/Volumes/Data/SharedFolder/Logs/Deidentified Cattle Transaction Log.xes.gz");
-//        XLog log = LogImporter.importFromFile(new XFactoryNaiveImpl(), "/Volumes/Data/SharedFolder/Logs/Deidentified Cattle Transaction log (RAF).xes.gz");
-
-        LogCloner logCloner = new LogCloner(new XFactoryMemoryImpl());
-
-        TimeStampFixerSmartExecutor timeStampFixerSmartExecutor = new TimeStampFixerSmartExecutor(false, false);
-//        XLog filtered1 = timeStampFixerSmartExecutor.filterLog(log, 11, PermutationTechnique.ILP_GUROBI);
-        XLog filtered1 = timeStampFixerSmartExecutor.filterLog(log, 11, PermutationTechnique.ILP_LPSOLVE);
-
-//        filtered1 = test(log, false, false);
-        LogImporter.exportToFile("/Volumes/Data/SharedFolder/Logs/Deidentified Cattle Transaction Log2.xes.gz", filtered1);
-//        test(log, false);
-
-//        Node<String> a = new Node<>("A");964001008185836
-//        Node<String> b = new Node<>("B");
-//        Node<String> c = new Node<>("C");
-//        Node<String> d = new Node<>("D");
-//
-//        Automaton<String> automaton = new Automaton<>();
-//        automaton.addNode(a, 4);
-//        automaton.addNode(b, 8);
-//        automaton.addNode(c, 2);
-//        automaton.addNode(d, 4);
-//        automaton.addEdge(a, b, 4);
-//        automaton.addEdge(b, b, 3);
-//        automaton.addEdge(b, c, 2);
-//        automaton.addEdge(b, d, 3);
-//        automaton.addEdge(c, b, 1);
-//        automaton.addEdge(c, d, 1);
-//
-//        Node<String> a = new Node<>("A");
-//        Node<String> b = new Node<>("B");
-//        Node<String> c = new Node<>("C");
-//
-//        Automaton<String> automaton = new Automaton<>();
-//        automaton.addNode(a, 4);
-//        automaton.addNode(b, 4);
-//        automaton.addNode(c, 3);
-//        automaton.addEdge(a, b, 4);
-//        automaton.addEdge(b, c, 2);
-//        automaton.addEdge(a, c, 1);
-//
-//        automaton.getAutomatonStart();
-//        automaton.getAutomatonEnd();
-//        automaton.createDirectedGraph();
-//
-//        WrapperInfrequentBehaviourSolver wrapperInfrequentBehaviourSolver = new WrapperInfrequentBehaviourSolver(automaton, automaton.getEdges(), automaton.getNodes());
-//        Set<Edge<String>> infrequent = wrapperInfrequentBehaviourSolver.identifyRemovableEdges(new Gurobi_Solver());
-//        System.out.println(infrequent);
-//        infrequent = wrapperInfrequentBehaviourSolver.identifyRemovableEdges(new LPSolve_Solver());
-//        System.out.println(infrequent);
+        generateRealLifeLogs();
     }
 
-    private static XLog test(XLog log, boolean useGurobi, boolean useArcsFrequency) {
-        System.out.println(count(log));
-        InfrequentBehaviourFilter filter = new InfrequentBehaviourFilter(new XEventNameClassifier(), useGurobi, useArcsFrequency);
-        XLog filtered = filter.filterLog(log);
-        System.out.println(count(filtered));
-        return filtered;
-    }
+    public static void generateArtificialLogTable(String[] args) throws Exception {
+        String path = "/Volumes/Data/Dropbox/LaTex/2017/Timestamp Repair/Logs/Experiments/";
+        String logExtension = ".xes.gz";
 
-    private static int count(XLog log) {
-        int count = 0;
-        for(XTrace trace : log) {
-            count += trace.size();
+        String[] typeLogs = new String[] {"Event", "Trace", "UniqueTrace"};
+        String[] typeFilters = new String[] {"ILP", "N", "R"};
+
+        String[] typeExperiments = new String[] {"0.05", "0.10", "0.15", "0.20", "0.25", "0.30", "0.35", "0.40"};
+
+        TimeStampFilterChecker timeStampFilterChecker = new TimeStampFilterChecker();
+
+        XLog correctLog = LogImporter.importFromFile(new XFactoryNaiveImpl(), path + "TimeExperimentSimulation.xes.gz");
+        for(String typeLog : typeLogs) {
+            Set<String> done = new HashSet<>();
+            for(String typeExperiment : typeExperiments) {
+                for(String typeFilter : typeFilters) {
+                    XLog filteredLog = LogImporter.importFromFile(new XFactoryNaiveImpl(), path + typeLog + "/" + typeLog + typeExperiment + typeFilter + logExtension);
+                    XLog noisyLog = LogImporter.importFromFile(new XFactoryNaiveImpl(), path + typeLog + "/" + typeLog + typeExperiment + logExtension);
+
+                    String base = "\\multirow{4}{*}{N$";
+                    if(typeExperiment.equals("0.05")) {
+                        base += "5";
+                    }else {
+                        base += typeExperiment.substring(2);
+                    }
+
+                    if(typeLog.equals("Event")) {
+                        base += "_e$";
+                    }else if(typeLog.equals("Trace")) {
+                        base += "_t$";
+                    }else {
+                        base += "_{\\textit{ut}}$";
+                    }
+
+                    if(!done.contains(base)) {
+                        done.add(base);
+                        String res = timeStampFilterChecker.check(noisyLog, noisyLog, correctLog).replaceAll("<html><p>", "").replaceAll("<br>", "\n").replaceAll("</p></html>", "");
+
+                        FileWriter fileWriter = new FileWriter(path + typeLog + "/" + typeLog + typeExperiment + ".txt");
+                        fileWriter.write(res);
+                        fileWriter.close();
+
+                        res = res.replaceAll("\nMin Levenshtein Distance : 0.0", "");
+                        res = res.substring(res.indexOf("Levenshtein Distance"), res.indexOf("Total time error"));
+
+                        String f = base + "} & " + "Affected";
+                        String[] numbers = getNumbers(res);
+
+                        System.out.println("\\hline");
+                        System.out.println(f + " & " + numbers[4] + " & " + numbers[0] + " & " + numbers[1] + " & " + numbers[2] + " & " + numbers[3] + " & " + numbers[5] + " & " + numbers[6] + " & " + numbers[8] + " \\\\");
+                        System.out.println("\\cline{2-10}");
+                    }
+
+                    String res = timeStampFilterChecker.check(filteredLog, noisyLog, correctLog).replaceAll("<html><p>", "").replaceAll("<br>", "\n").replaceAll("</p></html>", "");
+
+                    FileWriter fileWriter = new FileWriter(path + typeLog + "/" + typeLog + typeExperiment + typeFilter + ".txt");
+                    fileWriter.write(res);
+                    fileWriter.close();
+
+                    res = res.replaceAll("\nMin Levenshtein Distance : 0.0", "");
+                    res = res.substring(res.indexOf("Levenshtein Distance"), res.indexOf("Total time error"));
+
+                    String algo = "";
+                    if(typeFilter.equals("ILP")) {
+                        algo = "Our";
+                    }else if(typeFilter.equals("N")) {
+                        algo = "Naive";
+                    }else {
+                        algo = "Random";
+                    }
+
+                    String f = " & " + algo;
+                    String[] numbers = getNumbers(res);
+
+                    if(algo.equals("Our")) {
+                        System.out.println(f + " & \\bf{" + numbers[4] + "} & \\bf{" + numbers[0] + "} & \\bf{" + numbers[1] + "} & \\bf{" + numbers[2] + "} & \\bf{" + numbers[3] + "} & \\bf{" + numbers[5] + "} & \\bf{" + numbers[6] + "} & \\bf{" + numbers[8] + "}\\\\");
+                    }else {
+                        System.out.println(f + " & " + numbers[4] + " & " + numbers[0] + " & " + numbers[1] + " & " + numbers[2] + " & " + numbers[3] + " & " + numbers[5] + " & " + numbers[6] + " & " + numbers[8] + " \\\\");
+                    }
+                    if(algo.equals("Random")) {
+                        System.out.println("\\hline");
+                    }else {
+                        System.out.println("\\cline{2-10}");
+                    }
+                }
+            }
         }
-        return count;
+    }
+
+    public static void checkModelWithFilteredLogs() throws Exception {
+        String path = "/Volumes/Data/Dropbox/LaTex/2017/Timestamp Repair/Logs/Experiments/";
+        String logExtension = ".xes.gz";
+
+        String[] typeLogs = new String[] {"Event", "Trace", "UniqueTrace"};
+        String[] typeFilters = new String[] {"", "ILP", "N", "R"};
+
+        String[] typeExperiments = new String[] {"0.05", "0.10", "0.15", "0.20", "0.25", "0.30", "0.35", "0.40"};
+
+        UIPluginContext context = new FakePluginContext();
+        ImportAcceptingPetriNetPlugin importAcceptingPetriNetPlugin = new ImportAcceptingPetriNetPlugin();
+        Petrinet petrinet = ((AcceptingPetriNetImpl) importAcceptingPetriNetPlugin.importFile(context, "/Volumes/Data/Dropbox/LaTex/2017/Timestamp Repair/Logs/Experiments/TimeExperiments.pnml")).getNet();
+        Marking initialMarking = MarkingDiscoverer.constructInitialMarking(context, petrinet);
+        Marking finalMarking = MarkingDiscoverer.constructFinalMarking(context, petrinet);
+        PetrinetWithMarking petrinetWithMarking = new PetrinetWithMarking(petrinet, initialMarking, finalMarking);
+
+        for(String typeLog : typeLogs) {
+            for(String typeExperiment : typeExperiments) {
+                String n = "";
+                for(String typeFilter : typeFilters) {
+                    XLog filteredLog = LogImporter.importFromFile(new XFactoryNaiveImpl(), path + typeLog + "/" + typeLog + typeExperiment + typeFilter + logExtension);
+
+                    AlignmentBasedFitness alignmentBasedFitness = new AlignmentBasedFitness();
+                    Measure measure = alignmentBasedFitness.computeMeasurement(context, new XEventNameClassifier(), petrinetWithMarking, null, filteredLog);
+                    System.out.println(typeLog + "/" + typeLog + typeExperiment + typeFilter + " " + measure.getValue());
+                }
+            }
+        }
+    }
+
+    public static void generateRealLifeLogs() throws Exception {
+        String path = "/Volumes/Data/Dropbox/LaTex/2017/Timestamp Repair/Logs/Experiments/";
+        String logExtension = ".xes.gz";
+
+        String[] typeLogs = new String[] {"RealLife"};
+        String[] typeFilters = new String[] {"ILP", "N", "R"};
+
+        String[] typeExperiments = new String[] {"BPI2014", "Hitachi"};
+
+        for(String typeLog : typeLogs) {
+            for(String typeExperiment : typeExperiments) {
+                XLog log = LogImporter.importFromFile(new XFactoryNaiveImpl(), path + typeLog + "/" + typeExperiment + logExtension);
+                for(String typeFilter : typeFilters) {
+                    XLog filteredLog = null;
+                    if(typeFilter.equals("ILP")) {
+                        filteredLog = logGenerationSmart(log, useGurobi);
+                    }else if(typeFilter.equals("N")) {
+                        filteredLog = logGenerationNaive(log, useGurobi);
+                    }else {
+                        filteredLog = logGenerationRandom(log, useGurobi);
+                    }
+                    LogImporter.exportToFile(path + typeLog + "/" + typeExperiment + typeFilter + logExtension, filteredLog);
+                }
+            }
+        }
+    }
+
+    public static void generateArtificialLogs() throws Exception {
+        String path = "/Volumes/Data/Dropbox/LaTex/2017/Timestamp Repair/Logs/Experiments/";
+        String logExtension = ".xes.gz";
+
+        String[] typeLogs = new String[] {"Event", "Trace", "UniqueTrace"};
+        String[] typeFilters = new String[] {"ILP", "N", "R"};
+
+        String[] typeExperiments = new String[] {"0.05", "0.10", "0.15", "0.20", "0.25", "0.30", "0.35", "0.40"};
+
+        for(String typeLog : typeLogs) {
+            for(String typeExperiment : typeExperiments) {
+                XLog log = LogImporter.importFromFile(new XFactoryNaiveImpl(), path + typeLog + "/" + typeLog + typeExperiment + logExtension);
+                for(String typeFilter : typeFilters) {
+                    XLog filteredLog = null;
+                    if(typeFilter.equals("ILP")) {
+                        filteredLog = logGenerationSmart(log, useGurobi);
+                    }else if(typeFilter.equals("N")) {
+                        filteredLog = logGenerationNaive(log, useGurobi);
+                    }else {
+                        filteredLog = logGenerationRandom(log, useGurobi);
+                    }
+                    LogImporter.exportToFile(path + typeLog + "/" + typeLog + typeExperiment + typeFilter + logExtension, filteredLog);
+                }
+            }
+        }
+    }
+
+    public static XLog logGenerationNaive(XLog log, boolean useGurobi) throws Exception {
+        TimeStampFixerDummyExecutor timeStampFixerDummyExecutor = new TimeStampFixerDummyExecutor(useGurobi, false);
+        XLog filtered1 = timeStampFixerDummyExecutor.filterLog(log);
+        return filtered1;
+    }
+
+    public static XLog logGenerationRandom(XLog log, boolean useGurobi) throws Exception {
+        TimeStampFixerRandomExecutor timeStampFixerRandomExecutor = new TimeStampFixerRandomExecutor(useGurobi, false);
+        XLog filtered1 = timeStampFixerRandomExecutor.filterLog(log);
+        return filtered1;
+    }
+
+    public static XLog logGenerationSmart(XLog log, boolean useGurobi) throws Exception {
+        TimeStampFixerSmartExecutor timeStampFixerSmartExecutor = new TimeStampFixerSmartExecutor(useGurobi, false);
+        XLog filtered1 = null;
+        if(useGurobi) filtered1 = timeStampFixerSmartExecutor.filterLog(log, 11, PermutationTechnique.ILP_GUROBI);
+        else filtered1 = timeStampFixerSmartExecutor.filterLog(log, 11, PermutationTechnique.ILP_LPSOLVE);
+        return filtered1;
+    }
+
+    private static String[] getNumbers(String res) {
+        StringTokenizer stringTokenizer = new StringTokenizer(res, " \n");
+        String[] numbers = new String[9];
+        int pos = 0;
+        while (stringTokenizer.hasMoreElements()) {
+            String s = stringTokenizer.nextToken();
+            try {
+                Double.parseDouble(s);
+                numbers[pos] = s;
+                pos++;
+            }catch (NumberFormatException nfe) {
+
+            }
+        }
+        return numbers;
     }
 
 }

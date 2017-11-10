@@ -43,7 +43,7 @@ public class TimeStampFilterChecker {
     XTimeExtension xte = XTimeExtension.instance();
 
     //Graph
-    public static void main(String[] args) throws Exception {
+    public static void logGeneration(String[] args) throws Exception {
         String path = "/Volumes/Data/Dropbox/LaTex/2017/Timestamp Repair/Logs/Experiments/";
         String logExtension = ".xes.gz";
 
@@ -148,12 +148,12 @@ public class TimeStampFilterChecker {
     }
 
     //Graph
-    public static void main3(String[] args) throws Exception {
-        String path = "/Volumes/Data/Dropbox/LaTex/2016/Timestamp Repair/Logs/Experiments/";
+    public static void main(String[] args) throws Exception {
+        String path = "/Volumes/Data/Dropbox/LaTex/2017/Timestamp Repair/Logs/Experiments/";
         String logExtension = ".xes.gz";
 
         String[] typeLogs = new String[] {"Event", "Trace", "UniqueTrace"};
-        String[] typeFilters = new String[] {" ILP", "D", "R"};
+        String[] typeFilters = new String[] {"ILP", "N", "R"};
 
         String[] typeExperiments = new String[] {"0.05", "0.10", "0.15", "0.20", "0.25", "0.30", "0.35", "0.40"};
 
@@ -213,9 +213,9 @@ public class TimeStampFilterChecker {
 
                     String[] numbers = getNumbers(res);
 
-                    if(typeFilter.equals(" ILP")) {
+                    if(typeFilter.equals("ILP")) {
                         values[3] = numbers[8];
-                    }else if(typeFilter.equals("D")) {
+                    }else if(typeFilter.equals("N")) {
                         values[2] = numbers[8];
                     }else {
                         values[1] = numbers[8];
@@ -230,11 +230,11 @@ public class TimeStampFilterChecker {
 
     //Table
     public static void main2(String[] args) throws Exception {
-        String path = "/Volumes/Data/Dropbox/LaTex/2016/Timestamp Repair/Logs/Experiments/";
+        String path = "/Volumes/Data/Dropbox/LaTex/2017/Timestamp Repair/Logs/Experiments/";
         String logExtension = ".xes.gz";
 
         String[] typeLogs = new String[] {"Event", "Trace", "UniqueTrace"};
-        String[] typeFilters = new String[] {" ILP", "D", "R"};
+        String[] typeFilters = new String[] {"ILP", "N", "R"};
 
         String[] typeExperiments = new String[] {"0.05", "0.10", "0.15", "0.20", "0.25", "0.30", "0.35", "0.40"};
 
@@ -292,9 +292,9 @@ public class TimeStampFilterChecker {
                     res = res.substring(res.indexOf("Levenshtein Distance"), res.indexOf("Total time error"));
 
                     String algo = "";
-                    if(typeFilter.equals(" ILP")) {
+                    if(typeFilter.equals("ILP")) {
                         algo = "Our";
-                    }else if(typeFilter.equals("D")) {
+                    }else if(typeFilter.equals("N")) {
                         algo = "Naive";
                     }else {
                         algo = "Random";

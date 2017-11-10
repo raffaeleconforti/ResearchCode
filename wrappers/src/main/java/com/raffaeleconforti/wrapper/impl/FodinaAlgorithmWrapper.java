@@ -89,6 +89,10 @@ public class FodinaAlgorithmWrapper implements MiningAlgorithm {
         Object[] result = CausalNetToPetrinet.convert(context, net);
         logPreprocessing.removedAddedElements((Petrinet) result[0]);
 
+        boolean includeLifeCycle = true;
+        if(xEventClassifier instanceof XEventNameClassifier) includeLifeCycle = false;
+        if(!includeLifeCycle) logPreprocessing.removedLifecycleFromName((Petrinet) result[0]);
+
         MarkingDiscoverer.createInitialMarkingConnection(context, (Petrinet) result[0], (Marking) result[1]);
 
         System.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out)));
