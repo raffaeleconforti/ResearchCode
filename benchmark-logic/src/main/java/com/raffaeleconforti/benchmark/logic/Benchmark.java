@@ -1,6 +1,7 @@
 package com.raffaeleconforti.benchmark.logic;
 
 import au.edu.qut.petrinet.tools.PetrinetImporter;
+import au.edu.qut.petrinet.tools.SoundnessChecker;
 import au.edu.qut.processmining.log.LogParser;
 import au.edu.qut.processmining.log.SimpleLog;
 import com.raffaeleconforti.context.FakePluginContext;
@@ -8,8 +9,7 @@ import com.raffaeleconforti.log.util.LogCloner;
 import com.raffaeleconforti.marking.MarkingDiscoverer;
 import com.raffaeleconforti.measurements.Measure;
 import com.raffaeleconforti.measurements.MeasurementAlgorithm;
-import com.raffaeleconforti.measurements.impl.AlignmentBasedFMeasure;
-import com.raffaeleconforti.measurements.impl.BPMNComplexity;
+import com.raffaeleconforti.measurements.impl.*;
 import com.raffaeleconforti.wrapper.MiningAlgorithm;
 import com.raffaeleconforti.wrapper.PetrinetWithMarking;
 import com.raffaeleconforti.wrapper.StructuredMinerAlgorithmWrapperHM52;
@@ -31,9 +31,12 @@ import org.deckfour.xes.model.XTrace;
 import org.deckfour.xes.out.XesXmlSerializer;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
+import org.json.JSONException;
+import org.processmining.acceptingpetrinet.models.AcceptingPetriNet;
 import org.processmining.acceptingpetrinet.models.impl.AcceptingPetriNetImpl;
 import org.processmining.acceptingpetrinet.plugins.ExportAcceptingPetriNetPlugin;
 import org.processmining.contexts.uitopia.UIPluginContext;
+import org.processmining.framework.connections.ConnectionCannotBeObtained;
 import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
 import org.processmining.models.graphbased.directed.petrinet.Petrinet;
 import org.processmining.models.semantics.petrinet.Marking;
@@ -168,6 +171,8 @@ public class Benchmark {
                     String pnpath = "./results/" + miningAlgorithmName + "/" + logName + "_" + Long.toString(System.currentTimeMillis()) + ".pnml";
                     exportPetrinet(fakePluginContext, petrinetWithMarking, pnpath);
 
+                    AcceptingPetriNet acceptingPetriNet = getAcceptingPetriNet(petrinetWithMarking);
+
                     Measure measure;
                     // computing metrics on the output petrinet
                     for( MeasurementAlgorithm measurementAlgorithm : measurementAlgorithms ) {
@@ -176,7 +181,26 @@ public class Benchmark {
                         try {
                             XLog measuringLog = logCloner.cloneLog(log);
                             sTime = System.currentTimeMillis();
-                            measure = measurementAlgorithm.computeMeasurement(fakePluginContext, xEventClassifier, petrinetWithMarking, miningAlgorithm, measuringLog);
+
+                            if(!isSound(acceptingPetriNet) &&
+                                    (measurementAlgorithm instanceof AlignmentBasedFitness ||
+                                            measurementAlgorithm instanceof AlignmentBasedPrecision ||
+                                            measurementAlgorithm instanceof AlignmentBasedFMeasure ||
+                                            measurementAlgorithm instanceof XFoldAlignmentBasedFitness ||
+                                            measurementAlgorithm instanceof XFoldAlignmentBasedPrecision ||
+                                            measurementAlgorithm instanceof XFoldAlignmentBasedFMeasure)) {
+                                measure = new Measure();
+                                measure.addMeasure(measurementAlgorithmName, "-");
+                                if(measurementAlgorithm instanceof AlignmentBasedFMeasure) {
+                                    measure.addMeasure("(a)fitness", "-");
+                                    measure.addMeasure("(a)precision", "-");
+                                }if(measurementAlgorithm instanceof XFoldAlignmentBasedFMeasure) {
+                                    measure.addMeasure("(a)(3-f)fit.", "-");
+                                    measure.addMeasure("(a)(3-f)prec.", "-");
+                                }
+                            }else {
+                                measure = measurementAlgorithm.computeMeasurement(fakePluginContext, xEventClassifier, petrinetWithMarking, miningAlgorithm, measuringLog);
+                            }
 
                             execTime = System.currentTimeMillis() - sTime;
                             if (measurementAlgorithm.isMultimetrics()) {
@@ -287,6 +311,25 @@ public class Benchmark {
             e.printStackTrace();
         }
         return null;
+    }
+
+    private AcceptingPetriNet getAcceptingPetriNet(PetrinetWithMarking petrinetWithMarking) {
+        if(petrinetWithMarking.getFinalMarkings().size() > 1) return new AcceptingPetriNetImpl(petrinetWithMarking.getPetrinet(), petrinetWithMarking.getInitialMarking(), petrinetWithMarking.getFinalMarkings());
+        else return new AcceptingPetriNetImpl(petrinetWithMarking.getPetrinet(), petrinetWithMarking.getInitialMarking(), petrinetWithMarking.getFinalMarking());
+    }
+
+    private boolean isSound(AcceptingPetriNet acceptingPetriNet) throws JSONException, IOException, ConnectionCannotBeObtained {
+        System.out.print("Checking Soundness...");
+        SoundnessChecker checker = new SoundnessChecker(acceptingPetriNet.getNet());
+        if (!checker.isSound()) {
+            System.out.println("Unsound");
+            System.out.println("DEBUG - Unsound");
+            System.out.println();
+            return false;
+        }else {
+            System.out.println("Sound");
+            return true;
+        }
     }
 
     private void exportPetrinet(UIPluginContext context, PetrinetWithMarking petrinetWithMarking, String path) {
