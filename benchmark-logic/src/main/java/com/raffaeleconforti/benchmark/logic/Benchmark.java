@@ -5,6 +5,7 @@ import au.edu.qut.petrinet.tools.SoundnessChecker;
 import au.edu.qut.processmining.log.LogParser;
 import au.edu.qut.processmining.log.SimpleLog;
 import com.raffaeleconforti.context.FakePluginContext;
+import com.raffaeleconforti.conversion.petrinet.PetriNetToBPMNConverter;
 import com.raffaeleconforti.log.util.LogCloner;
 import com.raffaeleconforti.marking.MarkingDiscoverer;
 import com.raffaeleconforti.measurements.Measure;
@@ -35,11 +36,13 @@ import org.json.JSONException;
 import org.processmining.acceptingpetrinet.models.AcceptingPetriNet;
 import org.processmining.acceptingpetrinet.models.impl.AcceptingPetriNetImpl;
 import org.processmining.acceptingpetrinet.plugins.ExportAcceptingPetriNetPlugin;
+import org.processmining.contexts.uitopia.UIContext;
 import org.processmining.contexts.uitopia.UIPluginContext;
 import org.processmining.framework.connections.ConnectionCannotBeObtained;
 import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
 import org.processmining.models.graphbased.directed.petrinet.Petrinet;
 import org.processmining.models.semantics.petrinet.Marking;
+import org.processmining.plugins.bpmn.plugins.BpmnExportPlugin;
 import org.processmining.plugins.pnml.importing.PnmlImportNet;
 
 import java.io.*;
@@ -168,8 +171,9 @@ public class Benchmark {
                     measures.get(miningAlgorithmName).get(logName).put("_exec-t", Long.toString(execTime));
                     System.out.println("DEBUG - mining time: " + execTime + "ms");
 
-                    String pnpath = "./results/" + miningAlgorithmName + "/" + logName + "_" + Long.toString(System.currentTimeMillis()) + ".pnml";
-                    exportPetrinet(fakePluginContext, petrinetWithMarking, pnpath);
+                    String bpmnpath = "./results/" + miningAlgorithmName + "/" + logName + "_" + Long.toString(System.currentTimeMillis()) + ".bpmn";
+                    BPMNDiagram bpmnModel = PetriNetToBPMNConverter.convert(petrinetWithMarking.getPetrinet(), petrinetWithMarking.getInitialMarking(), petrinetWithMarking.getFinalMarking(), false);
+                    exportBPMN(bpmnModel, bpmnpath);
 
                     AcceptingPetriNet acceptingPetriNet = getAcceptingPetriNet(petrinetWithMarking);
 
@@ -330,6 +334,15 @@ public class Benchmark {
             System.out.println("Sound");
             return true;
         }
+    }
+
+    private void exportBPMN(BPMNDiagram diagram, String path) {
+        BpmnExportPlugin bpmnExportPlugin = new BpmnExportPlugin();
+        UIContext context = new UIContext();
+        UIPluginContext uiPluginContext = context.getMainPluginContext();
+        try {
+            bpmnExportPlugin.export(uiPluginContext, diagram, new File(path));
+        } catch (Exception e) { System.out.println("ERROR - impossible to export .bpmn result of split-miner"); }
     }
 
     private void exportPetrinet(UIPluginContext context, PetrinetWithMarking petrinetWithMarking, String path) {
