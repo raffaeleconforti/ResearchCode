@@ -22,6 +22,7 @@ public class Gurobi_Solver implements ILPSolver {
 
     private GRBEnv env;
     private GRBModel model;
+    private ILPSolverExpression objectiveFunction;
     private List<Gurobi_Variable> variables;
     private List<Gurobi_Constraint> constraints;
     private boolean minimize;
@@ -39,6 +40,7 @@ public class Gurobi_Solver implements ILPSolver {
     @Override
     public void createModel() {
         try {
+            objectiveFunction = null;
             variables = new ArrayList<>();
             constraints = new ArrayList<>();
             minimize = true;
@@ -104,7 +106,8 @@ public class Gurobi_Solver implements ILPSolver {
     @Override
     public void setObjectiveFunction(ILPSolverExpression objectiveFunction) {
         try {
-            model.setObjective(((Gurobi_Expression) objectiveFunction).getLinearExpression(), minimize?GRB.MINIMIZE:GRB.MAXIMIZE);
+            this.objectiveFunction = objectiveFunction;
+            model.setObjective(((Gurobi_Expression) objectiveFunction).getLinearExpression(), minimize ? GRB.MINIMIZE : GRB.MAXIMIZE);
         } catch (GRBException e) {
             e.printStackTrace();
         }
@@ -113,11 +116,13 @@ public class Gurobi_Solver implements ILPSolver {
     @Override
     public void setMaximize() {
         minimize = false;
+        if(objectiveFunction != null) setObjectiveFunction(objectiveFunction);
     }
 
     @Override
     public void setMinimize() {
         minimize = true;
+        if(objectiveFunction != null) setObjectiveFunction(objectiveFunction);
     }
 
     @Override
@@ -126,7 +131,7 @@ public class Gurobi_Solver implements ILPSolver {
             model.update();
 
             for(Gurobi_Variable variable : variables) {
-                double diff = (variable.getVariableType() == VariableType.CONTINUOUS)?Double.MIN_VALUE:1;
+                double diff = (variable.getVariableType() == VariableType.CONTINUOUS) ? Double.MIN_VALUE : 1;
                 GRBLinExpr expression = new GRBLinExpr();
                 expression.addTerm(1, variable.getVariable());
                 if(variable.getLowerBound() != -getInfinity()) {

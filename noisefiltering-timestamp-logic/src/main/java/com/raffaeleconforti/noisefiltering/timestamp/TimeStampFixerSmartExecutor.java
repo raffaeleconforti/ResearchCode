@@ -37,10 +37,12 @@ public class TimeStampFixerSmartExecutor {
 
     private final SimpleDateFormat dateFormatSeconds = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 
+    private final boolean debug_mode;
     private final boolean useGurobi;
     private final boolean useArcsFrequency;
 
-    public TimeStampFixerSmartExecutor(boolean useGurobi, boolean useArcsFrequency) {
+    public TimeStampFixerSmartExecutor(boolean useGurobi, boolean useArcsFrequency, boolean debug_mode) {
+        this.debug_mode = debug_mode;
         this.useGurobi = useGurobi;
         this.useArcsFrequency = useArcsFrequency;
     }
@@ -62,7 +64,7 @@ public class TimeStampFixerSmartExecutor {
         optimizedLog = logModifier.insertArtificialStartAndEndEvent(optimizedLog);
 
         System.out.println("Permutations discovery started");
-        TimeStampFixer timeStampFixerSmart = new TimeStampFixerSmart(factory, logCloner, optimizedLog, xEventClassifier, dateFormatSeconds, limitExtensive, approach, useGurobi, useArcsFrequency);
+        TimeStampFixer timeStampFixerSmart = new TimeStampFixerSmart(factory, logCloner, optimizedLog, xEventClassifier, dateFormatSeconds, limitExtensive, approach, useGurobi, useArcsFrequency, debug_mode);
 
         XLog permutedLog = timeStampFixerSmart.obtainPermutedLog();
 //        permutedLog = logModifier.insertArtificialStartAndEndEvent(permutedLog);
@@ -91,7 +93,7 @@ public class TimeStampFixerSmartExecutor {
         System.out.println();
 
         System.out.println("Timestamps disambiguation started");
-        TimestampsAssigner timestampsAssigner = new TimestampsAssigner(res, xEventClassifier, dateFormatSeconds, timeStampFixerSmart.getDuplicatedTraces(), timeStampFixerSmart.getDuplicatedEvents(), useGurobi, useArcsFrequency);
+        TimestampsAssigner timestampsAssigner = new TimestampsAssigner(res, xEventClassifier, dateFormatSeconds, timeStampFixerSmart.getDuplicatedTraces(), timeStampFixerSmart.getDuplicatedEvents(), useGurobi, useArcsFrequency, debug_mode);
         boolean result = timestampsAssigner.assignTimestamps(fixedTraces);
 
         if(!result) {

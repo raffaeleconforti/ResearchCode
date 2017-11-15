@@ -40,7 +40,7 @@ public class TimeStampFixerCommandline {
     }
 
     public TimeStampFixerCommandline(boolean useGurobi, boolean useArcsFrequency) {
-        timeStampFixerSmartExecutor = new TimeStampFixerSmartExecutor(useGurobi, useArcsFrequency);
+        timeStampFixerSmartExecutor = new TimeStampFixerSmartExecutor(useGurobi, useArcsFrequency, false);
     }
 
     public XLog filterLog(XLog rawlog) {

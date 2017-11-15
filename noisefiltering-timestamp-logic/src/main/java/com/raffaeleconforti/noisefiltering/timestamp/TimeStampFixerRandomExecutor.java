@@ -85,7 +85,7 @@ public class TimeStampFixerRandomExecutor {
             res = logModifier.removeArtificialStartAndEndEvent(res);
             res = logModifier.sortLog(res);
 
-            TimestampsAssigner timestampsAssigner = new TimestampsAssigner(res, xEventClassifier, dateFormatSeconds, timeStampFixerRandom.getDuplicatedTraces(), timeStampFixerRandom.getDuplicatedEvents(), useGurobi, useArcsFrequency);
+            TimestampsAssigner timestampsAssigner = new TimestampsAssigner(res, xEventClassifier, dateFormatSeconds, timeStampFixerRandom.getDuplicatedTraces(), timeStampFixerRandom.getDuplicatedEvents(), useGurobi, useArcsFrequency, false);
             boolean result = timestampsAssigner.assignTimestampsDummy(fixedTraces);
 
             System.out.println();

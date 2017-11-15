@@ -23,6 +23,8 @@ import org.processmining.models.graphbased.directed.petrinet.Petrinet;
 import org.processmining.models.semantics.petrinet.Marking;
 
 import java.io.FileWriter;
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.StringTokenizer;
@@ -30,15 +32,16 @@ import java.util.StringTokenizer;
 /**
  * Created by Raffaele Conforti (conforti.raffaele@gmail.com) on 20/4/17.
  */
-public class TimestampFixerTest {
+public class TimestampFixerExperiments {
 
     private static boolean useGurobi = true;
 
     public static void main(String[] args) throws Exception {
-        generateRealLifeLogs();
+        generateArtificialLogs();
+        generateArtificialLogTable();
     }
 
-    public static void generateArtificialLogTable(String[] args) throws Exception {
+    public static void generateArtificialLogTable() throws Exception {
         String path = "/Volumes/Data/Dropbox/LaTex/2017/Timestamp Repair/Logs/Experiments/";
         String logExtension = ".xes.gz";
 
@@ -48,6 +51,13 @@ public class TimestampFixerTest {
         String[] typeExperiments = new String[] {"0.05", "0.10", "0.15", "0.20", "0.25", "0.30", "0.35", "0.40"};
 
         TimeStampFilterChecker timeStampFilterChecker = new TimeStampFilterChecker();
+
+        UIPluginContext context = new FakePluginContext();
+        ImportAcceptingPetriNetPlugin importAcceptingPetriNetPlugin = new ImportAcceptingPetriNetPlugin();
+        Petrinet petrinet = ((AcceptingPetriNetImpl) importAcceptingPetriNetPlugin.importFile(context, "/Volumes/Data/Dropbox/LaTex/2017/Timestamp Repair/Logs/Experiments/TimeExperiments.pnml")).getNet();
+        Marking initialMarking = MarkingDiscoverer.constructInitialMarking(context, petrinet);
+        Marking finalMarking = MarkingDiscoverer.constructFinalMarking(context, petrinet);
+        PetrinetWithMarking petrinetWithMarking = new PetrinetWithMarking(petrinet, initialMarking, finalMarking);
 
         XLog correctLog = LogImporter.importFromFile(new XFactoryNaiveImpl(), path + "TimeExperimentSimulation.xes.gz");
         for(String typeLog : typeLogs) {
@@ -86,9 +96,12 @@ public class TimestampFixerTest {
                         String f = base + "} & " + "Affected";
                         String[] numbers = getNumbers(res);
 
+                        AlignmentBasedFitness alignmentBasedFitness = new AlignmentBasedFitness();
+                        Measure measure = alignmentBasedFitness.computeMeasurement(context, new XEventNameClassifier(), petrinetWithMarking, null, noisyLog);
+
                         System.out.println("\\hline");
-                        System.out.println(f + " & " + numbers[4] + " & " + numbers[0] + " & " + numbers[1] + " & " + numbers[2] + " & " + numbers[3] + " & " + numbers[5] + " & " + numbers[6] + " & " + numbers[8] + " \\\\");
-                        System.out.println("\\cline{2-10}");
+                        System.out.println(f + " & " + numbers[4] + " & " + numbers[0] + " & " + numbers[1] + " & " + numbers[2] + " & " + numbers[3] + " & " + numbers[5] + " & " + numbers[6] + " & " + numbers[8] + " & " + new BigDecimal(String.valueOf(measure.getValue())).setScale(3, BigDecimal.ROUND_HALF_EVEN).toString() + "\\\\");
+                        System.out.println("\\cline{2-11}");
                     }
 
                     String res = timeStampFilterChecker.check(filteredLog, noisyLog, correctLog).replaceAll("<html><p>", "").replaceAll("<br>", "\n").replaceAll("</p></html>", "");
@@ -112,15 +125,18 @@ public class TimestampFixerTest {
                     String f = " & " + algo;
                     String[] numbers = getNumbers(res);
 
+                    AlignmentBasedFitness alignmentBasedFitness = new AlignmentBasedFitness();
+                    Measure measure = alignmentBasedFitness.computeMeasurement(context, new XEventNameClassifier(), petrinetWithMarking, null, filteredLog);
+
                     if(algo.equals("Our")) {
-                        System.out.println(f + " & \\bf{" + numbers[4] + "} & \\bf{" + numbers[0] + "} & \\bf{" + numbers[1] + "} & \\bf{" + numbers[2] + "} & \\bf{" + numbers[3] + "} & \\bf{" + numbers[5] + "} & \\bf{" + numbers[6] + "} & \\bf{" + numbers[8] + "}\\\\");
+                        System.out.println(f + " & \\bf{" + numbers[4] + "} & \\bf{" + numbers[0] + "} & \\bf{" + numbers[1] + "} & \\bf{" + numbers[2] + "} & \\bf{" + numbers[3] + "} & \\bf{" + numbers[5] + "} & \\bf{" + numbers[6] + "} & \\bf{" + numbers[8] + "} & \\bf{" + new BigDecimal(String.valueOf(measure.getValue())).setScale(3, BigDecimal.ROUND_HALF_EVEN).toString() + "}\\\\");
                     }else {
-                        System.out.println(f + " & " + numbers[4] + " & " + numbers[0] + " & " + numbers[1] + " & " + numbers[2] + " & " + numbers[3] + " & " + numbers[5] + " & " + numbers[6] + " & " + numbers[8] + " \\\\");
+                        System.out.println(f + " & " + numbers[4] + " & " + numbers[0] + " & " + numbers[1] + " & " + numbers[2] + " & " + numbers[3] + " & " + numbers[5] + " & " + numbers[6] + " & " + numbers[8] + " & " + new BigDecimal(String.valueOf(measure.getValue())).setScale(3, BigDecimal.ROUND_HALF_EVEN).toString() + " \\\\");
                     }
                     if(algo.equals("Random")) {
                         System.out.println("\\hline");
                     }else {
-                        System.out.println("\\cline{2-10}");
+                        System.out.println("\\cline{2-11}");
                     }
                 }
             }
@@ -224,7 +240,7 @@ public class TimestampFixerTest {
     }
 
     public static XLog logGenerationSmart(XLog log, boolean useGurobi) throws Exception {
-        TimeStampFixerSmartExecutor timeStampFixerSmartExecutor = new TimeStampFixerSmartExecutor(useGurobi, false);
+        TimeStampFixerSmartExecutor timeStampFixerSmartExecutor = new TimeStampFixerSmartExecutor(useGurobi, false, false);
         XLog filtered1 = null;
         if(useGurobi) filtered1 = timeStampFixerSmartExecutor.filterLog(log, 11, PermutationTechnique.ILP_GUROBI);
         else filtered1 = timeStampFixerSmartExecutor.filterLog(log, 11, PermutationTechnique.ILP_LPSOLVE);

@@ -20,6 +20,8 @@ import java.util.Set;
  */
 public class WrapperInfrequentBehaviourSolver<T> {
 
+    private boolean debug_mode = false;
+
     private final Automaton<T> automaton;
     private final Set<Edge<T>> infrequentEdges;
     private final Set<Node<T>> requiredStatus;
@@ -232,7 +234,7 @@ public class WrapperInfrequentBehaviourSolver<T> {
 
         // Optimize model
         solver.solve();
-        System.out.println(solver.printProblem());
+        if(debug_mode) System.out.println(solver.printProblem());
         ILPSolver.Status status = solver.getStatus();
 
         if (status == ILPSolver.Status.OPTIMAL) {

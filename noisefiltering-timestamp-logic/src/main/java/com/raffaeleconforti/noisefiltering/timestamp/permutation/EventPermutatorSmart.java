@@ -25,6 +25,7 @@ import java.util.*;
  */
 public class EventPermutatorSmart implements EventPermutator {
 
+    private final boolean debug_mode;
     private final EventDistributionCalculator eventDistributionCalculator;
     private final LogCloner logCloner;
     private final Map<String, Set<String>> duplicatedEvents = new UnifiedMap<>();
@@ -44,7 +45,8 @@ public class EventPermutatorSmart implements EventPermutator {
 
     public EventPermutatorSmart(LogCloner logCloner, XFactory factory, XEventClassifier xEventClassifier, EventDistributionCalculator eventDistributionCalculator,
                                 TimeStampChecker timeStampChecker, Set<String> sequences, Map<List<String>,
-                            Set<List<String>>> patternsMap, int limitExtensive, int approach) {
+                            Set<List<String>>> patternsMap, int limitExtensive, int approach, boolean debug_mode) {
+        this.debug_mode = debug_mode;
         this.factory = factory;
         this.logCloner = logCloner;
         this.eventDistributionCalculator = eventDistributionCalculator;
@@ -217,7 +219,7 @@ public class EventPermutatorSmart implements EventPermutator {
                 System.out.println(PermutationTechniqueFactory.getPermutationTechniqueName(approach) + " Approach All!");
                 System.out.println("Start " + nameExtractor.getEventName(start));
                 System.out.println("End " + nameExtractor.getEventName(end));
-                PermutationTechnique permutationTechnique = PermutationTechniqueFactory.getPermutationTechnique(approach, events, eventDistributionCalculator, start, end);
+                PermutationTechnique permutationTechnique = PermutationTechniqueFactory.getPermutationTechnique(approach, events, eventDistributionCalculator, start, end, debug_mode);
                 permutations = permutationTechnique.findBestStartEnd();
                 populateDiscoveredPatterns(createPatternToReusePermutations(start, end, events), permutations);
 

@@ -28,6 +28,8 @@ public class TimeStampFixerSmart implements TimeStampFixer {
     private AutomatonInfrequentBehaviourDetector automatonInfrequentBehaviourDetector = new AutomatonInfrequentBehaviourDetector(AutomatonInfrequentBehaviourDetector.MAX);
     private final AutomatonFactory automatonFactory;
 
+    private final boolean debug_mode;
+
     private final LogCloner logCloner;
     private final NameExtractor nameExtractor;
     private final TimeStampChecker timeStampChecker;
@@ -52,7 +54,8 @@ public class TimeStampFixerSmart implements TimeStampFixer {
 
     private int approach;
 
-    public TimeStampFixerSmart(XFactory factory, LogCloner logCloner, XLog rawlog, XEventClassifier xEventClassifier, SimpleDateFormat dateFormatSeconds, int limitExtensive, int approach, boolean useGurobi, boolean useArcsFrequency) {
+    public TimeStampFixerSmart(XFactory factory, LogCloner logCloner, XLog rawlog, XEventClassifier xEventClassifier, SimpleDateFormat dateFormatSeconds, int limitExtensive, int approach, boolean useGurobi, boolean useArcsFrequency, boolean debug_mode) {
+        this.debug_mode = debug_mode;
         this.factory = factory;
         this.logCloner = logCloner;
         log = rawlog;
@@ -96,7 +99,7 @@ public class TimeStampFixerSmart implements TimeStampFixer {
 
         eventDistributionCalculator = new EventDistributionCalculatorNoiseImpl(log, xEventClassifier, faultyEvents);
         eventDistributionCalculator.analyseLog();
-        eventPermutator = new EventPermutatorSmart(logCloner, factory, xEventClassifier, eventDistributionCalculator, timeStampChecker, sequences, patternsMap, limitExtensive, approach);
+        eventPermutator = new EventPermutatorSmart(logCloner, factory, xEventClassifier, eventDistributionCalculator, timeStampChecker, sequences, patternsMap, limitExtensive, approach, debug_mode);
 
         if(true) {
             Automaton<String> automatonOriginal = automatonFactory.generate(log);

@@ -39,7 +39,7 @@ public class TimeStampFixerPlugin {
         }else if(approach == PermutationTechnique.ILP_LPSOLVE_ARCS) {
             useArcsFrequency = true;
         }
-        timeStampFixerSmartExecutor = new TimeStampFixerSmartExecutor(useGurobi, useArcsFrequency);
+        timeStampFixerSmartExecutor = new TimeStampFixerSmartExecutor(useGurobi, useArcsFrequency, false);
         return timeStampFixerSmartExecutor.filterLog(log, limitExtensive, approach);
     }
 
