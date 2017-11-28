@@ -21,8 +21,14 @@ import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
 import org.eclipse.collections.impl.map.mutable.primitive.*;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 import org.eclipse.collections.impl.set.mutable.primitive.IntHashSet;
+import org.json.JSONObject;
+import org.python.util.PythonInterpreter;
 
+import javax.script.*;
+import java.io.*;
 import java.util.*;
+
+import static java.io.FileDescriptor.out;
 
 /**
  * Created by Raffaele Conforti (conforti.raffaele@gmail.com) on 14/11/16.
@@ -39,7 +45,7 @@ public class LabelFilter {
     private final IntObjectHashMap<String> intToStringMap = new IntObjectHashMap<>();
 
     private int events = 1;
-    public static String testName = "(Label Bagging)";
+    public static String testName = "(Python)";
 
     private final int CoD = 0;
     private final int CoV = 1;
@@ -53,7 +59,7 @@ public class LabelFilter {
 
     public static void main(String[] args) throws Exception {
         XFactory factory = new XFactoryNaiveImpl();
-//        String[] logNames = new String[] {"BPI2012"};
+//        String[] logNames = new String[] {"Sepsis"};
         String[] logNames = new String[] {"BPI2011", "BPI2012", "BPI2013_cp", "BPI2013_i", "BPI2014", "BPI2015-1", "BPI2015-2", "BPI2015-3", "BPI2015-4", "BPI2015-5", "BPI2017", "Road", "Sepsis"};
 
         for(int i = logNames.length - 1; i >= 0; i--) {
@@ -103,6 +109,109 @@ public class LabelFilter {
     }
 
     public XLog filterLog(XLog log) {
+        Map<String, Integer> map1 = new HashMap<>();
+        Map<String, Integer> map2 = new HashMap<>();
+        for(XTrace trace : log) {
+            Set<String> set = new HashSet<>();
+            for(XEvent event : trace) {
+                String name = xEventClassifier.getClassIdentity(event);
+                set.add(name);
+                Integer count;
+                if((count = map1.get(name)) == null) {
+                    count = 0;
+                }
+                count++;
+                map1.put(name, count);
+            }
+            for(String name : set) {
+                Integer count;
+                if((count = map2.get(name)) == null) {
+                    count = 0;
+                }
+                count++;
+                map2.put(name, count);
+            }
+        }
+
+        List<String> arguments = new ArrayList<>();
+        arguments.add("python3.6");
+        arguments.add("/Volumes/Data/IdeaProjects/ResearchCodePublic/noisefiltering-label-logic/src/main/java/com/raffaeleconforti/noisefiltering/label/logic/label_filter.py");
+        for(String name : map1.keySet()) {
+            arguments.add(name);
+            arguments.add("" + map1.get(name));
+        }
+        List<String> labels1 = callPythonScript(arguments);
+
+        arguments = new ArrayList<>();
+        arguments.add("python3.6");
+        arguments.add("/Volumes/Data/IdeaProjects/ResearchCodePublic/noisefiltering-label-logic/src/main/java/com/raffaeleconforti/noisefiltering/label/logic/label_filter.py");
+        for(String name : map2.keySet()) {
+            arguments.add(name);
+            arguments.add("" + map2.get(name));
+        }
+        List<String> labels2 = callPythonScript(arguments);
+
+        Set<String> toremove = new HashSet<>();
+        for(String s : labels1) {
+            if(labels2.contains(s)) {
+                toremove.add(s);
+            }
+        }
+//        toremove.addAll(labels1);
+//        toremove.addAll(labels2);
+
+        this.label_removed = toremove.size();
+        XFactory factory = new XFactoryNaiveImpl();
+        XLog filteredLog = factory.createLog(log.getAttributes());
+        for(XTrace trace : log) {
+            XTrace filteredTrace = factory.createTrace(trace.getAttributes());
+            for(XEvent event : trace) {
+                if (!toremove.contains(xEventClassifier.getClassIdentity(event))) {
+                    filteredTrace.add(event);
+                }
+            }
+            filteredLog.add(filteredTrace);
+        }
+        return filteredLog;
+    }
+
+    private List<String> callPythonScript(List<String> arguments) {
+        List<String> labels = new ArrayList<>();
+        try {
+            ProcessBuilder pb = new ProcessBuilder().command(arguments);
+            pb.redirectErrorStream(true);
+            pb.redirectInput();
+
+            Process p = pb.start();
+
+            InputStream stdout = new BufferedInputStream(p.getInputStream());
+
+            Scanner scanner = new Scanner(stdout);
+            boolean record = false;
+            while (scanner.hasNextLine()) {
+                System.out.println();
+                String result = scanner.nextLine();
+                StringTokenizer st = new StringTokenizer(result, "[',]");
+                while(st.hasMoreTokens()) {
+                    String token = st.nextToken();
+                    if(!token.equals(" "))
+                        if(token.equals(" ok ")) record = true;
+                        else if(record) {
+                            labels.add(token);
+                            System.out.println(token);
+                        }else {
+                            System.out.println(token);
+                        }
+                }
+            }
+            scanner.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return labels;
+    }
+
+    public XLog filterLog2(XLog log) {
         List<IntArrayList> convertedLog = codeLog(log);
         IntHashSet removed = new IntHashSet();
         IntHashSet save = new IntHashSet();

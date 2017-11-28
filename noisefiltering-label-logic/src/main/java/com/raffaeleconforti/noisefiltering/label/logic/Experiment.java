@@ -5,6 +5,7 @@ import com.raffaeleconforti.context.FakePluginContext;
 import com.raffaeleconforti.log.util.LogAnalyser;
 import com.raffaeleconforti.log.util.LogCloner;
 import com.raffaeleconforti.log.util.LogImporter;
+import com.raffaeleconforti.marking.MarkingDiscoverer;
 import com.raffaeleconforti.measurements.Measure;
 import com.raffaeleconforti.measurements.MeasurementAlgorithm;
 import com.raffaeleconforti.measurements.impl.AlignmentBasedFMeasure;
@@ -29,6 +30,8 @@ import org.json.JSONException;
 import org.processmining.acceptingpetrinet.models.AcceptingPetriNet;
 import org.processmining.acceptingpetrinet.models.impl.AcceptingPetriNetImpl;
 import org.processmining.framework.connections.ConnectionCannotBeObtained;
+import org.processmining.models.graphbased.directed.petrinet.Petrinet;
+import org.processmining.models.semantics.petrinet.Marking;
 import org.processmining.processtree.ProcessTree;
 import org.processmining.processtree.conversion.ProcessTree2Petrinet;
 
@@ -73,15 +76,15 @@ public class Experiment {
 
     private boolean isSelectedMiningAlgorithm(MiningAlgorithm miningAlgorithm) {
 //        if(miningAlgorithm instanceof HeuristicsAlgorithmWrapper) return true;
-//        if(miningAlgorithm instanceof InductiveMinerIMfWrapper) return true;
-        if(miningAlgorithm instanceof SplitMinerWrapper) return true;
+        if(miningAlgorithm instanceof InductiveMinerIMfWrapper) return true;
+//        if(miningAlgorithm instanceof SplitMinerWrapper) return true;
         return false;
     }
 
     private boolean isSelectedLog(String logName) {
-//        if(logName.contains("Sepsis")) return false;
-//        if(logName.contains("Road")) return false;
-//        if(logName.contains("BPI2017")) return false;
+        if(logName.contains("Sepsis")) return false;
+        if(logName.contains("Road")) return false;
+        if(logName.contains("BPI2017.")) return false;
 //        if(logName.contains("2015-5")) return false;
 //        if(logName.contains("2015-4")) return false;
 //        if(logName.contains("2015-3")) return false;
@@ -92,12 +95,12 @@ public class Experiment {
 //        if(logName.contains("2013_i")) return false;
 //        if(logName.contains("2013_cp")) return false;
 //        if(!logName.contains("2012")) return false;
-        if(!logName.contains("2011")) return false;
-        if(logName.contains("2011.x")) return false;
-        if(logName.contains("(SimpleFilter 95")) return false;
-        if(logName.contains("(SimpleFilter 90")) return false;
-        if(logName.contains("(SimpleFilter 85")) return false;
-        if(logName.contains("(SimpleFilter 80")) return false;
+//        if(!logName.contains("(Python)")) return false;
+//        if(logName.contains("2011.x")) return false;
+//        if(logName.contains("(SimpleFilter 95")) return false;
+//        if(logName.contains("(SimpleFilter 90")) return false;
+//        if(logName.contains("(SimpleFilter 85")) return false;
+//        if(logName.contains("(SimpleFilter 80")) return false;
 //        if(logName.contains("(SimpleFilter 75")) return false;
 //        if(logName.contains("(SimpleFilter 70")) return false;
         return true;
@@ -168,7 +171,7 @@ public class Experiment {
                                 System.out.println("DEBUG - measuring: " + measurementAlgorithmName);
 
                                 Measure measure;
-                                if(miningAlgorithm.canMineProcessTree()) {
+                                if(measurementAlgorithm instanceof ProjectedFMeasure && miningAlgorithm.canMineProcessTree()) {
                                     measure = measurementAlgorithm.computeMeasurement(fakePluginContext, xEventClassifier,
                                             processTree, miningAlgorithm, refLog);
                                 }else {
@@ -238,7 +241,10 @@ public class Experiment {
                 var7.printStackTrace();
             }
 
+            MarkingDiscoverer.createInitialMarkingConnection(fakePluginContext, pn.petrinet, pn.initialMarking);
+            MarkingDiscoverer.createFinalMarkingConnection(fakePluginContext, pn.petrinet, pn.finalMarking);
             return new PetrinetWithMarking(pn.petrinet, pn.initialMarking, pn.finalMarking);
+
         } else{
             return miningAlgorithm.minePetrinet(fakePluginContext, log, false, miningSettings, xEventClassifier);
         }
