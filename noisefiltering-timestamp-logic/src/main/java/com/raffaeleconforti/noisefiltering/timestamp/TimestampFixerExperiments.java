@@ -1,21 +1,15 @@
 package com.raffaeleconforti.noisefiltering.timestamp;
 
 import com.raffaeleconforti.context.FakePluginContext;
-import com.raffaeleconforti.log.util.LogCloner;
 import com.raffaeleconforti.log.util.LogImporter;
 import com.raffaeleconforti.marking.MarkingDiscoverer;
 import com.raffaeleconforti.measurements.Measure;
 import com.raffaeleconforti.measurements.impl.AlignmentBasedFitness;
-import com.raffaeleconforti.memorylog.XFactoryMemoryImpl;
-import com.raffaeleconforti.noisefiltering.event.InfrequentBehaviourFilter;
 import com.raffaeleconforti.noisefiltering.timestamp.permutation.PermutationTechnique;
-import com.raffaeleconforti.wrapper.PetrinetWithMarking;
+import com.raffaeleconforti.wrappers.PetrinetWithMarking;
 import org.deckfour.xes.classification.XEventNameClassifier;
-import org.deckfour.xes.extension.std.XOrganizationalExtension;
 import org.deckfour.xes.factory.XFactoryNaiveImpl;
-import org.deckfour.xes.model.XEvent;
 import org.deckfour.xes.model.XLog;
-import org.deckfour.xes.model.XTrace;
 import org.processmining.acceptingpetrinet.models.impl.AcceptingPetriNetImpl;
 import org.processmining.acceptingpetrinet.plugins.ImportAcceptingPetriNetPlugin;
 import org.processmining.contexts.uitopia.UIPluginContext;
@@ -24,7 +18,6 @@ import org.processmining.models.semantics.petrinet.Marking;
 
 import java.io.FileWriter;
 import java.math.BigDecimal;
-import java.text.DecimalFormat;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.StringTokenizer;

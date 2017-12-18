@@ -5,26 +5,15 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.*;
 
-import au.edu.qut.processmining.miners.splitminer.SplitMiner;
-import au.edu.qut.processmining.miners.splitminer.ui.dfgp.DFGPUIResult;
-import au.edu.qut.processmining.miners.splitminer.ui.miner.SplitMinerUIResult;
 import com.raffaeleconforti.benchmark.logic.Benchmark;
 import com.raffaeleconforti.benchmark.logic.MeasurementAlgorithmDiscoverer;
 import com.raffaeleconforti.benchmark.logic.MiningAlgorithmDiscoverer;
 import com.raffaeleconforti.measurements.MeasurementAlgorithm;
 import com.raffaeleconforti.noisefiltering.event.InfrequentBehaviourFilter;
-import com.raffaeleconforti.wrapper.MiningAlgorithm;
+import com.raffaeleconforti.wrappers.MiningAlgorithm;
 import org.apache.commons.io.FileUtils;
 import org.apache.poi.util.IOUtils;
-import org.deckfour.xes.factory.XFactoryNaiveImpl;
-import org.deckfour.xes.model.XLog;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
-import org.processmining.contexts.uitopia.UIContext;
-import org.processmining.contexts.uitopia.UIPluginContext;
-import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
-import org.processmining.plugins.bpmn.plugins.BpmnExportPlugin;
-
-import static com.raffaeleconforti.log.util.LogImporter.importFromFile;
 
 
 /**

@@ -11,12 +11,12 @@ import com.raffaeleconforti.measurements.MeasurementAlgorithm;
 import com.raffaeleconforti.measurements.impl.AlignmentBasedFMeasure;
 import com.raffaeleconforti.measurements.impl.ProjectedFMeasure;
 import com.raffaeleconforti.soundnesschecker.CheckRelaxedSoundnessWithLola;
-import com.raffaeleconforti.wrapper.MiningAlgorithm;
-import com.raffaeleconforti.wrapper.PetrinetWithMarking;
-import com.raffaeleconforti.wrapper.impl.SplitMinerWrapper;
-import com.raffaeleconforti.wrapper.impl.heuristics.HeuristicsAlgorithmWrapper;
-import com.raffaeleconforti.wrapper.impl.inductive.InductiveMinerIMfWrapper;
-import com.raffaeleconforti.wrapper.settings.MiningSettings;
+import com.raffaeleconforti.wrappers.MiningAlgorithm;
+import com.raffaeleconforti.wrappers.PetrinetWithMarking;
+import com.raffaeleconforti.wrappers.impl.SplitMinerWrapper;
+import com.raffaeleconforti.wrappers.impl.heuristics.HeuristicsAlgorithmWrapper;
+import com.raffaeleconforti.wrappers.impl.inductive.InductiveMinerIMfWrapper;
+import com.raffaeleconforti.wrappers.settings.MiningSettings;
 import org.deckfour.xes.classification.XEventAndClassifier;
 import org.deckfour.xes.classification.XEventClassifier;
 import org.deckfour.xes.classification.XEventLifeTransClassifier;
@@ -30,8 +30,6 @@ import org.json.JSONException;
 import org.processmining.acceptingpetrinet.models.AcceptingPetriNet;
 import org.processmining.acceptingpetrinet.models.impl.AcceptingPetriNetImpl;
 import org.processmining.framework.connections.ConnectionCannotBeObtained;
-import org.processmining.models.graphbased.directed.petrinet.Petrinet;
-import org.processmining.models.semantics.petrinet.Marking;
 import org.processmining.processtree.ProcessTree;
 import org.processmining.processtree.conversion.ProcessTree2Petrinet;
 
@@ -82,21 +80,21 @@ public class Experiment {
     }
 
     private boolean isSelectedLog(String logName) {
-        if(logName.contains("Sepsis")) return false;
-        if(logName.contains("Road")) return false;
-        if(logName.contains("BPI2017")) return false;
-        if(logName.contains("2015-5")) return false;
-        if(logName.contains("2015-4")) return false;
-        if(logName.contains("2015-3")) return false;
-        if(logName.contains("2015-2")) return false;
-        if(logName.contains("2015-1")) return false;
-        if(logName.contains("2014")) return false;
+//        if(logName.contains("Sepsis")) return false;
+//        if(logName.contains("Road")) return false;
+//        if(logName.contains("BPI2017")) return false;
+//        if(logName.contains("2015-5")) return false;
+//        if(logName.contains("2015-4")) return false;
+//        if(logName.contains("2015-3")) return false;
+//        if(logName.contains("2015-2")) return false;
+//        if(logName.contains("2015-1")) return false;
+//        if(logName.contains("2014")) return false;
 //        if(logName.contains("2014 (SimpleFilter 95")) return false;
-        if(logName.contains("2013_i")) return false;
-        if(logName.contains("2013_cp")) return false;
+//        if(logName.contains("2013_i")) return false;
+//        if(logName.contains("2013_cp")) return false;
 //        if(!logName.contains("2012")) return false;
-//        if(!logName.contains("(Python)")) return false;
-        if(logName.contains("2011.x")) return false;
+        if(!logName.contains("(Python)")) return false;
+//        if(logName.contains("2011.x")) return false;
 //        if(logName.contains("(SimpleFilter 95")) return false;
 //        if(logName.contains("(SimpleFilter 90")) return false;
 //        if(logName.contains("(SimpleFilter 85")) return false;
@@ -163,7 +161,7 @@ public class Experiment {
 //                                acceptingPetriNet,
 //                                new File(extLocation + "/" + logName + "-" + miningAlgorithmName + ".pnml"));
 
-                        if(!isSound(acceptingPetriNet, relaxedSoundness)) continue;
+//                        if(!isSound(acceptingPetriNet, relaxedSoundness)) continue;
 
                         for (MeasurementAlgorithm measurementAlgorithm : measurementAlgorithms) {
                             if (isSelectedMeasurementAlgorithm(measurementAlgorithm)) {

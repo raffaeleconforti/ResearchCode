@@ -24,7 +24,7 @@ public class ResultsAnalyser {
 //        file = new File("/Volumes/Data/Dropbox/LaTex/2017/LabelFiltering/IMFProjected.txt");
 //        file = new File("/Volumes/Data/Dropbox/LaTex/2017/LabelFiltering/IMAlignment.txt");
 //        file = new File("/Volumes/Data/Dropbox/LaTex/2017/LabelFiltering/IMProjected.txt");
-        file = new File("/Volumes/Data/Dropbox/LaTex/2017/LabelFiltering/HMAlignment.txt");
+        file = new File("/Volumes/Data/Dropbox/LaTex/2017/LabelFiltering/IMAlignment.txt");
 //        file = new File("/Volumes/Data/Dropbox/LaTex/2017/LabelFiltering/HMProjected.txt");
 //        file = new File("/Volumes/Data/Dropbox/LaTex/2017/LabelFiltering/SMAlignment.txt");
 //        file = new File("/Volumes/Data/Dropbox/LaTex/2017/LabelFiltering/SMProjected.txt");
@@ -32,9 +32,9 @@ public class ResultsAnalyser {
         List<String> infoFScores = new ArrayList<>();
         List<String> infoFitnesses = new ArrayList<>();
         List<String> infoPrecisions = new ArrayList<>();
-        String[] infoFScore = new String[] {"Log", "Original", "95", "90", "85", "80", "75", "70", "Our"};
-        String[] infoFitness = new String[] {"Log", "Original", "95", "90", "85", "80", "75", "70", "Our"};
-        String[] infoPrecision = new String[] {"Log", "Original", "95", "90", "85", "80", "75", "70", "Our"};
+        String[] infoFScore = new String[] {"Log", "Original", "95", "90", "85", "80", "75", "70", "Our", "Python"};
+        String[] infoFitness = new String[] {"Log", "Original", "95", "90", "85", "80", "75", "70", "Our", "Python"};
+        String[] infoPrecision = new String[] {"Log", "Original", "95", "90", "85", "80", "75", "70", "Our", "Python"};
         String oldLogName = "";
         int pos = 0;
 
@@ -47,9 +47,10 @@ public class ResultsAnalyser {
                 String logName = stringTokenizer.nextToken();
                 String algo = "original";
                 if(entry.contains("(")) {
-                    stringTokenizer.nextToken();
                     algo = stringTokenizer.nextToken();
+                    if(!algo.contains(")")) algo = stringTokenizer.nextToken();
                     algo = algo.substring(0, algo.indexOf(")"));
+                    if(algo.contains("Python")) algo = "Python";
                 }else {
                     logName = logName.substring(0, logName.indexOf("."));
                 }
@@ -59,11 +60,11 @@ public class ResultsAnalyser {
                     infoPrecisions.add(Arrays.toString(infoPrecision).replace("[", "").replace("]", ""));
                     infoFScores.add(Arrays.toString(infoFScore).replace("[", "").replace("]", ""));
 
-                    infoFitness = new String[9];
+                    infoFitness = new String[10];
                     infoFitness[0] = logName;
-                    infoPrecision = new String[9];
+                    infoPrecision = new String[10];
                     infoPrecision[0] = logName;
-                    infoFScore = new String[9];
+                    infoFScore = new String[10];
                     infoFScore[0] = logName;
                     oldLogName = logName;
                 }
@@ -99,7 +100,7 @@ public class ResultsAnalyser {
         System.out.println();
         System.out.println("F-Score");
         for(String s : infoFScores) {
-            System.out.println(s);
+            System.out.println(s.replaceAll(", ", "\t"));
         }
     }
 
@@ -112,6 +113,7 @@ public class ResultsAnalyser {
         else if(s.equals("75")) return 6;
         else if(s.equals("70")) return 7;
         else if(s.equals("Bagging")) return 8;
+        else if(s.equals("Python")) return 9;
         else return 0;
     }
 

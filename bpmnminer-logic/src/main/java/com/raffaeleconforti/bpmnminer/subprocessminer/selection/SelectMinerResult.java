@@ -1,6 +1,6 @@
 package com.raffaeleconforti.bpmnminer.subprocessminer.selection;
 
-import com.raffaeleconforti.wrapper.settings.MiningSettings;
+import com.raffaeleconforti.wrappers.settings.MiningSettings;
 
 /**
  * Created by Raffaele Conforti on 27/02/14.

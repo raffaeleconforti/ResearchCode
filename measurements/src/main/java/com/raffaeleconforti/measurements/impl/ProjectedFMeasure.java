@@ -2,8 +2,8 @@ package com.raffaeleconforti.measurements.impl;
 
 import com.raffaeleconforti.measurements.Measure;
 import com.raffaeleconforti.measurements.MeasurementAlgorithm;
-import com.raffaeleconforti.wrapper.MiningAlgorithm;
-import com.raffaeleconforti.wrapper.PetrinetWithMarking;
+import com.raffaeleconforti.wrappers.MiningAlgorithm;
+import com.raffaeleconforti.wrappers.PetrinetWithMarking;
 import org.deckfour.xes.classification.XEventClassifier;
 import org.deckfour.xes.model.XLog;
 import org.processmining.acceptingpetrinet.models.AcceptingPetriNet;

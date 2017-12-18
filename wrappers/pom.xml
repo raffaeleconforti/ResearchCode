@@ -28,7 +28,7 @@
                             *
                         </Import-Package>
                         <Export-Package>
-                            com.raffaeleconforti.wrapper.*
+                            com.raffaeleconforti.wrappers.*
                         </Export-Package>
                     </instructions>
                 </configuration>

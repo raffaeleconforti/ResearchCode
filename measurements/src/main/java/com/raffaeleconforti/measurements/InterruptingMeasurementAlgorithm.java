@@ -1,7 +1,7 @@
 package com.raffaeleconforti.measurements;
 
-import com.raffaeleconforti.wrapper.MiningAlgorithm;
-import com.raffaeleconforti.wrapper.PetrinetWithMarking;
+import com.raffaeleconforti.wrappers.MiningAlgorithm;
+import com.raffaeleconforti.wrappers.PetrinetWithMarking;
 import org.deckfour.xes.classification.XEventClassifier;
 import org.deckfour.xes.model.XLog;
 import org.processmining.contexts.uitopia.UIPluginContext;

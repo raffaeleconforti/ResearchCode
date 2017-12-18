@@ -26,6 +26,7 @@ import org.python.util.PythonInterpreter;
 
 import javax.script.*;
 import java.io.*;
+import java.math.BigDecimal;
 import java.util.*;
 
 import static java.io.FileDescriptor.out;
@@ -59,8 +60,9 @@ public class LabelFilter {
 
     public static void main(String[] args) throws Exception {
         XFactory factory = new XFactoryNaiveImpl();
-//        String[] logNames = new String[] {"Sepsis"};
+//        String[] logNames = new String[] {"BPI2017"};
         String[] logNames = new String[] {"BPI2011", "BPI2012", "BPI2013_cp", "BPI2013_i", "BPI2014", "BPI2015-1", "BPI2015-2", "BPI2015-3", "BPI2015-4", "BPI2015-5", "BPI2017", "Road", "Sepsis"};
+//        String[] logNames = new String[] {"BPI2012", "BPI2013_cp", "BPI2013_i", "BPI2014", "BPI2015-1", "BPI2015-2", "BPI2015-3", "BPI2015-4", "BPI2015-5", "BPI2017", "Road", "Sepsis"};
 
         for(int i = logNames.length - 1; i >= 0; i--) {
             logName = logNames[i];
@@ -109,56 +111,130 @@ public class LabelFilter {
     }
 
     public XLog filterLog(XLog log) {
-        Map<String, Integer> map1 = new HashMap<>();
-        Map<String, Integer> map2 = new HashMap<>();
+        Map<String, Integer> occurrence = new HashMap<>();
+        Map<String, Integer> occurrence_in_log = new HashMap<>();
+        Map<String, Integer> unique_occurrence_in_traces = new HashMap<>();
         for(XTrace trace : log) {
             Set<String> set = new HashSet<>();
             for(XEvent event : trace) {
                 String name = xEventClassifier.getClassIdentity(event);
                 set.add(name);
                 Integer count;
-                if((count = map1.get(name)) == null) {
+                if((count = occurrence_in_log.get(name)) == null) {
                     count = 0;
                 }
                 count++;
-                map1.put(name, count);
+                occurrence_in_log.put(name, count);
             }
             for(String name : set) {
                 Integer count;
-                if((count = map2.get(name)) == null) {
+                if((count = unique_occurrence_in_traces.get(name)) == null) {
                     count = 0;
                 }
                 count++;
-                map2.put(name, count);
+                unique_occurrence_in_traces.put(name, count);
             }
         }
+        double ratio = 0.0;
 
-        List<String> arguments = new ArrayList<>();
-        arguments.add("python3.6");
-        arguments.add("/Volumes/Data/IdeaProjects/ResearchCodePublic/noisefiltering-label-logic/src/main/java/com/raffaeleconforti/noisefiltering/label/logic/label_filter.py");
-        for(String name : map1.keySet()) {
-            arguments.add(name);
-            arguments.add("" + map1.get(name));
-        }
-        List<String> labels1 = callPythonScript(arguments);
+        double occurrence_in_log_avg = 0.0;
+        double occurrence_in_log_std = 0.0;
+        double unique_occurrence_in_traces_avg = 0.0;
+        double unique_occurrence_in_traces_std = 0.0;
 
-        arguments = new ArrayList<>();
-        arguments.add("python3.6");
-        arguments.add("/Volumes/Data/IdeaProjects/ResearchCodePublic/noisefiltering-label-logic/src/main/java/com/raffaeleconforti/noisefiltering/label/logic/label_filter.py");
-        for(String name : map2.keySet()) {
-            arguments.add(name);
-            arguments.add("" + map2.get(name));
+        for(String s : occurrence_in_log.keySet()) {
+            occurrence_in_log_avg += occurrence_in_log.get(s);
+            unique_occurrence_in_traces_avg += unique_occurrence_in_traces.get(s);
         }
-        List<String> labels2 = callPythonScript(arguments);
+
+        occurrence_in_log_avg /= occurrence_in_log.size();
+        unique_occurrence_in_traces_avg /= occurrence_in_log.size();
+
+        for(String s : occurrence_in_log.keySet()) {
+            occurrence_in_log_std += Math.pow((occurrence_in_log_avg - occurrence_in_log.get(s)), 2);
+            unique_occurrence_in_traces_std += Math.pow((unique_occurrence_in_traces_avg - unique_occurrence_in_traces.get(s)), 2);
+        }
+
+        occurrence_in_log_std /= occurrence_in_log.size();
+        occurrence_in_log_std = Math.sqrt(occurrence_in_log_std);
+
+        unique_occurrence_in_traces_std /= occurrence_in_log.size();
+        unique_occurrence_in_traces_std = Math.sqrt(unique_occurrence_in_traces_std);
+
+        double occurrence_in_log_cov = occurrence_in_log_std / occurrence_in_log_avg;
+        double unique_occurrence_in_traces_cov = unique_occurrence_in_traces_std / unique_occurrence_in_traces_avg;
+
+//        for(String s : occurrence_in_log.keySet()) {
+//            ratio += (double) occurrence_in_log.get(s) / (occurrence_in_log.get(s) + unique_occurrence_in_traces.get(s));
+//        }
+
+        ratio = occurrence_in_log_cov / (occurrence_in_log_cov + unique_occurrence_in_traces_cov);
+//        System.out.println(ratio);
+        int total = 0;
+        for(String s : occurrence_in_log.keySet()) {
+            int val = (int) ((occurrence_in_log.get(s) * ratio) + (unique_occurrence_in_traces.get(s) * (1 - ratio)));
+//            int val = occurrence_in_log_cov > unique_occurrence_in_traces_cov ? occurrence_in_log.get(s) : unique_occurrence_in_traces.get(s);
+            occurrence.put(s, val);
+            total += val;
+        }
+
+        List<Map.Entry<String, Integer>> list = new ArrayList<>(occurrence.entrySet());
+        list.sort(new Comparator<Map.Entry<String, Integer>>() {
+            @Override
+            public int compare(Map.Entry<String, Integer> o1, Map.Entry<String, Integer> o2) {
+                return o2.getValue().compareTo(o1.getValue());
+            }
+        });
 
         Set<String> toremove = new HashSet<>();
-        for(String s : labels1) {
-            if(labels2.contains(s)) {
-                toremove.add(s);
+
+//        double cover = 0;
+//        for(Map.Entry<String, Integer> entry : list) {
+//            if(cover / total < 0.8) {
+//                cover += entry.getValue();
+//            }else {
+//                toremove.add(entry.getKey());
+//            }
+//        }
+//        System.out.println(toremove);
+
+        List<String> labels1, labels2, labels3, labels4;
+
+        boolean removed = true;
+//        while (removed) {
+//            removed = false;
+////            labels1 = filter(unique_occurrence_in_traces, 0.8);
+////            labels2 = filter(occurrence_in_log, 0.8);
+////            labels3 = filter(occurrence, 0.8);
+//
+////            Map<String, Integer> occurrence = new HashMap<>();
+////            for(int i = labels1.size() - 1; i >= 0; i--) {
+////                String s = labels1.get(i);
+//////                occurrence.put(s, (int) Math.round(Math.sqrt(occurrence_in_log.get(s)) * Math.sqrt(unique_occurrence_in_traces.get(s))));
+////                occurrence.put(s, (int) ((occurrence_in_log.get(s) * 1/3) + (unique_occurrence_in_traces.get(s) * 2/3)));
+////            }
+////            for(int i = labels2.size() - 1; i >= 0; i--) {
+////                String s = labels2.get(i);
+//////                occurrence.put(s, (int) Math.round(Math.sqrt(occurrence_in_log.get(s)) * Math.sqrt(unique_occurrence_in_traces.get(s))));
+////                occurrence.put(s, (int) ((occurrence_in_log.get(s) * 1/3) + (unique_occurrence_in_traces.get(s) * 2/3)));
+////            }
+//
+//            System.out.println();
+            labels3 = filter(occurrence, 0.8);
+            for(int i = labels3.size() - 1; i >= 0; i--) {
+                String s = labels3.get(i);
+                System.out.println(s + " " + occurrence.get(s) + " " + unique_occurrence_in_traces.get(s) + " " + occurrence_in_log.get(s));
+                if(!toremove.contains(s)) {
+//                    occurrence_in_log.put(s, 0);
+//                    unique_occurrence_in_traces.put(s, 0);
+                    occurrence.remove(s);
+                    occurrence_in_log.remove(s);
+                    unique_occurrence_in_traces.remove(s);
+                    toremove.add(s);
+                    removed = true;
+                }
             }
-        }
-//        toremove.addAll(labels1);
-//        toremove.addAll(labels2);
+//        }
 
         this.label_removed = toremove.size();
         XFactory factory = new XFactoryNaiveImpl();
@@ -175,6 +251,19 @@ public class LabelFilter {
         return filteredLog;
     }
 
+    private List<String> filter(Map<String, Integer> map, double threshold) {
+        List<String> arguments = new ArrayList<>();
+        arguments.add("python3.6");
+        arguments.add("/Volumes/Data/IdeaProjects/ResearchCodePublic/noisefiltering-label-logic/src/main/java/com/raffaeleconforti/noisefiltering/label/logic/label_filter.py");
+        arguments.add("" + threshold);
+        for(String name : map.keySet()) {
+            arguments.add(name);
+            arguments.add("" + map.get(name));
+        }
+//        System.out.println("Runnig...");
+        return callPythonScript(arguments);
+    }
+
     private List<String> callPythonScript(List<String> arguments) {
         List<String> labels = new ArrayList<>();
         try {
@@ -189,19 +278,16 @@ public class LabelFilter {
             Scanner scanner = new Scanner(stdout);
             boolean record = false;
             while (scanner.hasNextLine()) {
-                System.out.println();
                 String result = scanner.nextLine();
                 StringTokenizer st = new StringTokenizer(result, "[',]");
                 while(st.hasMoreTokens()) {
                     String token = st.nextToken();
-                    if(!token.equals(" "))
-                        if(token.equals(" ok ")) record = true;
-                        else if(record) {
+                    if(!token.equals(" ")) {
+                        if (token.equals(" ok ")) record = true;
+                        else if (record) {
                             labels.add(token);
-                            System.out.println(token);
-                        }else {
-                            System.out.println(token);
                         }
+                    }
                 }
             }
             scanner.close();
