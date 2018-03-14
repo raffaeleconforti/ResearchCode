@@ -573,7 +573,7 @@
             </dependency>
             <dependency>
                 <groupId>org.processmining</groupId>
-                <artifactId>prom5-lib</artifactId>
+                <artifactId>prom5-framework</artifactId>
                 <version>${prom.version}</version>
             </dependency>
             <dependency>

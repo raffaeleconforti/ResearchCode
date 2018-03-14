@@ -49,7 +49,7 @@
                             <artifactSet>
                                 <excludes>
                                     <exclude>org.processmining:prom5:jar:${prom.version}</exclude>
-                                    <exclude>org.processmining:prom5-lib:jar:${prom.version}</exclude>
+                                    <exclude>org.processmining:prom5-framework:jar:${prom.version}</exclude>
                                     <exclude>org.processmining:prom5-models:jar:${prom.version}</exclude>
                                     <exclude>org.processmining:prom5-plugins:jar:${prom.version}</exclude>
                                 </excludes>
@@ -79,7 +79,7 @@
                                     </excludes>
                                 </filter>
                                 <filter>
-                                    <artifact>org.processmining:prom5-lib</artifact>
+                                    <artifact>org.processmining:prom5-framework</artifact>
                                     <excludes>
                                         <exclude>org/processmining/**</exclude>
                                     </excludes>
@@ -138,7 +138,7 @@
         </dependency>
         <dependency>
             <groupId>org.processmining</groupId>
-            <artifactId>prom5-lib</artifactId>
+            <artifactId>prom5-framework</artifactId>
             <scope>provided</scope>
         </dependency>
         <dependency>

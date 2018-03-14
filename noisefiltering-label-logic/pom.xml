@@ -57,6 +57,11 @@
 
     <dependencies>
         <dependency>
+            <groupId>de.lmu.ifi.dbs.elki</groupId>
+            <artifactId>elki</artifactId>
+            <version>0.7.1</version>
+        </dependency>
+        <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-math3</artifactId>
         </dependency>

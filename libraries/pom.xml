@@ -245,14 +245,14 @@
                     </execution>
 
                     <execution>
-                        <id>download-prom5-lib</id>
+                        <id>download-prom5-framework</id>
                         <phase>process-resources</phase>
                         <goals>
                             <goal>wget</goal>
                         </goals>
                         <configuration>
-                            <url>https://svn.win.tue.nl/repos/prom/Releases/Packages/ProM5/lib/ProM.jar</url>
-                            <outputFileName>prom5-lib.jar</outputFileName>
+                            <url>https://svn.win.tue.nl/repos/prom/Releases/Packages/ProM5/lib/ProM-framework-5.2.jar</url>
+                            <outputFileName>prom5-framework.jar</outputFileName>
                             <outputDirectory>${project.build.directory}</outputDirectory>
                         </configuration>
                     </execution>
@@ -264,7 +264,7 @@
                             <goal>wget</goal>
                         </goals>
                         <configuration>
-                            <url>https://svn.win.tue.nl/repos/prom/Releases/Packages/ProM5/lib/ProMmodels.jar</url>
+                            <url>https://svn.win.tue.nl/repos/prom/Releases/Packages/ProM5/lib/ProM-models-5.2.jar</url>
                             <outputFileName>prom5-models.jar</outputFileName>
                             <outputDirectory>${project.build.directory}</outputDirectory>
                         </configuration>
@@ -277,7 +277,7 @@
                             <goal>wget</goal>
                         </goals>
                         <configuration>
-                            <url>https://svn.win.tue.nl/repos/prom/Releases/Packages/ProM5/lib/ProMplugins.jar</url>
+                            <url>https://svn.win.tue.nl/repos/prom/Releases/Packages/ProM5/lib/ProM-plugins-5.2.jar</url>
                             <outputFileName>prom5-plugins.jar</outputFileName>
                             <outputDirectory>${project.build.directory}</outputDirectory>
                         </configuration>
@@ -1186,17 +1186,17 @@
                     </execution>
 
                     <execution>
-                        <id>install-prom5-lib</id>
+                        <id>install-prom5-framework</id>
                         <phase>install</phase>
                         <goals>
                             <goal>install-file</goal>
                         </goals>
                         <configuration>
                             <groupId>org.processmining</groupId>
-                            <artifactId>prom5-lib</artifactId>
+                            <artifactId>prom5-framework</artifactId>
                             <version>${prom.version}</version>
                             <packaging>jar</packaging>
-                            <file>${project.build.directory}/prom5-lib.jar</file>
+                            <file>${project.build.directory}/prom5-framework.jar</file>
                             <generatePom>true</generatePom>
                         </configuration>
                     </execution>

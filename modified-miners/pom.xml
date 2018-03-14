@@ -107,7 +107,7 @@
 
         <dependency>
             <groupId>org.processmining</groupId>
-            <artifactId>prom5-lib</artifactId>
+            <artifactId>prom5-framework</artifactId>
         </dependency>
         <dependency>
             <groupId>org.processmining</groupId>
