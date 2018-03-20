@@ -40,7 +40,7 @@ public class TimeStampFixerPlugin {
             useArcsFrequency = true;
         }
         timeStampFixerSmartExecutor = new TimeStampFixerSmartExecutor(useGurobi, useArcsFrequency, false);
-        return timeStampFixerSmartExecutor.filterLog(log, limitExtensive, approach, false);
+        return timeStampFixerSmartExecutor.filterLog(log, limitExtensive, approach, false, false);
     }
 
 }
