@@ -14,33 +14,46 @@ public class SelfCleaningCache<K, V> extends UnifiedMap<K, V> implements Cache<K
 
     private Map<K, Long> time = new ConcurrentHashMap();
     private Runnable cleaner = null;
+    private boolean enabled;
 
-    public SelfCleaningCache() {
+    public SelfCleaningCache(boolean enabled) {
         super();
-        cleaner = new Cleaner();
-        new Thread(cleaner).start();
+        this.enabled = enabled;
+        if(enabled) {
+            cleaner = new Cleaner();
+            new Thread(cleaner).start();
+        }
     }
 
-    public SelfCleaningCache(int initialCapacity) {
+    public SelfCleaningCache(boolean enabled, int initialCapacity) {
         super(initialCapacity);
-        cleaner = new Cleaner();
-        new Thread(cleaner).start();
+        this.enabled = enabled;
+        if(enabled) {
+            cleaner = new Cleaner();
+            new Thread(cleaner).start();
+        }
     }
 
-    public SelfCleaningCache(int initialCapacity, float loadFactor) {
+    public SelfCleaningCache(boolean enabled, int initialCapacity, float loadFactor) {
         super(initialCapacity, loadFactor);
-        cleaner = new Cleaner();
-        new Thread(cleaner).start();
+        this.enabled = enabled;
+        if(enabled) {
+            cleaner = new Cleaner();
+            new Thread(cleaner).start();
+        }
     }
 
-    public SelfCleaningCache(Map<? extends K, ? extends V> map) {
+    public SelfCleaningCache(boolean enabled, Map<? extends K, ? extends V> map) {
         super(map);
         Long now = System.currentTimeMillis();
         for(K key : map.keySet()) {
             time.put(key, now);
         }
-        cleaner = new Cleaner();
-        new Thread(cleaner).start();
+        this.enabled = enabled;
+        if(enabled) {
+            cleaner = new Cleaner();
+            new Thread(cleaner).start();
+        }
     }
 
     public V put(K key, V value) {

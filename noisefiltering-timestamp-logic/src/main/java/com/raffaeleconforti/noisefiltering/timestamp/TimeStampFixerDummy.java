@@ -96,9 +96,9 @@ public class TimeStampFixerDummy implements TimeStampFixer {
             }
         }
 
-        eventDistributionCalculator = new EventDistributionCalculatorNoiseImpl(log, xEventClassifier, faultyEvents);
+        eventDistributionCalculator = new EventDistributionCalculatorNoiseImpl(log, xEventClassifier, faultyEvents, false);
         eventDistributionCalculator.analyseLog();
-        eventPermutator = new EventPermutatorDummy(logCloner, factory, xEventClassifier, eventDistributionCalculator, timeStampChecker, sequences, patternsMap, limitExtensive, approach);
+        eventPermutator = new EventPermutatorDummy(logCloner, factory, xEventClassifier, eventDistributionCalculator, timeStampChecker, sequences, patternsMap, limitExtensive, approach, false);
 
         if(true) {
             Automaton<String> automatonOriginal = automatonFactory.generate(log);

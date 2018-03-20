@@ -19,8 +19,8 @@ public class NoiseGeneratorPlugin {
 
     @UITopiaVariant(affiliation = UITopiaVariant.EHV,
             author = "Raffaele Conforti",
-            email = "raffaele.conforti@qut.edu.au",
-            pack = "BPMNMiner (raffaele.conforti@qut.edu.au)")
+            email = "raffaele.conforti@unimelb.edu.au",
+            pack = "BPMNMiner (raffaele.conforti@unimelb.edu.au)")
     @PluginVariant(variantLabel = "Noise Generator", requiredParameterLabels = {0})
     public XLog generateNoise(UIPluginContext context, XLog log) {
         NoiseGenerator noiseGenerator = new NoiseGenerator(log);

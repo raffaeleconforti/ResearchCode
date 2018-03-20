@@ -28,14 +28,17 @@ import java.util.StringTokenizer;
 public class TimestampFixerExperiments {
 
     private static boolean useGurobi = true;
+    private static boolean debug_mode = false;
+    private static boolean self_cleaning = false;
 
     public static void main(String[] args) throws Exception {
-        generateArtificialLogs();
-        generateArtificialLogTable();
+//        generateArtificialLogs();
+        generateRealLifeLogs();
+//        generateArtificialLogTable();
     }
 
     public static void generateArtificialLogTable() throws Exception {
-        String path = "/Volumes/Data/Dropbox/LaTex/2017/Timestamp Repair/Logs/Experiments/";
+        String path = "/Volumes/Data/Dropbox/LaTex/2018/Timestamp Repair/Logs/Experiments copy/";
         String logExtension = ".xes.gz";
 
         String[] typeLogs = new String[] {"Event", "Trace", "UniqueTrace"};
@@ -47,7 +50,7 @@ public class TimestampFixerExperiments {
 
         UIPluginContext context = new FakePluginContext();
         ImportAcceptingPetriNetPlugin importAcceptingPetriNetPlugin = new ImportAcceptingPetriNetPlugin();
-        Petrinet petrinet = ((AcceptingPetriNetImpl) importAcceptingPetriNetPlugin.importFile(context, "/Volumes/Data/Dropbox/LaTex/2017/Timestamp Repair/Logs/Experiments/TimeExperiments.pnml")).getNet();
+        Petrinet petrinet = ((AcceptingPetriNetImpl) importAcceptingPetriNetPlugin.importFile(context, "/Volumes/Data/Dropbox/LaTex/2018/Timestamp Repair/Logs/Experiments/TimeExperiments.pnml")).getNet();
         Marking initialMarking = MarkingDiscoverer.constructInitialMarking(context, petrinet);
         Marking finalMarking = MarkingDiscoverer.constructFinalMarking(context, petrinet);
         PetrinetWithMarking petrinetWithMarking = new PetrinetWithMarking(petrinet, initialMarking, finalMarking);
@@ -137,7 +140,7 @@ public class TimestampFixerExperiments {
     }
 
     public static void checkModelWithFilteredLogs() throws Exception {
-        String path = "/Volumes/Data/Dropbox/LaTex/2017/Timestamp Repair/Logs/Experiments/";
+        String path = "/Volumes/Data/Dropbox/LaTex/2018/Timestamp Repair/Logs/Experiments/";
         String logExtension = ".xes.gz";
 
         String[] typeLogs = new String[] {"Event", "Trace", "UniqueTrace"};
@@ -147,7 +150,7 @@ public class TimestampFixerExperiments {
 
         UIPluginContext context = new FakePluginContext();
         ImportAcceptingPetriNetPlugin importAcceptingPetriNetPlugin = new ImportAcceptingPetriNetPlugin();
-        Petrinet petrinet = ((AcceptingPetriNetImpl) importAcceptingPetriNetPlugin.importFile(context, "/Volumes/Data/Dropbox/LaTex/2017/Timestamp Repair/Logs/Experiments/TimeExperiments.pnml")).getNet();
+        Petrinet petrinet = ((AcceptingPetriNetImpl) importAcceptingPetriNetPlugin.importFile(context, "/Volumes/Data/Dropbox/LaTex/2018/Timestamp Repair/Logs/Experiments/TimeExperiments.pnml")).getNet();
         Marking initialMarking = MarkingDiscoverer.constructInitialMarking(context, petrinet);
         Marking finalMarking = MarkingDiscoverer.constructFinalMarking(context, petrinet);
         PetrinetWithMarking petrinetWithMarking = new PetrinetWithMarking(petrinet, initialMarking, finalMarking);
@@ -167,11 +170,11 @@ public class TimestampFixerExperiments {
     }
 
     public static void generateRealLifeLogs() throws Exception {
-        String path = "/Volumes/Data/Dropbox/LaTex/2017/Timestamp Repair/Logs/Experiments/";
+        String path = "/Volumes/Data/Dropbox/LaTex/2018/Timestamp Repair/Logs/Experiments/";
         String logExtension = ".xes.gz";
 
         String[] typeLogs = new String[] {"RealLife"};
-        String[] typeFilters = new String[] {"ILP", "N", "R"};
+        String[] typeFilters = new String[] {"ILP"};//, "N", "R"};
 
         String[] typeExperiments = new String[] {"BPI2014", "Hitachi"};
 
@@ -181,6 +184,7 @@ public class TimestampFixerExperiments {
                 for(String typeFilter : typeFilters) {
                     XLog filteredLog = null;
                     if(typeFilter.equals("ILP")) {
+                        System.out.println("ILP " + typeLog + " " + typeExperiment);
                         filteredLog = logGenerationSmart(log, useGurobi);
                     }else if(typeFilter.equals("N")) {
                         filteredLog = logGenerationNaive(log, useGurobi);
@@ -194,11 +198,12 @@ public class TimestampFixerExperiments {
     }
 
     public static void generateArtificialLogs() throws Exception {
-        String path = "/Volumes/Data/Dropbox/LaTex/2017/Timestamp Repair/Logs/Experiments/";
+        String path = "/Volumes/Data/Dropbox/LaTex/2018/Timestamp Repair/Logs/Experiments/";
         String logExtension = ".xes.gz";
 
         String[] typeLogs = new String[] {"Event", "Trace", "UniqueTrace"};
-        String[] typeFilters = new String[] {"ILP", "N", "R"};
+//        String[] typeFilters = new String[] {"ILP", "N", "R"};
+        String[] typeFilters = new String[] {"ILP"};
 
         String[] typeExperiments = new String[] {"0.05", "0.10", "0.15", "0.20", "0.25", "0.30", "0.35", "0.40"};
 
@@ -208,6 +213,7 @@ public class TimestampFixerExperiments {
                 for(String typeFilter : typeFilters) {
                     XLog filteredLog = null;
                     if(typeFilter.equals("ILP")) {
+                        System.out.println("ILP " + typeLog + " " + typeExperiment);
                         filteredLog = logGenerationSmart(log, useGurobi);
                     }else if(typeFilter.equals("N")) {
                         filteredLog = logGenerationNaive(log, useGurobi);
@@ -220,23 +226,23 @@ public class TimestampFixerExperiments {
         }
     }
 
-    public static XLog logGenerationNaive(XLog log, boolean useGurobi) throws Exception {
+    public static XLog logGenerationNaive(XLog log, boolean useGurobi) {
         TimeStampFixerDummyExecutor timeStampFixerDummyExecutor = new TimeStampFixerDummyExecutor(useGurobi, false);
         XLog filtered1 = timeStampFixerDummyExecutor.filterLog(log);
         return filtered1;
     }
 
-    public static XLog logGenerationRandom(XLog log, boolean useGurobi) throws Exception {
+    public static XLog logGenerationRandom(XLog log, boolean useGurobi) {
         TimeStampFixerRandomExecutor timeStampFixerRandomExecutor = new TimeStampFixerRandomExecutor(useGurobi, false);
         XLog filtered1 = timeStampFixerRandomExecutor.filterLog(log);
         return filtered1;
     }
 
-    public static XLog logGenerationSmart(XLog log, boolean useGurobi) throws Exception {
+    public static XLog logGenerationSmart(XLog log, boolean useGurobi) {
         TimeStampFixerSmartExecutor timeStampFixerSmartExecutor = new TimeStampFixerSmartExecutor(useGurobi, false, false);
         XLog filtered1 = null;
-        if(useGurobi) filtered1 = timeStampFixerSmartExecutor.filterLog(log, 11, PermutationTechnique.ILP_GUROBI);
-        else filtered1 = timeStampFixerSmartExecutor.filterLog(log, 11, PermutationTechnique.ILP_LPSOLVE);
+        if(useGurobi) filtered1 = timeStampFixerSmartExecutor.filterLog(log, 11, PermutationTechnique.ILP_GUROBI, debug_mode, self_cleaning);
+        else filtered1 = timeStampFixerSmartExecutor.filterLog(log, 11, PermutationTechnique.ILP_LPSOLVE, debug_mode, self_cleaning);
         return filtered1;
     }
 

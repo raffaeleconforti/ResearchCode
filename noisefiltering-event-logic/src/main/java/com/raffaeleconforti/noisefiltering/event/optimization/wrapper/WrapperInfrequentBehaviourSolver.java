@@ -78,7 +78,7 @@ public class WrapperInfrequentBehaviourSolver<T> {
         // Set objective: summation of all edges (Equation 1 Paper)
         ILPSolverExpression obj = solver.createExpression();
         for(int i = 0; i < edges.length; i++) {
-            System.out.println("DEBUG - " + edgeList.get(i).getFrequency());
+//            System.out.println("DEBUG - " + edgeList.get(i).getFrequency());
             if(!useArcsFrequency) {
                 obj.addTerm(edges[i], 1.0);
             }else {
@@ -234,12 +234,16 @@ public class WrapperInfrequentBehaviourSolver<T> {
 
         // Optimize model
         solver.solve();
-        if(debug_mode) System.out.println(solver.printProblem());
+        if(debug_mode) {
+            System.out.println(solver.printProblem());
+        }
         ILPSolver.Status status = solver.getStatus();
 
         if (status == ILPSolver.Status.OPTIMAL) {
-            System.out.println("The optimal objective is " +
-                    solver.getSolutionValue());
+            if(debug_mode) {
+                System.out.println("The optimal objective is " +
+                        solver.getSolutionValue());
+            }
 
             // Identify Removable Arcs
             double[] sol = solver.getSolutionVariables(edges);
@@ -250,11 +254,15 @@ public class WrapperInfrequentBehaviourSolver<T> {
             }
         }else {
             if (status == ILPSolver.Status.UNBOUNDED) {
-                System.out.println("The model cannot be solved "
-                        + "because it is unbounded");
+                if(debug_mode) {
+                    System.out.println("The model cannot be solved "
+                            + "because it is unbounded");
+                }
             }
             if (status == ILPSolver.Status.INFEASIBLE) {
-                System.out.println("The model is infeasible");
+                if(debug_mode) {
+                    System.out.println("The model is infeasible");
+                }
             }
         }
 

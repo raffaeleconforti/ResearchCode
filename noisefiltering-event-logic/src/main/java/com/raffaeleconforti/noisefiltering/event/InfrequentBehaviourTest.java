@@ -22,7 +22,7 @@ public class InfrequentBehaviourTest {
     public static void main(String[] args) throws Exception {
         XLog log = LogImporter.importFromFile(new XFactoryNaiveImpl(), "/Volumes/Data/SharedFolder/Logs/ArtificialLess.xes.gz");
 
-        XLog filtered1 = test(log, false, false);
+        XLog filtered1 = test(log, false, false, false);
         LogImporter.exportToFile("/Volumes/Data/SharedFolder/Logs/ArtificialLess1.xes.gz", filtered1);
 //        test(log, false);
 
@@ -66,9 +66,9 @@ public class InfrequentBehaviourTest {
 //        System.out.println(infrequent);
     }
 
-    private static XLog test(XLog log, boolean useGurobi, boolean useArcsFrequency) {
+    private static XLog test(XLog log, boolean useGurobi, boolean useArcsFrequency, boolean debug_mode) {
         System.out.println(count(log));
-        InfrequentBehaviourFilter filter = new InfrequentBehaviourFilter(new XEventNameClassifier(), useGurobi, useArcsFrequency);
+        InfrequentBehaviourFilter filter = new InfrequentBehaviourFilter(new XEventNameClassifier(), useGurobi, useArcsFrequency, debug_mode);
         XLog filtered = filter.filterLog(log);
         System.out.println(count(filtered));
         return filtered;

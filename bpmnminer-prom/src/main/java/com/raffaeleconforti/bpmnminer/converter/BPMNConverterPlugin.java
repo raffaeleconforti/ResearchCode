@@ -22,7 +22,7 @@ public class BPMNConverterPlugin {
 
     @UITopiaVariant(affiliation = UITopiaVariant.EHV,
             author = "Raffaele Conforti",
-            email = "raffaele.conforti@qut.edu.au",
+            email = "raffaele.conforti@unimelb.edu.au",
             pack = "bpmnminer")
     @PluginVariant(variantLabel = "Convert Petrinet to BPMN", requiredParameterLabels = {0})
     public BPMNDiagram convert(final UIPluginContext context, Petrinet net) throws Exception {
@@ -33,7 +33,7 @@ public class BPMNConverterPlugin {
 
     @UITopiaVariant(affiliation = UITopiaVariant.EHV,
             author = "Raffaele Conforti",
-            email = "raffaele.conforti@qut.edu.au",
+            email = "raffaele.conforti@unimelb.edu.au",
             pack = "bpmnminer")
     @PluginVariant(variantLabel = "Convert Petrinet to BPMN", requiredParameterLabels = {0, 1, 2})
     public BPMNDiagram convert(final UIPluginContext context, Petrinet net, Marking initialMarking, Marking finalMarking) throws Exception {

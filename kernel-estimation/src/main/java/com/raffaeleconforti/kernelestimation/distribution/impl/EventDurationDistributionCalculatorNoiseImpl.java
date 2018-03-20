@@ -37,18 +37,20 @@ public class EventDurationDistributionCalculatorNoiseImpl implements EventDurati
     private final NameExtractor nameExtractor;
     private final XLog log;
     private final XTimeExtension xte = XTimeExtension.instance();
+    private final boolean debug_mode;
 
     public static void main(String[] args) throws Exception {
         XLog log = LogImporter.importFromFile(new XFactoryNaiveImpl(), "/Volumes/Data/SharedFolder/Logs/TimeNoise/LoanApplication.xes.gz");
-        EventDistributionCalculatorNoiseImpl dc = new EventDistributionCalculatorNoiseImpl(log, new XEventNameClassifier(), null);
+        EventDistributionCalculatorNoiseImpl dc = new EventDistributionCalculatorNoiseImpl(log, new XEventNameClassifier(), null, false);
         dc.analyseLog();
         System.out.println(dc.computeLikelihood(log.get(100)));
     }
 
-    public EventDurationDistributionCalculatorNoiseImpl(XLog log, Map<String, Set<String>> duplicatedEvents, XEventClassifier xEventClassifier) {
+    public EventDurationDistributionCalculatorNoiseImpl(XLog log, Map<String, Set<String>> duplicatedEvents, XEventClassifier xEventClassifier, boolean debug_mode) {
         this.log = log;
         this.nameExtractor = new NameExtractor(xEventClassifier);
         this.duplicatedEvents = duplicatedEvents;
+        this.debug_mode = debug_mode;
     }
 
     public void analyseLog() {
@@ -101,19 +103,25 @@ public class EventDurationDistributionCalculatorNoiseImpl implements EventDurati
                 estimate = estimateDuration(event, previousEvent);
                 if(estimate < 0) estimate = -estimate;
             }catch (NoDataAvailableException ndae) {
-                System.out.println("Data not available for sequence " + nameExtractor.getEventName(previousEvent) + " " + nameExtractor.getEventName(event));
+                if(debug_mode) {
+                    System.out.println("Data not available for sequence " + nameExtractor.getEventName(previousEvent) + " " + nameExtractor.getEventName(event));
+                }
             }
 
             try {
                 if(estimate == 0) estimate = getAverageDuration(nameExtractor.getEventName(event), nameExtractor.getEventName(previousEvent));
             }catch (NoDataAvailableException ndae) {
-                System.out.println("Data not available for sequence " + nameExtractor.getEventName(previousEvent) + " " + nameExtractor.getEventName(event));
+                if(debug_mode) {
+                    System.out.println("Data not available for sequence " + nameExtractor.getEventName(previousEvent) + " " + nameExtractor.getEventName(event));
+                }
             }
 
             try {
                 if(estimate == 0) estimate = estimateDuration(event);
             }catch (NoDataAvailableException ndae) {
-                System.out.println("Data not available for sequence " + nameExtractor.getEventName(previousEvent) + " " + nameExtractor.getEventName(event));
+                if(debug_mode) {
+                    System.out.println("Data not available for sequence " + nameExtractor.getEventName(previousEvent) + " " + nameExtractor.getEventName(event));
+                }
             }
 
             if(estimate < 0) estimate = -estimate;
@@ -121,7 +129,9 @@ public class EventDurationDistributionCalculatorNoiseImpl implements EventDurati
             try {
                 if(estimate == 0) estimate = getAverageDuration(nameExtractor.getEventName(event));
             }catch (NoDataAvailableException ndae) {
-                System.out.println("Data not available for sequence " + nameExtractor.getEventName(previousEvent) + " " + nameExtractor.getEventName(event));
+                if(debug_mode) {
+                    System.out.println("Data not available for sequence " + nameExtractor.getEventName(previousEvent) + " " + nameExtractor.getEventName(event));
+                }
             }
 
             durations[i] = estimate;
@@ -130,7 +140,9 @@ public class EventDurationDistributionCalculatorNoiseImpl implements EventDurati
         }
 
         if(!positive) {
-            System.out.println("Error in the distribution");
+            if(debug_mode) {
+                System.out.println("Error in the distribution");
+            }
             for (int i = 1; i < events.size() - 1; i++) {
                 if(durations[i] <= 0) {
                     durations[i] = 1000;

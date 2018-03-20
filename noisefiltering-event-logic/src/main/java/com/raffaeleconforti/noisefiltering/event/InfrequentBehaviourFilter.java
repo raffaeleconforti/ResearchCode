@@ -35,6 +35,7 @@ public class InfrequentBehaviourFilter {
     private final AutomatonFactory automatonFactory;
     private final boolean useGurobi;
     private final boolean useArcsFrequency;
+    private final boolean debug_mode;
 
     private Percentile percentileC = new Percentile();
     private double finalThreshold = 0.0;
@@ -45,14 +46,15 @@ public class InfrequentBehaviourFilter {
     private AutomatonInfrequentBehaviourDetector automatonInfrequentBehaviourDetector = new AutomatonInfrequentBehaviourDetector(AutomatonInfrequentBehaviourDetector.MAX);
 
     public InfrequentBehaviourFilter(XEventClassifier xEventClassifier) {
-        this(xEventClassifier, false, false);
+        this(xEventClassifier, false, false, false);
     }
 
-    public InfrequentBehaviourFilter(XEventClassifier xEventClassifier, boolean useGurobi, boolean useArcsFrequency) {
+    public InfrequentBehaviourFilter(XEventClassifier xEventClassifier, boolean useGurobi, boolean useArcsFrequency, boolean debug_mode) {
         this.xEventClassifier = xEventClassifier;
         automatonFactory = new AutomatonFactory(xEventClassifier);
         this.useGurobi = useGurobi;
         this.useArcsFrequency = useArcsFrequency;
+        this.debug_mode = debug_mode;
     }
 
     public double[] discoverArcs(Automaton<String> automatonOriginal, double finalUpperBound) {
@@ -73,7 +75,9 @@ public class InfrequentBehaviourFilter {
 
         Arrays.sort(arcs);
 
-        System.out.println(Arrays.toString(arcs));
+        if(debug_mode) {
+            System.out.println(Arrays.toString(arcs));
+        }
         return arcs;
 
     }
@@ -84,7 +88,9 @@ public class InfrequentBehaviourFilter {
 
         double limit = percentileC.evaluate(percentile, arcs);
 
-        System.out.println("Percentile " + percentile + " FinalLimit " + limit + " Arcs " + arcs.length);
+        if(debug_mode) {
+            System.out.println("Percentile " + percentile + " FinalLimit " + limit + " Arcs " + arcs.length);
+        }
 
         double value = roundNumber(upper_half_iqr / lower_half_iqr, 3, false);
         while (value > 1 && arcs[0] < limit) {

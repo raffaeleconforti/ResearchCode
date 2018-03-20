@@ -7,7 +7,7 @@
     <parent>
         <artifactId>research-code</artifactId>
         <groupId>com.raffaeleconforti</groupId>
-        <version>1.0.20171130</version>
+        <version>1.0.20180320</version>
         <relativePath>../</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -1393,7 +1393,6 @@
                         </configuration>
                     </execution>
 
-
                     <execution>
                         <id>install-gurobi</id>
                         <phase>install</phase>
@@ -1403,9 +1402,9 @@
                         <configuration>
                             <groupId>com.gurobi</groupId>
                             <artifactId>gurobi</artifactId>
-                            <version>7.51</version>
+                            <version>7.52</version>
                             <packaging>jar</packaging>
-                            <file>${project.build.sourceDirectory}/gurobi-751.jar</file>
+                            <file>${project.build.sourceDirectory}/gurobi-752.jar</file>
                             <generatePom>true</generatePom>
                         </configuration>
                     </execution>
@@ -1419,7 +1418,7 @@
                         <configuration>
                             <groupId>org.apromore</groupId>
                             <artifactId>bpmntk-osgi</artifactId>
-                            <version>1.0-20171130</version>
+                            <version>1.0.20180320</version>
                             <packaging>jar</packaging>
                             <file>src/main/java/bpmntk-osgi-20171130.jar</file>
                             <generatePom>true</generatePom>
@@ -1854,6 +1853,22 @@
                             <version>${prom.version}</version>
                             <packaging>jar</packaging>
                             <file>${project.build.directory}/pnanalysis.jar</file>
+                            <generatePom>true</generatePom>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>install-chinese-whispers</id>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                        <configuration>
+                            <groupId>de.tudarmstadt</groupId>
+                            <artifactId>chinese-whispers</artifactId>
+                            <version>1.0</version>
+                            <packaging>jar</packaging>
+                            <file>${project.build.sourceDirectory}/chinese-whispers.jar</file>
                             <generatePom>true</generatePom>
                         </configuration>
                     </execution>

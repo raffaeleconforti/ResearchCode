@@ -47,7 +47,75 @@ public class TimeStampFixerSmartExecutor {
         this.useArcsFrequency = useArcsFrequency;
     }
 
-    public XLog filterLog(XLog log, int limitExtensive, int approach) {
+//    public XLog filterLog(XLog log, int limitExtensive, int approach, boolean debug_mode) {
+//
+//        XFactory factory = new XFactoryNaiveImpl();//XFactoryMemoryImpl();
+//        LogCloner logCloner = new LogCloner(factory);
+//
+//        XLog res = logCloner.cloneLog(log);
+//
+//        LogOptimizer logOptimizer = new LogOptimizer();
+//        LogModifier logModifier = new LogModifier(factory, XConceptExtension.instance(), XTimeExtension.instance(), logOptimizer);
+//
+//        int[] fix = new int[]{0};
+//
+//        res = logModifier.sortLog(res);
+//        XLog optimizedLog = logOptimizer.optimizeLog(res);
+//        optimizedLog = logModifier.insertArtificialStartAndEndEvent(optimizedLog);
+//
+//        if (debug_mode) {
+//            System.out.println("Permutations discovery started");
+//        }
+//        TimeStampFixer timeStampFixerSmart = new TimeStampFixerSmart(factory, logCloner, optimizedLog, xEventClassifier, dateFormatSeconds, limitExtensive, approach, useGurobi, useArcsFrequency, debug_mode);
+//
+//        XLog permutedLog = timeStampFixerSmart.obtainPermutedLog();
+////        permutedLog = logModifier.insertArtificialStartAndEndEvent(permutedLog);
+//
+//        if (debug_mode) {
+//            System.out.println("Permutations discovery ended");
+//            System.out.println(timeStampFixerSmart.getDuplicatedTraces());
+//        }
+//
+//        Automaton<String> automaton = automatonFactory.generateForTimeFilter(permutedLog, timeStampFixerSmart.getDuplicatedEvents());
+//
+////        InfrequentBehaviourFilter infrequentBehaviourFilter = new InfrequentBehaviourFilter(xEventClassifier);
+////        double[] arcs = infrequentBehaviourFilter.discoverArcs(automaton, 1.0);
+////        AutomatonInfrequentBehaviourDetector automatonInfrequentBehaviourDetector = new AutomatonInfrequentBehaviourDetector(AutomatonInfrequentBehaviourDetector.MAX);
+////        Automaton<String> automatonClean = automatonInfrequentBehaviourDetector.removeInfrequentBehaviour(automaton, automaton.getNodes(), infrequentBehaviourFilter.discoverThreshold(arcs, 0.125), useGurobi, useArcsFrequency);
+//
+//        if (debug_mode) {
+//            System.out.println();
+//            System.out.println("Selection best permutation started");
+//        }
+//        AutomatonBestTraceMatchSelector automatonBestTraceMatchSelector = new AutomatonBestTraceMatchSelector(permutedLog, xEventClassifier, automaton, timeStampFixerSmart.getDuplicatedTraces(), timeStampFixerSmart.getPossibleTraces(), timeStampFixerSmart.getFaultyEvents(), log.size());
+////        AutomatonBestTraceMatchSelector automatonBestTraceMatchSelector = new AutomatonBestTraceMatchSelector(permutedLog, xEventClassifier, automatonClean, timeStampFixerSmart.getDuplicatedTraces(), timeStampFixerSmart.getPossibleTraces(), timeStampFixerSmart.getFaultyEvents(), log.size());
+//        List<String> fixedTraces = new ArrayList<String>();
+//
+//        res = automatonBestTraceMatchSelector.selectBestMatchingTraces(new FakePluginContext(), fix, fixedTraces, approach);
+//        res = logModifier.removeArtificialStartAndEndEvent(res);
+//
+//        if (debug_mode) {
+//            System.out.println("Selection best permutation completed");
+//            System.out.println();
+//            System.out.println("Timestamps disambiguation started");
+//        }
+//
+//        TimestampsAssigner timestampsAssigner = new TimestampsAssigner(res, xEventClassifier, dateFormatSeconds, timeStampFixerSmart.getDuplicatedTraces(), timeStampFixerSmart.getDuplicatedEvents(), useGurobi, useArcsFrequency, debug_mode);
+//        boolean result = timestampsAssigner.assignTimestamps(fixedTraces);
+//
+//        if (!result) {
+//            timestampsAssigner.assignTimestamps();
+//        }
+//        res = logModifier.sortLog(res);
+//
+//        if (debug_mode) {
+//            System.out.println("Timestamps disambiguation completed");
+//        }
+//
+//        return res;
+//    }
+
+    public XLog filterLog(XLog log, int limitExtensive, int approach, boolean debug_mode, boolean self_cleaning) {
 
         XFactory factory = new XFactoryNaiveImpl();//XFactoryMemoryImpl();
         LogCloner logCloner = new LogCloner(factory);
@@ -57,20 +125,38 @@ public class TimeStampFixerSmartExecutor {
         LogOptimizer logOptimizer = new LogOptimizer();
         LogModifier logModifier = new LogModifier(factory, XConceptExtension.instance(), XTimeExtension.instance(), logOptimizer);
 
-        int[] fix = new int[] {0};
-
         res = logModifier.sortLog(res);
-        XLog optimizedLog = logOptimizer.optimizeLog(res);
+        XLog optimizedLog = logOptimizer.optimizeLog(log);
         optimizedLog = logModifier.insertArtificialStartAndEndEvent(optimizedLog);
 
-        System.out.println("Permutations discovery started");
-        TimeStampFixer timeStampFixerSmart = new TimeStampFixerSmart(factory, logCloner, optimizedLog, xEventClassifier, dateFormatSeconds, limitExtensive, approach, useGurobi, useArcsFrequency, debug_mode);
+        if (debug_mode) {
+            System.out.println("Permutations discovery started");
+        }
+        TimeStampFixer timeStampFixerSmart = new TimeStampFixerSmart(factory, logCloner, optimizedLog, xEventClassifier, dateFormatSeconds, limitExtensive, approach, useGurobi, useArcsFrequency, debug_mode, self_cleaning);
+        List<String> fixedTraces = new ArrayList<String>();
+
+        long start = System.currentTimeMillis();
+        res = sortLog(res, logModifier, timeStampFixerSmart, fixedTraces, approach, debug_mode, self_cleaning);
+        long middle = System.currentTimeMillis();
+        res = assignTimestamp(res, logModifier, timeStampFixerSmart, fixedTraces, debug_mode);
+        long end = System.currentTimeMillis();
+
+        System.out.println("Ordering: " + (middle - start) + " Assignment: " + (end - middle) + " Total: " + (end - start));
+
+        return res;
+    }
+
+    public XLog sortLog(XLog log, LogModifier logModifier, TimeStampFixer timeStampFixerSmart, List<String> fixedTraces, int approach, boolean debug_mode, boolean self_cleaning) {
+        int[] fix = new int[]{0};
 
         XLog permutedLog = timeStampFixerSmart.obtainPermutedLog();
 //        permutedLog = logModifier.insertArtificialStartAndEndEvent(permutedLog);
-        System.out.println("Permutations discovery ended");
 
-        System.out.println(timeStampFixerSmart.getDuplicatedTraces());
+        if (debug_mode) {
+            System.out.println("Permutations discovery ended");
+            System.out.println(timeStampFixerSmart.getDuplicatedTraces());
+        }
+
         Automaton<String> automaton = automatonFactory.generateForTimeFilter(permutedLog, timeStampFixerSmart.getDuplicatedEvents());
 
 //        InfrequentBehaviourFilter infrequentBehaviourFilter = new InfrequentBehaviourFilter(xEventClassifier);
@@ -78,33 +164,39 @@ public class TimeStampFixerSmartExecutor {
 //        AutomatonInfrequentBehaviourDetector automatonInfrequentBehaviourDetector = new AutomatonInfrequentBehaviourDetector(AutomatonInfrequentBehaviourDetector.MAX);
 //        Automaton<String> automatonClean = automatonInfrequentBehaviourDetector.removeInfrequentBehaviour(automaton, automaton.getNodes(), infrequentBehaviourFilter.discoverThreshold(arcs, 0.125), useGurobi, useArcsFrequency);
 
-        System.out.println();
-
-        System.out.println("Selection best permutation started");
+        if (debug_mode) {
+            System.out.println();
+            System.out.println("Selection best permutation started");
+        }
         AutomatonBestTraceMatchSelector automatonBestTraceMatchSelector = new AutomatonBestTraceMatchSelector(permutedLog, xEventClassifier, automaton, timeStampFixerSmart.getDuplicatedTraces(), timeStampFixerSmart.getPossibleTraces(), timeStampFixerSmart.getFaultyEvents(), log.size());
 //        AutomatonBestTraceMatchSelector automatonBestTraceMatchSelector = new AutomatonBestTraceMatchSelector(permutedLog, xEventClassifier, automatonClean, timeStampFixerSmart.getDuplicatedTraces(), timeStampFixerSmart.getPossibleTraces(), timeStampFixerSmart.getFaultyEvents(), log.size());
-        List<String> fixedTraces = new ArrayList<String>();
 
-        res = automatonBestTraceMatchSelector.selectBestMatchingTraces(new FakePluginContext(), fix, fixedTraces, approach);
-        res = logModifier.removeArtificialStartAndEndEvent(res);
+        log = automatonBestTraceMatchSelector.selectBestMatchingTraces(new FakePluginContext(), fix, fixedTraces, approach, self_cleaning);
+        log = logModifier.removeArtificialStartAndEndEvent(log);
 
-        System.out.println("Selection best permutation completed");
+        if (debug_mode) {
+            System.out.println("Selection best permutation completed");
+            System.out.println();
+            System.out.println("Timestamps disambiguation started");
+        }
 
-        System.out.println();
+        return log;
+    }
 
-        System.out.println("Timestamps disambiguation started");
-        TimestampsAssigner timestampsAssigner = new TimestampsAssigner(res, xEventClassifier, dateFormatSeconds, timeStampFixerSmart.getDuplicatedTraces(), timeStampFixerSmart.getDuplicatedEvents(), useGurobi, useArcsFrequency, debug_mode);
+    public XLog assignTimestamp(XLog log, LogModifier logModifier, TimeStampFixer timeStampFixerSmart, List<String> fixedTraces, boolean debug_mode) {
+        TimestampsAssigner timestampsAssigner = new TimestampsAssigner(log, xEventClassifier, dateFormatSeconds, timeStampFixerSmart.getDuplicatedTraces(), timeStampFixerSmart.getDuplicatedEvents(), useGurobi, useArcsFrequency, debug_mode);
         boolean result = timestampsAssigner.assignTimestamps(fixedTraces);
 
         if(!result) {
             timestampsAssigner.assignTimestamps();
         }
-        res = logModifier.sortLog(res);
+        log = logModifier.sortLog(log);
 
+        if(debug_mode) {
+            System.out.println("Timestamps disambiguation completed");
+        }
 
-        System.out.println("Timestamps disambiguation completed");
-
-        return res;
+        return log;
     }
 
 }

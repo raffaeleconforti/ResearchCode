@@ -16,7 +16,7 @@ import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
 
 public class BPMNMetricsPlugin {
 
-    @UITopiaVariant(affiliation = UITopiaVariant.EHV, author = "Raffaele Conforti", email = "raffaele.conforti@qut.edu.au")
+    @UITopiaVariant(affiliation = UITopiaVariant.EHV, author = "Raffaele Conforti", email = "raffaele.conforti@unimelb.edu.au")
     @PluginVariant(variantLabel = "Calculate BPMN Metricst", requiredParameterLabels = {0})//, 1, 2, 3 })
     public String calculate(final UIPluginContext context, BPMNDiagram diagram) {
         return BPMNMetrics.calulate(diagram);

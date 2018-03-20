@@ -26,7 +26,7 @@ public class HeuristicsNetToBPMNConverterPlugin {
 
     @UITopiaVariant(affiliation = UITopiaVariant.EHV,
             author = "Raffaele Conforti",
-            email = "raffaele.conforti@qut.edu.au",
+            email = "raffaele.conforti@unimelb.edu.au",
             pack = "bpmnminer")
     @PluginVariant(variantLabel = "Mine BPMN Using HeuristicsMiner of Prom5.2", requiredParameterLabels = {0})
     public BPMNDiagram convert(final UIPluginContext context, XLog log) {

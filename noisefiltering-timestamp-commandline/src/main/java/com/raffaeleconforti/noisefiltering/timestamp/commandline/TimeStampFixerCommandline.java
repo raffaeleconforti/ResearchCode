@@ -44,7 +44,7 @@ public class TimeStampFixerCommandline {
     }
 
     public XLog filterLog(XLog rawlog) {
-        return timeStampFixerSmartExecutor.filterLog(rawlog, 11, PermutationTechnique.ILP_LPSOLVE);
+        return timeStampFixerSmartExecutor.filterLog(rawlog, 11, PermutationTechnique.ILP_LPSOLVE, false);
     }
 
 }

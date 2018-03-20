@@ -22,7 +22,7 @@ public class BPMNCleanerPlugin {
 
     @UITopiaVariant(affiliation = UITopiaVariant.EHV,
             author = "Raffaele Conforti",
-            email = "raffaele.conforti@qut.edu.au",
+            email = "raffaele.conforti@unimelb.edu.au",
             pack = "bpmnminer")
     @PluginVariant(variantLabel = "Clean BPMN Model", requiredParameterLabels = {})
     public BPMNDiagram convert(final UIPluginContext context) {//, BPMNDiagram diagram) {
@@ -31,7 +31,7 @@ public class BPMNCleanerPlugin {
 
     @UITopiaVariant(affiliation = UITopiaVariant.EHV,
             author = "Raffaele Conforti",
-            email = "raffaele.conforti@qut.edu.au",
+            email = "raffaele.conforti@unimelb.edu.au",
             pack = "bpmnminer")
     @PluginVariant(variantLabel = "Clean BPMN Model", requiredParameterLabels = {0})
     public BPMNDiagram convert(final UIPluginContext context, BPMNDiagram diagram) {

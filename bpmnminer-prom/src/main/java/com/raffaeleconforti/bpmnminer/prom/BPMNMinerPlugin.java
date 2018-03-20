@@ -32,8 +32,8 @@ public class BPMNMinerPlugin {
 
     @UITopiaVariant(affiliation = UITopiaVariant.EHV,
             author = "R. Conforti, M. Dumas, L. Garcia-Banuelos, M. La Rosa",
-            email = "raffaele.conforti@qut.edu.au, m.larosa@qut.edu.au, marlon.dumas@ut.ee, luciano.garcia@ut.ee",
-            pack = "BPMNMiner (raffaele.conforti@qut.edu.au)")
+            email = "raffaele.conforti@unimelb.edu.au, m.larosa@unimelb.edu.au, marlon.dumas@ut.ee, luciano.garcia@ut.ee",
+            pack = "BPMNMiner (raffaele.conforti@unimelb.edu.au)")
     @PluginVariant(variantLabel = "BPMN Miner", requiredParameterLabels = {0})//, 1, 2, 3 })
     public BPMNDiagram mineBPMNModel(final UIPluginContext context, XLog rawlog) {
         try {

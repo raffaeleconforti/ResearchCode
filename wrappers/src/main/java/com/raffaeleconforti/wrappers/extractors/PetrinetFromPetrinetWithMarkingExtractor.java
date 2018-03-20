@@ -17,7 +17,7 @@ public class PetrinetFromPetrinetWithMarkingExtractor {
 
     @UITopiaVariant(affiliation = UITopiaVariant.EHV,
         author = "Raffaele Conforti",
-        email = "raffaele.conforti@qut.edu.au",
+        email = "raffaele.conforti@unimelb.edu.au",
         pack = "Noise Filtering")
     @PluginVariant(variantLabel = "Extract Petrinet", requiredParameterLabels = {0})
     public Petrinet extractPetrinet(UIPluginContext context, PetrinetWithMarking petrinetWithMarking) {

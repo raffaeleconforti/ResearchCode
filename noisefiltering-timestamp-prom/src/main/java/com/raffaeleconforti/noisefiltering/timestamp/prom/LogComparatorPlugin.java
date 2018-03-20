@@ -24,8 +24,8 @@ public class LogComparatorPlugin {
 
     @UITopiaVariant(affiliation = UITopiaVariant.EHV,
             author = "Raffaele Conforti",
-            email = "raffaele.conforti@qut.edu.au",
-            pack = "Noise Filtering (raffaele.conforti@qut.edu.au)")
+            email = "raffaele.conforti@unimelb.edu.au",
+            pack = "Noise Filtering (raffaele.conforti@unimelb.edu.au)")
     @PluginVariant(variantLabel = "Log Comparator", requiredParameterLabels = {0, 1})
     public String check(final UIPluginContext context, XLog log1, XLog log2) {
         LogComparator logComparator = new LogComparator();

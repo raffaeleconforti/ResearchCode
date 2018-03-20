@@ -123,7 +123,7 @@ public class BPMNMinerCommandLine {
         System.out.println("BPMN Miner: Automated discovery of BPMN process models with connectivity structure.");
         System.out.println("Information Systems, 56, pp 284-303, 2016.");
         System.out.println();
-        System.out.println("For more info contact me at raffaele.conforti@qut.edu.au");
+        System.out.println("For more info contact me at raffaele.conforti@unimelb.edu.au");
         System.out.println("or visit my website www.raffaeleconforti.com");
 
         Scanner console = new Scanner(System.in);

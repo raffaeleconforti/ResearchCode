@@ -22,8 +22,8 @@ public class FrequentBehaviourFilterPlugin {
 
     @UITopiaVariant(affiliation = UITopiaVariant.EHV,
             author = "Raffaele Conforti",
-            email = "raffaele.conforti@qut.edu.au",
-            pack = "BPMNMiner (raffaele.conforti@qut.edu.au)")
+            email = "raffaele.conforti@unimelb.edu.au",
+            pack = "BPMNMiner (raffaele.conforti@unimelb.edu.au)")
     @PluginVariant(variantLabel = "Frequent Behaviour Filter Single Log", requiredParameterLabels = {0})//, 1, 2, 3 })
     public BPMNDiagram generateDiagram(XLog rawlog) {
         return frequentBehaviourFilter.generateDiagram(new FakePluginContext(), rawlog);
@@ -31,8 +31,8 @@ public class FrequentBehaviourFilterPlugin {
 
     @UITopiaVariant(affiliation = UITopiaVariant.EHV,
             author = "Raffaele Conforti",
-            email = "raffaele.conforti@qut.edu.au",
-            pack = "BPMNMiner (raffaele.conforti@qut.edu.au)")
+            email = "raffaele.conforti@unimelb.edu.au",
+            pack = "BPMNMiner (raffaele.conforti@unimelb.edu.au)")
     @PluginVariant(variantLabel = "Frequent Behaviour Filter Compare Two Logs", requiredParameterLabels = {0, 1})
     public BPMNDiagram generateDiagramTwoLogs(XLog rawlog1, XLog rawlog2) {
         return frequentBehaviourFilter.generateDiagramTwoLogs(new FakePluginContext(), rawlog1, rawlog2);

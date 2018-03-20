@@ -30,7 +30,7 @@ public class EventPermutatorDummy implements EventPermutator {
     private final Set<String> duplicatedTraces = new UnifiedSet<>();
     private final Set<String> sequences;
     private final Map<List<String>, Set<List<String>>> patternsMap;
-    private final Cache<List<String>, Set<List<String>>> discoveredPatternsMap = new SelfCleaningCache<>();
+    private final Cache<List<String>, Set<List<String>>> discoveredPatternsMap;
     private final TimeStampChecker timeStampChecker;
     private final XFactory factory;
     private final int limitExtensive;
@@ -42,7 +42,7 @@ public class EventPermutatorDummy implements EventPermutator {
 
     public EventPermutatorDummy(LogCloner logCloner, XFactory factory, XEventClassifier xEventClassifier, EventDistributionCalculator eventDistributionCalculator,
                                 TimeStampChecker timeStampChecker, Set<String> sequences, Map<List<String>,
-                            Set<List<String>>> patternsMap, int limitExtensive, int approach) {
+                            Set<List<String>>> patternsMap, int limitExtensive, int approach, boolean self_cleaning) {
         this.factory = factory;
         this.logCloner = logCloner;
         this.eventDistributionCalculator = eventDistributionCalculator;
@@ -52,6 +52,7 @@ public class EventPermutatorDummy implements EventPermutator {
         this.nameExtractor = new NameExtractor(xEventClassifier);
         this.limitExtensive = limitExtensive;
         this.approach = approach;
+        discoveredPatternsMap = new SelfCleaningCache<>(self_cleaning);
     }
 
     private String getEventName(XEvent event) {

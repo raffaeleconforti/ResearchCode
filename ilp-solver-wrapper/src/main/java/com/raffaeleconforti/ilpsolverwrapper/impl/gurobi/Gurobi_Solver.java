@@ -6,10 +6,7 @@ import com.raffaeleconforti.ilpsolverwrapper.ILPSolverExpression;
 import com.raffaeleconforti.ilpsolverwrapper.ILPSolverVariable;
 import gurobi.*;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,9 +42,16 @@ public class Gurobi_Solver implements ILPSolver {
             constraints = new ArrayList<>();
             minimize = true;
 
+            System.setOut(new PrintStream(new OutputStream() {
+                @Override
+                public void write(int b) throws IOException {}
+            }));
+
             env = new GRBEnv("qp.noisefiltering");
             model = new GRBModel(env);
             model.getEnv().set(GRB.IntParam.LogToConsole, 0);
+
+            System.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out)));
         } catch (GRBException e) {
             e.printStackTrace();
         }

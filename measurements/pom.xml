@@ -5,7 +5,7 @@
     <parent>
         <artifactId>research-code</artifactId>
         <groupId>com.raffaeleconforti</groupId>
-        <version>1.0.20171130</version>
+        <version>1.0.20180320</version>
         <relativePath>../</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -80,6 +80,10 @@
         <dependency>
             <groupId>au.edu.qut</groupId>
             <artifactId>pntk</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-math3</artifactId>
         </dependency>
 
         <dependency>

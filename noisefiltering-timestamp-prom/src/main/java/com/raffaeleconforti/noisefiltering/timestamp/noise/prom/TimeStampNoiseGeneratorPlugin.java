@@ -30,8 +30,8 @@ public class TimeStampNoiseGeneratorPlugin {
 
     @UITopiaVariant(affiliation = UITopiaVariant.EHV,
             author = "Raffaele Conforti",
-            email = "raffaele.conforti@qut.edu.au",
-            pack = "TimeStampResult Filtering (raffaele.conforti@qut.edu.au)")
+            email = "raffaele.conforti@unimelb.edu.au",
+            pack = "TimeStampResult Filtering (raffaele.conforti@unimelb.edu.au)")
     @PluginVariant(variantLabel = "Timestamp Noise Generator", requiredParameterLabels = {0})//, 1, 2, 3 })
     public XLog insertNoise(final UIPluginContext context, XLog log) {
 

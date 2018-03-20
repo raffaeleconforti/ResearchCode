@@ -30,8 +30,8 @@ public class InfoExtractorPlugin {
 
     @UITopiaVariant(affiliation = UITopiaVariant.EHV,
             author = "Raffaele Conforti",
-            email = "raffaele.conforti@qut.edu.au",
-            pack = "Noise Filtering (raffaele.conforti@qut.edu.au)")
+            email = "raffaele.conforti@unimelb.edu.au",
+            pack = "Noise Filtering (raffaele.conforti@unimelb.edu.au)")
     @PluginVariant(variantLabel = "Log Information Extractor", requiredParameterLabels = {0})//, 1, 2, 3 })
     public String extractInfo(final UIPluginContext context, XLog log) {
 

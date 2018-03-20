@@ -93,7 +93,7 @@ public class ILPApproach implements PermutationTechnique {
         log.add(trace2);
         log.add(trace3);
 
-        EventDistributionCalculator eventDistributionCalculator = new EventDistributionCalculatorImpl(log, new XEventNameClassifier());
+        EventDistributionCalculator eventDistributionCalculator = new EventDistributionCalculatorImpl(log, new XEventNameClassifier(), false);
         eventDistributionCalculator.analyseLog();
 
         Set<XEvent> events = new UnifiedSet<>();

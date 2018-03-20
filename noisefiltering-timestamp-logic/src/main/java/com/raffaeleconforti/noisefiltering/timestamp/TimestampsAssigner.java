@@ -43,7 +43,8 @@ public class TimestampsAssigner {
 
         this.dateFormatSeconds = dateFormatSeconds;
         this.duplicatedTraces = duplicatedTraces;
-        eventDurationDistributionCalculator = new EventDurationDistributionCalculatorNoiseImpl(log, duplicatedEvents, xEventClassifier);
+        eventDurationDistributionCalculator = new EventDurationDistributionCalculatorNoiseImpl(log, duplicatedEvents, xEventClassifier, debug_mode);
+
         eventDurationDistributionCalculator.analyseLog();
 
         if(true) {

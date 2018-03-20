@@ -42,6 +42,7 @@ public class EventPermutatorSmart implements EventPermutator {
     private final XAttribute fixedAttribute = new XAttributeBooleanImpl(fixed, true);
 
     private int approach;
+    private boolean verbose;
 
     public EventPermutatorSmart(LogCloner logCloner, XFactory factory, XEventClassifier xEventClassifier, EventDistributionCalculator eventDistributionCalculator,
                                 TimeStampChecker timeStampChecker, Set<String> sequences, Map<List<String>,
@@ -56,6 +57,7 @@ public class EventPermutatorSmart implements EventPermutator {
         this.nameExtractor = new NameExtractor(xEventClassifier);
         this.limitExtensive = limitExtensive;
         this.approach = approach;
+        this.verbose = debug_mode;
     }
 
     private String getEventName(XEvent event) {
@@ -67,7 +69,9 @@ public class EventPermutatorSmart implements EventPermutator {
     }
 
     public Set<XTrace> duplicatesTrace(XTrace trace) {
-        System.out.println("Starting new Trace!");
+        if (verbose) {
+            System.out.println("Starting new Trace!");
+        }
         Set<XTrace> traces = new UnifiedSet();
         Set<Set<XEvent>> setXEvents = timeStampChecker.findEventsSameTimeStamp(trace);
         boolean first = true;
@@ -83,7 +87,9 @@ public class EventPermutatorSmart implements EventPermutator {
                 try {
                     traces2.addAll(permuteXEvents(trace, events));
                 } catch (PermutationLimitException e) {
-                    System.out.println("Permutation Limit Exceeded!");
+                    if (verbose) {
+                        System.out.println("Permutation Limit Exceeded!");
+                    }
                     return traces;
                 }
                 first = false;
@@ -93,7 +99,9 @@ public class EventPermutatorSmart implements EventPermutator {
                 try {
                     traces2.addAll(permuteXEvents(t, events));
                 } catch (PermutationLimitException e) {
-                    System.out.println("Permutation Limit Exceeded!");
+                    if (verbose) {
+                        System.out.println("Permutation Limit Exceeded!");
+                    }
                     return traces;
                 }
             }
@@ -131,7 +139,9 @@ public class EventPermutatorSmart implements EventPermutator {
                         likelihood = eventDistributionCalculator.computeLikelihood(t);
                         if (likelihood < best) {
                             iterator.remove();
-                            System.out.println("Removing unlikely traces!");
+                            if (verbose) {
+                                System.out.println("Removing unlikely traces!");
+                            }
                         }
                     }
                 }else {
@@ -148,7 +158,9 @@ public class EventPermutatorSmart implements EventPermutator {
                         likelihood = eventDistributionCalculator.computeLikelihoodWithoutZero(t);
                         if (likelihood < best) {
                             iterator.remove();
-                            System.out.println("Removing unlikely traces!");
+                            if (verbose) {
+                                System.out.println("Removing unlikely traces!");
+                            }
                         }
                     }
                 }
@@ -158,7 +170,9 @@ public class EventPermutatorSmart implements EventPermutator {
         if(traces.size() > 0) {
             duplicatedTraces.add(getTraceName(trace));
         }else if(setXEvents.size() > 0) {
-            System.out.println("No Permutation Found!");
+            if (verbose) {
+                System.out.println("No Permutation Found!");
+            }
             traces.add(trace);
             duplicatedTraces.add(getTraceName(trace));
         }
@@ -210,21 +224,27 @@ public class EventPermutatorSmart implements EventPermutator {
 
         Collection<List<XEvent>> permutations;
         if (eventDistributionCalculator == null) {
-            System.out.println("Extensive Approach!");
+            if (verbose) {
+                System.out.println("Extensive Approach!");
+            }
             permutations = Collections2.permutations(events);
         }else {
             XEvent start = findStart(trace, events);
             XEvent end = findEnd(trace, start, events);
 //            if((permutations = reusePermutations(start, end, events)).size() == 0) {
-                System.out.println(PermutationTechniqueFactory.getPermutationTechniqueName(approach) + " Approach All!");
-                System.out.println("Start " + nameExtractor.getEventName(start));
-                System.out.println("End " + nameExtractor.getEventName(end));
+                if(verbose) {
+                    System.out.println(PermutationTechniqueFactory.getPermutationTechniqueName(approach) + " Approach All!");
+                    System.out.println("Start " + nameExtractor.getEventName(start));
+                    System.out.println("End " + nameExtractor.getEventName(end));
+                }
                 PermutationTechnique permutationTechnique = PermutationTechniqueFactory.getPermutationTechnique(approach, events, eventDistributionCalculator, start, end, debug_mode);
                 permutations = permutationTechnique.findBestStartEnd();
                 populateDiscoveredPatterns(createPatternToReusePermutations(start, end, events), permutations);
 
                 if(discoveredPatternsMap.size() > 100) {
-                    System.out.println("Cleaning memory!");
+                    if (verbose) {
+                        System.out.println("Cleaning memory!");
+                    }
                     discoveredPatternsMap.free();
                 }
 //            }else {
@@ -345,7 +365,9 @@ public class EventPermutatorSmart implements EventPermutator {
                             likelihoodBest = likelihood;
                             if (likelihood > oldBest && backupTraces.size() > 100) {
                                 Iterator<XTrace> iterator = backupTraces.iterator();
-                                System.out.println("Cleaning " + backupTraces.size());
+                                if (verbose) {
+                                    System.out.println("Cleaning " + backupTraces.size());
+                                }
                                 while (iterator.hasNext()) {
                                     likelihood = eventDistributionCalculator.computeLikelihood(t);
                                     if (likelihood < likelihoodBest / 2) {
@@ -361,7 +383,9 @@ public class EventPermutatorSmart implements EventPermutator {
         }
 
         if(traces.size() == 0) {
-            System.out.println("Using Backup Traces!");
+            if (verbose) {
+                System.out.println("Using Backup Traces!");
+            }
             traces.addAll(backupTraces);
         }
 

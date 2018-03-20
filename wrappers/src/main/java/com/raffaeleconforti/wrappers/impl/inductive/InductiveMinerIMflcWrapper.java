@@ -35,7 +35,7 @@ public class InductiveMinerIMflcWrapper implements MiningAlgorithm {
 
     @UITopiaVariant(affiliation = UITopiaVariant.EHV,
             author = "Raffaele Conforti",
-            email = "raffaele.conforti@qut.edu.au",
+            email = "raffaele.conforti@unimelb.edu.au",
             pack = "Noise Filtering")
     @PluginVariant(variantLabel = "Inductive Miner IMflc Wrapper", requiredParameterLabels = {0})
     public PetrinetWithMarking minePetrinet(UIPluginContext context, XLog log) {

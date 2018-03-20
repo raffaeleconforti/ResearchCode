@@ -81,7 +81,7 @@ public class TimeStampFixerDummyExecutor {
             AutomatonBestTraceMatchSelector automatonBestTraceMatchSelector = new AutomatonBestTraceMatchSelector(permutedLog, xEventClassifier, automaton, timeStampFixerDummy.getDuplicatedTraces(), timeStampFixerDummy.getPossibleTraces(), timeStampFixerDummy.getFaultyEvents(), log.size());
             List<String> fixedTraces = new ArrayList<String>();
 
-            res = automatonBestTraceMatchSelector.selectBestMatchingTraces(new FakePluginContext(), fix, fixedTraces, 0);
+            res = automatonBestTraceMatchSelector.selectBestMatchingTraces(new FakePluginContext(), fix, fixedTraces, 0, false);
             res = logModifier.removeArtificialStartAndEndEvent(res);
             res = logModifier.sortLog(res);
 

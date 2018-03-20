@@ -96,8 +96,8 @@ public class ComputeMeasurment {
 
     @UITopiaVariant(affiliation = UITopiaVariant.EHV,
             author = "Raffaele Conforti",
-            email = "raffaele.conforti@qut.edu.au",
-            pack = "BPMNMiner (raffaele.conforti@qut.edu.au)")
+            email = "raffaele.conforti@unimelb.edu.au",
+            pack = "BPMNMiner (raffaele.conforti@unimelb.edu.au)")
     @PluginVariant(variantLabel = "Compute Measurements", requiredParameterLabels = {0})
     public String execute(UIPluginContext context, XLog trainingLog) {
         return execute(context, trainingLog, trainingLog);
@@ -105,8 +105,8 @@ public class ComputeMeasurment {
 
     @UITopiaVariant(affiliation = UITopiaVariant.EHV,
             author = "Raffaele Conforti",
-            email = "raffaele.conforti@qut.edu.au",
-            pack = "BPMNMiner (raffaele.conforti@qut.edu.au)")
+            email = "raffaele.conforti@unimelb.edu.au",
+            pack = "BPMNMiner (raffaele.conforti@unimelb.edu.au)")
     @PluginVariant(variantLabel = "Compute Measurements with test noisefiltering", requiredParameterLabels = {0, 1})
     public String execute(UIPluginContext context, XLog trainingLog, XLog validatingLog) {
         return execute(context, trainingLog, validatingLog, true);
@@ -114,8 +114,8 @@ public class ComputeMeasurment {
 
     @UITopiaVariant(affiliation = UITopiaVariant.EHV,
             author = "Raffaele Conforti",
-            email = "raffaele.conforti@qut.edu.au",
-            pack = "BPMNMiner (raffaele.conforti@qut.edu.au)")
+            email = "raffaele.conforti@unimelb.edu.au",
+            pack = "BPMNMiner (raffaele.conforti@unimelb.edu.au)")
     @PluginVariant(variantLabel = "Compute Measurements with Model", requiredParameterLabels = {1, 2, 3, 4})
     public String execute(UIPluginContext context, XLog validatingLog, Petrinet petrinet, Marking initialMarking, Marking finalMarking) {
 

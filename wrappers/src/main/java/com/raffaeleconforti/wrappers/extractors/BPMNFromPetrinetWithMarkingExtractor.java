@@ -18,7 +18,7 @@ public class BPMNFromPetrinetWithMarkingExtractor {
 
     @UITopiaVariant(affiliation = UITopiaVariant.EHV,
         author = "Raffaele Conforti",
-        email = "raffaele.conforti@qut.edu.au",
+        email = "raffaele.conforti@unimelb.edu.au",
         pack = "Noise Filtering")
     @PluginVariant(variantLabel = "Extract BPMN Diagram", requiredParameterLabels = {0})
     public BPMNDiagram extractPetrinet(UIPluginContext context, PetrinetWithMarking petrinetWithMarking) {
