@@ -1420,7 +1420,7 @@
                             <artifactId>bpmntk-osgi</artifactId>
                             <version>1.0.20180320</version>
                             <packaging>jar</packaging>
-                            <file>src/main/java/bpmntk-osgi-20171130.jar</file>
+                            <file>src/main/java/bpmntk-osgi-20180320.jar</file>
                             <generatePom>true</generatePom>
                         </configuration>
                     </execution>
