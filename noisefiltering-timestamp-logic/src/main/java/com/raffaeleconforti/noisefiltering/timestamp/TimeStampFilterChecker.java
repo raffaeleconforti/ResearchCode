@@ -9,7 +9,7 @@ import com.raffaeleconforti.measurements.Measure;
 import com.raffaeleconforti.measurements.impl.AlignmentBasedFitness;
 import com.raffaeleconforti.noisefiltering.timestamp.check.TimeStampChecker;
 import com.raffaeleconforti.statistics.StatisticsSelector;
-import com.raffaeleconforti.wrapper.PetrinetWithMarking;
+import com.raffaeleconforti.wrappers.PetrinetWithMarking;
 import org.deckfour.xes.factory.XFactoryNaiveImpl;
 import org.deckfour.xes.model.XAttributeTimestamp;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
@@ -24,7 +24,6 @@ import org.deckfour.xes.model.XTrace;
 import org.processmining.acceptingpetrinet.models.impl.AcceptingPetriNetImpl;
 import org.processmining.acceptingpetrinet.plugins.ImportAcceptingPetriNetPlugin;
 import org.processmining.contexts.uitopia.UIPluginContext;
-import org.processmining.framework.plugin.PluginContext;
 import org.processmining.models.graphbased.directed.petrinet.Petrinet;
 import org.processmining.models.semantics.petrinet.Marking;
 

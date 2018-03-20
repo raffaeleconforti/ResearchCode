@@ -5,7 +5,7 @@
     <parent>
         <artifactId>research-code</artifactId>
         <groupId>com.raffaeleconforti</groupId>
-        <version>1.0.20171019</version>
+        <version>1.0.20180320</version>
         <relativePath>../</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -60,6 +60,10 @@
 
     <dependencies>
         <dependency>
+            <groupId>de.tudarmstadt</groupId>
+            <artifactId>chinese-whispers</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.processmining</groupId>
             <artifactId>prom6-models</artifactId>
         </dependency>
@@ -71,6 +75,19 @@
         <dependency>
             <groupId>com.raffaeleconforti</groupId>
             <artifactId>log-util</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.jgraph</groupId>
+            <artifactId>jgraph</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.jbpt</groupId>
+            <artifactId>jbpt-core</artifactId>
+            <version>0.2.433</version>
         </dependency>
     </dependencies>
 

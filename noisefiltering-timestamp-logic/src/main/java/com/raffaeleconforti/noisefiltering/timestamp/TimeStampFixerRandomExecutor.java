@@ -81,11 +81,11 @@ public class TimeStampFixerRandomExecutor {
             AutomatonBestTraceMatchSelector automatonBestTraceMatchSelector = new AutomatonBestTraceMatchSelector(permutedLog, xEventClassifier, automaton, timeStampFixerRandom.getDuplicatedTraces(), timeStampFixerRandom.getPossibleTraces(), timeStampFixerRandom.getFaultyEvents(), log.size());
             List<String> fixedTraces = new ArrayList<String>();
 
-            res = automatonBestTraceMatchSelector.selectBestMatchingTraces(new FakePluginContext(), fix, fixedTraces, 0);
+            res = automatonBestTraceMatchSelector.selectBestMatchingTraces(new FakePluginContext(), fix, fixedTraces, 0, false);
             res = logModifier.removeArtificialStartAndEndEvent(res);
             res = logModifier.sortLog(res);
 
-            TimestampsAssigner timestampsAssigner = new TimestampsAssigner(res, xEventClassifier, dateFormatSeconds, timeStampFixerRandom.getDuplicatedTraces(), timeStampFixerRandom.getDuplicatedEvents(), useGurobi, useArcsFrequency);
+            TimestampsAssigner timestampsAssigner = new TimestampsAssigner(res, xEventClassifier, dateFormatSeconds, timeStampFixerRandom.getDuplicatedTraces(), timeStampFixerRandom.getDuplicatedEvents(), useGurobi, useArcsFrequency, false);
             boolean result = timestampsAssigner.assignTimestampsDummy(fixedTraces);
 
             System.out.println();

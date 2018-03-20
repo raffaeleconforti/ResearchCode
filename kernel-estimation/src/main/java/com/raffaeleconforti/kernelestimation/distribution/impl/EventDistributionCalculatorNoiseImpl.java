@@ -23,8 +23,8 @@ public class EventDistributionCalculatorNoiseImpl extends EventDistributionCalcu
 //        System.out.println(dc.computeLikelihood(log.get(100)));
 //    }
 
-    public EventDistributionCalculatorNoiseImpl(XLog log, XEventClassifier xEventClassifier, Map<String, Set<String>> duplicatedEvents) {
-        super(log, xEventClassifier);
+    public EventDistributionCalculatorNoiseImpl(XLog log, XEventClassifier xEventClassifier, Map<String, Set<String>> duplicatedEvents, boolean self_cleaning) {
+        super(log, xEventClassifier, self_cleaning);
         this.duplicatedEvents = duplicatedEvents;
     }
 

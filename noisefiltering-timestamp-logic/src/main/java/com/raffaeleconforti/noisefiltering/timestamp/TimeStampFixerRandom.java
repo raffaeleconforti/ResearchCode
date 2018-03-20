@@ -96,7 +96,7 @@ public class TimeStampFixerRandom implements TimeStampFixer {
             }
         }
 
-        eventDistributionCalculator = new EventDistributionCalculatorNoiseImpl(log, xEventClassifier, faultyEvents);
+        eventDistributionCalculator = new EventDistributionCalculatorNoiseImpl(log, xEventClassifier, faultyEvents, false);
         eventDistributionCalculator.analyseLog();
         eventPermutator = new EventPermutatorRandom(logCloner, factory, xEventClassifier, eventDistributionCalculator, timeStampChecker, sequences, patternsMap, limitExtensive, approach);
 

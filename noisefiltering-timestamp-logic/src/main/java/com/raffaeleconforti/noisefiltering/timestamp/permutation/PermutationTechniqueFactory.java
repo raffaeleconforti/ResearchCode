@@ -15,19 +15,19 @@ import java.util.Set;
  */
 public class PermutationTechniqueFactory {
 
-    public static PermutationTechnique getPermutationTechnique(int approach, Set<XEvent> events, EventDistributionCalculator eventDistributionCalculator, XEvent start, XEvent end) {
+    public static PermutationTechnique getPermutationTechnique(int approach, Set<XEvent> events, EventDistributionCalculator eventDistributionCalculator, XEvent start, XEvent end, boolean debug_mode) {
         if(approach == PermutationTechnique.HEURISTICS_SET) {
             return new HeuristicSetSolutions(events, eventDistributionCalculator, start, end);
         }else if(approach == PermutationTechnique.HEURISTICS_BEST) {
             return new HeuristicBestSolution(events, eventDistributionCalculator, start, end);
         }else if(approach == PermutationTechnique.ILP_GUROBI) {
-            return new ILPApproach(events, eventDistributionCalculator, start, end, new Gurobi_Solver());
+            return new ILPApproach(events, eventDistributionCalculator, start, end, new Gurobi_Solver(), debug_mode);
         }else if(approach == PermutationTechnique.ILP_LPSOLVE) {
-            return new ILPApproach(events, eventDistributionCalculator, start, end, new LPSolve_Solver());
+            return new ILPApproach(events, eventDistributionCalculator, start, end, new LPSolve_Solver(), debug_mode);
         }else if(approach == PermutationTechnique.ILP_GUROBI_ARCS) {
-            return new ILPApproach(events, eventDistributionCalculator, start, end, new Gurobi_Solver());
+            return new ILPApproach(events, eventDistributionCalculator, start, end, new Gurobi_Solver(), debug_mode);
         }else if(approach == PermutationTechnique.ILP_LPSOLVE_ARCS) {
-            return new ILPApproach(events, eventDistributionCalculator, start, end, new LPSolve_Solver());
+            return new ILPApproach(events, eventDistributionCalculator, start, end, new LPSolve_Solver(), debug_mode);
         }
         return null;
     }

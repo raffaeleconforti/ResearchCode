@@ -28,6 +28,7 @@ import java.util.*;
  */
 public class ILPApproach implements PermutationTechnique {
 
+    private boolean debug_mode = false;
     private EventDistributionCalculator eventDistributionCalculator;
     private XEvent[] eventsArray;
     private double[][] likeloods;
@@ -92,18 +93,19 @@ public class ILPApproach implements PermutationTechnique {
         log.add(trace2);
         log.add(trace3);
 
-        EventDistributionCalculator eventDistributionCalculator = new EventDistributionCalculatorImpl(log, new XEventNameClassifier());
+        EventDistributionCalculator eventDistributionCalculator = new EventDistributionCalculatorImpl(log, new XEventNameClassifier(), false);
         eventDistributionCalculator.analyseLog();
 
         Set<XEvent> events = new UnifiedSet<>();
         events.add(b1);
         events.add(c1);
 
-        ILPApproach ilpApproach = new ILPApproach(events, eventDistributionCalculator, a1, d1, new LPSolve_Solver());
+        ILPApproach ilpApproach = new ILPApproach(events, eventDistributionCalculator, a1, d1, new LPSolve_Solver(), true);
         System.out.println(ilpApproach.findBestStartEnd());
     }
 
-    public ILPApproach(Set<XEvent> events, EventDistributionCalculator eventDistributionCalculator, XEvent start, XEvent end, ILPSolver solver) {
+    public ILPApproach(Set<XEvent> events, EventDistributionCalculator eventDistributionCalculator, XEvent start, XEvent end, ILPSolver solver, boolean debug_mode) {
+        this.debug_mode = debug_mode;
         this.solver = solver;
         this.eventDistributionCalculator = eventDistributionCalculator;
         this.eventsArray = events.toArray(new XEvent[events.size() + 2]);
@@ -204,12 +206,12 @@ public class ILPApproach implements PermutationTechnique {
             // Create variables U
             for (int i = 0; i < eventsArray.length; i++) {
                 if (i != eventsArray.length - 2) {
-                    System.out.print("U_" + i + " = " + XConceptExtension.instance().extractName(eventsArray[i]) + ", ");
+                    if(debug_mode) System.out.print("U_" + i + " = " + XConceptExtension.instance().extractName(eventsArray[i]) + ", ");
                     vars[count] = solver.addVariable(0.0, numberOfU, 0.0, ILPSolver.VariableType.INTEGER, "U_" + i);
                     count++;
                 }
             }
-            System.out.println();
+            if(debug_mode) System.out.println();
 
             // Integrate new variables
             solver.integrateVariables();
@@ -332,11 +334,15 @@ public class ILPApproach implements PermutationTechnique {
                         }
                     }
                 }
-                if (correct - 1 != list.size()) System.out.println("error");
-                else System.out.println("Solved with value " + solver.getSolutionValue());
+                if(debug_mode) {
+                    if (correct - 1 != list.size()) System.out.println("error");
+                    else System.out.println("Solved with value " + solver.getSolutionValue());
+                }
             } else {
-                System.out.println("error");
-                if (status == ILPSolver.Status.INFEASIBLE) System.out.println("INFEASIBLE");
+                if(debug_mode) {
+                    System.out.println("error");
+                    if (status == ILPSolver.Status.INFEASIBLE) System.out.println("INFEASIBLE");
+                }
             }
             // Dispose of model and environment
             solver.dispose();
@@ -352,13 +358,13 @@ public class ILPApproach implements PermutationTechnique {
                 list1.add(1, list.get(i + 1));
                 double likelihood = eventDistributionCalculator.computeLikelihood(list);
                 if (likelihood == 0) {
-                    System.out.println("Updating Enriched Likelihood");
+                    if(debug_mode) System.out.println("Updating Enriched Likelihood");
                     eventDistributionCalculator.updateEnrichedLikelihood(list.get(i), list.get(i + 1));
                 }
             }
         }
 
-        System.out.println("findBestStartEnd " + set.size());
+        if(debug_mode) System.out.println("findBestStartEnd " + set.size());
         if(includeZero) return set;
         else return (set.size() > 0) ? set : findBestStartEnd(true);
     }

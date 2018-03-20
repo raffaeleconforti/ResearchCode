@@ -5,7 +5,7 @@
     <parent>
         <artifactId>research-code</artifactId>
         <groupId>com.raffaeleconforti</groupId>
-        <version>1.0.20171019</version>
+        <version>1.0.20180320</version>
         <relativePath>../</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -48,7 +48,7 @@
                             <!--<artifactSet>-->
                                 <!--<excludes>-->
                                     <!--<exclude>org.processmining:prom5:jar:${prom.version}</exclude>-->
-                                    <!--<exclude>org.processmining:prom5-lib:jar:${prom.version}</exclude>-->
+                                    <!--<exclude>org.processmining:prom5-framework:jar:${prom.version}</exclude>-->
                                     <!--<exclude>org.processmining:prom5-models:jar:${prom.version}</exclude>-->
                                     <!--<exclude>org.processmining:prom5-plugins:jar:${prom.version}</exclude>-->
                                 <!--</excludes>-->
@@ -78,7 +78,7 @@
                                     <!--</excludes>-->
                                 <!--</filter>-->
                                 <!--<filter>-->
-                                    <!--<artifact>org.processmining:prom5-lib</artifact>-->
+                                    <!--<artifact>org.processmining:prom5-framework</artifact>-->
                                     <!--<excludes>-->
                                         <!--<exclude>org/processmining/**</exclude>-->
                                     <!--</excludes>-->

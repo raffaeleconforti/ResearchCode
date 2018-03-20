@@ -5,7 +5,7 @@
     <parent>
         <artifactId>research-code</artifactId>
         <groupId>com.raffaeleconforti</groupId>
-        <version>1.0.20171019</version>
+        <version>1.0.20180320</version>
         <relativePath>../</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -28,7 +28,7 @@
                             *
                         </Import-Package>
                         <Export-Package>
-                            com.raffaeleconforti.wrapper.*
+                            com.raffaeleconforti.wrappers.*
                         </Export-Package>
                     </instructions>
                 </configuration>

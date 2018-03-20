@@ -4,7 +4,7 @@
 
     <groupId>com.raffaeleconforti</groupId>
     <artifactId>research-code</artifactId>
-    <version>1.0.20171019</version>
+    <version>1.0.20180320</version>
     <packaging>pom</packaging>
     <name>Research-Code</name>
     <modelVersion>4.0.0</modelVersion>
@@ -110,8 +110,8 @@
         <prom.version>6.5.20170701</prom.version>
         <flanagan.version>20151114</flanagan.version>
 
-        <commons-math3.version>3.6</commons-math3.version>
-        <bpmntk-osgi.version>1.0-20171020</bpmntk-osgi.version>
+        <commons-math3.version>3.6.1</commons-math3.version>
+        <bpmntk-osgi.version>1.0-20171130</bpmntk-osgi.version>
         <bpstruct.version>0.1.117</bpstruct.version>
         <jbpt.version>0.2.77</jbpt.version>
 
@@ -123,170 +123,185 @@
             <dependency>
                 <groupId>com.raffaeleconforti</groupId>
                 <artifactId>hyperparamoptimized-wrappers</artifactId>
-                <version>1.0.20171019</version>
+                <version>1.0.20180320</version>
             </dependency>
             <dependency>
                 <groupId>com.raffaeleconforti</groupId>
                 <artifactId>java-util</artifactId>
-                <version>1.0.20171019</version>
+                <version>1.0.20180320</version>
             </dependency>
             <dependency>
                 <groupId>com.raffaeleconforti</groupId>
                 <artifactId>ilp-solver-wrapper</artifactId>
-                <version>1.0.20171019</version>
+                <version>1.0.20180320</version>
             </dependency>
             <dependency>
                 <groupId>com.raffaeleconforti</groupId>
                 <artifactId>cnminer-wrapper</artifactId>
-                <version>1.0.20171019</version>
+                <version>1.0.20180320</version>
             </dependency>
             <dependency>
                 <groupId>com.raffaeleconforti</groupId>
                 <artifactId>fake-context</artifactId>
-                <version>1.0.20171019</version>
+                <version>1.0.20180320</version>
             </dependency>
             <dependency>
                 <groupId>com.raffaeleconforti</groupId>
                 <artifactId>graph-algorithms</artifactId>
-                <version>1.0.20171019</version>
+                <version>1.0.20180320</version>
             </dependency>
             <dependency>
                 <groupId>com.raffaeleconforti</groupId>
                 <artifactId>bpmn-util</artifactId>
-                <version>1.0.20171019</version>
+                <version>1.0.20180320</version>
             </dependency>
             <dependency>
                 <groupId>com.raffaeleconforti</groupId>
                 <artifactId>conversion</artifactId>
-                <version>1.0.20171019</version>
+                <version>1.0.20180320</version>
             </dependency>
             <dependency>
                 <groupId>com.raffaeleconforti</groupId>
                 <artifactId>efficient-log</artifactId>
-                <version>1.0.20171019</version>
+                <version>1.0.20180320</version>
             </dependency>
             <dependency>
                 <groupId>com.raffaeleconforti</groupId>
                 <artifactId>log-util</artifactId>
-                <version>1.0.20171019</version>
+                <version>1.0.20180320</version>
             </dependency>
             <dependency>
                 <groupId>com.raffaeleconforti</groupId>
                 <artifactId>foreignkey-discovery</artifactId>
-                <version>1.0.20171019</version>
+                <version>1.0.20180320</version>
             </dependency>
             <dependency>
                 <groupId>com.raffaeleconforti</groupId>
                 <artifactId>data-structures</artifactId>
-                <version>1.0.20171019</version>
+                <version>1.0.20180320</version>
             </dependency>
             <dependency>
                 <groupId>com.raffaeleconforti</groupId>
                 <artifactId>modified-miners</artifactId>
-                <version>1.0.20171019</version>
+                <version>1.0.20180320</version>
             </dependency>
             <dependency>
                 <groupId>com.raffaeleconforti</groupId>
                 <artifactId>bpmnminer-logic</artifactId>
-                <version>1.0.20171019</version>
+                <version>1.0.20180320</version>
             </dependency>
             <dependency>
                 <groupId>com.raffaeleconforti</groupId>
                 <artifactId>bpmnminer-commandline</artifactId>
-                <version>1.0.20171019</version>
+                <version>1.0.20180320</version>
             </dependency>
             <dependency>
                 <groupId>com.raffaeleconforti</groupId>
                 <artifactId>bpmnminer-prom</artifactId>
-                <version>1.0.20171019</version>
+                <version>1.0.20180320</version>
             </dependency>
             <dependency>
                 <groupId>com.raffaeleconforti</groupId>
                 <artifactId>wrappers</artifactId>
-                <version>1.0.20171019</version>
+                <version>1.0.20180320</version>
             </dependency>
             <dependency>
                 <groupId>com.raffaeleconforti</groupId>
                 <artifactId>benchmark-logic</artifactId>
-                <version>1.0.20171019</version>
+                <version>1.0.20180320</version>
             </dependency>
             <dependency>
                 <groupId>com.raffaeleconforti</groupId>
                 <artifactId>structuredminer</artifactId>
-                <version>1.0.20171019</version>
+                <version>1.0.20180320</version>
             </dependency>
             <dependency>
                 <groupId>com.raffaeleconforti</groupId>
                 <artifactId>statistics</artifactId>
-                <version>1.0.20171019</version>
+                <version>1.0.20180320</version>
             </dependency>
             <dependency>
                 <groupId>com.raffaeleconforti</groupId>
                 <artifactId>structuredminer-commandline</artifactId>
-                <version>1.0.20171019</version>
+                <version>1.0.20180320</version>
             </dependency>
             <dependency>
                 <groupId>com.raffaeleconforti</groupId>
                 <artifactId>noisefiltering-event-logic</artifactId>
-                <version>1.0.20171019</version>
+                <version>1.0.20180320</version>
             </dependency>
             <dependency>
                 <groupId>com.raffaeleconforti</groupId>
                 <artifactId>noisefiltering-event-commandline</artifactId>
-                <version>1.0.20171019</version>
+                <version>1.0.20180320</version>
             </dependency>
             <dependency>
                 <groupId>com.raffaeleconforti</groupId>
                 <artifactId>noisefiltering-event-prom</artifactId>
-                <version>1.0.20171019</version>
+                <version>1.0.20180320</version>
             </dependency>
             <dependency>
                 <groupId>com.raffaeleconforti</groupId>
                 <artifactId>measurements</artifactId>
-                <version>1.0.20171019</version>
+                <version>1.0.20180320</version>
             </dependency>
             <dependency>
                 <groupId>com.raffaeleconforti</groupId>
                 <artifactId>kernel-estimation</artifactId>
-                <version>1.0.20171019</version>
+                <version>1.0.20180320</version>
             </dependency>
             <dependency>
                 <groupId>com.raffaeleconforti</groupId>
                 <artifactId>noisefiltering-timestamp-logic</artifactId>
-                <version>1.0.20171019</version>
+                <version>1.0.20180320</version>
             </dependency>
             <dependency>
                 <groupId>com.raffaeleconforti</groupId>
                 <artifactId>noisefiltering-timestamp-commandline</artifactId>
-                <version>1.0.20171019</version>
+                <version>1.0.20180320</version>
             </dependency>
             <dependency>
                 <groupId>com.raffaeleconforti</groupId>
                 <artifactId>noisefiltering-timestamp-prom</artifactId>
-                <version>1.0.20171019</version>
+                <version>1.0.20180320</version>
             </dependency>
             <dependency>
                 <groupId>com.raffaeleconforti</groupId>
                 <artifactId>prom-util</artifactId>
-                <version>1.0.20171019</version>
+                <version>1.0.20180320</version>
             </dependency>
             <dependency>
                 <groupId>com.raffaeleconforti</groupId>
                 <artifactId>benchmark-logic</artifactId>
-                <version>1.0.20171019</version>
+                <version>1.0.20180320</version>
             </dependency>
             <dependency>
                 <groupId>com.raffaeleconforti</groupId>
                 <artifactId>nlp</artifactId>
-                <version>1.0.20171019</version>
+                <version>1.0.20180320</version>
             </dependency>
             <dependency>
                 <groupId>com.raffaeleconforti</groupId>
                 <artifactId>benchmark-commandline</artifactId>
-                <version>1.0.20171019</version>
+                <version>1.0.20180320</version>
             </dependency>
 
 
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>3.1</version>
+            </dependency>
+            <dependency>
+            <groupId>org.jgraph</groupId>
+            <artifactId>jgraph</artifactId>
+            <version>1.6</version>
+            </dependency>
+            <dependency>
+                <groupId>de.tudarmstadt</groupId>
+                <artifactId>chinese-whispers</artifactId>
+                <version>1.0</version>
+            </dependency>
             <dependency>
                 <groupId>org.ops4j.pax.runner</groupId>
                 <artifactId>pax-runner</artifactId>
@@ -390,7 +405,7 @@
             <dependency>
                 <groupId>com.gurobi</groupId>
                 <artifactId>gurobi</artifactId>
-                <version>7.51</version>
+                <version>7.52</version>
             </dependency>
             <dependency>
                 <groupId>net.sourceforge.lpsolve</groupId>
@@ -573,7 +588,7 @@
             </dependency>
             <dependency>
                 <groupId>org.processmining</groupId>
-                <artifactId>prom5-lib</artifactId>
+                <artifactId>prom5-framework</artifactId>
                 <version>${prom.version}</version>
             </dependency>
             <dependency>

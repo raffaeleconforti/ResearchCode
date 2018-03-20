@@ -52,13 +52,13 @@ public class AutomatonBestTraceMatchSelector {
         return nameExtractor.getTraceName(trace);
     }
 
-    public XLog selectBestMatchingTraces(PluginContext context, int[] fixed, List<String> fixedTraces, int approach) {
-        XLog result = filter(context, fixed, fixedTraces, approach);
+    public XLog selectBestMatchingTraces(PluginContext context, int[] fixed, List<String> fixedTraces, int approach, boolean self_cleaning) {
+        XLog result = filter(context, fixed, fixedTraces, approach, self_cleaning);
 
         return result;
     }
 
-    private XLog filter(PluginContext context, int[] fixed, List<String> fixedTraces, int approach) {
+    private XLog filter(PluginContext context, int[] fixed, List<String> fixedTraces, int approach, boolean self_cleaning) {
         XLog finalLog = factory.createLog(log.getAttributes());
 //        if(approach == PermutationTechnique.HEURISTICS_SET) {
 //            Map<String, Integer> removed = new UnifiedMap<>();
@@ -148,7 +148,7 @@ public class AutomatonBestTraceMatchSelector {
 
         EventDistributionCalculatorNoiseImpl dc = null;
         if(log.size() > originalSize) {
-            dc = new EventDistributionCalculatorNoiseImpl(log, xEventClassifier, duplicatedEvents);
+            dc = new EventDistributionCalculatorNoiseImpl(log, xEventClassifier, duplicatedEvents, self_cleaning);
             dc.analyseLog();
         }
 

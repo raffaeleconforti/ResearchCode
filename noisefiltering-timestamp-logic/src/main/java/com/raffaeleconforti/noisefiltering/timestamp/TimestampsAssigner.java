@@ -25,6 +25,8 @@ public class TimestampsAssigner {
     private AutomatonInfrequentBehaviourDetector automatonInfrequentBehaviourDetector = new AutomatonInfrequentBehaviourDetector(AutomatonInfrequentBehaviourDetector.MAX);
     private final AutomatonFactory automatonFactory;
 
+    private final boolean debug_mode;
+
     private static NameExtractor nameExtractor;
     private static final XTimeExtension xte = XTimeExtension.instance();
     private final XLog log;
@@ -32,14 +34,17 @@ public class TimestampsAssigner {
     private final EventDurationDistributionCalculatorNoiseImpl eventDurationDistributionCalculator;
     private final SimpleDateFormat dateFormatSeconds;
 
-    public TimestampsAssigner(XLog log, XEventClassifier xEventClassifier, SimpleDateFormat dateFormatSeconds, Set<String> duplicatedTraces, Map<String, Set<String>> duplicatedEvents, boolean useGurobi, boolean useArcsFrequency) {
+    public TimestampsAssigner(XLog log, XEventClassifier xEventClassifier, SimpleDateFormat dateFormatSeconds, Set<String> duplicatedTraces, Map<String, Set<String>> duplicatedEvents, boolean useGurobi, boolean useArcsFrequency, boolean debug_mode) {
+        this.debug_mode = debug_mode;
+
         this.log = log;
         this.nameExtractor = new NameExtractor(xEventClassifier);
         this.automatonFactory = new AutomatonFactory(xEventClassifier);
 
         this.dateFormatSeconds = dateFormatSeconds;
         this.duplicatedTraces = duplicatedTraces;
-        eventDurationDistributionCalculator = new EventDurationDistributionCalculatorNoiseImpl(log, duplicatedEvents, xEventClassifier);
+        eventDurationDistributionCalculator = new EventDurationDistributionCalculatorNoiseImpl(log, duplicatedEvents, xEventClassifier, debug_mode);
+
         eventDurationDistributionCalculator.analyseLog();
 
         if(true) {
@@ -81,7 +86,7 @@ public class TimestampsAssigner {
                         if (!xte.extractTimestamp(trace.get(couple[0] + 1)).equals(date)) {
                             result = true;
                         } else {
-                            System.out.println("Unable to fix timestamp for trace " + getTraceName(trace));
+                            if(debug_mode) System.out.println("Unable to fix timestamp for trace " + getTraceName(trace));
                         }
 
                         xte.assignTimestamp(trace.get(couple[0] + 1), date);
@@ -91,7 +96,7 @@ public class TimestampsAssigner {
                             if (!xte.extractTimestamp(trace.get(couple[0] + i)).equals(date)) {
                                 result = true;
                             } else {
-                                System.out.println("Unable to fix timestamp for trace " + getTraceName(trace));
+                                if(debug_mode) System.out.println("Unable to fix timestamp for trace " + getTraceName(trace));
                             }
 
                             xte.assignTimestamp(trace.get(couple[0] + i), date);
@@ -126,7 +131,7 @@ public class TimestampsAssigner {
                         if (!xte.extractTimestamp(trace.get(couple[0] + i)).equals(date)) {
                             result = true;
                         } else {
-                            System.out.println("Unable to fix timestamp for trace " + getTraceName(trace));
+                            if(debug_mode) System.out.println("Unable to fix timestamp for trace " + getTraceName(trace));
                         }
 
                         xte.assignTimestamp(trace.get(couple[0] + i), date);
@@ -160,13 +165,13 @@ public class TimestampsAssigner {
                     Date date = xte.extractTimestamp(first);
                     if(distribution.length == 1) {
                         date = new Date(date.getTime() + distribution[0]);
-                        if (xte.extractTimestamp(trace.get(couple[0] + 1)).equals(date)) System.out.println("Unable to fix timestamp for trace " + getTraceName(trace));
+                        if(debug_mode && xte.extractTimestamp(trace.get(couple[0] + 1)).equals(date)) System.out.println("Unable to fix timestamp for trace " + getTraceName(trace));
 
                         xte.assignTimestamp(trace.get(couple[0] + 1), date);
                     }else {
                         for (int i = 1; i < distribution.length; i++) {
                             date = new Date(date.getTime() + distribution[i]);
-                            if (xte.extractTimestamp(trace.get(couple[0] + i)).equals(date)) System.out.println("Unable to fix timestamp for trace " + getTraceName(trace));
+                            if(debug_mode && xte.extractTimestamp(trace.get(couple[0] + i)).equals(date)) System.out.println("Unable to fix timestamp for trace " + getTraceName(trace));
 
                             xte.assignTimestamp(trace.get(couple[0] + i), date);
                         }
@@ -195,7 +200,7 @@ public class TimestampsAssigner {
                     long increment = diff / (couple[1] - couple[0]);
                     for (int i = 1; i < couple[1] - couple[0]; i++) {
                         date = new Date(date.getTime() + increment);
-                        if (xte.extractTimestamp(trace.get(couple[0] + i)).equals(date)) System.out.println("Unable to fix timestamp for trace " + getTraceName(trace));
+                        if(debug_mode && xte.extractTimestamp(trace.get(couple[0] + i)).equals(date)) System.out.println("Unable to fix timestamp for trace " + getTraceName(trace));
 
                         xte.assignTimestamp(trace.get(couple[0] + i), date);
                     }
@@ -235,7 +240,7 @@ public class TimestampsAssigner {
         for(Map.Entry<String, int[]> entry : times.entrySet()) {
 
             if(entry.getValue()[0] == entry.getValue()[1] - 1) {
-                System.out.println("");
+                if(debug_mode) System.out.println("");
             }
             if(entry.getValue()[1] > -1) setXEvents.add(entry.getValue());
         }

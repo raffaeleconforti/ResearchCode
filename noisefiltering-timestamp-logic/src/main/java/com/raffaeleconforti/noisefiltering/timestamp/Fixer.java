@@ -29,9 +29,10 @@ import java.util.*;
 
 public class Fixer {
 
-    final XEventClassifier xEventClassifier = new XEventAndClassifier(new XEventNameClassifier(), new XEventLifeTransClassifier());
-    final XConceptExtension xce = XConceptExtension.instance();
-    final XTimeExtension xte = XTimeExtension.instance();
+    private final XEventClassifier xEventClassifier = new XEventAndClassifier(new XEventNameClassifier(), new XEventLifeTransClassifier());
+    private final XConceptExtension xce = XConceptExtension.instance();
+    private final XTimeExtension xte = XTimeExtension.instance();
+    private final boolean self_cleaning = false;
 
     public XLog s1(XLog log) {
 
@@ -85,7 +86,7 @@ public class Fixer {
             }
         }
 
-        EventDistributionCalculatorNoiseImpl eventDistributionCalculator = new EventDistributionCalculatorNoiseImpl(log, xEventClassifier, faultyEvents);
+        EventDistributionCalculatorNoiseImpl eventDistributionCalculator = new EventDistributionCalculatorNoiseImpl(log, xEventClassifier, faultyEvents, self_cleaning);
         eventDistributionCalculator.analyseLog();
 
 //        EventPermutatorSmart eventPermutator = new EventPermutatorSmart(xEventClassifier, eventDistributionCalculator, timeStampChecker, TimeStampFixerSmart.discoverSequencesMarcello(log, timeStampChecker));

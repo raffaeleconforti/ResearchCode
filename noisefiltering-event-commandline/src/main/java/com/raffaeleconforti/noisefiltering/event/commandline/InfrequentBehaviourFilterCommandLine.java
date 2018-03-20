@@ -65,7 +65,7 @@ public class InfrequentBehaviourFilterCommandLine {
         System.out.println("Filtering out Infrequent Behavior from Business Process Event Logs.");
         System.out.println("IEEE Transactions on Knowledge and Data Engineering, 2016.");
         System.out.println();
-        System.out.println("For more info contact me at raffaele.conforti@qut.edu.au");
+        System.out.println("For more info contact me at raffaele.conforti@unimelb.edu.au");
         System.out.println("or visit my website www.raffaeleconforti.com");
 
         Scanner console = new Scanner(System.in);
@@ -85,7 +85,7 @@ public class InfrequentBehaviourFilterCommandLine {
         XFactory factory = new XFactoryNaiveImpl();
         XLog log = LogImporter.importFromFile(factory, name);
 
-        InfrequentBehaviourFilterCommandLine ibfcl = new InfrequentBehaviourFilterCommandLine(useGurobi, useArcsFrequency);
+        InfrequentBehaviourFilterCommandLine ibfcl = new InfrequentBehaviourFilterCommandLine(useGurobi, useArcsFrequency, false);
         XLog filteredlog = ibfcl.filterLog(log);
 
         System.out.println("Output file: ");
@@ -144,8 +144,8 @@ public class InfrequentBehaviourFilterCommandLine {
         }
     }
 
-    public InfrequentBehaviourFilterCommandLine(boolean useGurobi, boolean useArcsFrequency) {
-         infrequentBehaviourFilter = new InfrequentBehaviourFilter(xEventClassifier, useGurobi, useArcsFrequency);
+    public InfrequentBehaviourFilterCommandLine(boolean useGurobi, boolean useArcsFrequency, boolean debug_mode) {
+         infrequentBehaviourFilter = new InfrequentBehaviourFilter(xEventClassifier, useGurobi, useArcsFrequency, debug_mode);
     }
 
     public XLog filterLog(XLog rawlog) {

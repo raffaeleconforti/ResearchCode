@@ -7,7 +7,7 @@
     <parent>
         <artifactId>research-code</artifactId>
         <groupId>com.raffaeleconforti</groupId>
-        <version>1.0.20171019</version>
+        <version>1.0.20180320</version>
         <relativePath>../</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -245,14 +245,14 @@
                     </execution>
 
                     <execution>
-                        <id>download-prom5-lib</id>
+                        <id>download-prom5-framework</id>
                         <phase>process-resources</phase>
                         <goals>
                             <goal>wget</goal>
                         </goals>
                         <configuration>
-                            <url>https://svn.win.tue.nl/repos/prom/Releases/Packages/ProM5/lib/ProM.jar</url>
-                            <outputFileName>prom5-lib.jar</outputFileName>
+                            <url>https://svn.win.tue.nl/repos/prom/Releases/Packages/ProM5/lib/ProM-framework-5.2.jar</url>
+                            <outputFileName>prom5-framework.jar</outputFileName>
                             <outputDirectory>${project.build.directory}</outputDirectory>
                         </configuration>
                     </execution>
@@ -264,7 +264,7 @@
                             <goal>wget</goal>
                         </goals>
                         <configuration>
-                            <url>https://svn.win.tue.nl/repos/prom/Releases/Packages/ProM5/lib/ProMmodels.jar</url>
+                            <url>https://svn.win.tue.nl/repos/prom/Releases/Packages/ProM5/lib/ProM-models-5.2.jar</url>
                             <outputFileName>prom5-models.jar</outputFileName>
                             <outputDirectory>${project.build.directory}</outputDirectory>
                         </configuration>
@@ -277,7 +277,7 @@
                             <goal>wget</goal>
                         </goals>
                         <configuration>
-                            <url>https://svn.win.tue.nl/repos/prom/Releases/Packages/ProM5/lib/ProMplugins.jar</url>
+                            <url>https://svn.win.tue.nl/repos/prom/Releases/Packages/ProM5/lib/ProM-plugins-5.2.jar</url>
                             <outputFileName>prom5-plugins.jar</outputFileName>
                             <outputDirectory>${project.build.directory}</outputDirectory>
                         </configuration>
@@ -1186,17 +1186,17 @@
                     </execution>
 
                     <execution>
-                        <id>install-prom5-lib</id>
+                        <id>install-prom5-framework</id>
                         <phase>install</phase>
                         <goals>
                             <goal>install-file</goal>
                         </goals>
                         <configuration>
                             <groupId>org.processmining</groupId>
-                            <artifactId>prom5-lib</artifactId>
+                            <artifactId>prom5-framework</artifactId>
                             <version>${prom.version}</version>
                             <packaging>jar</packaging>
-                            <file>${project.build.directory}/prom5-lib.jar</file>
+                            <file>${project.build.directory}/prom5-framework.jar</file>
                             <generatePom>true</generatePom>
                         </configuration>
                     </execution>
@@ -1393,7 +1393,6 @@
                         </configuration>
                     </execution>
 
-
                     <execution>
                         <id>install-gurobi</id>
                         <phase>install</phase>
@@ -1403,9 +1402,9 @@
                         <configuration>
                             <groupId>com.gurobi</groupId>
                             <artifactId>gurobi</artifactId>
-                            <version>7.51</version>
+                            <version>7.52</version>
                             <packaging>jar</packaging>
-                            <file>${project.build.sourceDirectory}/gurobi-751.jar</file>
+                            <file>${project.build.sourceDirectory}/gurobi-752.jar</file>
                             <generatePom>true</generatePom>
                         </configuration>
                     </execution>
@@ -1419,9 +1418,9 @@
                         <configuration>
                             <groupId>org.apromore</groupId>
                             <artifactId>bpmntk-osgi</artifactId>
-                            <version>1.0-20171020</version>
+                            <version>1.0.20180320</version>
                             <packaging>jar</packaging>
-                            <file>src/main/java/bpmntk-osgi-20171020.jar</file>
+                            <file>src/main/java/bpmntk-osgi-20171130.jar</file>
                             <generatePom>true</generatePom>
                         </configuration>
                     </execution>
@@ -1854,6 +1853,22 @@
                             <version>${prom.version}</version>
                             <packaging>jar</packaging>
                             <file>${project.build.directory}/pnanalysis.jar</file>
+                            <generatePom>true</generatePom>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>install-chinese-whispers</id>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                        <configuration>
+                            <groupId>de.tudarmstadt</groupId>
+                            <artifactId>chinese-whispers</artifactId>
+                            <version>1.0</version>
+                            <packaging>jar</packaging>
+                            <file>${project.build.sourceDirectory}/chinese-whispers.jar</file>
                             <generatePom>true</generatePom>
                         </configuration>
                     </execution>

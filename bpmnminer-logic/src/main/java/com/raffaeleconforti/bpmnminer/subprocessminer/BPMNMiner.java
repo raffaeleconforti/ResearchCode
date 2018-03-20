@@ -4,20 +4,17 @@ import com.raffaeleconforti.bpmn.util.BPMNCleaner;
 import com.raffaeleconforti.bpmn.util.BPMNSimplifier;
 import com.raffaeleconforti.bpmnminer.exception.ExecutionCancelledException;
 import com.raffaeleconforti.bpmnminer.subprocessminer.selection.SelectMinerResult;
-import com.raffaeleconforti.wrapper.impl.ILPAlgorithmWrapper;
-import com.raffaeleconforti.wrapper.impl.SplitMinerWrapper;
-import com.raffaeleconforti.wrapper.impl.alpha.AlphaPlusWrapper;
-import com.raffaeleconforti.wrapper.impl.heuristics.Heuristics52AlgorithmWrapper;
-import com.raffaeleconforti.wrapper.impl.heuristics.HeuristicsAlgorithmWrapper;
-import com.raffaeleconforti.wrapper.impl.inductive.InductiveMinerIMfWrapper;
-import com.raffaeleconforti.wrapper.settings.MiningSettings;
+import com.raffaeleconforti.wrappers.impl.ILPAlgorithmWrapper;
+import com.raffaeleconforti.wrappers.impl.SplitMinerWrapper;
+import com.raffaeleconforti.wrappers.impl.alpha.AlphaPlusWrapper;
+import com.raffaeleconforti.wrappers.impl.heuristics.Heuristics52AlgorithmWrapper;
+import com.raffaeleconforti.wrappers.impl.heuristics.HeuristicsAlgorithmWrapper;
+import com.raffaeleconforti.wrappers.impl.inductive.InductiveMinerIMfWrapper;
+import com.raffaeleconforti.wrappers.settings.MiningSettings;
 import org.deckfour.xes.classification.XEventClassifier;
 import org.deckfour.xes.model.XLog;
 import org.processmining.contexts.uitopia.UIPluginContext;
-import org.processmining.models.graphbased.AttributeMap;
 import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
-import org.processmining.models.graphbased.directed.bpmn.elements.Gateway;
-import org.processmining.models.graphbased.directed.petrinet.Petrinet;
 
 /**
  * Created by Raffaele Conforti on 20/02/14.

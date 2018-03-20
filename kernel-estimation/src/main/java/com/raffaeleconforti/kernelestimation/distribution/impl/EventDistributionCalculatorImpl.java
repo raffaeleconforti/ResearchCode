@@ -39,14 +39,15 @@ public class EventDistributionCalculatorImpl implements EventDistributionCalcula
     protected final Map<String, Double> distributionReverseZeroCache = new UnifiedMap<>();
 
     protected Map<String, Double> likelihood = new UnifiedMap<>();
-    protected Cache<XTrace, Double> likelihoodCache = new SelfCleaningCache();
+    protected Cache<XTrace, Double> likelihoodCache;
 
     protected Map<String, Map<String, Integer>> enrichedDistribution = new UnifiedMap<>();
     protected Map<String, Map<String, Integer>> enrichedDistributionReverse = new UnifiedMap<>();
 
-    public EventDistributionCalculatorImpl(XLog log, XEventClassifier xEventClassifier) {
+    public EventDistributionCalculatorImpl(XLog log, XEventClassifier xEventClassifier, boolean self_cleaning) {
         this.log = log;
         this.nameExtractor = new NameExtractor(xEventClassifier);
+        likelihoodCache = new SelfCleaningCache(self_cleaning);
     }
 
     protected String getEventName(XEvent event) {

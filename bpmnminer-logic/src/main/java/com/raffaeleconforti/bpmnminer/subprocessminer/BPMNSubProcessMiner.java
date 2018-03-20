@@ -22,7 +22,7 @@ import com.raffaeleconforti.foreignkeydiscovery.util.EntityPrimaryKeyConverter;
 import com.raffaeleconforti.log.util.LogCloner;
 import com.raffaeleconforti.log.util.LogModifier;
 import com.raffaeleconforti.log.util.LogOptimizer;
-import com.raffaeleconforti.wrapper.settings.MiningSettings;
+import com.raffaeleconforti.wrappers.settings.MiningSettings;
 import org.deckfour.xes.classification.XEventClassifier;
 import org.deckfour.xes.classification.XEventNameClassifier;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;

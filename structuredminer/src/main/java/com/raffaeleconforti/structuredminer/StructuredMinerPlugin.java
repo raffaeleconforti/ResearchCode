@@ -25,8 +25,8 @@ public class StructuredMinerPlugin {
 
     @UITopiaVariant(affiliation = UITopiaVariant.EHV,
             author = "Raffaele Conforti",
-            email = "raffaele.conforti@qut.edu.au",
-            pack = "StructuredMiner (raffaele.conforti@qut.edu.au)")
+            email = "raffaele.conforti@unimelb.edu.au",
+            pack = "StructuredMiner (raffaele.conforti@unimelb.edu.au)")
     @PluginVariant(variantLabel = "Structured Miner", requiredParameterLabels = {0})//, 1, 2, 3 })
     public BPMNDiagram generateDiagram(final UIPluginContext context, XLog log) {
 

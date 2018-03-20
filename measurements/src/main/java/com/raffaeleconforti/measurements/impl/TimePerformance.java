@@ -1,14 +1,12 @@
 package com.raffaeleconforti.measurements.impl;
 
-import au.edu.qut.petrinet.tools.SoundnessChecker;
 import com.raffaeleconforti.measurements.Measure;
 import com.raffaeleconforti.measurements.MeasurementAlgorithm;
-import com.raffaeleconforti.wrapper.MiningAlgorithm;
-import com.raffaeleconforti.wrapper.PetrinetWithMarking;
+import com.raffaeleconforti.wrappers.MiningAlgorithm;
+import com.raffaeleconforti.wrappers.PetrinetWithMarking;
 import org.deckfour.xes.classification.XEventClassifier;
 import org.deckfour.xes.model.XLog;
 import org.processmining.contexts.uitopia.UIPluginContext;
-import org.processmining.models.graphbased.directed.petrinet.Petrinet;
 import org.processmining.processtree.ProcessTree;
 
 /**

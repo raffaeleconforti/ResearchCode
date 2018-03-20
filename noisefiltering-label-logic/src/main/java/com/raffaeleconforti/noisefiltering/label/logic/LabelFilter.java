@@ -1,26 +1,25 @@
 package com.raffaeleconforti.noisefiltering.label.logic;
 
-import com.raffaeleconforti.automaton.Automaton;
-import com.raffaeleconforti.automaton.AutomatonFactory;
 import com.raffaeleconforti.log.util.*;
-import com.raffaeleconforti.statistics.StatisticsSelector;
-import com.raffaeleconforti.statistics.StatisticsSelector.StatisticsMeasures;
-import org.apache.commons.lang3.ArrayUtils;
+import com.raffaeleconforti.noisefiltering.label.logic.clustering.AbstractClustering;
+import com.raffaeleconforti.noisefiltering.label.logic.clustering.centroid.*;
+import com.raffaeleconforti.noisefiltering.label.logic.clustering.connectivity.AGNESFiltering;
+import com.raffaeleconforti.noisefiltering.label.logic.clustering.connectivity.CLINKFiltering;
+import com.raffaeleconforti.noisefiltering.label.logic.clustering.connectivity.SLINKFiltering;
+import com.raffaeleconforti.noisefiltering.label.logic.clustering.density.FastOPTICSFiltering;
+import com.raffaeleconforti.noisefiltering.label.logic.clustering.density.OPTICSHeapFiltering;
+import com.raffaeleconforti.noisefiltering.label.logic.clustering.distribution.EMDiagonalGaussianModelFiltering;
+import com.raffaeleconforti.noisefiltering.label.logic.clustering.distribution.EMMultivariateGaussianModelFiltering;
+import com.raffaeleconforti.noisefiltering.label.logic.clustering.distribution.EMSphericalGaussianModelFiltering;
 import org.deckfour.xes.classification.*;
 import org.deckfour.xes.extension.std.XConceptExtension;
-import org.deckfour.xes.extension.std.XTimeExtension;
 import org.deckfour.xes.factory.XFactory;
 import org.deckfour.xes.factory.XFactoryNaiveImpl;
 import org.deckfour.xes.model.XEvent;
 import org.deckfour.xes.model.XLog;
 import org.deckfour.xes.model.XTrace;
-import org.eclipse.collections.api.iterator.IntIterator;
-import org.eclipse.collections.api.iterator.MutableIntIterator;
-import org.eclipse.collections.api.tuple.primitive.IntDoublePair;
 import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
 import org.eclipse.collections.impl.map.mutable.primitive.*;
-import org.eclipse.collections.impl.set.mutable.UnifiedSet;
-import org.eclipse.collections.impl.set.mutable.primitive.IntHashSet;
 
 import java.util.*;
 
@@ -33,28 +32,19 @@ public class LabelFilter {
 
     private int label_removed;
 
-    private final StatisticsSelector statisticsSelector = new StatisticsSelector();
-
     private final ObjectIntHashMap<String> stringToIntMap = new ObjectIntHashMap<>();
     private final IntObjectHashMap<String> intToStringMap = new IntObjectHashMap<>();
 
     private int events = 1;
-    public static String testName = "(Label Bagging)";
-
-    private final int CoD = 0;
-    private final int CoV = 1;
-    private final int IoD = 2;
-    private final int M = 3;
-    private final int QCoD = 4;
-    private final int QM = 5;
-    private final int N = 6;
+    public static String testName = "(Python)";
 
     private static String logName;
 
     public static void main(String[] args) throws Exception {
         XFactory factory = new XFactoryNaiveImpl();
-//        String[] logNames = new String[] {"BPI2012"};
+//        String[] logNames = new String[] {"BPI2015-4"};
         String[] logNames = new String[] {"BPI2011", "BPI2012", "BPI2013_cp", "BPI2013_i", "BPI2014", "BPI2015-1", "BPI2015-2", "BPI2015-3", "BPI2015-4", "BPI2015-5", "BPI2017", "Road", "Sepsis"};
+//        String[] logNames = new String[] {"BPI2012", "BPI2013_cp", "BPI2013_i", "BPI2014", "BPI2015-1", "BPI2015-2", "BPI2015-3", "BPI2015-4", "BPI2015-5", "BPI2017", "Road", "Sepsis"};
 
         for(int i = logNames.length - 1; i >= 0; i--) {
             logName = logNames[i];
@@ -70,10 +60,10 @@ public class LabelFilter {
 
             xce.assignName(log, xce.extractName(log) + " (Label)");
 
-            if (labelFilter.label_removed > 0) {
+//            if (labelFilter.label_removed > 0) {
 //                log = logModifier.removeArtificialStartAndEndEvent(log);
                 LogImporter.exportToFile("/Volumes/Data/SharedFolder/Logs/Label/" + logName + " " + testName + ".xes.gz", log);
-            }
+//            }
         }
     }
 
@@ -103,254 +93,344 @@ public class LabelFilter {
     }
 
     public XLog filterLog(XLog log) {
-        List<IntArrayList> convertedLog = codeLog(log);
-        IntHashSet removed = new IntHashSet();
-        IntHashSet save = new IntHashSet();
+        Map<String, Double> occurrence_in_log = new HashMap<>();
+        Map<String, Double> unique_occurrence_in_traces = new HashMap<>();
+        Map<String, Map<String, Double>> connections_in = new HashMap<>();
+        Map<String, Map<String, Double>> connections_out = new HashMap<>();
+        Map<String, Double> number_connections_in = new HashMap<>();
+        Map<String, Double> number_connections_out = new HashMap<>();
 
-        IntDoubleHashMap activityCountSingle1 = new IntDoubleHashMap();
-        IntDoubleHashMap activityCountSingle2 = new IntDoubleHashMap();
-        IntDoubleHashMap activityCountSingle3 = new IntDoubleHashMap();
-        IntDoubleHashMap activityCount1 = new IntDoubleHashMap();
-        IntDoubleHashMap activityCount2 = new IntDoubleHashMap();
-        IntDoubleHashMap activityCount3 = new IntDoubleHashMap();
-        IntDoubleHashMap activityProd = new IntDoubleHashMap();
-
-        for(IntArrayList trace : convertedLog) {
-            IntHashSet visited = new IntHashSet();
-            IntDoubleHashMap activityRepetitions = new IntDoubleHashMap();
-
-            for(int i : trace.toArray()) {
-                if(!visited.contains(i)) {
-                    visited.add(i);
-                    activityCountSingle1.addToValue(i, 1);
-                    activityCountSingle2.addToValue(i, 1);
-                    activityCountSingle3.addToValue(i, 1);
+        for(XTrace trace : log) {
+            Set<String> set = new HashSet<>();
+            for(int i = 0; i < trace.size(); i++) {
+                String name = xEventClassifier.getClassIdentity(trace.get(i));
+                set.add(name);
+                Double count;
+                if((count = occurrence_in_log.get(name)) == null) {
+                    count = 0.0;
                 }
-                activityCount1.addToValue(i, 1);
-                activityCount2.addToValue(i, 1);
-                activityCount3.addToValue(i, 1);
-                activityRepetitions.addToValue(i, 1);
-            }
-        }
-        for(int activity : activityCountSingle1.keySet().toArray()) {
-            activityProd.put(activity, (activityCount1.get(activity) / activityCountSingle1.get(activity)));
-        }
-
-        double cut_A = activityCount1.average();
-        double cut_single_A = activityCountSingle1.average();
-        double cut_M = findCut(activityCount1.keyValuesView().toList(), M);
-        double cut_single_M = findCut(activityCountSingle1.keyValuesView().toList(), M);
-
-        for(int activity : activityCountSingle1.keySet().toArray()) {
-            if (activityCountSingle1.get(activity) == convertedLog.size()) {
-                activityCountSingle1.remove(activity);
-                activityCount1.remove(activity);
-                activityCountSingle2.remove(activity);
-                activityCount2.remove(activity);
-                save.add(activity);
-                System.out.println("Saved because in every trace: " + intToStringMap.get(activity));
-            }
-        }
-
-        cut_A = activityCount1.average();
-        cut_single_A = activityCountSingle1.average();
-        cut_M = findCut(activityCount1.keyValuesView().toList(), M);
-        cut_single_M = findCut(activityCountSingle1.keyValuesView().toList(), M);
-
-        for(int activity : activityCountSingle2.keySet().toArray()) {
-            if(activityCountSingle2.get(activity) <= cut_single_M && activityCount2.get(activity) > cut_A){
-                System.out.println("Saved because Exceptional A: " + intToStringMap.get(activity) + " - in " + activityCount2.get(activity) + " traces, executed " + activityCountSingle2.get(activity) + " times");
-                activityCount2.remove(activity);
-                activityCountSingle2.remove(activity);
-                save.add(activity);
-            }
-            else
-            if(activityCountSingle2.get(activity) > cut_single_A && activityCount2.get(activity) <= cut_M) {
-                System.out.println("Saved because Exceptional B: " + intToStringMap.get(activity) + " - in " + activityCount2.get(activity) + " traces, executed " + activityCountSingle2.get(activity) + " times");
-                activityCount2.remove(activity);
-                activityCountSingle2.remove(activity);
-                save.add(activity);
-            }
-        }
-
-//        cut_M = activityCount2.average();
-//        cut_single_M = activityCountSingle2.average();
-//        cut_M = findCut(activityCount2.keyValuesView().toList(), M);
-//        cut_single_M = findCut(activityCountSingle2.keyValuesView().toList(), M);
-
-        for(int activity : activityCountSingle2.keySet().toArray()) {
-            int count = 0;
-
-            if(activityCount3.get(activity) <= cut_M) {
                 count++;
-            }
+                occurrence_in_log.put(name, count);
 
-            if(activityCountSingle3.get(activity) <= cut_single_M) {
+                Map<String, Double> in_connected;
+                Map<String, Double> out_connected;
+                if((in_connected = connections_in.get(name)) == null) {
+                    in_connected = new HashMap<>();
+                }
+                if((out_connected = connections_out.get(name)) == null) {
+                    out_connected = new HashMap<>();
+                }
+
+                if(i > 0) {
+                    Double val;
+                    if((val = in_connected.get(xEventClassifier.getClassIdentity(trace.get(i - 1)))) == null) {
+                        val = 0.0;
+                    }
+                    in_connected.put(xEventClassifier.getClassIdentity(trace.get(i - 1)), val + 1);
+                }
+                if(i < trace.size() - 1) {
+                    Double val;
+                    if((val = out_connected.get(xEventClassifier.getClassIdentity(trace.get(i + 1)))) == null) {
+                        val = 0.0;
+                    }
+                    out_connected.put(xEventClassifier.getClassIdentity(trace.get(i + 1)), val + 1);
+                }
+                connections_in.put(name, in_connected);
+                connections_out.put(name, out_connected);
+            }
+            for(String name : set) {
+                Double count;
+                if((count = unique_occurrence_in_traces.get(name)) == null) {
+                    count = 0.0;
+                }
                 count++;
-            }
-
-            if(count > 0) {
-//                if (save.contains(activity)) {
-//                    count--;
-//                    System.out.println("Removable but saved: " + intToStringMap.get(activity) + " - in " + activityCount3.get(activity) + " traces, executed " + activityCountSingle3.get(activity) + " times");
-//                }else {
-                    removed.add(activity);
-                    System.out.println("Removed: " + intToStringMap.get(activity) + " - in " + activityCount3.get(activity) + " traces, executed " + activityCountSingle3.get(activity) + " times");
-//                }
+                unique_occurrence_in_traces.put(name, count);
             }
         }
 
-        IntIntHashMap map = removeInfrequentLabels(convertedLog, removed);
-
-        IntIterator intIterator = map.keySet().intIterator();
-        int highest = 0;
-        while(intIterator.hasNext()) {
-            int label = intIterator.next();
-            String labelName = intToStringMap.get(label);
-            highest = Math.max(highest, map.get(label));
-//            System.out.println("Infrequent: " + labelName + " removed " + map.get(label) + " times");
+        for(String name : connections_in.keySet()) {
+            number_connections_in.put(name, (double) connections_in.get(name).size());
+        }
+        for(String name : connections_out.keySet()) {
+            number_connections_out.put(name, (double) connections_out.get(name).size());
         }
 
-        label_removed = removed.size();
+        Set<String> toremove = new HashSet<>();
 
-        System.out.println("Log " + logName);
-        System.out.println("Highest " + highest);
-        System.out.println("Removed " + label_removed);
+//        List<String> labels = filter(
+//                normalize(occurrence_in_log)
+////                ,
+////                normalize(unique_occurrence_in_traces)
+////                ,
+////                inverse_normalize(number_connections_in)
+////                ,
+////                inverse_normalize(number_connections_out)
+//        );
 
-        log = matchLogs(log, removed);
-        return log;
-    }
-
-    private double findCut(List<IntDoublePair> list, int measure) {
-        double[] full_list = new double[list.size()];
-        for(int i = 0; i < list.size(); i ++) {
-            full_list[i] = list.get(i).getTwo();
-        }
-        Arrays.sort(full_list);
-        ArrayUtils.reverse(full_list);
-
-        int top = findBestTop(full_list, measure);
-        return full_list[top];
-    }
-
-    private int findBestTop(double[] full_list, int measure) {
-        double best_qcd = Double.MAX_VALUE;
-        int best_top = 0;
-
-        double[] log_normal_full_list = new double[full_list.length];
-        for(int i = 0; i < full_list.length; i++) {
-            log_normal_full_list[i] = full_list[i];//Math.log10(full_list[i]);
-        }
-
-        for(int j = 0; j < log_normal_full_list.length; j++) {
-            while(j < log_normal_full_list.length - 1 && log_normal_full_list[j] == log_normal_full_list[j + 1]) {
-                j++;
-            }
-
-            double[] current_top_list = Arrays.copyOfRange(log_normal_full_list, 0, j + 1);
-            double[] current_bottom_list = Arrays.copyOfRange(log_normal_full_list, j + 1, log_normal_full_list.length);
-
-            double qcd = computeDistance(current_top_list, current_bottom_list, measure);
-            if (qcd <= best_qcd) {
-                best_qcd = qcd;
-                best_top = j;
+        String[] key_orig = connections_in.keySet().toArray(new String[connections_in.size()]);
+//        double[][] data = new double[key.length][2 * key.length + 1];
+////        double[][] data = new double[key.length][2 * key.length + 2];
+//        for (int i = 0; i < data.length; i++) {
+////            data[i][0] = occurrence_in_log.get(key[i]);
+//            data[i][0] = unique_occurrence_in_traces.get(key[i]);
+////            data[i][1] = unique_occurrence_in_traces.get(key[i]);
+//            for (int j = 1; j < data.length; j++) {
+////            for (int j = 2; j < data.length; j++) {
+//                Double d = connections_in.get(key[i]).get(key[j]);
+//                data[i][j] = d != null ? d : 0.0;
+//
+//                d = connections_out.get(key[i]).get(key[j]);
+//                data[i][j + data.length] = d != null ? d : 0.0;
+//            }
+//        }
+        int retained = 0;
+        for (int i = 0; i < key_orig.length; i++) {
+            if(occurrence_in_log.get(key_orig[i]) == 1 || unique_occurrence_in_traces.get(key_orig[i]) == 1) {
+                toremove.add(key_orig[i]);
+            }else if(number_connections_in.get(key_orig[i]) > 1 && number_connections_out.get(key_orig[i]) > 1) {
+                retained++;
             }
         }
 
-        return (best_top < log_normal_full_list.length - 1) ? best_top + 1 : best_top;
-    }
+        String[] key = new String[retained];
+        double[][] data = new double[retained][4];
+        int i = 0;
+        for (int j = 0; j < key_orig.length; j++) {
+            if(i == key.length) break;
+            key[i] = key_orig[j];
 
-    private double computeDistance(double[] list1, double[] list2, int measure) {
-        double mean_1 = statisticsSelector.evaluate(StatisticsMeasures.MEAN, null, list1);
-//        double standard_deviation_1 = statisticsSelector.evaluate(StatisticsMeasures.SD, mean_1, list1);
-//        double coefficient_of_variation_1 = standard_deviation_1 / mean_1;
-//
-        double mean_2 = statisticsSelector.evaluate(StatisticsMeasures.MEAN, null, list2);
-//        double standard_deviation_2 = statisticsSelector.evaluate(StatisticsMeasures.SD, mean_2, list2);
-//        double coefficient_of_variation_2 = standard_deviation_2 / mean_2;
-//
-//
-//        double index_of_dispersion_1 = Math.pow(standard_deviation_1, 2) / mean_1;
-//        double index_of_dispersion_2 = Math.pow(standard_deviation_2, 2) / mean_2;
-//
-//
-        double median_1 = statisticsSelector.evaluate(StatisticsMeasures.MEDIAN, null, list1);
-        double median_absolute_deviation_1 = statisticsSelector.evaluate(StatisticsMeasures.MAD, median_1, list1);
-        double coefficient_of_dispersion_1 = median_absolute_deviation_1 / median_1;
+            data[i][0] = normalize(occurrence_in_log).get(key[i]);
+            data[i][1] = normalize(unique_occurrence_in_traces).get(key[i]);
 
-        double median_2 = statisticsSelector.evaluate(StatisticsMeasures.MEDIAN, null, list2);
-        double median_absolute_deviation_2 = statisticsSelector.evaluate(StatisticsMeasures.MAD, median_2, list2);
-        double coefficient_of_dispersion_2 = median_absolute_deviation_2 / median_2;
-//
-//
-//        double quartile3_1 = statisticsSelector.evaluate(StatisticsMeasures.PERCENTILE, 0.75, list1);
-//        double quartile1_1 = statisticsSelector.evaluate(StatisticsMeasures.PERCENTILE, 0.25, list1);
-//        double quartile_coefficient_of_dispersion_1 = (quartile3_1 - quartile1_1) / (quartile3_1 + quartile1_1);
-//
-//        double quartile3_2 = statisticsSelector.evaluate(StatisticsMeasures.PERCENTILE, 0.75, list2);
-//        double quartile1_2 = statisticsSelector.evaluate(StatisticsMeasures.PERCENTILE, 0.25, list2);
-//        double quartile_coefficient_of_dispersion_2 = (quartile3_2 - quartile1_2) / (quartile3_2 + quartile1_2);
+            Double d = number_connections_in.get(key[i]);
+//            Double d = normalize(number_connections_in).get(key[i]);
+            data[i][2] = d != null ? d : 0.0;
 
+            d = number_connections_out.get(key[i]);
+//            d = normalize(number_connections_out).get(key[i]);
+            data[i][3] = d != null ? d : 0.0;
 
-        double max_1 = statisticsSelector.evaluate(StatisticsMeasures.MAX, null, list1);
-        double min_1 = statisticsSelector.evaluate(StatisticsMeasures.MIN, null, list1);
-        double max_2 = statisticsSelector.evaluate(StatisticsMeasures.MAX, null, list2);
-        double min_2 = statisticsSelector.evaluate(StatisticsMeasures.MIN, null, list2);
-
-
-//        double[] list = new double[list1.length + list2.length];
-//        for(int i = 0; i < list1.length; i++) list[i] = list1[i];
-//        for(int i = 0; i < list2.length; i++) list[i + list1.length] = list2[i];
-//        double mean = statisticsSelector.evaluate(StatisticsMeasures.MEAN, null, list);
-//        double standard_deviation = statisticsSelector.evaluate(StatisticsMeasures.SD, mean, list);
-//        double snr = mean / standard_deviation;
-//        double snr_1 = mean_1 / standard_deviation_1;
-//        double snr_2 = mean_2 / standard_deviation_2;
-//        double noise = Double.MAX_VALUE;
-//        double avg_noise = (snr_1 + snr_2) / 2;//((snr_1 * list1.length / list.length) + (snr_2 * list2.length / list.length)) / 2;
-//        if(standard_deviation_1 > 0 && standard_deviation_2 > 0 && snr_1 > 1 && snr_2 > 1 && snr < snr_1) noise = -avg_noise;
-
-
-
-        double coefficient_of_dispersion = (coefficient_of_dispersion_1 + coefficient_of_dispersion_2) / 2;
-//        double coefficient_of_variation = (coefficient_of_variation_1 + coefficient_of_variation_2) / 2;
-//        double index_of_dispersion = (index_of_dispersion_1 + index_of_dispersion_2) / 2;
-        double m = - ((min_1 - max_2) / (mean_1 - mean_2));
-//        double quartile_coefficient_of_dispersion = (quartile_coefficient_of_dispersion_1 + quartile_coefficient_of_dispersion_2) / 2;
-//        double qm = 1 - (Math.abs((Math.abs(quartile3_1 + quartile1_1) / 2) - (Math.abs(quartile3_2 + quartile1_2) / 2)) / (max_1 - min_2));
-
-        if(measure == CoD) return coefficient_of_dispersion;
-//        else if(measure == CoV) return coefficient_of_variation;
-//        else if(measure == IoD) return index_of_dispersion;
-        else if(measure == M) return m;
-//        else if(measure == N) return noise;
-//        else if(measure == QCoD) return quartile_coefficient_of_dispersion;
-//        else if(measure == QM) return qm;
-        else return 0;
-    }
-
-    private XLog matchLogs(XLog log, IntHashSet removed) {
-        for (XTrace trace : log) {
-            trace.removeIf(xEvent -> removed.contains(stringToIntMap.get(xEventClassifier.getClassIdentity(xEvent))));
+            if(occurrence_in_log.get(key[i]) > 1 && unique_occurrence_in_traces.get(key_orig[i]) > 1 && number_connections_in.get(key[i]) > 1 && number_connections_out.get(key[i]) > 1) {
+                i++;
+            }
         }
-        return log;
-    }
 
-    private IntIntHashMap removeInfrequentLabels(List<IntArrayList> log, IntHashSet infrequentLabels) {
-        IntIntHashMap map = new IntIntHashMap();
-        for (IntArrayList trace : log) {
-            MutableIntIterator iterator = trace.intIterator();
-            while (iterator.hasNext()) {
-                int label = iterator.next();
-                if (infrequentLabels.contains(label)) {
-                    iterator.remove();
-                    int val = map.get(label);
-                    val++;
-                    map.put(label, val);
+        List<String> labels = filter(
+                key, data
+        );
+        toremove.addAll(labels);
+        System.out.println(toremove);
+
+        this.label_removed = toremove.size();
+        XFactory factory = new XFactoryNaiveImpl();
+        XLog filteredLog = factory.createLog(log.getAttributes());
+        for(XTrace trace : log) {
+            XTrace filteredTrace = factory.createTrace(trace.getAttributes());
+            for(XEvent event : trace) {
+                if (!toremove.contains(xEventClassifier.getClassIdentity(event))) {
+                    filteredTrace.add(event);
                 }
             }
+            filteredLog.add(filteredTrace);
         }
-        return map;
+        return filteredLog;
     }
 
+    private List<String> filter(Map<String, Double>... maps) {
+        String[] key = maps[0].keySet().toArray(new String[maps[0].size()]);
+        double[][] data = new double[key.length][maps.length];
+        for (int i = 0; i < data.length; i++) {
+            for (int j = 0; j < data[0].length; j++) {
+                data[i][j] = maps[j].get(key[i]);
+            }
+        }
+        return filter(key, data);
+    }
+
+    private List<String> filter(String[] key, double[][] data) {
+
+//        /* Connectivity-based clustering (connectivity clustering) */
+//        List<FilteringResult> agnesOutliers = getOutliers(new AGNESFiltering(maps));
+//        List<FilteringResult> clinkOutliers = getOutliers(new CLINKFiltering(maps));
+//        List<FilteringResult> slinkOutliers = getOutliers(new SLINKFiltering(maps));
+//
+//        /* Centroid-based clustering (k-means clustering) */
+//        List<FilteringResult> kMeansCompareOutliers = getOutliers(new KMeansCompareFiltering(maps));
+//        List<FilteringResult> kMeansElkanOutliers = getOutliers(new KMeansElkanFiltering(maps));
+//        List<FilteringResult> kMeansHamerlyOutliers = getOutliers(new KMeansHamerlyFiltering(maps));
+//        List<FilteringResult> kMeansLloydOutliers = getOutliers(new KMeansLloydFiltering(maps));
+//        List<FilteringResult> kMeansMacQueenOutliers = getOutliers(new KMeansMacQueenFiltering(maps));
+//        List<FilteringResult> kMeansSortOutliers = getOutliers(new KMeansSortFiltering(maps));
+//        List<FilteringResult> kMediansLloydOutliers = getOutliers(new KMediansLloydFiltering(maps));
+//        List<FilteringResult> kMedoidsEMOutliers = getOutliers(new KMedoidsEMFiltering(maps));
+//
+//        /* Distribution-based clustering (EM clustering) */
+//        List<FilteringResult> emDiagonalGaussianModelOutliers = getOutliers(new EMDiagonalGaussianModelFiltering(maps));
+//        List<FilteringResult> emMultivariateGaussianModelOutliers = getOutliers(new EMMultivariateGaussianModelFiltering(maps));
+//        List<FilteringResult> emSphericalGaussianModelOutliers = getOutliers(new EMSphericalGaussianModelFiltering(maps));
+//
+//        /* Density-based clustering (DBSCAN clustering) */
+//        List<FilteringResult> fastOPTICSOutliers = getOutliers(new FastOPTICSFiltering(maps));
+//        List<FilteringResult> opticsHeapOutlifers = getOutliers(new OPTICSHeapFiltering(maps));
+
+        List<FilteringResult<String>> results = aggregateRsults(
+//                getOutliers(new AGNESFiltering(key, data))
+//                ,
+//                getOutliers(new CLINKFiltering(key, data))
+//                ,
+//                getOutliers(new SLINKFiltering(key, data))
+//                ,
+//                getOutliers(new KMeansCompareFiltering(key, data))
+//                ,
+//                getOutliers(new KMeansElkanFiltering(key, data))
+//                ,
+//                getOutliers(new KMeansHamerlyFiltering(key, data))
+//                ,
+//                getOutliers(new KMeansLloydFiltering(key, data))
+//                ,
+//                getOutliers(new KMeansMacQueenFiltering(key, data))
+//                ,
+//                getOutliers(new KMeansSortFiltering(key, data))
+//                ,
+//                getOutliers(new KMediansLloydFiltering(key, data))
+//                ,
+                getOutliers(new KMedoidsEMFiltering(key, data, 2)),
+                getOutliers(new KMedoidsEMFiltering(key, data, 3)),
+                getOutliers(new KMedoidsEMFiltering(key, data, 4))
+//                ,
+//                getOutliers(new EMDiagonalGaussianModelFiltering(key, data))
+//                ,
+//                getOutliers(new EMMultivariateGaussianModelFiltering(key, data))
+//                ,
+//                getOutliers(new EMSphericalGaussianModelFiltering(key, data))
+//                ,
+//                getOutliers(new FastOPTICSFiltering(key, data))
+//                ,
+//                getOutliers(new OPTICSHeapFiltering(key, data))
+        );
+        List<String> outliers = getMajorityVote(results);
+        System.out.println(outliers);
+        return outliers;
+    }
+
+    private Map<String, Double> normalize(Map<String, Double> occurrence) {
+        double occurrence_max = 0;
+        double occurrence_min = Double.MAX_VALUE;
+        for(String s : occurrence.keySet()) {
+            occurrence_max = Math.max(occurrence.get(s), occurrence_max);
+            occurrence_min = Math.min(occurrence.get(s), occurrence_min);
+        }
+
+        Map<String, Double> tmp_occurrence = new HashMap<>();
+        double denominator = (occurrence_max - occurrence_min);
+        for(String s : occurrence.keySet()) {
+            double val = (occurrence.get(s) - occurrence_min) / denominator;
+            tmp_occurrence.put(s, val);
+        }
+        return tmp_occurrence;
+    }
+
+    private Map<String, Double> inverse_normalize(Map<String, Double> occurrence) {
+        double occurrence_max = 0;
+        double occurrence_min = Double.MAX_VALUE;
+        for(String s : occurrence.keySet()) {
+            occurrence_max = Math.max(occurrence.get(s), occurrence_max);
+            occurrence_min = Math.min(occurrence.get(s), occurrence_min);
+        }
+
+        Map<String, Double> tmp_occurrence = new HashMap<>();
+        double denominator = (occurrence_max - occurrence_min);
+        for(String s : occurrence.keySet()) {
+            double val = (occurrence.get(s) - occurrence_min) / denominator;
+            tmp_occurrence.put(s, 1 - val);
+        }
+        return tmp_occurrence;
+    }
+
+    private List<FilteringResult<String>> getOutliers(AbstractClustering<String> abstractClustering) {
+        List<FilteringResult<String>> results = abstractClustering.getOutliers();
+        if(!sanityCheck(results)) {
+            System.out.println("Failed " + results.get(0).getTechnique());
+        }
+        return results;
+    }
+
+    private boolean sanityCheck(List<FilteringResult<String>>... outliers) {
+        List<FilteringResult<String>> results = aggregateRsults(outliers);
+        if(results.size() == 1) return true;
+        
+        List<String> o = getMajorityVoteSilent(results);
+        for(List<FilteringResult<String>> filteringResults : outliers) {
+            for(FilteringResult filteringResult : filteringResults) {
+                if(!o.equals(filteringResult.getOutliers())) return true;
+            }
+        }
+        return false;
+    }
+
+    private List<FilteringResult<String>> aggregateRsults(List<FilteringResult<String>>... outliers) {
+        List<FilteringResult<String>> results = new ArrayList<>();
+
+        for (int i = 0; i < outliers.length; i++) {
+            results.addAll(outliers[i]);
+        }
+
+        return results;
+    }
+
+    private List<String> getMajorityVoteSilent(List<FilteringResult<String>> outliers) {
+        List<String> selectedOutliers = new ArrayList<>();
+        Map<String, Integer> candidatesOutliers = new HashMap<>();
+        Map<String, List<String>> candidatesVotes = new HashMap<>();
+
+        for(FilteringResult<String> filteringResult : outliers) {
+            for(String candidateOutlier : filteringResult.getOutliers()) {
+                Integer votes;
+                List<String> names = new ArrayList<>();
+                if((votes = candidatesOutliers.get(candidateOutlier)) == null) {
+                    votes = 0;
+                }else {
+                    names = candidatesVotes.get(candidateOutlier);
+                }
+                votes++;
+                names.add(filteringResult.getTechnique());
+                candidatesOutliers.put(candidateOutlier, votes);
+                candidatesVotes.put(candidateOutlier, names);
+            }
+        }
+
+        for(String outlier : candidatesOutliers.keySet()) {
+            if(candidatesOutliers.get(outlier) >= Math.ceil(2.0 * outliers.size() / 3.0)) selectedOutliers.add(outlier);
+        }
+        return selectedOutliers;
+    }
+
+    private List<String> getMajorityVote(List<FilteringResult<String>> outliers) {
+        List<String> selectedOutliers = new ArrayList<>();
+        Map<String, Integer> candidatesOutliers = new HashMap<>();
+        Map<String, List<String>> candidatesVotes = new HashMap<>();
+
+        for(FilteringResult<String> filteringResult : outliers) {
+            for(String candidateOutlier : filteringResult.getOutliers()) {
+                Integer votes;
+                List<String> names = new ArrayList<>();
+                if((votes = candidatesOutliers.get(candidateOutlier)) == null) {
+                    votes = 0;
+                }else {
+                    names = candidatesVotes.get(candidateOutlier);
+                }
+                votes++;
+                names.add(filteringResult.getTechnique());
+                candidatesOutliers.put(candidateOutlier, votes);
+                candidatesVotes.put(candidateOutlier, names);
+            }
+        }
+
+        for(String outlier : candidatesOutliers.keySet()) {
+            System.out.println(outlier + " " + candidatesOutliers.get(outlier) + "/" + outliers.size() + " required " + Math.ceil(2.0 * outliers.size() / 3.0));
+            System.out.println("\t" + candidatesVotes.get(outlier));
+            if(candidatesOutliers.get(outlier) >= Math.ceil(2.0 * outliers.size() / 3.0)) selectedOutliers.add(outlier);
+        }
+        return selectedOutliers;
+    }
 }

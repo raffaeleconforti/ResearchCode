@@ -18,8 +18,8 @@ import org.processmining.framework.plugin.annotations.PluginVariant;
 public class AllMeasurement {
     @UITopiaVariant(affiliation = UITopiaVariant.EHV,
             author = "Raffaele Conforti",
-            email = "raffaele.conforti@qut.edu.au",
-            pack = "BPMNMiner (raffaele.conforti@qut.edu.au)")
+            email = "raffaele.conforti@unimelb.edu.au",
+            pack = "BPMNMiner (raffaele.conforti@unimelb.edu.au)")
     @PluginVariant(variantLabel = "Compute Measurements Multiple Algorithms", requiredParameterLabels = {0})
     public String execute(UIPluginContext context, XLog trainingLog) {
         return execute(context, trainingLog, trainingLog);
@@ -27,8 +27,8 @@ public class AllMeasurement {
 
     @UITopiaVariant(affiliation = UITopiaVariant.EHV,
             author = "Raffaele Conforti",
-            email = "raffaele.conforti@qut.edu.au",
-            pack = "BPMNMiner (raffaele.conforti@qut.edu.au)")
+            email = "raffaele.conforti@unimelb.edu.au",
+            pack = "BPMNMiner (raffaele.conforti@unimelb.edu.au)")
     @PluginVariant(variantLabel = "Compute Measurements Multiple Algorithms with test Log", requiredParameterLabels = {0, 1})
     public String execute(UIPluginContext context, XLog trainingLog, XLog validatingLog) {
 

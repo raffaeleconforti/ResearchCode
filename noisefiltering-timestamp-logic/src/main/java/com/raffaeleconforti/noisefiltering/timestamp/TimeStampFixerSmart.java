@@ -28,6 +28,8 @@ public class TimeStampFixerSmart implements TimeStampFixer {
     private AutomatonInfrequentBehaviourDetector automatonInfrequentBehaviourDetector = new AutomatonInfrequentBehaviourDetector(AutomatonInfrequentBehaviourDetector.MAX);
     private final AutomatonFactory automatonFactory;
 
+    private final boolean debug_mode;
+
     private final LogCloner logCloner;
     private final NameExtractor nameExtractor;
     private final TimeStampChecker timeStampChecker;
@@ -51,8 +53,10 @@ public class TimeStampFixerSmart implements TimeStampFixer {
     private XLog noiseFreeLog;
 
     private int approach;
+    private boolean self_cleaning;
 
-    public TimeStampFixerSmart(XFactory factory, LogCloner logCloner, XLog rawlog, XEventClassifier xEventClassifier, SimpleDateFormat dateFormatSeconds, int limitExtensive, int approach, boolean useGurobi, boolean useArcsFrequency) {
+    public TimeStampFixerSmart(XFactory factory, LogCloner logCloner, XLog rawlog, XEventClassifier xEventClassifier, SimpleDateFormat dateFormatSeconds, int limitExtensive, int approach, boolean useGurobi, boolean useArcsFrequency, boolean debug_mode, boolean self_cleaning) {
+        this.debug_mode = debug_mode;
         this.factory = factory;
         this.logCloner = logCloner;
         log = rawlog;
@@ -64,6 +68,8 @@ public class TimeStampFixerSmart implements TimeStampFixer {
         this.automatonFactory = new AutomatonFactory(xEventClassifier);
         this.nameExtractor = new NameExtractor(xEventClassifier);
         this.timeStampChecker = new TimeStampChecker(xEventClassifier, dateFormatSeconds);
+
+        this.self_cleaning = self_cleaning;
         initialize(limitExtensive);
     }
 
@@ -94,9 +100,10 @@ public class TimeStampFixerSmart implements TimeStampFixer {
             }
         }
 
-        eventDistributionCalculator = new EventDistributionCalculatorNoiseImpl(log, xEventClassifier, faultyEvents);
+
+        eventDistributionCalculator = new EventDistributionCalculatorNoiseImpl(log, xEventClassifier, faultyEvents, self_cleaning);
         eventDistributionCalculator.analyseLog();
-        eventPermutator = new EventPermutatorSmart(logCloner, factory, xEventClassifier, eventDistributionCalculator, timeStampChecker, sequences, patternsMap, limitExtensive, approach);
+        eventPermutator = new EventPermutatorSmart(logCloner, factory, xEventClassifier, eventDistributionCalculator, timeStampChecker, sequences, patternsMap, limitExtensive, approach, debug_mode);
 
         if(true) {
             Automaton<String> automatonOriginal = automatonFactory.generate(log);

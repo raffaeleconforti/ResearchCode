@@ -5,17 +5,18 @@ import com.raffaeleconforti.context.FakePluginContext;
 import com.raffaeleconforti.log.util.LogAnalyser;
 import com.raffaeleconforti.log.util.LogCloner;
 import com.raffaeleconforti.log.util.LogImporter;
+import com.raffaeleconforti.marking.MarkingDiscoverer;
 import com.raffaeleconforti.measurements.Measure;
 import com.raffaeleconforti.measurements.MeasurementAlgorithm;
 import com.raffaeleconforti.measurements.impl.AlignmentBasedFMeasure;
 import com.raffaeleconforti.measurements.impl.ProjectedFMeasure;
 import com.raffaeleconforti.soundnesschecker.CheckRelaxedSoundnessWithLola;
-import com.raffaeleconforti.wrapper.MiningAlgorithm;
-import com.raffaeleconforti.wrapper.PetrinetWithMarking;
-import com.raffaeleconforti.wrapper.impl.SplitMinerWrapper;
-import com.raffaeleconforti.wrapper.impl.heuristics.HeuristicsAlgorithmWrapper;
-import com.raffaeleconforti.wrapper.impl.inductive.InductiveMinerIMfWrapper;
-import com.raffaeleconforti.wrapper.settings.MiningSettings;
+import com.raffaeleconforti.wrappers.MiningAlgorithm;
+import com.raffaeleconforti.wrappers.PetrinetWithMarking;
+import com.raffaeleconforti.wrappers.impl.SplitMinerWrapper;
+import com.raffaeleconforti.wrappers.impl.heuristics.HeuristicsAlgorithmWrapper;
+import com.raffaeleconforti.wrappers.impl.inductive.InductiveMinerIMfWrapper;
+import com.raffaeleconforti.wrappers.settings.MiningSettings;
 import org.deckfour.xes.classification.XEventAndClassifier;
 import org.deckfour.xes.classification.XEventClassifier;
 import org.deckfour.xes.classification.XEventLifeTransClassifier;
@@ -73,8 +74,8 @@ public class Experiment {
 
     private boolean isSelectedMiningAlgorithm(MiningAlgorithm miningAlgorithm) {
 //        if(miningAlgorithm instanceof HeuristicsAlgorithmWrapper) return true;
-//        if(miningAlgorithm instanceof InductiveMinerIMfWrapper) return true;
-        if(miningAlgorithm instanceof SplitMinerWrapper) return true;
+        if(miningAlgorithm instanceof InductiveMinerIMfWrapper) return true;
+//        if(miningAlgorithm instanceof SplitMinerWrapper) return true;
         return false;
     }
 
@@ -87,17 +88,17 @@ public class Experiment {
 //        if(logName.contains("2015-3")) return false;
 //        if(logName.contains("2015-2")) return false;
 //        if(logName.contains("2015-1")) return false;
-//        if(logName.contains("2015-1.xes")) return false;
-//        if(logName.contains("2014.")) return false;
+//        if(logName.contains("2014")) return false;
+//        if(logName.contains("2014 (SimpleFilter 95")) return false;
 //        if(logName.contains("2013_i")) return false;
 //        if(logName.contains("2013_cp")) return false;
 //        if(!logName.contains("2012")) return false;
-        if(!logName.contains("2011")) return false;
-        if(logName.contains("2011.x")) return false;
-        if(logName.contains("(SimpleFilter 95")) return false;
-        if(logName.contains("(SimpleFilter 90")) return false;
-        if(logName.contains("(SimpleFilter 85")) return false;
-        if(logName.contains("(SimpleFilter 80")) return false;
+        if(!logName.contains("(Python)")) return false;
+//        if(logName.contains("2011.x")) return false;
+//        if(logName.contains("(SimpleFilter 95")) return false;
+//        if(logName.contains("(SimpleFilter 90")) return false;
+//        if(logName.contains("(SimpleFilter 85")) return false;
+//        if(logName.contains("(SimpleFilter 80")) return false;
 //        if(logName.contains("(SimpleFilter 75")) return false;
 //        if(logName.contains("(SimpleFilter 70")) return false;
         return true;
@@ -160,7 +161,7 @@ public class Experiment {
 //                                acceptingPetriNet,
 //                                new File(extLocation + "/" + logName + "-" + miningAlgorithmName + ".pnml"));
 
-                        if(!isSound(acceptingPetriNet, relaxedSoundness)) continue;
+//                        if(!isSound(acceptingPetriNet, relaxedSoundness)) continue;
 
                         for (MeasurementAlgorithm measurementAlgorithm : measurementAlgorithms) {
                             if (isSelectedMeasurementAlgorithm(measurementAlgorithm)) {
@@ -168,7 +169,7 @@ public class Experiment {
                                 System.out.println("DEBUG - measuring: " + measurementAlgorithmName);
 
                                 Measure measure;
-                                if(miningAlgorithm.canMineProcessTree()) {
+                                if(measurementAlgorithm instanceof ProjectedFMeasure && miningAlgorithm.canMineProcessTree()) {
                                     measure = measurementAlgorithm.computeMeasurement(fakePluginContext, xEventClassifier,
                                             processTree, miningAlgorithm, refLog);
                                 }else {
@@ -238,7 +239,10 @@ public class Experiment {
                 var7.printStackTrace();
             }
 
+            MarkingDiscoverer.createInitialMarkingConnection(fakePluginContext, pn.petrinet, pn.initialMarking);
+            MarkingDiscoverer.createFinalMarkingConnection(fakePluginContext, pn.petrinet, pn.finalMarking);
             return new PetrinetWithMarking(pn.petrinet, pn.initialMarking, pn.finalMarking);
+
         } else{
             return miningAlgorithm.minePetrinet(fakePluginContext, log, false, miningSettings, xEventClassifier);
         }

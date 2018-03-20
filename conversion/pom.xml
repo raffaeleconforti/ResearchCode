@@ -7,7 +7,7 @@
     <parent>
         <artifactId>research-code</artifactId>
         <groupId>com.raffaeleconforti</groupId>
-        <version>1.0.20171019</version>
+        <version>1.0.20180320</version>
         <relativePath>../</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -76,7 +76,7 @@
         </dependency>
         <dependency>
             <groupId>org.processmining</groupId>
-            <artifactId>prom5-lib</artifactId>
+            <artifactId>prom5-framework</artifactId>
         </dependency>
 
         <dependency>

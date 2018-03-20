@@ -24,8 +24,8 @@ public class TimeStampFilterCheckerPlugin {
 
     @UITopiaVariant(affiliation = UITopiaVariant.EHV,
             author = "Raffaele Conforti",
-            email = "raffaele.conforti@qut.edu.au",
-            pack = "Noise Filtering (raffaele.conforti@qut.edu.au)")
+            email = "raffaele.conforti@unimelb.edu.au",
+            pack = "Noise Filtering (raffaele.conforti@unimelb.edu.au)")
     @PluginVariant(variantLabel = "Timestamp Filter Checker", requiredParameterLabels = {0, 1, 2})
     public String check(final UIPluginContext context, XLog filteredLog, XLog noisyLog, XLog correctLog) {
         TimeStampFilterChecker timeStampFilterChecker = new TimeStampFilterChecker();

@@ -9,15 +9,15 @@ import com.raffaeleconforti.measurements.ui.computemeasurement.SelectMinerUIResu
 import com.raffaeleconforti.memorylog.XAttributeLiteralImpl;
 import com.raffaeleconforti.noisefiltering.event.prom.InfrequentBehaviourFilterPlugin;
 import com.raffaeleconforti.noisefiltering.event.prom.InfrequentBehaviourFilterPluginLPSolve;
-import com.raffaeleconforti.wrapper.BPMNMinerAlgorithmWrapper;
-import com.raffaeleconforti.wrapper.MiningAlgorithm;
-import com.raffaeleconforti.wrapper.PetrinetWithMarking;
-import com.raffaeleconforti.wrapper.StructuredMinerAlgorithmWrapper;
-import com.raffaeleconforti.wrapper.impl.*;
-import com.raffaeleconforti.wrapper.impl.alpha.AlphaAlgorithmWrapper;
-import com.raffaeleconforti.wrapper.impl.heuristics.Heuristics52AlgorithmWrapper;
-import com.raffaeleconforti.wrapper.impl.heuristics.HeuristicsAlgorithmWrapper;
-import com.raffaeleconforti.wrapper.impl.inductive.InductiveMinerIMWrapper;
+import com.raffaeleconforti.wrappers.BPMNMinerAlgorithmWrapper;
+import com.raffaeleconforti.wrappers.MiningAlgorithm;
+import com.raffaeleconforti.wrappers.PetrinetWithMarking;
+import com.raffaeleconforti.wrappers.StructuredMinerAlgorithmWrapper;
+import com.raffaeleconforti.wrappers.impl.*;
+import com.raffaeleconforti.wrappers.impl.alpha.AlphaAlgorithmWrapper;
+import com.raffaeleconforti.wrappers.impl.heuristics.Heuristics52AlgorithmWrapper;
+import com.raffaeleconforti.wrappers.impl.heuristics.HeuristicsAlgorithmWrapper;
+import com.raffaeleconforti.wrappers.impl.inductive.InductiveMinerIMWrapper;
 import org.deckfour.xes.factory.XFactoryNaiveImpl;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import nl.tue.astar.AStarException;
@@ -96,8 +96,8 @@ public class ComputeMeasurment {
 
     @UITopiaVariant(affiliation = UITopiaVariant.EHV,
             author = "Raffaele Conforti",
-            email = "raffaele.conforti@qut.edu.au",
-            pack = "BPMNMiner (raffaele.conforti@qut.edu.au)")
+            email = "raffaele.conforti@unimelb.edu.au",
+            pack = "BPMNMiner (raffaele.conforti@unimelb.edu.au)")
     @PluginVariant(variantLabel = "Compute Measurements", requiredParameterLabels = {0})
     public String execute(UIPluginContext context, XLog trainingLog) {
         return execute(context, trainingLog, trainingLog);
@@ -105,8 +105,8 @@ public class ComputeMeasurment {
 
     @UITopiaVariant(affiliation = UITopiaVariant.EHV,
             author = "Raffaele Conforti",
-            email = "raffaele.conforti@qut.edu.au",
-            pack = "BPMNMiner (raffaele.conforti@qut.edu.au)")
+            email = "raffaele.conforti@unimelb.edu.au",
+            pack = "BPMNMiner (raffaele.conforti@unimelb.edu.au)")
     @PluginVariant(variantLabel = "Compute Measurements with test noisefiltering", requiredParameterLabels = {0, 1})
     public String execute(UIPluginContext context, XLog trainingLog, XLog validatingLog) {
         return execute(context, trainingLog, validatingLog, true);
@@ -114,8 +114,8 @@ public class ComputeMeasurment {
 
     @UITopiaVariant(affiliation = UITopiaVariant.EHV,
             author = "Raffaele Conforti",
-            email = "raffaele.conforti@qut.edu.au",
-            pack = "BPMNMiner (raffaele.conforti@qut.edu.au)")
+            email = "raffaele.conforti@unimelb.edu.au",
+            pack = "BPMNMiner (raffaele.conforti@unimelb.edu.au)")
     @PluginVariant(variantLabel = "Compute Measurements with Model", requiredParameterLabels = {1, 2, 3, 4})
     public String execute(UIPluginContext context, XLog validatingLog, Petrinet petrinet, Marking initialMarking, Marking finalMarking) {
 

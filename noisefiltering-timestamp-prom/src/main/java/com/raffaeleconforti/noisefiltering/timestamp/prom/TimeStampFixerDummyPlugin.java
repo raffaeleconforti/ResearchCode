@@ -22,8 +22,8 @@ public class TimeStampFixerDummyPlugin {
 
     @UITopiaVariant(affiliation = UITopiaVariant.EHV,
             author = "Raffaele Conforti",
-            email = "raffaele.conforti@qut.edu.au",
-            pack = "TimeStampResult Filtering (raffaele.conforti@qut.edu.au)")
+            email = "raffaele.conforti@unimelb.edu.au",
+            pack = "TimeStampResult Filtering (raffaele.conforti@unimelb.edu.au)")
     @PluginVariant(variantLabel = "Timestamp Filter Dummy", requiredParameterLabels = {0})//, 1, 2, 3 })
     public XLog fixTimeStamp(final UIPluginContext context, XLog log) {
         return timeStampFixerExecutor.filterLog(log);

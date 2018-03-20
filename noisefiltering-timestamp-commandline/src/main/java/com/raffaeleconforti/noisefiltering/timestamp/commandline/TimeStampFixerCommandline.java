@@ -40,11 +40,11 @@ public class TimeStampFixerCommandline {
     }
 
     public TimeStampFixerCommandline(boolean useGurobi, boolean useArcsFrequency) {
-        timeStampFixerSmartExecutor = new TimeStampFixerSmartExecutor(useGurobi, useArcsFrequency);
+        timeStampFixerSmartExecutor = new TimeStampFixerSmartExecutor(useGurobi, useArcsFrequency, false);
     }
 
     public XLog filterLog(XLog rawlog) {
-        return timeStampFixerSmartExecutor.filterLog(rawlog, 11, PermutationTechnique.ILP_LPSOLVE);
+        return timeStampFixerSmartExecutor.filterLog(rawlog, 11, PermutationTechnique.ILP_LPSOLVE, false, false);
     }
 
 }

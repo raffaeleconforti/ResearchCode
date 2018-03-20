@@ -22,7 +22,7 @@ public class BPMNToPetriNetConverterPlugin {
 
     @UITopiaVariant(affiliation = UITopiaVariant.EHV,
             author = "Raffaele Conforti",
-            email = "raffaele.conforti@qut.edu.au",
+            email = "raffaele.conforti@unimelb.edu.au",
             pack = "bpmnminer")
     @PluginVariant(variantLabel = "Convert BPMN to Petrinet", requiredParameterLabels = {0})
     public Petrinet convert(final UIPluginContext context, BPMNDiagram diagram) {

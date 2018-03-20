@@ -23,6 +23,8 @@ public class LPSolve_Solver implements ILPSolver {
 
     public static final double INFINITY = Math.pow(2, 31) - 1;//1.0E30;//1.0E100D;
 
+    private boolean debug_mode = false;
+
     private final int MAX_EXP = 20;
     private int max_exp;
     private boolean alwaysFeasible;
@@ -190,7 +192,7 @@ public class LPSolve_Solver implements ILPSolver {
                 lp.setMaxim();
             }
 
-            problem = saveProblem();
+            if(debug_mode) problem = saveProblem();
 
             lp.setVerbose(LpSolve.IMPORTANT);
             status = lp.solve();

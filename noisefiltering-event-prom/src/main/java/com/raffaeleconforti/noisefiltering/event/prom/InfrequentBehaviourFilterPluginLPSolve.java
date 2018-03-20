@@ -33,11 +33,12 @@ public class InfrequentBehaviourFilterPluginLPSolve extends InfrequentBehaviourF
     private final XEventClassifier xEventClassifier = new XEventAndClassifier(new XEventNameClassifier());
     private final AutomatonFactory automatonFactory = new AutomatonFactory(xEventClassifier);
     private InfrequentBehaviourFilter infrequentBehaviourFilter = new InfrequentBehaviourFilter(xEventClassifier);
+    private final boolean debug_mode = false;
 
     @UITopiaVariant(affiliation = UITopiaVariant.EHV,
             author = "Raffaele Conforti",
-            email = "raffaele.conforti@qut.edu.au",
-            pack = "Infrequent Behaviour Filter LPSolver (raffaele.conforti@qut.edu.au)")
+            email = "raffaele.conforti@unimelb.edu.au",
+            pack = "Infrequent Behaviour Filter LPSolver (raffaele.conforti@unimelb.edu.au)")
     @PluginVariant(variantLabel = "Infrequent Behaviour Filter LPSolve", requiredParameterLabels = {0})//, 1, 2, 3 })
     public XLog filterLogLPSolver(final UIPluginContext context, XLog rawlog) {
         XLog log = rawlog;
@@ -51,7 +52,7 @@ public class InfrequentBehaviourFilterPluginLPSolve extends InfrequentBehaviourF
 
         Automaton<String> automatonOriginal = automatonFactory.generate(log);
 
-        InfrequentBehaviourFilter infrequentBehaviourFilter = new InfrequentBehaviourFilter(xEventClassifier, false, false);
+        InfrequentBehaviourFilter infrequentBehaviourFilter = new InfrequentBehaviourFilter(xEventClassifier, false, false, debug_mode);
         double[] arcs = infrequentBehaviourFilter.discoverArcs(automatonOriginal, 1.0);
 
         NoiseFilterUI noiseUI = new NoiseFilterUI();

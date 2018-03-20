@@ -6,10 +6,7 @@ import com.raffaeleconforti.ilpsolverwrapper.ILPSolverExpression;
 import com.raffaeleconforti.ilpsolverwrapper.ILPSolverVariable;
 import gurobi.*;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,6 +19,7 @@ public class Gurobi_Solver implements ILPSolver {
 
     private GRBEnv env;
     private GRBModel model;
+    private ILPSolverExpression objectiveFunction;
     private List<Gurobi_Variable> variables;
     private List<Gurobi_Constraint> constraints;
     private boolean minimize;
@@ -39,13 +37,21 @@ public class Gurobi_Solver implements ILPSolver {
     @Override
     public void createModel() {
         try {
+            objectiveFunction = null;
             variables = new ArrayList<>();
             constraints = new ArrayList<>();
             minimize = true;
 
+            System.setOut(new PrintStream(new OutputStream() {
+                @Override
+                public void write(int b) throws IOException {}
+            }));
+
             env = new GRBEnv("qp.noisefiltering");
             model = new GRBModel(env);
             model.getEnv().set(GRB.IntParam.LogToConsole, 0);
+
+            System.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out)));
         } catch (GRBException e) {
             e.printStackTrace();
         }
@@ -104,7 +110,8 @@ public class Gurobi_Solver implements ILPSolver {
     @Override
     public void setObjectiveFunction(ILPSolverExpression objectiveFunction) {
         try {
-            model.setObjective(((Gurobi_Expression) objectiveFunction).getLinearExpression(), minimize?GRB.MINIMIZE:GRB.MAXIMIZE);
+            this.objectiveFunction = objectiveFunction;
+            model.setObjective(((Gurobi_Expression) objectiveFunction).getLinearExpression(), minimize ? GRB.MINIMIZE : GRB.MAXIMIZE);
         } catch (GRBException e) {
             e.printStackTrace();
         }
@@ -113,11 +120,13 @@ public class Gurobi_Solver implements ILPSolver {
     @Override
     public void setMaximize() {
         minimize = false;
+        if(objectiveFunction != null) setObjectiveFunction(objectiveFunction);
     }
 
     @Override
     public void setMinimize() {
         minimize = true;
+        if(objectiveFunction != null) setObjectiveFunction(objectiveFunction);
     }
 
     @Override
@@ -126,7 +135,7 @@ public class Gurobi_Solver implements ILPSolver {
             model.update();
 
             for(Gurobi_Variable variable : variables) {
-                double diff = (variable.getVariableType() == VariableType.CONTINUOUS)?Double.MIN_VALUE:1;
+                double diff = (variable.getVariableType() == VariableType.CONTINUOUS) ? Double.MIN_VALUE : 1;
                 GRBLinExpr expression = new GRBLinExpr();
                 expression.addTerm(1, variable.getVariable());
                 if(variable.getLowerBound() != -getInfinity()) {
