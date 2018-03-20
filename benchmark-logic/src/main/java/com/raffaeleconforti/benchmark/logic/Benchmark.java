@@ -203,6 +203,7 @@ public class Benchmark {
                                     measure.addMeasure("(a)(3-f)prec.", "-");
                                 }
                             }else {
+                                sTime = System.currentTimeMillis();
                                 measure = measurementAlgorithm.computeMeasurement(fakePluginContext, xEventClassifier, petrinetWithMarking, miningAlgorithm, measuringLog);
                             }
 
@@ -215,9 +216,10 @@ public class Benchmark {
                             } else {
                                 measures.get(miningAlgorithmName).get(logName).put(measurementAlgorithmName, String.format("%.2f", measure.getValue()));
                                 System.out.println("DEBUG - " + measurementAlgorithmName + " : " + measure.getValue());
+//                                System.out.println("DEBUG - time : " + measure.getMetricValue("time"));
                             }
 
-                            if( execTime > MAX_TIME)
+//                            if( execTime > MAX_TIME)
                                 measures.get(miningAlgorithmName).get(logName).put(measurementAlgorithmName + ":tor", Long.toString(execTime));
                         } catch (Error e) {
                             System.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out)));
@@ -414,6 +416,8 @@ public class Benchmark {
         Petrinet net = null;
 
         AlignmentBasedFMeasure alignmentBasedFMeasure = new AlignmentBasedFMeasure();
+        AlignmentBasedPrecision alignmentBasedPrecision = new AlignmentBasedPrecision();
+//        ProjectedPrecision projprecision = new ProjectedPrecision();
         Benchmark benchmark = new Benchmark();
         PnmlImportNet pnmli = new PnmlImportNet();
 
@@ -430,8 +434,10 @@ public class Benchmark {
             PetrinetWithMarking petrinet = new PetrinetWithMarking(net, initMarking, finalMarking);
             XLog log = benchmark.loadLog(logPath);
 
-             Measure measure = alignmentBasedFMeasure.computeMeasurement(fakePluginContext, xEventClassifier, petrinet, null, log);
-             for( String metric : measure.getMetrics() ) System.out.println("RESULT - " + metric + " : " + measure.getMetricValue(metric));
+            Measure measure = alignmentBasedPrecision.computeMeasurement(fakePluginContext, xEventClassifier, petrinet, null, log);
+            for( String metric : measure.getMetrics() ) System.out.println("RESULT - " + metric + " : " + measure.getMetricValue(metric));
+//            measure = projprecision.computeMeasurement(fakePluginContext, xEventClassifier, petrinet, null, log);
+            for( String metric : measure.getMetrics() ) System.out.println("RESULT - " + metric + " : " + measure.getMetricValue(metric));
         } catch ( Exception e ) {
             System.out.println("ERROR - " + e.getMessage());
             e.printStackTrace();

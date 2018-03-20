@@ -20,6 +20,7 @@ import org.processmining.plugins.bpmnminer.causalnet.CausalNet;
 import org.processmining.plugins.bpmnminer.converter.CausalNetToPetrinet;
 import org.processmining.plugins.bpmnminer.plugins.FodinaMinerPlugin;
 import org.processmining.plugins.bpmnminer.types.MinerSettings;
+import org.processmining.plugins.bpmnminer.ui.FullParameterPanel;
 import org.processmining.processtree.ProcessTree;
 
 import java.io.*;
@@ -89,14 +90,32 @@ public class HyperParamOptimizedFodina implements MiningAlgorithm {
         double p_threshold;
         boolean longDistance = false;
 
+        minerSettings = new MinerSettings();
+        minerSettings.classifier = xEventClassifier;
+        double nom = (double) log.size() / ((double) log.size() + (double) minerSettings.dependencyDivisor);
+        if (nom <= 0.0D) {
+            nom = 0.0D;
+        }
+
+        if (nom >= 0.9D) {
+            nom = 0.9D;
+        }
+
+        minerSettings.dependencyThreshold = nom;
+        minerSettings.l1lThreshold = nom;
+        minerSettings.l2lThreshold = nom;
+        FullParameterPanel parameters = new FullParameterPanel(minerSettings);
+        context.showConfiguration("Miner Parameters", parameters);
+        minerSettings = parameters.getSettings();
+
         do {
             minerSettings.useLongDistanceDependency = longDistance;
-            p_threshold = p_MIN;
-            do {
-                minerSettings.patternThreshold = p_threshold;
+//            p_threshold = p_MIN;
+//            do {
+//                minerSettings.patternThreshold = p_threshold;
                 d_threshold = d_MIN;
                 do {
-                    combination = ":p:" + p_threshold + ":d:" + d_threshold + ":l:" + longDistance;
+                    combination = ":d:" + d_threshold + ":l:" + longDistance;
                     try {
                         minerSettings.dependencyThreshold = d_threshold;
 
@@ -111,6 +130,11 @@ public class HyperParamOptimizedFodina implements MiningAlgorithm {
                         Object[] result = CausalNetToPetrinet.convert(context, net);
                         logPreprocessing.removedAddedElements((Petrinet) result[0]);
 
+
+                        boolean includeLifeCycle = true;
+                        if(xEventClassifier instanceof XEventNameClassifier) includeLifeCycle = false;
+                        if(!includeLifeCycle) logPreprocessing.removedLifecycleFromName((Petrinet) result[0]);
+
                         MarkingDiscoverer.createInitialMarkingConnection(context, (Petrinet) result[0], (Marking) result[1]);
 
                         System.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out)));
@@ -121,6 +145,8 @@ public class HyperParamOptimizedFodina implements MiningAlgorithm {
 
                         fit = fitnessCalculator.computeMeasurement(context, eventNameClassifier, petrinet, this, log).getValue();
                         prec = precisionCalculator.computeMeasurement(context, eventNameClassifier, petrinet, this, log).getValue();
+
+                        System.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out)));
 
                         if (fit.isNaN()) fit = 0.0;
                         if (prec.isNaN()) prec = 0.0;
@@ -146,11 +172,11 @@ public class HyperParamOptimizedFodina implements MiningAlgorithm {
                     d_threshold += d_STEP;
                 } while (d_threshold <= d_MAX);
 
-                p_threshold += p_STEP;
-            } while (p_threshold <= p_MAX);
+//                p_threshold += p_STEP;
+//            } while (p_threshold <= p_MAX);
 
-//            if(longDistance) break;
-//            else longDistance = true;
+            if(longDistance) break;
+            else longDistance = true;
         } while (longDistance);
 
         bestValue = Collections.max(fscore.keySet());
