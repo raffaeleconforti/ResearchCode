@@ -44,6 +44,8 @@ public class AlignmentBasedPrecision implements MeasurementAlgorithm {
             public void write(int b) throws IOException {}
         }));
 
+        long start = System.currentTimeMillis();
+
         MultiETCPlugin multiETCPlugin = new MultiETCPlugin();
 
         MultiETCSettings settings = new MultiETCSettings();
@@ -65,6 +67,8 @@ public class AlignmentBasedPrecision implements MeasurementAlgorithm {
         }
 
         System.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out)));
+        long time = System.currentTimeMillis() - start;
+        measure.addMeasure("time", time);
         return measure;
     }
 

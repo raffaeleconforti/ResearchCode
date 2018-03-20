@@ -29,7 +29,7 @@ import java.util.*;
  */
 public class HyperParamOptimizedStructuredHeuristicsMiner implements MiningAlgorithm {
 
-    private static double STEP = 0.10D;
+    private static double STEP = 0.20D;
     private static double MIN = 0.00D;
     private static double MAX = 1.01D;
 
