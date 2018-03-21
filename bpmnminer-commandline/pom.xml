@@ -103,10 +103,6 @@
             <groupId>com.raffaeleconforti</groupId>
             <artifactId>bpmnminer-logic</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.apromore</groupId>
-            <artifactId>bpmntk-osgi</artifactId>
-        </dependency>
 
         <dependency>
             <groupId>org.processmining</groupId>

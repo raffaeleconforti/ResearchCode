@@ -19,7 +19,7 @@ import org.processmining.acceptingpetrinet.plugins.ImportAcceptingPetriNetPlugin
 import org.processmining.framework.plugin.ProMCanceller;
 import org.processmining.models.graphbased.AttributeMap;
 import org.processmining.models.graphbased.directed.petrinet.elements.Transition;
-import org.processmining.plugins.InductiveMiner.efficienttree.EfficientTreeReduceParametersDuplicates;
+import org.processmining.plugins.inductiveminer2.efficienttree.EfficientTreeReduceParametersDuplicates;
 import org.processmining.projectedrecallandprecision.framework.CompareParameters;
 import org.processmining.projectedrecallandprecision.plugins.CompareLog2PetriNetPlugin;
 import org.processmining.projectedrecallandprecision.result.ProjectedRecallPrecisionResult;

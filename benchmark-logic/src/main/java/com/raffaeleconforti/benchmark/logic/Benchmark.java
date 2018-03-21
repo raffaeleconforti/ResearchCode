@@ -414,7 +414,7 @@ public class Benchmark {
 
         AlignmentBasedFMeasure alignmentBasedFMeasure = new AlignmentBasedFMeasure();
         AlignmentBasedPrecision alignmentBasedPrecision = new AlignmentBasedPrecision();
-//        ProjectedPrecision projprecision = new ProjectedPrecision();
+        ProjectedPrecision projprecision = new ProjectedPrecision();
         Benchmark benchmark = new Benchmark();
         PnmlImportNet pnmli = new PnmlImportNet();
 
@@ -433,7 +433,7 @@ public class Benchmark {
 
             Measure measure = alignmentBasedPrecision.computeMeasurement(fakePluginContext, xEventClassifier, petrinet, null, log);
             for( String metric : measure.getMetrics() ) System.out.println("RESULT - " + metric + " : " + measure.getMetricValue(metric));
-//            measure = projprecision.computeMeasurement(fakePluginContext, xEventClassifier, petrinet, null, log);
+            measure = projprecision.computeMeasurement(fakePluginContext, xEventClassifier, petrinet, null, log);
             for( String metric : measure.getMetrics() ) System.out.println("RESULT - " + metric + " : " + measure.getMetricValue(metric));
         } catch ( Exception e ) {
             System.out.println("ERROR - " + e.getMessage());

@@ -147,8 +147,8 @@
                             <goal>wget</goal>
                         </goals>
                         <configuration>
-                            <url>https://svn.win.tue.nl/repos/prom/Releases/Packages/InductiveMiner/InductiveMiner.jar</url>
-                            <outputFileName>inductiveminer.jar</outputFileName>
+                            <url>https://svn.win.tue.nl/repos/prom/Releases/Packages/InductiveMinerDeprecated/InductiveMinerDeprecated.jar</url>
+                            <outputFileName>inductiveminer-deprecated.jar</outputFileName>
                             <outputDirectory>${project.build.directory}</outputDirectory>
                         </configuration>
                     </execution>
@@ -1010,6 +1010,166 @@
                     </execution>
 
                     <execution>
+                        <id>install-stixar-graph</id>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                        <configuration>
+                            <groupId>net.stixar</groupId>
+                            <artifactId>stixar-graph</artifactId>
+                            <version>1.0</version>
+                            <packaging>jar</packaging>
+                            <file>src/main/java/stixar-graph-1.0.jar</file>
+                            <generatePom>true</generatePom>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>install-stixar-util</id>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                        <configuration>
+                            <groupId>net.stixar</groupId>
+                            <artifactId>stixar-util</artifactId>
+                            <version>1.0</version>
+                            <packaging>jar</packaging>
+                            <file>src/main/java/stixar-util-1.0.jar</file>
+                            <generatePom>true</generatePom>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>install-hub-pn</id>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                        <configuration>
+                            <groupId>hub.top.petrinet</groupId>
+                            <artifactId>hub-pn</artifactId>
+                            <version>1.0</version>
+                            <packaging>jar</packaging>
+                            <file>src/main/java/hub-pn-1.0.jar</file>
+                            <generatePom>true</generatePom>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>install-uma</id>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                        <configuration>
+                            <groupId>hub.top.uma</groupId>
+                            <artifactId>uma</artifactId>
+                            <version>1.2.4</version>
+                            <packaging>jar</packaging>
+                            <file>src/main/java/uma-1.2.4.jar</file>
+                            <generatePom>true</generatePom>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>install-rpst</id>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                        <configuration>
+                            <groupId>de.bpt.hpi</groupId>
+                            <artifactId>rpst</artifactId>
+                            <version>1.0</version>
+                            <packaging>jar</packaging>
+                            <file>src/main/java/rpst-1.0.jar</file>
+                            <generatePom>true</generatePom>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>install-jdom</id>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                        <configuration>
+                            <groupId>org.jdom</groupId>
+                            <artifactId>jdom</artifactId>
+                            <version>1.0</version>
+                            <packaging>jar</packaging>
+                            <file>src/main/java/jdom-1.0.jar</file>
+                            <generatePom>true</generatePom>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>install-kohsuke</id>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                        <configuration>
+                            <groupId>org.kohsuke</groupId>
+                            <artifactId>kohsuke</artifactId>
+                            <version>2.0.6</version>
+                            <packaging>jar</packaging>
+                            <file>src/main/java/kohsuke-2.0.6.jar</file>
+                            <generatePom>true</generatePom>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>install-log4j</id>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                        <configuration>
+                            <groupId>org.apache.log4j</groupId>
+                            <artifactId>log4j</artifactId>
+                            <version>1.2.17</version>
+                            <packaging>jar</packaging>
+                            <file>src/main/java/log4j-1.2.17.jar</file>
+                            <generatePom>true</generatePom>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>install-jgraph</id>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                        <configuration>
+                            <groupId>org.jgraph</groupId>
+                            <artifactId>jgraph</artifactId>
+                            <version>1.6</version>
+                            <packaging>jar</packaging>
+                            <file>src/main/java/jgraph-1.6.jar</file>
+                            <generatePom>true</generatePom>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>install-antlr-rt</id>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                        <configuration>
+                            <groupId>org.antlr.runtime</groupId>
+                            <artifactId>antlr-rt</artifactId>
+                            <version>3.2.0</version>
+                            <packaging>jar</packaging>
+                            <file>src/main/java/antlr-rt-3.2.0.jar</file>
+                            <generatePom>true</generatePom>
+                        </configuration>
+                    </execution>
+
+                    <execution>
                         <id>install-heuristicsminer</id>
                         <phase>install</phase>
                         <goals>
@@ -1042,17 +1202,17 @@
                     </execution>
 
                     <execution>
-                        <id>install-inductiveminer</id>
+                        <id>install-inductiveminer-deprecated</id>
                         <phase>install</phase>
                         <goals>
                             <goal>install-file</goal>
                         </goals>
                         <configuration>
                             <groupId>org.processmining</groupId>
-                            <artifactId>inductiveminer</artifactId>
+                            <artifactId>inductiveminer-deprecated</artifactId>
                             <version>${prom.version}</version>
                             <packaging>jar</packaging>
-                            <file>${project.build.directory}/inductiveminer.jar</file>
+                            <file>${project.build.directory}/inductiveminer-deprecated.jar</file>
                             <generatePom>true</generatePom>
                         </configuration>
                     </execution>
@@ -1314,7 +1474,7 @@
                     </execution>
 
                     <execution>
-                        <id>install-jgraph</id>
+                        <id>install-processming-jgraph</id>
                         <phase>install</phase>
                         <goals>
                             <goal>install-file</goal>
@@ -1418,7 +1578,7 @@
                         <configuration>
                             <groupId>org.apromore</groupId>
                             <artifactId>bpmntk-osgi</artifactId>
-                            <version>1.0.20180320</version>
+                            <version>20180320</version>
                             <packaging>jar</packaging>
                             <file>src/main/java/bpmntk-osgi-20180320.jar</file>
                             <generatePom>true</generatePom>

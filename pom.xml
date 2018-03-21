@@ -62,7 +62,7 @@
         <module>noisefiltering-timestamp-commandline</module>
         <module>noisefiltering-timestamp-prom</module>
 
-        <module>test</module>
+        <!--<module>test</module>-->
         <!--<module>design-structure-matrix</module>-->
         <module>benchmark-logic</module>
         <module>nlp</module>
@@ -111,7 +111,7 @@
         <flanagan.version>20151114</flanagan.version>
 
         <commons-math3.version>3.6.1</commons-math3.version>
-        <bpmntk-osgi.version>1.0-20171130</bpmntk-osgi.version>
+        <bpmntk-osgi.version>20180320</bpmntk-osgi.version>
         <bpstruct.version>0.1.117</bpstruct.version>
         <jbpt.version>0.2.77</jbpt.version>
 
@@ -563,7 +563,7 @@
             </dependency>
             <dependency>
                 <groupId>org.processmining</groupId>
-                <artifactId>inductiveminer</artifactId>
+                <artifactId>inductiveminer-deprecated</artifactId>
                 <version>${prom.version}</version>
             </dependency>
             <dependency>

@@ -197,7 +197,7 @@
         </dependency>
         <dependency>
             <groupId>org.processmining</groupId>
-            <artifactId>inductiveminer</artifactId>
+            <artifactId>inductiveminer-deprecated</artifactId>
         </dependency>
     </dependencies>
 
