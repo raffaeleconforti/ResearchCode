@@ -1,6 +1,5 @@
 package com.raffaeleconforti.benchmark.logic;
 
-import au.edu.qut.petrinet.tools.SoundnessChecker;
 import au.edu.qut.processmining.log.LogParser;
 import au.edu.qut.processmining.log.SimpleLog;
 import com.raffaeleconforti.context.FakePluginContext;
@@ -29,13 +28,10 @@ import org.deckfour.xes.model.XTrace;
 import org.deckfour.xes.out.XesXmlSerializer;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
-import org.json.JSONException;
-import org.processmining.acceptingpetrinet.models.AcceptingPetriNet;
 import org.processmining.acceptingpetrinet.models.impl.AcceptingPetriNetImpl;
 import org.processmining.acceptingpetrinet.plugins.ExportAcceptingPetriNetPlugin;
 import org.processmining.contexts.uitopia.UIContext;
 import org.processmining.contexts.uitopia.UIPluginContext;
-import org.processmining.framework.connections.ConnectionCannotBeObtained;
 import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
 import org.processmining.models.graphbased.directed.petrinet.Petrinet;
 import org.processmining.models.semantics.petrinet.Marking;
@@ -140,6 +136,7 @@ public class Benchmark {
         XLog log;
         File old;
         String pathname;
+        long eTime;
         for( MiningAlgorithm miningAlgorithm : miningAlgorithms ) {
             old = null;
 
@@ -160,19 +157,18 @@ public class Benchmark {
 
                 try {
                     // mining the petrinet
-                    long sTime = System.currentTimeMillis();
+                    eTime = System.currentTimeMillis();
                     logCloner = new LogCloner(new XFactoryNaiveImpl());
                     XLog miningLog = logCloner.cloneLog(log);
                     PetrinetWithMarking petrinetWithMarking = miningAlgorithm.minePetrinet(fakePluginContext, miningLog, false, null, xEventClassifier);
-                    long execTime = System.currentTimeMillis() - sTime;
-                    measures.get(miningAlgorithmName).get(logName).put("_exec-t", Long.toString(execTime));
-                    System.out.println("DEBUG - mining time: " + execTime + "ms");
+                    eTime = System.currentTimeMillis() - eTime;
+                    measures.get(miningAlgorithmName).get(logName).put("_exec-t", Long.toString(eTime));
+                    System.out.println("DEBUG - mining time: " + eTime + "ms");
 
                     String bpmnpath = "./results/" + miningAlgorithmName + "/" + logName + "_" + Long.toString(System.currentTimeMillis()) + ".bpmn";
                     BPMNDiagram bpmnModel = PetriNetToBPMNConverter.convert(petrinetWithMarking.getPetrinet(), petrinetWithMarking.getInitialMarking(), petrinetWithMarking.getFinalMarking(), false);
                     exportBPMN(bpmnModel, bpmnpath);
 
-                    AcceptingPetriNet acceptingPetriNet = getAcceptingPetriNet(petrinetWithMarking);
 
                     Measure measure;
                     // computing metrics on the output petrinet
@@ -181,30 +177,14 @@ public class Benchmark {
 
                         try {
                             XLog measuringLog = logCloner.cloneLog(log);
-                            sTime = System.currentTimeMillis();
+                            eTime = System.currentTimeMillis();
+                            if( measurementAlgorithm instanceof BPMNComplexity ) {
+                                BPMNDiagram diagram = miningAlgorithm.mineBPMNDiagram(fakePluginContext, miningLog, false, null, xEventClassifier);
+                                eTime = System.currentTimeMillis();
+                                measure = ((BPMNComplexity) measurementAlgorithm).computeMeasurementBPMN(diagram);
+                            } else measure = measurementAlgorithm.computeMeasurement(fakePluginContext, xEventClassifier, petrinetWithMarking, miningAlgorithm, measuringLog);
 
-                            if(!isSound(acceptingPetriNet) &&
-                                    (measurementAlgorithm instanceof AlignmentBasedFitness ||
-                                            measurementAlgorithm instanceof AlignmentBasedPrecision ||
-                                            measurementAlgorithm instanceof AlignmentBasedFMeasure ||
-                                            measurementAlgorithm instanceof XFoldAlignmentBasedFitness ||
-                                            measurementAlgorithm instanceof XFoldAlignmentBasedPrecision ||
-                                            measurementAlgorithm instanceof XFoldAlignmentBasedFMeasure)) {
-                                measure = new Measure();
-                                measure.addMeasure(measurementAlgorithmName, "-");
-                                if(measurementAlgorithm instanceof AlignmentBasedFMeasure) {
-                                    measure.addMeasure("(a)fitness", "-");
-                                    measure.addMeasure("(a)precision", "-");
-                                }if(measurementAlgorithm instanceof XFoldAlignmentBasedFMeasure) {
-                                    measure.addMeasure("(a)(3-f)fit.", "-");
-                                    measure.addMeasure("(a)(3-f)prec.", "-");
-                                }
-                            }else {
-                                sTime = System.currentTimeMillis();
-                                measure = measurementAlgorithm.computeMeasurement(fakePluginContext, xEventClassifier, petrinetWithMarking, miningAlgorithm, measuringLog);
-                            }
-
-                            execTime = System.currentTimeMillis() - sTime;
+                            eTime = System.currentTimeMillis() - eTime;
                             if (measurementAlgorithm.isMultimetrics()) {
                                 for (String metric : measure.getMetrics()) {
                                     measures.get(miningAlgorithmName).get(logName).put(metric, measure.getMetricValue(metric));
@@ -213,11 +193,10 @@ public class Benchmark {
                             } else {
                                 measures.get(miningAlgorithmName).get(logName).put(measurementAlgorithmName, String.format("%.2f", measure.getValue()));
                                 System.out.println("DEBUG - " + measurementAlgorithmName + " : " + measure.getValue());
-//                                System.out.println("DEBUG - time : " + measure.getMetricValue("time"));
                             }
 
 //                            if( execTime > MAX_TIME)
-                                measures.get(miningAlgorithmName).get(logName).put(measurementAlgorithmName + ":tor", Long.toString(execTime));
+                                measures.get(miningAlgorithmName).get(logName).put(measurementAlgorithmName + ":time", Long.toString(eTime));
                         } catch (Error e) {
                             System.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out)));
                             e.printStackTrace();
@@ -314,25 +293,6 @@ public class Benchmark {
             e.printStackTrace();
         }
         return null;
-    }
-
-    private AcceptingPetriNet getAcceptingPetriNet(PetrinetWithMarking petrinetWithMarking) {
-        if(petrinetWithMarking.getFinalMarkings().size() > 1) return new AcceptingPetriNetImpl(petrinetWithMarking.getPetrinet(), petrinetWithMarking.getInitialMarking(), petrinetWithMarking.getFinalMarkings());
-        else return new AcceptingPetriNetImpl(petrinetWithMarking.getPetrinet(), petrinetWithMarking.getInitialMarking(), petrinetWithMarking.getFinalMarking());
-    }
-
-    private boolean isSound(AcceptingPetriNet acceptingPetriNet) throws JSONException, IOException, ConnectionCannotBeObtained {
-        System.out.print("Checking Soundness...");
-        SoundnessChecker checker = new SoundnessChecker(acceptingPetriNet.getNet());
-        if (!checker.isSound()) {
-            System.out.println("Unsound");
-            System.out.println("DEBUG - Unsound");
-            System.out.println();
-            return false;
-        }else {
-            System.out.println("Sound");
-            return true;
-        }
     }
 
     private void exportBPMN(BPMNDiagram diagram, String path) {

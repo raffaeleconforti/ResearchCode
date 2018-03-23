@@ -7,6 +7,8 @@ import com.raffaeleconforti.wrappers.MiningAlgorithm;
 import com.raffaeleconforti.wrappers.PetrinetWithMarking;
 import org.deckfour.xes.classification.XEventClassifier;
 import org.deckfour.xes.model.XLog;
+import org.processmining.acceptingpetrinet.models.AcceptingPetriNet;
+import org.processmining.acceptingpetrinet.models.impl.AcceptingPetriNetImpl;
 import org.processmining.contexts.uitopia.UIPluginContext;
 import org.processmining.models.graphbased.directed.petrinet.Petrinet;
 import org.processmining.processtree.ProcessTree;
@@ -25,20 +27,13 @@ public class Soundness implements MeasurementAlgorithm {
     @Override
     public Measure computeMeasurement(UIPluginContext pluginContext, XEventClassifier xEventClassifier, PetrinetWithMarking petrinetWithMarking, MiningAlgorithm miningAlgorithm, XLog log) {
         Measure measure = new Measure();
+        String soundness;
 
-        if(petrinetWithMarking == null) return measure;
+        if(isSound(petrinetWithMarking)) soundness = "sound";
+        else soundness = "unsound";
 
-        try {
-            String soundness;
-            Petrinet petrinet = petrinetWithMarking.getPetrinet();
-            SoundnessChecker checker = new SoundnessChecker(petrinet);
-
-            if( checker.isSound() ) soundness = "sound";
-            else soundness = "unsound";
-
-            measure.addMeasure(getAcronym(), soundness);
-            return measure;
-        } catch( Exception e ) { return measure; }
+        measure.addMeasure(getAcronym(), soundness);
+        return measure;
     }
 
     @Override
@@ -52,5 +47,26 @@ public class Soundness implements MeasurementAlgorithm {
     @Override
     public boolean isMultimetrics() {
         return true;
+    }
+
+    static public boolean isSound(PetrinetWithMarking petrinetWithMarking) {
+        if(petrinetWithMarking == null) return false;
+        AcceptingPetriNet acceptingPetriNet = getAcceptingPetriNet(petrinetWithMarking);
+        try {
+            System.out.print("DEBUG - checking soundness...");
+            SoundnessChecker checker = new SoundnessChecker(acceptingPetriNet.getNet());
+            if( checker.isSound() ) {
+                System.out.println("sound");
+                return true;
+            }else {
+                System.out.println("unsound");
+                return false;
+            }
+        } catch( Exception e ) { return false; }
+    }
+
+    static private AcceptingPetriNet getAcceptingPetriNet(PetrinetWithMarking petrinetWithMarking) {
+        if(petrinetWithMarking.getFinalMarkings().size() > 1) return new AcceptingPetriNetImpl(petrinetWithMarking.getPetrinet(), petrinetWithMarking.getInitialMarking(), petrinetWithMarking.getFinalMarkings());
+        else return new AcceptingPetriNetImpl(petrinetWithMarking.getPetrinet(), petrinetWithMarking.getInitialMarking(), petrinetWithMarking.getFinalMarking());
     }
 }

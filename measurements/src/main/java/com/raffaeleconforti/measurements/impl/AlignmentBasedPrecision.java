@@ -35,9 +35,7 @@ public class AlignmentBasedPrecision implements MeasurementAlgorithm {
     public Measure computeMeasurement(UIPluginContext pluginContext, XEventClassifier xEventClassifier, PetrinetWithMarking petrinetWithMarking, MiningAlgorithm miningAlgorithm, XLog log) {
         Measure measure = new Measure();
 
-        if(petrinetWithMarking == null) return measure;
-        SoundnessChecker checker = new SoundnessChecker(petrinetWithMarking.getPetrinet());
-        if( !checker.isSound() ) return new Measure(getAcronym(), "-");
+        if( !Soundness.isSound(petrinetWithMarking) ) return new Measure(getAcronym(), "-");
 
         System.setOut(new PrintStream(new OutputStream() {
             @Override

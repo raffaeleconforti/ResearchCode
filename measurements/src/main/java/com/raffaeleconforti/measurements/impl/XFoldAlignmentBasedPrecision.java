@@ -39,12 +39,7 @@ public class XFoldAlignmentBasedPrecision implements MeasurementAlgorithm {
         double precision = 0.0;
         this.log = log;
         XLog[] logs = createdXFolds();
-
-        SoundnessChecker checker = new SoundnessChecker(petrinetWithMarking.getPetrinet());
-        if( !checker.isSound() ) {
-            measure.addMeasure(getAcronym(), "-");
-            return measure;
-        }
+        Double p;
 
         AlignmentBasedPrecision alignmentBasedPrecision = new AlignmentBasedPrecision();
 
@@ -58,8 +53,9 @@ public class XFoldAlignmentBasedPrecision implements MeasurementAlgorithm {
 
             try {
                 petrinetWithMarking = miningAlgorithm.minePetrinet(pluginContext, log1, false, null, xEventClassifier);
-                Double p = alignmentBasedPrecision.computeMeasurement(pluginContext, xEventClassifier, petrinetWithMarking, miningAlgorithm, log).getValue();
-                precision += (p != null)?p:0.0;
+                if( !Soundness.isSound(petrinetWithMarking) ) p = 0.0;
+                else p = alignmentBasedPrecision.computeMeasurement(pluginContext, xEventClassifier, petrinetWithMarking, miningAlgorithm, log).getValue();
+                precision += p;
                 System.out.println("DEBUG - " + (i+1) + "/" + fold + " -fold precision: " + p);
             } catch( Exception e ) { return measure; }
         }

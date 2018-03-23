@@ -35,18 +35,10 @@ public class AlignmentBasedFMeasure implements MeasurementAlgorithm {
     public Measure computeMeasurement(UIPluginContext pluginContext, XEventClassifier xEventClassifier, PetrinetWithMarking petrinetWithMarking, MiningAlgorithm miningAlgorithm, XLog log) {
         Measure measure = new Measure();
 
-        if(petrinetWithMarking == null) return measure;
+        if( !Soundness.isSound(petrinetWithMarking) ) return new Measure(getAcronym(), "-");
 
         AlignmentBasedFitness alignmentBasedFitness = new AlignmentBasedFitness();
         AlignmentBasedPrecision alignmentBasedPrecision = new AlignmentBasedPrecision();
-
-//        SoundnessChecker checker = new SoundnessChecker(petrinetWithMarking.getPetrinet());
-//        if( !checker.isSound() ) {
-//            measure.addMeasure(getAcronym(), "-");
-//            measure.addMeasure(alignmentBasedFitness.getAcronym(), "-");
-//            measure.addMeasure(alignmentBasedPrecision.getAcronym(), "-");
-//            return measure;
-//        }
 
         System.setOut(new PrintStream(new OutputStream() {
             @Override
@@ -70,9 +62,6 @@ public class AlignmentBasedFMeasure implements MeasurementAlgorithm {
             double precision = (Double) (multiETCResult).getAttribute(MultiETCResult.PRECISION);
             double f_measure = 2*(fitness*precision)/(fitness+precision);
 
-//            measure.addMeasure(getAcronym(), String.format("%.2f", f_measure));
-//            measure.addMeasure(alignmentBasedFitness.getAcronym(), String.format("%.2f", fitness));
-//            measure.addMeasure(alignmentBasedPrecision.getAcronym(), String.format("%.2f", precision));
             measure.addMeasure(getAcronym(), f_measure);
             measure.addMeasure(alignmentBasedFitness.getAcronym(), fitness);
             measure.addMeasure(alignmentBasedPrecision.getAcronym(), precision);
