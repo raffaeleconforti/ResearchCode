@@ -82,7 +82,7 @@ public class SplitMinerWrapper implements MiningAlgorithm {
         Double eta = SplitMinerUIResult.FREQUENCY_THRESHOLD;
         Double epsilon = SplitMinerUIResult.PARALLELISMS_THRESHOLD;
         Boolean replaceORs = true;
-        Boolean removeSelfLoops = true;
+        Boolean removeSelfLoops = false;
         Boolean percentileOnBest = true;
 
         if( params != null ) {

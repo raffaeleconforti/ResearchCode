@@ -53,13 +53,13 @@ public class Soundness implements MeasurementAlgorithm {
         if(petrinetWithMarking == null) return false;
         AcceptingPetriNet acceptingPetriNet = getAcceptingPetriNet(petrinetWithMarking);
         try {
-            System.out.print("DEBUG - checking soundness...");
+//            System.out.print("DEBUG - checking soundness...");
             SoundnessChecker checker = new SoundnessChecker(acceptingPetriNet.getNet());
             if( checker.isSound() ) {
-                System.out.println("sound");
+//                System.out.println("sound");
                 return true;
             }else {
-                System.out.println("unsound");
+//                System.out.println("unsound");
                 return false;
             }
         } catch( Exception e ) { return false; }

@@ -1,9 +1,11 @@
 package com.raffaeleconforti.wrappers;
 
 
-import com.raffaeleconforti.conversion.petrinet.PetriNetToBPMNConverter;
+import com.raffaeleconforti.measurements.Measure;
 import com.raffaeleconforti.measurements.impl.AlignmentBasedFitness;
 import com.raffaeleconforti.measurements.impl.AlignmentBasedPrecision;
+import com.raffaeleconforti.measurements.impl.BPMNComplexity;
+import com.raffaeleconforti.wrappers.impl.inductive.InductiveMinerIMfWrapper;
 import com.raffaeleconforti.wrappers.settings.MiningSettings;
 import org.deckfour.xes.classification.XEventClassifier;
 import org.deckfour.xes.classification.XEventNameClassifier;
@@ -20,9 +22,7 @@ import org.processmining.processtree.ProcessTree;
 import java.io.FileDescriptor;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.io.PrintWriter;
 
 
 public class HyperParamOptimizedInductiveMinerInfrequent implements MiningAlgorithm {
@@ -47,84 +47,84 @@ public class HyperParamOptimizedInductiveMinerInfrequent implements MiningAlgori
 
     @Override
     public PetrinetWithMarking minePetrinet(UIPluginContext context, XLog log, boolean structure, MiningSettings params, XEventClassifier xEventClassifier) {
-        return discoverBestOn(context, log, structure, xEventClassifier);
+        return hyperparamEvaluation(context, log, structure, xEventClassifier);
     }
 
-    public PetrinetWithMarking discoverBestOn(UIPluginContext context, XLog log, boolean structure, XEventClassifier xEventClassifier) {
-        Map<Float, PetrinetWithMarking> models = new HashMap<>();
-        Map<Double, Float> fitness = new HashMap<>();
-        Map<Double, Float> precision = new HashMap<>();
-        Map<Double, Float> fscore = new HashMap<>();
-
+    public PetrinetWithMarking hyperparamEvaluation(UIPluginContext context, XLog log, boolean structure, XEventClassifier xEventClassifier) {
         IMPetriNet miner = new IMPetriNet();
         MiningParameters miningParameters = new MiningParametersIMf();
         PetrinetWithMarking petrinet;
 
-        AlignmentBasedFitness fitnessCalculator = new AlignmentBasedFitness();
-        AlignmentBasedPrecision precisionCalculator = new AlignmentBasedPrecision();
         XEventClassifier eventNameClassifier = xEventClassifier;
-
         LogPreprocessing logPreprocessing = new LogPreprocessing();
         log = logPreprocessing.preprocessLog(context, log);
+
+        AlignmentBasedFitness fitnessCalculator = new AlignmentBasedFitness();
+        AlignmentBasedPrecision precisionCalculator = new AlignmentBasedPrecision();
+        BPMNComplexity bpmnComplexity = new BPMNComplexity();
 
         Double fit;
         Double prec;
         Double score;
+        Double gen;
+        Measure complexity;
+        Double size;
+        Double cfc;
+        Double struct;
 
-        Double bestValue;
-        Float bestThreshold;
+        String combination;
+        PrintWriter writer;
+
+        try {
+            writer = new PrintWriter(".\\inductiveminer_hyperparam_" + System.currentTimeMillis() + ".txt");
+            writer.println("noise_threshold,fitness,precision,fscore,generalization,size,cfc,struct");
+        } catch(Exception e) {
+            writer = new PrintWriter(System.out);
+            System.out.println("ERROR - impossible to create the file for storing the results: printing only on terminal.");
+        }
 
         Float threshold = MIN;
-
         do {
             try {
-
                 miningParameters.setNoiseThreshold(threshold);
                 Object[] result = miner.minePetriNetParameters(context, log, miningParameters);
-//                logPreprocessing.removedAddedElements((Petrinet) result[0]);
 
                 System.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out)));
                 petrinet = new PetrinetWithMarking((Petrinet) result[0], (Marking) result[1], (Marking) result[2]);
-                models.put(threshold, petrinet);
 
                 fit = fitnessCalculator.computeMeasurement(context, eventNameClassifier, petrinet, this, log).getValue();
                 prec = precisionCalculator.computeMeasurement(context, eventNameClassifier, petrinet, this, log).getValue();
+                gen = computeGeneralization();
+                complexity = bpmnComplexity.computeMeasurement(context, eventNameClassifier, petrinet, this, log);
+                size = Double.valueOf(complexity.getMetricValue("size"));
+                cfc = Double.valueOf(complexity.getMetricValue("cfc"));
+                struct = Double.valueOf(complexity.getMetricValue("struct."));
 
-                if (fit.isNaN()) fit = 0.0;
-                if (prec.isNaN()) prec = 0.0;
-                score = (fit * prec * 2) / (fit + prec);
-                if(score.isNaN()) score = 0.0;
+                if( fit.isNaN() || prec.isNaN() ) fit = prec = score = 0.0;
+                else score = (fit * prec * 2) / (fit + prec);
+                if( score.isNaN() ) score = 0.0;
 
-                fitness.put(fit, threshold);
-                precision.put(prec, threshold);
-                fscore.put(score, threshold);
+                combination = threshold + "," + fit + "," + prec + "," + score + "," + gen + "," + size + "," + cfc + "," + struct;
+                writer.println(combination);
+                writer.flush();
 
-                System.out.println("RESULT - @ " + threshold);
-                System.out.println(fit);
-                System.out.println(prec);
-                System.out.println(score);
             } catch ( Exception e ) {
                 System.out.println("ERROR - Inductive Miner output model broken @ " + threshold);
-                fitness.put(0.0, threshold);
-                precision.put(0.0, threshold);
-                fscore.put(0.0, threshold);
             }
 
             threshold += STEP;
         } while ( threshold <= MAX);
 
-        bestValue = Collections.max(fscore.keySet());
-        bestThreshold = fscore.get(bestValue);
+        return null;
+    }
 
-        System.out.println("BEST - @ " + bestThreshold);
-        return models.get(bestThreshold);
+    private Double computeGeneralization() {
+        return 0.0;
     }
 
     public BPMNDiagram mineBPMNDiagram(UIPluginContext context, XLog log, boolean structure, MiningSettings params, XEventClassifier xEventClassifier) {
-        BPMNDiagram output = null;
-        PetrinetWithMarking petrinet = minePetrinet(context, log, structure, params, xEventClassifier);
-        output = PetriNetToBPMNConverter.convert(petrinet.getPetrinet(), petrinet.getInitialMarking(), petrinet.getFinalMarking(), false);
-        return output;
+        InductiveMinerIMfWrapper inductiveminer = new InductiveMinerIMfWrapper();
+        return inductiveminer.mineBPMNDiagram(context, log, structure, params, xEventClassifier);
     }
 
     @Override

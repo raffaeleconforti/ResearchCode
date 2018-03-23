@@ -4,8 +4,11 @@ import au.edu.qut.bpmn.structuring.StructuringService;
 import com.raffaeleconforti.conversion.bpmn.BPMNToPetriNetConverter;
 import com.raffaeleconforti.conversion.petrinet.PetriNetToBPMNConverter;
 import com.raffaeleconforti.marking.MarkingDiscoverer;
+import com.raffaeleconforti.measurements.Measure;
 import com.raffaeleconforti.measurements.impl.AlignmentBasedFitness;
 import com.raffaeleconforti.measurements.impl.AlignmentBasedPrecision;
+import com.raffaeleconforti.measurements.impl.BPMNComplexity;
+import com.raffaeleconforti.wrappers.impl.heuristics.HeuristicsAlgorithmWrapper;
 import com.raffaeleconforti.wrappers.settings.MiningSettings;
 import org.deckfour.xes.classification.XEventClassifier;
 import org.deckfour.xes.classification.XEventNameClassifier;
@@ -49,37 +52,32 @@ public class HyperParamOptimizedStructuredHeuristicsMiner implements MiningAlgor
 
     @Override
     public PetrinetWithMarking minePetrinet(UIPluginContext context, XLog log, boolean structure, MiningSettings params, XEventClassifier xEventClassifier) {
-        return discoverBestOn(context, log, structure, xEventClassifier);
+        return hyperparamEvaluation(context, log, true, xEventClassifier);
     }
 
-    public PetrinetWithMarking discoverBestOn(UIPluginContext context, XLog log, boolean structure, XEventClassifier xEventClassifier) {
-        Map<String, PetrinetWithMarking> models = new HashMap<>();
-        Map<Double, String> fitness = new HashMap<>();
-        Map<Double, String> precision = new HashMap<>();
-        Map<Double, String> fscore = new HashMap<>();
-
-
+    public PetrinetWithMarking hyperparamEvaluation(UIPluginContext context, XLog log, boolean structure, XEventClassifier xEventClassifier) {
         PetrinetWithMarking petrinet;
-
-        AlignmentBasedFitness fitnessCalculator = new AlignmentBasedFitness();
-        AlignmentBasedPrecision precisionCalculator = new AlignmentBasedPrecision();
-        XEventClassifier eventNameClassifier = xEventClassifier;
 
         LogPreprocessing logPreprocessing = new LogPreprocessing();
         log = logPreprocessing.preprocessLog(context, log);
 
+        AlignmentBasedFitness fitnessCalculator = new AlignmentBasedFitness();
+        AlignmentBasedPrecision precisionCalculator = new AlignmentBasedPrecision();
+        BPMNComplexity bpmnComplexity = new BPMNComplexity();
+
         Double fit;
         Double prec;
         Double score;
+        Double gen;
+        Measure complexity;
+        Double size;
+        Double cfc;
+        Double struct;
 
-        Double bestValue;
-        String bestCombination;
-
-        String combination = null;
+        String combination;
 
         double d_threshold;
         double rtb_threshold;
-        boolean longDistance = false;
 
         BPMNDiagram diagram, structuredDiagram;
         StructuringService ss = new StructuringService();
@@ -89,89 +87,82 @@ public class HyperParamOptimizedStructuredHeuristicsMiner implements MiningAlgor
         HeuristicsMinerSettings minerSettings;
         ParametersPanel parameters = new ParametersPanel(classifiers);
         minerSettings = parameters.getSettings();
+        minerSettings.setUseLongDistanceDependency(false);
 
+        PrintWriter writer;
+        try {
+            writer = new PrintWriter(".\\structheuristicsminer_hyperparam_" + System.currentTimeMillis() + ".txt");
+            writer.println("rtb_threshold,d_threshold,fitness,precision,fscore,generalization,size,cfc,struct");
+        } catch(Exception e) {
+            writer = new PrintWriter(System.out);
+            System.out.println("ERROR - impossible to create the file for storing the results: printing only on terminal.");
+        }
+
+        rtb_threshold = MIN;
         do {
-            minerSettings.setUseLongDistanceDependency(longDistance);
-            rtb_threshold = MIN;
+            minerSettings.setRelativeToBestThreshold(rtb_threshold);
+            d_threshold = MIN;
             do {
-                minerSettings.setRelativeToBestThreshold(rtb_threshold);
-                d_threshold = MIN;
-                do {
-                    combination = ":p:" + rtb_threshold + ":d:" + d_threshold + ":l:" + longDistance;
-                    try {
-                        minerSettings.setDependencyThreshold(d_threshold);
 
-                        System.setOut(new PrintStream(new OutputStream() {
-                            @Override
-                            public void write(int b) throws IOException {}
-                        }));
+                try {
+                    minerSettings.setDependencyThreshold(d_threshold);
 
-                        HeuristicsNet heuristicsNet = FlexibleHeuristicsMinerPlugin.run(context, log, minerSettings);
-                        Object[] result = HeuristicsNetToPetriNetConverter.converter(context, heuristicsNet);
-//                        logPreprocessing.removedAddedElements((Petrinet) result[0]);
+                    System.setOut(new PrintStream(new OutputStream() {
+                        @Override
+                        public void write(int b) throws IOException {}
+                    }));
 
-                        if(result[1] == null) result[1] = MarkingDiscoverer.constructInitialMarking(context, (Petrinet) result[0]);
-                        else MarkingDiscoverer.createInitialMarkingConnection(context, (Petrinet) result[0], (Marking) result[1]);
-                        Marking finalMarking = MarkingDiscoverer.constructFinalMarking(context, (Petrinet) result[0]);
+                    HeuristicsNet heuristicsNet = FlexibleHeuristicsMinerPlugin.run(context, log, minerSettings);
+                    Object[] result = HeuristicsNetToPetriNetConverter.converter(context, heuristicsNet);
 
-                        diagram = PetriNetToBPMNConverter.convert((Petrinet) result[0], (Marking) result[1], finalMarking, false);
-                        structuredDiagram = ss.structureDiagram(diagram, "ASTAR", 100, 500, 10, 100, 2, true, true, true);
-                        result = BPMNToPetriNetConverter.convert(structuredDiagram);
-                        petrinet = new PetrinetWithMarking((Petrinet) result[0], (Marking) result[1], (Marking) result[2]);
+                    if(result[1] == null) result[1] = MarkingDiscoverer.constructInitialMarking(context, (Petrinet) result[0]);
+                    else MarkingDiscoverer.createInitialMarkingConnection(context, (Petrinet) result[0], (Marking) result[1]);
+                    Marking finalMarking = MarkingDiscoverer.constructFinalMarking(context, (Petrinet) result[0]);
 
-                        MarkingDiscoverer.createInitialMarkingConnection(context, (Petrinet) result[0], (Marking) result[1]);
-                        MarkingDiscoverer.createFinalMarkingConnection(context, (Petrinet) result[0], (Marking) result[2]);
+                    diagram = PetriNetToBPMNConverter.convert((Petrinet) result[0], (Marking) result[1], finalMarking, false);
+                    structuredDiagram = ss.structureDiagram(diagram, "ASTAR", 100, 500, 10, 100, 2, true, true, true);
+                    result = BPMNToPetriNetConverter.convert(structuredDiagram);
+                    petrinet = new PetrinetWithMarking((Petrinet) result[0], (Marking) result[1], (Marking) result[2]);
 
-                        models.put(combination, petrinet);
+                    MarkingDiscoverer.createInitialMarkingConnection(context, (Petrinet) result[0], (Marking) result[1]);
+                    MarkingDiscoverer.createFinalMarkingConnection(context, (Petrinet) result[0], (Marking) result[2]);
 
-                        fit = fitnessCalculator.computeMeasurement(context, eventNameClassifier, petrinet, this, log).getValue();
-                        prec = precisionCalculator.computeMeasurement(context, eventNameClassifier, petrinet, this, log).getValue();
+                    fit = fitnessCalculator.computeMeasurement(context, xEventClassifier, petrinet, this, log).getValue();
+                    prec = precisionCalculator.computeMeasurement(context, xEventClassifier, petrinet, this, log).getValue();
+                    gen = computeGeneralization();
+                    complexity = bpmnComplexity.computeMeasurement(context, xEventClassifier, petrinet, this, log);
+                    size = Double.valueOf(complexity.getMetricValue("size"));
+                    cfc = Double.valueOf(complexity.getMetricValue("cfc"));
+                    struct = Double.valueOf(complexity.getMetricValue("struct."));
 
-                        System.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out)));
+                    if( fit.isNaN() || prec.isNaN() ) fit = prec = score = 0.0;
+                    else score = (fit * prec * 2) / (fit + prec);
+                    if( score.isNaN() ) score = 0.0;
 
-                        if (fit.isNaN()) fit = 0.0;
-                        if (prec.isNaN()) prec = 0.0;
-                        score = (fit * prec * 2) / (fit + prec);
-                        if(score.isNaN()) score = 0.0;
+                    combination = rtb_threshold + "," + d_threshold + "," + fit + "," + prec + "," + score + "," + gen + "," + size + "," + cfc + "," + struct;
+                    writer.println(combination);
+                    writer.flush();
 
-                        fitness.put(fit, combination);
-                        precision.put(prec, combination);
-                        fscore.put(score, combination);
+                } catch (Exception e) {
+                    System.out.println("ERROR - S-Heuristics Miner output model broken @ " + rtb_threshold + " : " + d_threshold);
+                }
 
-                        System.out.println("RESULT - @ " + combination);
-                        System.out.println(fit);
-                        System.out.println(prec);
-                        System.out.println(score);
+                d_threshold += STEP;
+            } while (d_threshold <= MAX);
 
-                    } catch (Exception e) {
-                        System.out.println("ERROR - S-Heuristics Miner output model broken @ " + combination);
-                        fitness.put(0.0, combination);
-                        precision.put(0.0, combination);
-                        fscore.put(0.0, combination);
-                    }
+            rtb_threshold += STEP;
+        } while (rtb_threshold <= MAX);
 
-                    d_threshold += STEP;
-                } while (d_threshold <= MAX);
+        return null;
+    }
 
-                rtb_threshold += STEP;
-            } while (rtb_threshold <= MAX);
-
-//                if(longDistance) break;
-//                else longDistance = true;
-        } while (longDistance);
-
-        bestValue = Collections.max(fscore.keySet());
-        bestCombination = fscore.get(bestValue);
-
-        System.out.println("BEST - @ " + bestCombination);
-        return models.get(bestCombination);
+    private Double computeGeneralization() {
+        return 0.0;
     }
 
     public BPMNDiagram mineBPMNDiagram(UIPluginContext context, XLog log, boolean structure, MiningSettings params, XEventClassifier xEventClassifier) {
-        BPMNDiagram output = null;
-        PetrinetWithMarking petrinet = minePetrinet(context, log, structure, params, xEventClassifier);
-        output = PetriNetToBPMNConverter.convert(petrinet.getPetrinet(), petrinet.getInitialMarking(), petrinet.getFinalMarking(), false);
-        return output;
+        HeuristicsAlgorithmWrapper heuristicsminer = new HeuristicsAlgorithmWrapper();
+        return heuristicsminer.mineBPMNDiagram(context, log, true, params, xEventClassifier);
     }
 
     @Override
