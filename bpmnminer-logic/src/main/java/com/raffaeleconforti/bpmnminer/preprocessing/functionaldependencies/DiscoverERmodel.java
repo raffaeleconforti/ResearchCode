@@ -5,12 +5,12 @@ import com.raffaeleconforti.foreignkeydiscovery.conceptualmodels.*;
 import com.raffaeleconforti.foreignkeydiscovery.functionaldependencies.Data;
 import com.raffaeleconforti.foreignkeydiscovery.functionaldependencies.NoEntityException;
 import com.raffaeleconforti.foreignkeydiscovery.functionaldependencies.TANEjava;
-import org.eclipse.collections.impl.map.mutable.UnifiedMap;
-import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 import org.deckfour.xes.model.XAttribute;
 import org.deckfour.xes.model.XEvent;
 import org.deckfour.xes.model.XLog;
 import org.deckfour.xes.model.XTrace;
+import org.eclipse.collections.impl.map.mutable.UnifiedMap;
+import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 
 import java.util.*;
 import java.util.Map.Entry;

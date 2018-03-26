@@ -1,8 +1,8 @@
 package com.raffaeleconforti.foreignkeydiscovery.conceptualmodels;
 
+import org.deckfour.xes.model.XAttribute;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
-import org.deckfour.xes.model.XAttribute;
 import org.processmining.models.graphbased.directed.*;
 
 import java.util.*;

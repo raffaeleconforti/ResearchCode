@@ -1,7 +1,8 @@
 package com.raffaeleconforti.alphadollar.alphamminer;
 
-import java.util.ArrayList;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
+
+import java.util.ArrayList;
 
 class NotNormalInvTask
 {

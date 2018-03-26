@@ -25,7 +25,10 @@ import org.processmining.framework.log.*;
 import org.processmining.framework.log.rfb.AuditTrailEntryImpl;
 import org.processmining.framework.models.petrinet.PetriNet;
 import org.processmining.framework.models.petrinet.Transition;
-import org.processmining.mining.logabstraction.*;
+import org.processmining.mining.logabstraction.LogAbstraction;
+import org.processmining.mining.logabstraction.LogAbstractionImpl;
+import org.processmining.mining.logabstraction.LogRelations;
+import org.processmining.mining.logabstraction.LogRelationsImpl;
 
 import java.io.IOException;
 import java.util.*;

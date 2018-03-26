@@ -4,6 +4,7 @@ import cern.colt.matrix.DoubleFactory1D;
 import cern.colt.matrix.DoubleFactory2D;
 import cern.colt.matrix.DoubleMatrix1D;
 import cern.colt.matrix.DoubleMatrix2D;
+import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 import org.processmining.framework.log.LogEvent;
 import org.processmining.framework.log.LogEvents;
 import org.processmining.mining.logabstraction.LogRelations;
@@ -11,8 +12,6 @@ import org.processmining.mining.logabstraction.LogRelationsImpl;
 
 import java.util.ArrayList;
 import java.util.Set;
-
-import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 
 public class AlphaMMinerDataUtil {
 

@@ -1,6 +1,7 @@
 package com.raffaeleconforti.foreignkeydiscovery.conceptualmodels;
 
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
+
 import java.util.Map;
 
 public class ConcModelInstances {//the instances of all entities 

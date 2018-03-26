@@ -1,8 +1,8 @@
 package com.raffaeleconforti.bpmnminer.preprocessing.synchtracegeneration;
 
 import org.deckfour.xes.model.XAttribute;
-
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
+
 import java.util.Iterator;
 
 public class Event {
