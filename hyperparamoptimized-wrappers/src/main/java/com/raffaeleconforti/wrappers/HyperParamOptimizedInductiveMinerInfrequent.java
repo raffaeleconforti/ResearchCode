@@ -2,13 +2,12 @@ package com.raffaeleconforti.wrappers;
 
 
 import com.raffaeleconforti.measurements.Measure;
-import com.raffaeleconforti.measurements.impl.AlignmentBasedFitness;
-import com.raffaeleconforti.measurements.impl.AlignmentBasedPrecision;
-import com.raffaeleconforti.measurements.impl.BPMNComplexity;
+import com.raffaeleconforti.measurements.impl.*;
 import com.raffaeleconforti.wrappers.impl.inductive.InductiveMinerIMfWrapper;
 import com.raffaeleconforti.wrappers.settings.MiningSettings;
 import org.deckfour.xes.classification.XEventClassifier;
 import org.deckfour.xes.classification.XEventNameClassifier;
+import org.deckfour.xes.extension.std.XConceptExtension;
 import org.deckfour.xes.model.XLog;
 import org.processmining.contexts.uitopia.UIPluginContext;
 import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
@@ -19,10 +18,8 @@ import org.processmining.plugins.InductiveMiner.mining.MiningParametersIMf;
 import org.processmining.plugins.InductiveMiner.plugins.IMPetriNet;
 import org.processmining.processtree.ProcessTree;
 
-import java.io.FileDescriptor;
-import java.io.FileOutputStream;
-import java.io.PrintStream;
-import java.io.PrintWriter;
+import java.io.*;
+import java.util.Map;
 
 
 public class HyperParamOptimizedInductiveMinerInfrequent implements MiningAlgorithm {
@@ -53,11 +50,16 @@ public class HyperParamOptimizedInductiveMinerInfrequent implements MiningAlgori
     public PetrinetWithMarking hyperparamEvaluation(UIPluginContext context, XLog log, boolean structure, XEventClassifier xEventClassifier) {
         IMPetriNet miner = new IMPetriNet();
         MiningParameters miningParameters = new MiningParametersIMf();
-        PetrinetWithMarking petrinet;
+        PetrinetWithMarking petrinet = null;
 
         XEventClassifier eventNameClassifier = xEventClassifier;
         LogPreprocessing logPreprocessing = new LogPreprocessing();
         log = logPreprocessing.preprocessLog(context, log);
+
+        Map<XLog, XLog> crossValidationLogs = XFoldAlignmentBasedFMeasure.getCrossValidationLogs(log, XFoldAlignmentBasedFMeasure.K);
+
+        String lName = XConceptExtension.instance().extractName(log);
+        String fName = ".\\inductiveminer_hyperparam_" + lName + "_" + System.currentTimeMillis() + ".csv";
 
         AlignmentBasedFitness fitnessCalculator = new AlignmentBasedFitness();
         AlignmentBasedPrecision precisionCalculator = new AlignmentBasedPrecision();
@@ -71,40 +73,57 @@ public class HyperParamOptimizedInductiveMinerInfrequent implements MiningAlgori
         Double size;
         Double cfc;
         Double struct;
+        long eTime;
+        boolean sound;
 
         String combination;
         PrintWriter writer;
 
         try {
-            writer = new PrintWriter(".\\inductiveminer_hyperparam_" + System.currentTimeMillis() + ".txt");
-            writer.println("noise_threshold,fitness,precision,fscore,generalization,size,cfc,struct");
+            writer = new PrintWriter(fName);
+            writer.println("noise_threshold,fitness,precision,fscore,generalization,size,cfc,struct,soundness,mining-time");
         } catch(Exception e) {
             writer = new PrintWriter(System.out);
             System.out.println("ERROR - impossible to create the file for storing the results: printing only on terminal.");
         }
 
+        System.setOut(new PrintStream(new OutputStream() {
+            @Override
+            public void write(int b) throws IOException {}
+        }));
+
         Float threshold = MIN;
         do {
             try {
                 miningParameters.setNoiseThreshold(threshold);
-                Object[] result = miner.minePetriNetParameters(context, log, miningParameters);
 
-                System.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out)));
+                System.setOut(new PrintStream(new OutputStream() {
+                    @Override
+                    public void write(int b) throws IOException {}
+                }));
+
+                eTime = System.currentTimeMillis();
+                Object[] result = miner.minePetriNetParameters(context, log, miningParameters);
+                eTime = System.currentTimeMillis() -eTime;
+
                 petrinet = new PetrinetWithMarking((Petrinet) result[0], (Marking) result[1], (Marking) result[2]);
 
-                fit = fitnessCalculator.computeMeasurement(context, eventNameClassifier, petrinet, this, log).getValue();
-                prec = precisionCalculator.computeMeasurement(context, eventNameClassifier, petrinet, this, log).getValue();
-                gen = computeGeneralization();
+                if( sound = Soundness.isSound(petrinet) ) {
+                    fit = fitnessCalculator.computeMeasurement(context, xEventClassifier, petrinet, this, log).getValue();
+                    prec = precisionCalculator.computeMeasurement(context, xEventClassifier, petrinet, this, log).getValue();
+                } else {
+                    fit = prec = -1.0;
+                }
+                gen = computeGeneralization(context, crossValidationLogs, xEventClassifier, miningParameters);
                 complexity = bpmnComplexity.computeMeasurement(context, eventNameClassifier, petrinet, this, log);
                 size = Double.valueOf(complexity.getMetricValue("size"));
                 cfc = Double.valueOf(complexity.getMetricValue("cfc"));
                 struct = Double.valueOf(complexity.getMetricValue("struct."));
 
-                if( fit.isNaN() || prec.isNaN() ) fit = prec = score = 0.0;
-                else score = (fit * prec * 2) / (fit + prec);
-                if( score.isNaN() ) score = 0.0;
+                score = (fit * prec * 2) / (fit + prec);
+                if( score.isNaN() ) score = -1.0;
 
-                combination = threshold + "," + fit + "," + prec + "," + score + "," + gen + "," + size + "," + cfc + "," + struct;
+                combination = threshold + "," + fit + "," + prec + "," + score + "," + gen + "," + size + "," + cfc + "," + struct + "," + sound + "," + eTime;
                 writer.println(combination);
                 writer.flush();
 
@@ -115,11 +134,59 @@ public class HyperParamOptimizedInductiveMinerInfrequent implements MiningAlgori
             threshold += STEP;
         } while ( threshold <= MAX);
 
-        return null;
+        System.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out)));
+        return petrinet;
     }
 
-    private Double computeGeneralization() {
-        return 0.0;
+    private Double computeGeneralization(UIPluginContext context, Map<XLog, XLog> crossValidationLogs, XEventClassifier xEventClassifier, MiningParameters miningParameters) {
+        PetrinetWithMarking petrinetWithMarking;
+        int k = crossValidationLogs.size();
+        IMPetriNet miner = new IMPetriNet();
+
+        XLog evalLog;
+        AlignmentBasedFitness alignmentBasedFitness = new AlignmentBasedFitness();
+        AlignmentBasedPrecision alignmentBasedPrecision = new AlignmentBasedPrecision();
+
+        double fitness = 0.0;
+        double precision = 0.0;
+        Double fscore = 0.0;
+        Double f;
+        Double p;
+        Double fs;
+
+        for (XLog miningLog : crossValidationLogs.keySet()) {
+            evalLog = crossValidationLogs.get(miningLog);
+            f = 0.0;
+            p = 0.0;
+            fs = 0.0;
+
+            try {
+
+                System.setOut(new PrintStream(new OutputStream() {
+                    @Override
+                    public void write(int b) throws IOException {}
+                }));
+
+                Object[] result = miner.minePetriNetParameters(context, miningLog, miningParameters);
+                petrinetWithMarking = new PetrinetWithMarking((Petrinet) result[0], (Marking) result[1], (Marking) result[2]);
+
+                if (Soundness.isSound(petrinetWithMarking)) {
+                    f = alignmentBasedFitness.computeMeasurement(context, xEventClassifier, petrinetWithMarking, this, evalLog).getValue();
+//                    p = alignmentBasedPrecision.computeMeasurement(context, xEventClassifier, petrinetWithMarking, this, evalLog).getValue();
+//                    fs = (2.0*f*p)/(f+p);
+                }
+
+                fitness += f;
+//                precision += p;
+//                fscore += fs;
+            } catch (Exception e) { }
+        }
+
+        fitness = fitness / (double) k;
+//        precision = precision/(double)k;
+//        fscore = fscore/(double)k;
+
+        return fitness;
     }
 
     public BPMNDiagram mineBPMNDiagram(UIPluginContext context, XLog log, boolean structure, MiningSettings params, XEventClassifier xEventClassifier) {

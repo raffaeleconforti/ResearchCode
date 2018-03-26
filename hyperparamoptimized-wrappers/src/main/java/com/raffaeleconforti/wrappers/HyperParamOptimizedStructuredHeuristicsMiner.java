@@ -5,13 +5,12 @@ import com.raffaeleconforti.conversion.bpmn.BPMNToPetriNetConverter;
 import com.raffaeleconforti.conversion.petrinet.PetriNetToBPMNConverter;
 import com.raffaeleconforti.marking.MarkingDiscoverer;
 import com.raffaeleconforti.measurements.Measure;
-import com.raffaeleconforti.measurements.impl.AlignmentBasedFitness;
-import com.raffaeleconforti.measurements.impl.AlignmentBasedPrecision;
-import com.raffaeleconforti.measurements.impl.BPMNComplexity;
+import com.raffaeleconforti.measurements.impl.*;
 import com.raffaeleconforti.wrappers.impl.heuristics.HeuristicsAlgorithmWrapper;
 import com.raffaeleconforti.wrappers.settings.MiningSettings;
 import org.deckfour.xes.classification.XEventClassifier;
 import org.deckfour.xes.classification.XEventNameClassifier;
+import org.deckfour.xes.extension.std.XConceptExtension;
 import org.deckfour.xes.model.XLog;
 import org.processmining.contexts.uitopia.UIPluginContext;
 import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
@@ -56,10 +55,14 @@ public class HyperParamOptimizedStructuredHeuristicsMiner implements MiningAlgor
     }
 
     public PetrinetWithMarking hyperparamEvaluation(UIPluginContext context, XLog log, boolean structure, XEventClassifier xEventClassifier) {
-        PetrinetWithMarking petrinet;
+        PetrinetWithMarking petrinet = null;
+        Map<XLog, XLog> crossValidationLogs;
 
         LogPreprocessing logPreprocessing = new LogPreprocessing();
         log = logPreprocessing.preprocessLog(context, log);
+
+        String lName = XConceptExtension.instance().extractName(log);
+        String fName = ".\\structheuristicsminer_hyperparam_" + lName + "_" + System.currentTimeMillis() + ".csv";
 
         AlignmentBasedFitness fitnessCalculator = new AlignmentBasedFitness();
         AlignmentBasedPrecision precisionCalculator = new AlignmentBasedPrecision();
@@ -73,6 +76,8 @@ public class HyperParamOptimizedStructuredHeuristicsMiner implements MiningAlgor
         Double size;
         Double cfc;
         Double struct;
+        long eTime;
+        boolean sound;
 
         String combination;
 
@@ -91,12 +96,14 @@ public class HyperParamOptimizedStructuredHeuristicsMiner implements MiningAlgor
 
         PrintWriter writer;
         try {
-            writer = new PrintWriter(".\\structheuristicsminer_hyperparam_" + System.currentTimeMillis() + ".txt");
-            writer.println("rtb_threshold,d_threshold,fitness,precision,fscore,generalization,size,cfc,struct");
+            writer = new PrintWriter(fName);
+            writer.println("rtb_threshold,d_threshold,fitness,precision,fscore,generalization,size,cfc,struct,soundness,mining-time");
         } catch(Exception e) {
             writer = new PrintWriter(System.out);
             System.out.println("ERROR - impossible to create the file for storing the results: printing only on terminal.");
         }
+
+        crossValidationLogs = XFoldAlignmentBasedFMeasure.getCrossValidationLogs(log, XFoldAlignmentBasedFMeasure.K);
 
         rtb_threshold = MIN;
         do {
@@ -112,7 +119,10 @@ public class HyperParamOptimizedStructuredHeuristicsMiner implements MiningAlgor
                         public void write(int b) throws IOException {}
                     }));
 
+                    eTime = System.currentTimeMillis();
                     HeuristicsNet heuristicsNet = FlexibleHeuristicsMinerPlugin.run(context, log, minerSettings);
+                    eTime = System.currentTimeMillis() - eTime;
+
                     Object[] result = HeuristicsNetToPetriNetConverter.converter(context, heuristicsNet);
 
                     if(result[1] == null) result[1] = MarkingDiscoverer.constructInitialMarking(context, (Petrinet) result[0]);
@@ -127,19 +137,22 @@ public class HyperParamOptimizedStructuredHeuristicsMiner implements MiningAlgor
                     MarkingDiscoverer.createInitialMarkingConnection(context, (Petrinet) result[0], (Marking) result[1]);
                     MarkingDiscoverer.createFinalMarkingConnection(context, (Petrinet) result[0], (Marking) result[2]);
 
-                    fit = fitnessCalculator.computeMeasurement(context, xEventClassifier, petrinet, this, log).getValue();
-                    prec = precisionCalculator.computeMeasurement(context, xEventClassifier, petrinet, this, log).getValue();
-                    gen = computeGeneralization();
+                    if( sound = Soundness.isSound(petrinet) ) {
+                        fit = fitnessCalculator.computeMeasurement(context, xEventClassifier, petrinet, this, log).getValue();
+                        prec = precisionCalculator.computeMeasurement(context, xEventClassifier, petrinet, this, log).getValue();
+                    } else {
+                        fit = prec = -1.0;
+                    }
+                    gen = computeGeneralization(context, crossValidationLogs, xEventClassifier, minerSettings);
                     complexity = bpmnComplexity.computeMeasurement(context, xEventClassifier, petrinet, this, log);
                     size = Double.valueOf(complexity.getMetricValue("size"));
                     cfc = Double.valueOf(complexity.getMetricValue("cfc"));
                     struct = Double.valueOf(complexity.getMetricValue("struct."));
 
-                    if( fit.isNaN() || prec.isNaN() ) fit = prec = score = 0.0;
-                    else score = (fit * prec * 2) / (fit + prec);
-                    if( score.isNaN() ) score = 0.0;
+                    score = (fit * prec * 2) / (fit + prec);
+                    if( score.isNaN() ) score = -1.0;
 
-                    combination = rtb_threshold + "," + d_threshold + "," + fit + "," + prec + "," + score + "," + gen + "," + size + "," + cfc + "," + struct;
+                    combination = rtb_threshold + "," + d_threshold + "," + fit + "," + prec + "," + score + "," + gen + "," + size + "," + cfc + "," + struct + "," + sound + "," + eTime;
                     writer.println(combination);
                     writer.flush();
 
@@ -153,11 +166,71 @@ public class HyperParamOptimizedStructuredHeuristicsMiner implements MiningAlgor
             rtb_threshold += STEP;
         } while (rtb_threshold <= MAX);
 
-        return null;
+        System.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out)));
+        return petrinet;
     }
 
-    private Double computeGeneralization() {
-        return 0.0;
+    private Double computeGeneralization(UIPluginContext context, Map<XLog, XLog> crossValidationLogs, XEventClassifier xEventClassifier, HeuristicsMinerSettings minerSettings) {
+        PetrinetWithMarking petrinetWithMarking;
+        int k = crossValidationLogs.size();
+        StructuringService ss = new StructuringService();
+
+        XLog evalLog;
+        AlignmentBasedFitness alignmentBasedFitness = new AlignmentBasedFitness();
+        AlignmentBasedPrecision alignmentBasedPrecision = new AlignmentBasedPrecision();
+
+        double fitness = 0.0;
+        double precision = 0.0;
+        Double fscore = 0.0;
+        Double f;
+        Double p;
+        Double fs;
+
+        for (XLog miningLog : crossValidationLogs.keySet()) {
+            evalLog = crossValidationLogs.get(miningLog);
+            f = 0.0;
+            p = 0.0;
+            fs = 0.0;
+
+            try {
+
+                System.setOut(new PrintStream(new OutputStream() {
+                    @Override
+                    public void write(int b) throws IOException {}
+                }));
+
+                HeuristicsNet heuristicsNet = FlexibleHeuristicsMinerPlugin.run(context, miningLog, minerSettings);
+                Object[] result = HeuristicsNetToPetriNetConverter.converter(context, heuristicsNet);
+
+                if(result[1] == null) result[1] = MarkingDiscoverer.constructInitialMarking(context, (Petrinet) result[0]);
+                else MarkingDiscoverer.createInitialMarkingConnection(context, (Petrinet) result[0], (Marking) result[1]);
+                Marking finalMarking = MarkingDiscoverer.constructFinalMarking(context, (Petrinet) result[0]);
+
+                BPMNDiagram diagram = PetriNetToBPMNConverter.convert((Petrinet) result[0], (Marking) result[1], finalMarking, false);
+                BPMNDiagram structuredDiagram = ss.structureDiagram(diagram, "ASTAR", 100, 500, 10, 100, 2, true, true, true);
+                result = BPMNToPetriNetConverter.convert(structuredDiagram);
+                petrinetWithMarking = new PetrinetWithMarking((Petrinet) result[0], (Marking) result[1], (Marking) result[2]);
+
+                MarkingDiscoverer.createInitialMarkingConnection(context, (Petrinet) result[0], (Marking) result[1]);
+                MarkingDiscoverer.createFinalMarkingConnection(context, (Petrinet) result[0], (Marking) result[2]);
+
+                if (Soundness.isSound(petrinetWithMarking)) {
+                    f = alignmentBasedFitness.computeMeasurement(context, xEventClassifier, petrinetWithMarking, this, evalLog).getValue();
+//                    p = alignmentBasedPrecision.computeMeasurement(context, xEventClassifier, petrinetWithMarking, this, evalLog).getValue();
+//                    fs = (2.0*f*p)/(f+p);
+                }
+
+                fitness += f;
+//                precision += p;
+//                fscore += fs;
+            } catch (Exception e) { }
+        }
+
+        fitness = fitness / (double) k;
+//        precision = precision/(double)k;
+//        fscore = fscore/(double)k;
+
+        return fitness;
     }
 
     public BPMNDiagram mineBPMNDiagram(UIPluginContext context, XLog log, boolean structure, MiningSettings params, XEventClassifier xEventClassifier) {

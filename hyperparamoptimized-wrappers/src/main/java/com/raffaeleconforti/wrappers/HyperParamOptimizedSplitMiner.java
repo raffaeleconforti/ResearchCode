@@ -7,13 +7,12 @@ import com.raffaeleconforti.conversion.bpmn.BPMNToPetriNetConverter;
 import com.raffaeleconforti.conversion.petrinet.PetriNetToBPMNConverter;
 import com.raffaeleconforti.marking.MarkingDiscoverer;
 import com.raffaeleconforti.measurements.Measure;
-import com.raffaeleconforti.measurements.impl.AlignmentBasedFitness;
-import com.raffaeleconforti.measurements.impl.AlignmentBasedPrecision;
-import com.raffaeleconforti.measurements.impl.BPMNComplexity;
+import com.raffaeleconforti.measurements.impl.*;
 import com.raffaeleconforti.wrappers.impl.SplitMinerWrapper;
 import com.raffaeleconforti.wrappers.settings.MiningSettings;
 import org.deckfour.xes.classification.XEventClassifier;
 import org.deckfour.xes.classification.XEventNameClassifier;
+import org.deckfour.xes.extension.std.XConceptExtension;
 import org.deckfour.xes.model.XLog;
 import org.processmining.contexts.uitopia.UIContext;
 import org.processmining.contexts.uitopia.UIPluginContext;
@@ -27,6 +26,7 @@ import org.processmining.plugins.bpmn.plugins.BpmnExportPlugin;
 import org.processmining.processtree.ProcessTree;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -75,7 +75,11 @@ public class HyperParamOptimizedSplitMiner implements MiningAlgorithm {
     public PetrinetWithMarking hyperparamEvaluation(UIPluginContext context, XLog log, boolean structure, XEventClassifier xEventClassifier) {
         SplitMiner yam = new SplitMiner();
         BPMNDiagram bpmn;
-        PetrinetWithMarking petrinet;
+        PetrinetWithMarking petrinet = null;
+        Map<XLog, XLog> crossValidationLogs = XFoldAlignmentBasedFMeasure.getCrossValidationLogs(log, XFoldAlignmentBasedFMeasure.K);
+
+        String lName = XConceptExtension.instance().extractName(log);
+        String fName = ".\\splitminer_hyperparam_" + lName + "_" + System.currentTimeMillis() + ".csv";
 
         AlignmentBasedFitness fitnessCalculator = new AlignmentBasedFitness();
         AlignmentBasedPrecision precisionCalculator = new AlignmentBasedPrecision();
@@ -89,6 +93,8 @@ public class HyperParamOptimizedSplitMiner implements MiningAlgorithm {
         Double size;
         Double cfc;
         Double struct;
+        long eTime;
+        boolean sound;
 
         String combination;
         Double p_threshold;
@@ -96,8 +102,8 @@ public class HyperParamOptimizedSplitMiner implements MiningAlgorithm {
 
         PrintWriter writer;
         try {
-            writer = new PrintWriter(".\\splitminer_hyperparam_" + System.currentTimeMillis() + ".txt");
-            writer.println("f_threshold,p_threshold,fitness,precision,fscore,generalization,size,cfc,struct");
+            writer = new PrintWriter(fName);
+            writer.println("f_threshold,p_threshold,fitness,precision,fscore,generalization,size,cfc,struct,soundness,mining-time");
         } catch(Exception e) {
             writer = new PrintWriter(System.out);
             System.out.println("ERROR - impossible to create the file for storing the results: printing only on terminal.");
@@ -108,22 +114,27 @@ public class HyperParamOptimizedSplitMiner implements MiningAlgorithm {
             p_threshold = p_MIN;
             do {
                 try {
+                    eTime = System.currentTimeMillis();
                     bpmn = yam.mineBPMNModel(log, xEventClassifier, f_threshold, p_threshold, DFGPUIResult.FilterType.WTH, true, true, false, SplitMinerUIResult.StructuringTime.NONE);
+                    eTime = System.currentTimeMillis() - eTime;
                     petrinet = convertToPetrinet(context, bpmn);
 
-                    fit = fitnessCalculator.computeMeasurement(context, xEventClassifier, petrinet, this, log).getValue();
-                    prec = precisionCalculator.computeMeasurement(context, xEventClassifier, petrinet, this, log).getValue();
-                    gen = computeGeneralization();
+                    if( sound = Soundness.isSound(petrinet) ) {
+                        fit = fitnessCalculator.computeMeasurement(context, xEventClassifier, petrinet, this, log).getValue();
+                        prec = precisionCalculator.computeMeasurement(context, xEventClassifier, petrinet, this, log).getValue();
+                    } else {
+                        fit = prec = -1.0;
+                    }
+                    gen = computeGeneralization(context, crossValidationLogs, xEventClassifier, f_threshold, p_threshold);
                     complexity = bpmnComplexity.computeMeasurementBPMN(bpmn);
                     size = Double.valueOf(complexity.getMetricValue("size"));
                     cfc = Double.valueOf(complexity.getMetricValue("cfc"));
                     struct = Double.valueOf(complexity.getMetricValue("struct."));
 
-                    if( fit.isNaN() || prec.isNaN() ) fit = prec = score = 0.0;
-                    else score = (fit * prec * 2) / (fit + prec);
-                    if( score.isNaN() ) score = 0.0;
+                    score = (fit * prec * 2) / (fit + prec);
+                    if( score.isNaN() ) score = -1.0;
 
-                    combination = f_threshold + "," + p_threshold + "," + fit + "," + prec + "," + score + "," + gen + "," + size + "," + cfc + "," + struct;
+                    combination = f_threshold + "," + p_threshold + "," + fit + "," + prec + "," + score + "," + gen + "," + size + "," + cfc + "," + struct + "," + sound + "," + eTime;
                     writer.println(combination);
                     writer.flush();
 
@@ -136,11 +147,54 @@ public class HyperParamOptimizedSplitMiner implements MiningAlgorithm {
             f_threshold += f_STEP;
         } while( f_threshold <= f_MAX );
 
-        return null;
+        return petrinet;
     }
 
-    private Double computeGeneralization() {
-        return 0.0;
+    private Double computeGeneralization(UIPluginContext context, Map<XLog, XLog> crossValidationLogs, XEventClassifier xEventClassifier, double f_threshold, double p_threshold) {
+        PetrinetWithMarking petrinetWithMarking;
+        int k = crossValidationLogs.size();
+        SplitMiner yam = new SplitMiner();
+
+
+        XLog evalLog;
+        AlignmentBasedFitness alignmentBasedFitness = new AlignmentBasedFitness();
+        AlignmentBasedPrecision alignmentBasedPrecision = new AlignmentBasedPrecision();
+
+        double fitness = 0.0;
+        double precision = 0.0;
+        Double fscore = 0.0;
+        Double f;
+        Double p;
+        Double fs;
+
+        for (XLog miningLog : crossValidationLogs.keySet()) {
+            evalLog = crossValidationLogs.get(miningLog);
+            f = 0.0;
+            p = 0.0;
+            fs = 0.0;
+
+            try {
+
+                BPMNDiagram bpmn = yam.mineBPMNModel(miningLog, xEventClassifier, f_threshold, p_threshold, DFGPUIResult.FilterType.WTH, true, true, false, SplitMinerUIResult.StructuringTime.NONE);
+                petrinetWithMarking = convertToPetrinet(context, bpmn);
+
+                if (Soundness.isSound(petrinetWithMarking)) {
+                    f = alignmentBasedFitness.computeMeasurement(context, xEventClassifier, petrinetWithMarking, this, evalLog).getValue();
+//                    p = alignmentBasedPrecision.computeMeasurement(context, xEventClassifier, petrinetWithMarking, this, evalLog).getValue();
+//                    fs = (2.0*f*p)/(f+p);
+                }
+
+                fitness += f;
+//                precision += p;
+//                fscore += fs;
+            } catch (Exception e) { }
+        }
+
+        fitness = fitness / (double) k;
+//        precision = precision/(double)k;
+//        fscore = fscore/(double)k;
+
+        return fitness;
     }
 
     private PetrinetWithMarking convertToPetrinet(UIPluginContext context, BPMNDiagram diagram) {
