@@ -1,6 +1,5 @@
 package com.raffaeleconforti.measurements.impl;
 
-import au.edu.qut.petrinet.tools.SoundnessChecker;
 import com.raffaeleconforti.measurements.Measure;
 import com.raffaeleconforti.measurements.MeasurementAlgorithm;
 import com.raffaeleconforti.wrappers.MiningAlgorithm;
@@ -13,6 +12,7 @@ import org.deckfour.xes.model.XTrace;
 import org.processmining.contexts.uitopia.UIPluginContext;
 import org.processmining.processtree.ProcessTree;
 
+import java.util.Map;
 import java.util.Random;
 
 /**
@@ -20,10 +20,13 @@ import java.util.Random;
  */
 public class XFoldAlignmentBasedPrecision implements MeasurementAlgorithm {
 
-    private int fold = 3;
-    private XFactory factory = new XFactoryNaiveImpl();
-    private XLog log;
-    private Random r = new Random(123456789);
+    private int k;
+    private Random r;
+
+    public XFoldAlignmentBasedPrecision() {
+        k = XFoldAlignmentBasedFMeasure.K;
+        r = XFoldAlignmentBasedFMeasure.R;
+    }
 
     @Override
     public boolean isMultimetrics() { return false; }
@@ -37,77 +40,37 @@ public class XFoldAlignmentBasedPrecision implements MeasurementAlgorithm {
     public Measure computeMeasurement(UIPluginContext pluginContext, XEventClassifier xEventClassifier, PetrinetWithMarking petrinetWithMarking, MiningAlgorithm miningAlgorithm, XLog log) {
         Measure measure = new Measure();
         double precision = 0.0;
-        this.log = log;
-        XLog[] logs = createdXFolds();
         Double p;
+        XLog evalLog;
+        Map<XLog, XLog> crossValidationLogs = XFoldAlignmentBasedFMeasure.getCrossValidationLogs(log, k);
+        int i = 0;
 
         AlignmentBasedPrecision alignmentBasedPrecision = new AlignmentBasedPrecision();
 
-        for(int i = 0; i < fold; i++) {
-            XLog log1 = factory.createLog(log.getAttributes());
-            for (int j = 0; j < fold; j++) {
-                if (j != i) {
-                    log1.addAll(logs[j]);
-                }
-            }
+        for( XLog miningLog : crossValidationLogs.keySet() ) {
+            evalLog = crossValidationLogs.get(miningLog);
+            i++;
+            p = 0.0;
 
             try {
-                petrinetWithMarking = miningAlgorithm.minePetrinet(pluginContext, log1, false, null, xEventClassifier);
-                if( !Soundness.isSound(petrinetWithMarking) ) p = 0.0;
-                else p = alignmentBasedPrecision.computeMeasurement(pluginContext, xEventClassifier, petrinetWithMarking, miningAlgorithm, log).getValue();
+                petrinetWithMarking = miningAlgorithm.minePetrinet(pluginContext, miningLog, false, null, xEventClassifier);
+                if( Soundness.isSound(petrinetWithMarking) )
+                    p = alignmentBasedPrecision.computeMeasurement(pluginContext, xEventClassifier, petrinetWithMarking, miningAlgorithm, evalLog).getValue();
                 precision += p;
-                System.out.println("DEBUG - " + (i+1) + "/" + fold + " -fold precision: " + p);
-            } catch( Exception e ) { return measure; }
+            } catch( Exception e ) { System.out.println("ERROR - impossible to assess precision for fold: " + i);  }
+
+            System.out.println("DEBUG - " + i + "/" + k + " -fold precision: " + p);
         }
 
-        measure.setValue(precision / (double) fold);
+        measure.setValue(precision / (double) k);
         return measure;
     }
 
     @Override
     public String getMeasurementName() {
-        return fold+"-Fold Alignment-Based ETC Precision";
+        return k+"-Fold Alignment-Based ETC Precision";
     }
 
     @Override
-    public String getAcronym() { return "(a)("+fold+"-f)prec."; }
-
-    private XLog[] createdXFolds() {
-
-        if(log.size() < fold) fold = log.size();
-        XLog[] logs = new XLog[fold];
-
-        for(int i = 0; i < fold; i++) {
-            logs[i] = factory.createLog(log.getAttributes());
-        }
-
-        if(log.size() == fold) {
-            int pos = 0;
-            for (XTrace t : log) {
-                logs[pos].add(t);
-                pos++;
-            }
-        }else {
-            boolean finish = false;
-            while (!finish) {
-                finish = true;
-                for (XTrace t : log) {
-                    int pos = r.nextInt(fold);
-                    logs[pos].add(t);
-                }
-                for (int i = 0; i < logs.length; i++) {
-                    if (logs[i].size() == 0) {
-                        finish = false;
-                    }
-                }
-                if(!finish) {
-                    for(int i = 0; i < fold; i++) {
-                        logs[i].clear();
-                    }
-                }
-            }
-        }
-
-        return logs;
-    }
+    public String getAcronym() { return "(a)("+k+"-f)prec."; }
 }

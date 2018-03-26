@@ -154,7 +154,7 @@ public class BenchmarkCommandline {
         }
 
         if( (args.length == 3) && (args[0].equalsIgnoreCase("-foldlog"))) {
-            Benchmark.foldLog(args[1], args[2]);
+            Benchmark.getLogFolds(args[1], args[2]);
             return;
         }
 

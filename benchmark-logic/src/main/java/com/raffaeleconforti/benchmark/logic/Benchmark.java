@@ -162,7 +162,7 @@ public class Benchmark {
                     XLog miningLog = logCloner.cloneLog(log);
                     PetrinetWithMarking petrinetWithMarking = miningAlgorithm.minePetrinet(fakePluginContext, miningLog, false, null, xEventClassifier);
                     eTime = System.currentTimeMillis() - eTime;
-                    measures.get(miningAlgorithmName).get(logName).put("_exec-t", Long.toString(eTime));
+                    measures.get(miningAlgorithmName).get(logName).put("mining-time", Long.toString(eTime));
                     System.out.println("DEBUG - mining time: " + eTime + "ms");
 
                     String bpmnpath = "./results/" + miningAlgorithmName + "/" + logName + "_" + Long.toString(System.currentTimeMillis()) + ".bpmn";
@@ -196,7 +196,7 @@ public class Benchmark {
                             }
 
 //                            if( execTime > MAX_TIME)
-                                measures.get(miningAlgorithmName).get(logName).put(measurementAlgorithmName + ":time", Long.toString(eTime));
+                                measures.get(miningAlgorithmName).get(logName).put(measurementAlgorithmName + "-time", Long.toString(eTime));
                         } catch (Error e) {
                             System.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out)));
                             e.printStackTrace();
@@ -524,62 +524,35 @@ public class Benchmark {
         System.out.println("LOGSA - min distinct events: " + minDistinctTraces);
     }
 
-    public static void foldLog(String path, String sfold) {
+    public static void getLogFolds(String logPath, String sfold) {
         Benchmark benchmark = new Benchmark();
-        XFactory factory = new XFactoryNaiveImpl();
-        XLog mLog;
-        XLog eLog;
-        XLog log = benchmark.loadLog(path);
-        Random r = new Random(123456789);
+        XLog evalLog;
+        XLog log = benchmark.loadLog(logPath);
+        Map<XLog, XLog> crossValidationLogs;
+        int k;
+        int i;
 
-        String mLogPath = sfold + "_mining_fold.xes";
-        String eLogPath = sfold + "_eval_fold.xes";
-//        String folder = "./folding/";
         String folder = "./";
 
         FileOutputStream fos;
         XesXmlSerializer serializer = new XesXmlSerializer();
 
         try {
-            int fold = Integer.valueOf(sfold);
-            if( log.size() < fold ) fold = log.size();
-
-            /* creating the folds */
-            XLog[] logs = new XLog[fold];
-            for( int i = 0; i < fold; i++ ) logs[i] = factory.createLog(log.getAttributes());
-            if( log.size() == fold ) {
-                int pos = 0;
-                for( XTrace t : log ) {
-                    logs[pos].add(t);
-                    pos++;
-                }
-            } else {
-                boolean finish = false;
-                while( !finish ) {
-                    finish = true;
-
-                    for( XTrace t : log ) {
-                        int pos = r.nextInt(fold);
-                        logs[pos].add(t);
-                    }
-
-                    for( int i = 0; i < logs.length; i++ ) if( logs[i].size() == 0 ) finish = false;
-                    if( !finish ) for(int i = 0; i < fold; i++) logs[i].clear();
-                }
-            }
+            k = Integer.valueOf(sfold);
+            crossValidationLogs = XFoldAlignmentBasedFMeasure.getCrossValidationLogs(log, k);
 
             /* saving the folds */
-            for( int i = 0; i < fold; i++ ) {
-                mLog = factory.createLog(log.getAttributes());
-                eLog = logs[i];
-                for( int j = 0; j < fold; j++ )  if ( j != i )  mLog.addAll(logs[j]);
+            i=0;
+            for( XLog miningLog : crossValidationLogs.keySet() ) {
+                evalLog = crossValidationLogs.get(miningLog);
+                i++;
 
-                fos = new FileOutputStream( new String(folder + (i+1) + "." + mLogPath) );
-                serializer.serialize(mLog, fos);
+                fos = new FileOutputStream( new String(folder + i + "_mining_fold.xes") );
+                serializer.serialize(miningLog, fos);
                 fos.close();
 
-                fos = new FileOutputStream( new String(folder + (i+1) + "." + eLogPath) );
-                serializer.serialize(eLog, fos);
+                fos = new FileOutputStream( new String(folder + i + "_eval_fold.xes") );
+                serializer.serialize(evalLog, fos);
                 fos.close();
             }
 
