@@ -4,14 +4,15 @@ import com.raffaeleconforti.conversion.petrinet.PetriNetToBPMNConverter;
 import com.raffaeleconforti.heuristicsdollarminer.HeuristicsDollarMiner;
 import com.raffaeleconforti.log.util.LogImporter;
 import com.raffaeleconforti.log.util.LogReaderClassic;
+import com.raffaeleconforti.marking.MarkingDiscoverer;
 import com.raffaeleconforti.wrappers.LogPreprocessing;
 import com.raffaeleconforti.wrappers.MiningAlgorithm;
-import com.raffaeleconforti.wrappers.settings.MiningSettings;
 import com.raffaeleconforti.wrappers.PetrinetWithMarking;
-import com.raffaeleconforti.marking.MarkingDiscoverer;
+import com.raffaeleconforti.wrappers.settings.MiningSettings;
 import org.deckfour.xes.classification.XEventClassifier;
 import org.deckfour.xes.classification.XEventNameClassifier;
 import org.deckfour.xes.model.XLog;
+import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.processmining.contexts.uitopia.UIPluginContext;
 import org.processmining.contexts.uitopia.annotations.UITopiaVariant;
 import org.processmining.framework.log.LogFile;
@@ -23,8 +24,6 @@ import org.processmining.models.graphbased.directed.petrinet.Petrinet;
 import org.processmining.models.graphbased.directed.petrinet.elements.Place;
 import org.processmining.models.graphbased.directed.petrinet.elements.Transition;
 import org.processmining.models.graphbased.directed.petrinet.impl.PetrinetImpl;
-
-import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.processmining.processtree.ProcessTree;
 
 /**

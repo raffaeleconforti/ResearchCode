@@ -27,9 +27,7 @@ public class Couple<T extends Comparable, D extends Comparable> {
         if(o instanceof Couple) {
             Couple c = (Couple) o;
             if(this.hashCode() == c.hashCode()) {
-                if (c.firstElement.equals(firstElement) && c.secondElement.equals(secondElement)) {
-                    return true;
-                }
+                return c.firstElement.equals(firstElement) && c.secondElement.equals(secondElement);
             }
             return false;
         }

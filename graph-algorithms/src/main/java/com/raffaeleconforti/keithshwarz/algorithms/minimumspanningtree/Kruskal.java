@@ -21,11 +21,12 @@ package com.raffaeleconforti.keithshwarz.algorithms.minimumspanningtree;
  *
  *         http://keithschwarz.com/interesting/code/?dir=union-find
  */
+
 import com.raffaeleconforti.keithshwarz.datastructure.disjointset.UnionFind;
 import com.raffaeleconforti.keithshwarz.datastructure.graph.undirectedgraph.kruskal.UndirectedGraphKruskal;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 
-import java.util.*; // For Set, List, Collections
+import java.util.*;
 
 public final class Kruskal {
     /**

@@ -1,18 +1,10 @@
 package com.raffaeleconforti.noisefiltering.event;
 
-import com.raffaeleconforti.automaton.Automaton;
-import com.raffaeleconforti.automaton.Edge;
-import com.raffaeleconforti.automaton.Node;
-import com.raffaeleconforti.ilpsolverwrapper.impl.gurobi.Gurobi_Solver;
-import com.raffaeleconforti.ilpsolverwrapper.impl.lpsolve.LPSolve_Solver;
 import com.raffaeleconforti.log.util.LogImporter;
-import com.raffaeleconforti.noisefiltering.event.optimization.wrapper.WrapperInfrequentBehaviourSolver;
 import org.deckfour.xes.classification.XEventNameClassifier;
 import org.deckfour.xes.factory.XFactoryNaiveImpl;
 import org.deckfour.xes.model.XLog;
 import org.deckfour.xes.model.XTrace;
-
-import java.util.Set;
 
 /**
  * Created by Raffaele Conforti (conforti.raffaele@gmail.com) on 20/4/17.

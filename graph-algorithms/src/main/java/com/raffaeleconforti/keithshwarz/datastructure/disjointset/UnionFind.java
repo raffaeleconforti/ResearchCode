@@ -21,7 +21,9 @@ package com.raffaeleconforti.keithshwarz.datastructure.disjointset;
 
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 
-import java.util.*; // For Map, UnifiedMap
+import java.util.Collection;
+import java.util.Map;
+import java.util.NoSuchElementException;
 
 /**
  * A class representing the union-find abstraction.

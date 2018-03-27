@@ -1,7 +1,9 @@
 package com.raffaeleconforti.bpmnminer.prom;
 
-import com.raffaeleconforti.bpmnminer.prom.subprocessminer.ui.EntityDiscoverer_UI;
 import com.raffaeleconforti.bpmnminer.exception.ExecutionCancelledException;
+import com.raffaeleconforti.bpmnminer.prom.preprocessing.functionaldependencies.ui.DiscoverERModel_UI;
+import com.raffaeleconforti.bpmnminer.prom.subprocessminer.ui.EntityDiscoverer_UI;
+import com.raffaeleconforti.bpmnminer.prom.subprocessminer.ui.SelectMinerUI;
 import com.raffaeleconforti.bpmnminer.subprocessminer.BPMNSubProcessMiner;
 import com.raffaeleconforti.bpmnminer.subprocessminer.EntityDiscoverer;
 import com.raffaeleconforti.bpmnminer.subprocessminer.selection.SelectMinerResult;
@@ -16,8 +18,6 @@ import org.processmining.framework.plugin.annotations.Plugin;
 import org.processmining.framework.plugin.annotations.PluginLevel;
 import org.processmining.framework.plugin.annotations.PluginVariant;
 import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
-import com.raffaeleconforti.bpmnminer.prom.preprocessing.functionaldependencies.ui.DiscoverERModel_UI;
-import com.raffaeleconforti.bpmnminer.prom.subprocessminer.ui.SelectMinerUI;
 
 import java.util.ArrayList;
 import java.util.List;

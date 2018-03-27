@@ -36,7 +36,7 @@ public class LogReaderClassic extends LogReader {
     private int indexInKeepList;
     private String curProcessName;
 
-    public static LogReader createInstance(LogReader var0, LogFilter var1) throws Exception {
+    public static LogReader createInstance(LogReader var0, LogFilter var1) {
         return new LogReaderClassic(var1, var0.getFile());
     }
 
@@ -148,7 +148,7 @@ public class LogReaderClassic extends LogReader {
                 boolean var1;
                 do {
                     this.current = this.parseNextProcessInstance();
-                    var1 = this.current != null?(this.filter == null?true:this.filter.filter(this.current)):false;
+                    var1 = this.current != null && (this.filter == null || this.filter.filter(this.current));
                 } while(this.current != null && (!var1 || this.current.isEmpty()));
 
                 ++this.currentIndex;

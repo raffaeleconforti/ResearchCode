@@ -5,10 +5,10 @@ import org.deckfour.xes.classification.XEventClassifier;
 import org.deckfour.xes.extension.std.XTimeExtension;
 import org.deckfour.xes.model.XEvent;
 import org.deckfour.xes.model.XTrace;
-
-import java.text.SimpleDateFormat;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
+
+import java.text.SimpleDateFormat;
 import java.util.Map;
 import java.util.Set;
 

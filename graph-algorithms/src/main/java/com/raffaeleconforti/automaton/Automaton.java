@@ -3,6 +3,7 @@ package com.raffaeleconforti.automaton;
 import com.raffaeleconforti.keithshwarz.algorithms.dijkstra.Dijkstra;
 import com.raffaeleconforti.keithshwarz.datastructure.graph.directedgraph.DirectedGraph;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
+import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 import org.processmining.models.graphbased.AttributeMap;
 import org.processmining.models.graphbased.directed.petrinet.Petrinet;
 import org.processmining.models.graphbased.directed.petrinet.PetrinetEdge;
@@ -11,7 +12,6 @@ import org.processmining.models.graphbased.directed.petrinet.elements.Place;
 import org.processmining.models.graphbased.directed.petrinet.elements.Transition;
 import org.processmining.models.graphbased.directed.petrinet.impl.PetrinetImpl;
 
-import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 import java.util.Map;
 import java.util.Set;
 

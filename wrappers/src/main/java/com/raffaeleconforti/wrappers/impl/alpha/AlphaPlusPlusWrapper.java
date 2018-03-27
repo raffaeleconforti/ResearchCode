@@ -1,11 +1,11 @@
 package com.raffaeleconforti.wrappers.impl.alpha;
 
 import com.raffaeleconforti.conversion.petrinet.PetriNetToBPMNConverter;
+import com.raffaeleconforti.marking.MarkingDiscoverer;
 import com.raffaeleconforti.wrappers.LogPreprocessing;
 import com.raffaeleconforti.wrappers.MiningAlgorithm;
-import com.raffaeleconforti.wrappers.settings.MiningSettings;
 import com.raffaeleconforti.wrappers.PetrinetWithMarking;
-import com.raffaeleconforti.marking.MarkingDiscoverer;
+import com.raffaeleconforti.wrappers.settings.MiningSettings;
 import org.deckfour.xes.classification.XEventClassifier;
 import org.deckfour.xes.classification.XEventNameClassifier;
 import org.deckfour.xes.model.XLog;
@@ -58,7 +58,7 @@ public class AlphaPlusPlusWrapper implements MiningAlgorithm {
         // Call the miner
         AlphaMinerParameters parameters = new AlphaPlusMinerParameters(AlphaVersion.PLUS_PLUS);
         AlphaMinerFactory factory = new AlphaMinerFactory();
-        Pair<Petrinet, Marking> pair = factory.createAlphaMiner(log, xEventClassifier, parameters).run();
+        Pair<Petrinet, Marking> pair = AlphaMinerFactory.createAlphaMiner(log, xEventClassifier, parameters).run();
         logPreprocessing.removedAddedElements(pair.getFirst());
 
         MarkingDiscoverer.createInitialMarkingConnection(context, pair.getFirst(), pair.getSecond());

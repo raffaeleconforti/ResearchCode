@@ -1,8 +1,6 @@
 package com.raffaeleconforti.noisefiltering.timestamp.prom;
 
 import com.raffaeleconforti.noisefiltering.timestamp.TimeStampFixerDummyExecutor;
-import com.raffaeleconforti.noisefiltering.timestamp.TimeStampFixerSmartExecutor;
-import com.raffaeleconforti.noisefiltering.timestamp.permutation.PermutationTechnique;
 import org.deckfour.xes.model.XLog;
 import org.processmining.contexts.uitopia.UIPluginContext;
 import org.processmining.contexts.uitopia.annotations.UITopiaVariant;

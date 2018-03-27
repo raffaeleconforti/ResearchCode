@@ -527,12 +527,12 @@ public class ModifiedAlphaPPProcessMiner {
 				petrinet.delTransition(t);
 			}
 			for (ModelGraphVertex pre	:	prePlaces) {
-				if (petrinet.getEdgesBetween((Place) pre, (Transition)first).size() == 0)
-					petrinet.addEdge((Place) pre, (Transition)first);
+				if (petrinet.getEdgesBetween(pre, first).size() == 0)
+					petrinet.addEdge((Place) pre, first);
 			}
 			for (ModelGraphVertex post	:	postPlaces) {
-				if (petrinet.getEdgesBetween((Transition) first, (Place)post).size() == 0)
-					petrinet.addEdge((Transition) first, (Place) post);
+				if (petrinet.getEdgesBetween(first, post).size() == 0)
+					petrinet.addEdge(first, (Place) post);
 			}
 		}
 	}
@@ -671,8 +671,8 @@ public class ModifiedAlphaPPProcessMiner {
 						t.setIdentifier("ADDTOSKIP" + (count++));
 						t.setLogEvent(null);
 						petriNet.addTransition(t);
-						petriNet.addEdge((Place) prePlace,(Transition) t);
-						petriNet.addEdge((Transition) t, (Place) succPlace);		
+						petriNet.addEdge(prePlace, t);
+						petriNet.addEdge(t, succPlace);
 					}else {
                         t = transition;
                     }
@@ -712,12 +712,12 @@ public class ModifiedAlphaPPProcessMiner {
 			for (Place p	:	(Set<Place>) xTransition.getPredecessors())
 			{
 				if (!transition.getPredecessors().contains(p))				
-					petriNet.addEdge((Place) p, (Transition) transition);				
+					petriNet.addEdge(p, transition);
 			}
 			for (Place p	:	(Set<Place>) yTransition.getSuccessors())
 			{
 				if (!transition.getSuccessors().contains(p))
-					petriNet.addEdge((Transition) transition,(Place) p);
+					petriNet.addEdge(transition, p);
 			}
 		}
 		else if (axyb.invTasktype == AXYB.REDO)
@@ -749,12 +749,12 @@ public class ModifiedAlphaPPProcessMiner {
 			for (Place p	:	(Set<Place>) aTransition.getSuccessors())
 			{
 				if (!transition.getPredecessors().contains(p))
-					petriNet.addEdge((Place) p, (Transition) transition);
+					petriNet.addEdge(p, transition);
 			}
 			for (Place p	:	(Set<Place>) bTransition.getPredecessors())
 			{
 				if (!transition.getSuccessors().contains(p))
-					petriNet.addEdge((Transition) transition, (Place) p);
+					petriNet.addEdge(transition, p);
 			}			
 		}	
 		else if (axyb.invTasktype == AXYB.START)
@@ -776,7 +776,7 @@ public class ModifiedAlphaPPProcessMiner {
 			for (Place p	:	(Set<Place>) yTransition.getSuccessors())
 			{
 				if (!transition.getSuccessors().contains(p))
-					petriNet.addEdge((Transition) transition,(Place) p);
+					petriNet.addEdge(transition, p);
 			}
 		}
 		else if (axyb.invTasktype == AXYB.END)
@@ -798,7 +798,7 @@ public class ModifiedAlphaPPProcessMiner {
 			for (Place p	:	(Set<Place>) xTransition.getPredecessors())
 			{
 				if (!transition.getPredecessors().contains(p))				
-					petriNet.addEdge((Place) p, (Transition) transition);				
+					petriNet.addEdge(p, transition);
 			}
 		}
 	}
@@ -892,7 +892,7 @@ public class ModifiedAlphaPPProcessMiner {
                 tdA.clear();
                 tdB.clear();
 
-                String b = (String) arCommSucc[j];
+                String b = arCommSucc[j];
                 //test if b has been accessed
                 if (alPassed.contains(b))
                 {
@@ -1617,15 +1617,15 @@ public class ModifiedAlphaPPProcessMiner {
     	{
     		ArrayList<String> preTasks = invTask.pre;
     		ArrayList<String> sucTasks = invTask.suc;
-    		if (invTask.type == invTask.START)
+    		if (invTask.type == InvTask.START)
     		{
     			preTasks = new ArrayList<String>();
     			preTasks.add(InvTask.TRACE_BEGIN_TAG);
     		}
-    		else if (invTask.type == invTask.END)
+    		else if (invTask.type == InvTask.END)
     		{
     			sucTasks = new ArrayList<String>();
-    			sucTasks.add(invTask.TRACE_END_TAG);
+    			sucTasks.add(InvTask.TRACE_END_TAG);
     		}
     		for (String preTask	:	preTasks)
     			for (String sucTask	:	sucTasks)
@@ -3529,10 +3529,10 @@ class RelationMatrix
         //And Split
         for(int i=0; i<arSucc.length; i++)
         {
-            String ti = (String)arSucc[i];
+            String ti = arSucc[i];
             for(int j=i+1; j<arSucc.length; j++)
             {
-                String tj = (String)arSucc[j];
+                String tj = arSucc[j];
                 int rel = getRelation(ti, tj);
                 if((rel & Relation.PARALLEL) > 0)
                 {
@@ -3544,10 +3544,10 @@ class RelationMatrix
         //And Join/Or Join with Different Output Tasks
         for(int i=0; i<arPred.length; i++)
         {
-            String ti = (String)arPred[i];
+            String ti = arPred[i];
             for(int j=i+1; j<arPred.length; j++)
             {
-                String tj = (String)arPred[j];
+                String tj = arPred[j];
                 int rel = getRelation(ti, tj);
                 //And Join
                 if((rel & Relation.PARALLEL) > 0)
@@ -3606,12 +3606,8 @@ class RelationMatrix
                 alUnion.add(arSuccTj[i]);
             }
         }
-        if(alUnion.size() != arSuccTi.length || alUnion.size() != arSuccTj.length)
-        {
-            return true;
-        }
+        return alUnion.size() != arSuccTi.length || alUnion.size() != arSuccTj.length;
 
-        return false;
     }
 
     //add a before task t2 of t1

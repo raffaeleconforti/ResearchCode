@@ -8,8 +8,8 @@ import com.raffaeleconforti.dsm.factory.DirectFollowFactory;
 import com.raffaeleconforti.dsm.factory.IndirectFollowFactory;
 import org.deckfour.xes.classification.XEventClassifier;
 import org.deckfour.xes.model.XLog;
-
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
+
 import java.util.Set;
 
 /**

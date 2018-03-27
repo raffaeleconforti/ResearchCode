@@ -3,6 +3,9 @@ package com.raffaeleconforti.soundnesschecker;
 /**
  * Created by Raffaele Conforti (conforti.raffaele@gmail.com) on 5/7/17.
  */
+
+import com.google.common.base.Function;
+import com.google.common.collect.FluentIterable;
 import org.apache.commons.lang3.StringUtils;
 import org.processmining.models.graphbased.NodeID;
 import org.processmining.models.graphbased.directed.petrinet.Petrinet;
@@ -11,9 +14,6 @@ import org.processmining.models.graphbased.directed.petrinet.PetrinetNode;
 import org.processmining.models.graphbased.directed.petrinet.elements.Place;
 import org.processmining.models.graphbased.directed.petrinet.elements.Transition;
 import org.processmining.models.semantics.petrinet.Marking;
-
-import com.google.common.base.Function;
-import com.google.common.collect.FluentIterable;
 
 public class PetriNet2Lola {
 

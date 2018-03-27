@@ -9,7 +9,10 @@ import com.raffaeleconforti.spanningtree.kruskals.CheckCycle;
 import com.raffaeleconforti.spanningtree.kruskals.Edge;
 import com.raffaeleconforti.spanningtree.kruskals.EdgeComparator;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Scanner;
 
 public class KruskalAlgorithm
 {

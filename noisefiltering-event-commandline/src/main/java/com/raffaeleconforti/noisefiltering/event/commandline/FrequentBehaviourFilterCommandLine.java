@@ -44,7 +44,7 @@ public class FrequentBehaviourFilterCommandLine {
                     System.out.println("Select a 1 for true and 2 false");
                 }
             }
-        };
+        }
 
         FrequentBehaviourFilterCommandLine fbfc = new FrequentBehaviourFilterCommandLine();
 

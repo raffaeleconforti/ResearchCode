@@ -46,7 +46,7 @@ public class FakePluginContext extends UIPluginContext {
         return new ProMFuture(String.class, "Fake Future") {
 
             @Override
-            protected Object doInBackground() throws Exception {
+            protected Object doInBackground() {
                 return null;
             }
         };

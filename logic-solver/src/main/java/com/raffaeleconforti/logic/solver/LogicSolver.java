@@ -5,8 +5,8 @@ import com.raffaeleconforti.logic.solver.elements.LogicElement;
 import com.raffaeleconforti.logic.solver.elements.LogicFunction;
 import com.raffaeleconforti.logic.solver.elements.LogicSystem;
 import com.raffaeleconforti.logic.solver.exception.LogicElementValueNotAssigned;
-
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
+
 import java.util.Set;
 import java.util.StringTokenizer;
 

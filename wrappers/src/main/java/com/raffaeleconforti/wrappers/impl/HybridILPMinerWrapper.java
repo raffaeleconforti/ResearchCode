@@ -2,19 +2,19 @@ package com.raffaeleconforti.wrappers.impl;
 
 import com.raffaeleconforti.conversion.petrinet.PetriNetToBPMNConverter;
 import com.raffaeleconforti.wrappers.MiningAlgorithm;
-import com.raffaeleconforti.wrappers.settings.MiningSettings;
 import com.raffaeleconforti.wrappers.PetrinetWithMarking;
+import com.raffaeleconforti.wrappers.settings.MiningSettings;
 import org.deckfour.xes.classification.XEventClassifier;
 import org.deckfour.xes.model.XLog;
 import org.processmining.causalactivitygraphcreator.algorithms.DiscoverCausalActivityGraphAlgorithm;
 import org.processmining.causalactivitygraphcreator.parameters.DiscoverCausalActivityGraphParameters;
 import org.processmining.contexts.uitopia.UIPluginContext;
 import org.processmining.hybridilpminer.parameters.*;
+import org.processmining.hybridilpminer.plugins.HybridILPMinerPlugin;
 import org.processmining.lpengines.interfaces.LPEngine;
 import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
 import org.processmining.models.graphbased.directed.petrinet.Petrinet;
 import org.processmining.models.semantics.petrinet.Marking;
-import org.processmining.hybridilpminer.plugins.HybridILPMinerPlugin;
 import org.processmining.processtree.ProcessTree;
 
 import java.util.HashSet;

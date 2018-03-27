@@ -16,7 +16,10 @@ import org.processmining.models.graphbased.directed.petrinet.elements.Transition
 import org.processmining.models.graphbased.directed.petrinet.impl.PetrinetImpl;
 import org.processmining.models.semantics.petrinet.Marking;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by Raffaele Conforti on 19/02/14.
@@ -404,7 +407,7 @@ public class PetriNetToBPMNConverter {
                             outgoing.add(edge);
                         }
                         if (edge.getTarget().equals(t)) {
-                            incoming.add(edge);;
+                            incoming.add(edge);
                         }
                     }
 

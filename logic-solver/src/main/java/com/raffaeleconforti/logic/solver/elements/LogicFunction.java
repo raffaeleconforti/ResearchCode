@@ -10,7 +10,7 @@ public class LogicFunction implements LogicElement, Cloneable {
     private String name;
     private LogicElement element;
 
-    public static void main(String[] args) throws LogicElementValueNotAssigned {
+    public static void main(String[] args) {
         LogicExpression expression = new LogicExpression(new LogicFunctionBookmark("f()"), LogicOperator.AND, new BooleanElement(true));
         LogicExpression expression1 = new LogicExpression(expression, LogicOperator.OR, new AtomicElement("b"));
         LogicFunction function = new LogicFunction("f()", expression1);

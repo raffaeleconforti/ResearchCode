@@ -3,11 +3,13 @@ package com.raffaeleconforti.outliers;
 /**
  * Created by Raffaele Conforti (conforti.raffaele@gmail.com) on 22/12/17.
  */
+
+import org.apache.commons.math3.distribution.TDistribution;
+import org.apache.commons.math3.stat.StatUtils;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
-import org.apache.commons.math3.distribution.TDistribution;
-import org.apache.commons.math3.stat.StatUtils;;
 
 public class GrubbsTest {
 

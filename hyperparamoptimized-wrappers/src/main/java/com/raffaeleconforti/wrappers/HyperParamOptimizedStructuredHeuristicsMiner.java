@@ -24,7 +24,9 @@ import org.processmining.plugins.heuristicsnet.miner.heuristics.miner.settings.H
 import org.processmining.processtree.ProcessTree;
 
 import java.io.*;
-import java.util.*;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Map;
 
 /**
  * Created by Adriano on 5/19/2017.
@@ -116,7 +118,7 @@ public class HyperParamOptimizedStructuredHeuristicsMiner implements MiningAlgor
 
                     System.setOut(new PrintStream(new OutputStream() {
                         @Override
-                        public void write(int b) throws IOException {}
+                        public void write(int b) {}
                     }));
 
                     eTime = System.currentTimeMillis();
@@ -196,7 +198,7 @@ public class HyperParamOptimizedStructuredHeuristicsMiner implements MiningAlgor
 
                 System.setOut(new PrintStream(new OutputStream() {
                     @Override
-                    public void write(int b) throws IOException {}
+                    public void write(int b) {}
                 }));
 
                 HeuristicsNet heuristicsNet = FlexibleHeuristicsMinerPlugin.run(context, miningLog, minerSettings);

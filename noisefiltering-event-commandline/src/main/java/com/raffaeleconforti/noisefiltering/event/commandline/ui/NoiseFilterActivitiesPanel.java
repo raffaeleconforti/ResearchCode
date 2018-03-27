@@ -5,7 +5,10 @@ import com.raffaeleconforti.noisefiltering.event.selection.NoiseFilterResult;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 
 import java.text.DecimalFormat;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.Scanner;
+import java.util.Set;
 
 /**
  * Created by conforti on 17/09/15.

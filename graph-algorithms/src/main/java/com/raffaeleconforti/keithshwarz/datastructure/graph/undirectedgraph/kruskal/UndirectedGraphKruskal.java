@@ -11,9 +11,13 @@ package com.raffaeleconforti.keithshwarz.datastructure.graph.undirectedgraph.kru
  * a standard adjacency list and then duplicating the logic to ensure each
  * edge appears twice.
  */
+
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 
-import java.util.*; // For UnifiedMap, UnifiedSet
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.NoSuchElementException;
 
 public final class UndirectedGraphKruskal<T> implements Iterable<T> {
     /* A map from nodes in the graph to sets of outgoing edges.  Each

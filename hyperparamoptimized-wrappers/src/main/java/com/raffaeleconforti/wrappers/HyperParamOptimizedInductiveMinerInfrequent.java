@@ -89,7 +89,7 @@ public class HyperParamOptimizedInductiveMinerInfrequent implements MiningAlgori
 
         System.setOut(new PrintStream(new OutputStream() {
             @Override
-            public void write(int b) throws IOException {}
+            public void write(int b) {}
         }));
 
         Float threshold = MIN;
@@ -99,7 +99,7 @@ public class HyperParamOptimizedInductiveMinerInfrequent implements MiningAlgori
 
                 System.setOut(new PrintStream(new OutputStream() {
                     @Override
-                    public void write(int b) throws IOException {}
+                    public void write(int b) {}
                 }));
 
                 eTime = System.currentTimeMillis();
@@ -164,7 +164,7 @@ public class HyperParamOptimizedInductiveMinerInfrequent implements MiningAlgori
 
                 System.setOut(new PrintStream(new OutputStream() {
                     @Override
-                    public void write(int b) throws IOException {}
+                    public void write(int b) {}
                 }));
 
                 Object[] result = miner.minePetriNetParameters(context, miningLog, miningParameters);

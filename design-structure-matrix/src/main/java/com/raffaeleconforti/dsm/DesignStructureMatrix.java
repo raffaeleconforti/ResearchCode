@@ -10,12 +10,9 @@ import com.raffaeleconforti.log.util.LogAnalyser;
 import com.raffaeleconforti.log.util.LogImporter;
 import org.deckfour.xes.classification.XEventClassifier;
 import org.deckfour.xes.classification.XEventNameClassifier;
-import com.raffaeleconforti.memorylog.XFactoryMemoryImpl;
 import org.deckfour.xes.model.XLog;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
-
-import java.util.*;
 
 /**
  * Created by Raffaele Conforti (conforti.raffaele@gmail.com) on 20/03/2016.

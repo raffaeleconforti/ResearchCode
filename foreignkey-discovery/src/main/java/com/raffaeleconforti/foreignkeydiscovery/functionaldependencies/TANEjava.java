@@ -185,7 +185,7 @@ public class TANEjava {
      * @throws OutOfMemoryError
      * @throws ArrayStoreException
      */
-    public void getFD() throws Exception, OutOfMemoryError {
+    public void getFD() throws OutOfMemoryError {
 
         try {
 
@@ -741,7 +741,7 @@ public class TANEjava {
         this.debug = debug;
     }
 
-    protected void finalize() throws Throwable {
+    protected void finalize() {
 
         //close files and delete
         //if(output != null){

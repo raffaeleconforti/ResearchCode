@@ -1,14 +1,14 @@
 package com.raffaeleconforti.datastructures.conversion;
 
+import com.raffaeleconforti.datastructures.Hierarchy;
+import com.raffaeleconforti.datastructures.Tree;
+import com.raffaeleconforti.datastructures.exception.EmptyLogException;
 import com.raffaeleconforti.foreignkeydiscovery.conceptualmodels.Attribute;
 import com.raffaeleconforti.foreignkeydiscovery.conceptualmodels.Entity;
 import com.raffaeleconforti.keithshwarz.algorithms.maximummatchings.edmonds.AdjacencyList;
 import com.raffaeleconforti.keithshwarz.algorithms.maximummatchings.edmonds.Edge;
 import com.raffaeleconforti.keithshwarz.algorithms.maximummatchings.edmonds.Edmonds;
 import com.raffaeleconforti.keithshwarz.algorithms.maximummatchings.edmonds.Node;
-import com.raffaeleconforti.datastructures.Hierarchy;
-import com.raffaeleconforti.datastructures.Tree;
-import com.raffaeleconforti.datastructures.exception.EmptyLogException;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 
 import java.util.*;

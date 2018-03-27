@@ -24,8 +24,6 @@ import org.processmining.projectedrecallandprecision.framework.CompareParameters
 import org.processmining.projectedrecallandprecision.plugins.CompareLog2PetriNetPlugin;
 import org.processmining.projectedrecallandprecision.result.ProjectedRecallPrecisionResult;
 
-import java.io.*;
-import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**

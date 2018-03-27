@@ -1,9 +1,5 @@
 package com.raffaeleconforti.noisefiltering.timestamp.collections;
 
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Preconditions.checkState;
-
 import com.google.common.annotations.Beta;
 import com.google.common.annotations.GwtCompatible;
 import com.google.common.annotations.VisibleForTesting;
@@ -18,6 +14,8 @@ import com.sun.istack.Nullable;
 import org.deckfour.xes.model.XEvent;
 
 import java.util.*;
+
+import static com.google.common.base.Preconditions.*;
 
 /**
  * Provides static methods for working with {@code Collection} instances.
@@ -99,7 +97,7 @@ public final class Collections2 {
 
         FilteredCollection<E> createCombined(Predicate<? super E> newPredicate) {
             return new FilteredCollection<E>(unfiltered,
-                    Predicates.<E>and(predicate, newPredicate));
+                    Predicates.and(predicate, newPredicate));
             // .<E> above needed to compile in JDK 5
         }
 

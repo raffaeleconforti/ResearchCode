@@ -19,14 +19,12 @@ import org.processmining.models.graphbased.directed.petrinet.elements.Place;
 import org.processmining.models.graphbased.directed.petrinet.elements.Transition;
 import org.processmining.models.graphbased.directed.petrinet.impl.PetrinetFactory;
 import org.processmining.models.semantics.petrinet.Marking;
-
 import org.processmining.plugins.ilpminer.*;
 import org.processmining.plugins.ilpminer.ILPMinerSettings.SolverSetting;
 import org.processmining.plugins.ilpminer.ILPMinerSettings.SolverType;
 import org.processmining.plugins.log.logabstraction.LogRelations;
 
 import java.util.Collection;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -55,14 +53,13 @@ public class ILPMiner {
         return doILPMiningWithSettings(context, log, XLogInfoFactory.createLogInfo(log), settings);
     }
 
-    public ILPMinerSettings generateSetting(UIPluginContext context, XLog log)
-            throws Exception {
+    public ILPMinerSettings generateSetting(UIPluginContext context, XLog log) {
         ILPMinerUI ui;
         try {
             ILPMinerLogPetrinetConnection conn = context.getConnectionManager()
                     .getFirstConnection(ILPMinerLogPetrinetConnection.class,
                             context, log);
-            ui = new ILPMinerUI((ILPMinerSettings) conn.getObjectWithRole(ILPMinerLogPetrinetConnection.SETTINGS));
+            ui = new ILPMinerUI(conn.getObjectWithRole(ILPMinerLogPetrinetConnection.SETTINGS));
         } catch (Exception e) {
             ui = new ILPMinerUI();
         }
@@ -157,7 +154,7 @@ public class ILPMiner {
         PluginExecutionResult pluginResult = plugin.getSecond().invoke(c2, log,
                 summary);
         pluginResult.synchronize();
-        LogRelations relations = pluginResult.<LogRelations> getResult(plugin
+        LogRelations relations = pluginResult.getResult(plugin
                 .getFirst());
 
         // Now we have the relations and we can continue with the mining.
@@ -193,7 +190,7 @@ public class ILPMiner {
         // log it represents
         String extensions = " (";
         for (Class<?> c : settings.getExtensions()) {
-            extensions += (String) c.getMethod("getName",
+            extensions += c.getMethod("getName",
                     new Class[] { Class.class }).invoke(null,
                     new Object[] { c })
                     + ", ";
@@ -205,7 +202,7 @@ public class ILPMiner {
         }
         Petrinet net = PetrinetFactory.newPetrinet(settings.getVariant()
                 .getMethod("getName", new Class[] { Class.class }).invoke(null,
-                        new Object[] { settings.getVariant() })
+                        settings.getVariant())
                 + extensions
                 + " from "
                 + XConceptExtension.instance().extractName(log)

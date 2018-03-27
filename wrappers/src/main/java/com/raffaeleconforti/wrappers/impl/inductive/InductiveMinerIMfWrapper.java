@@ -3,8 +3,8 @@ package com.raffaeleconforti.wrappers.impl.inductive;
 import com.raffaeleconforti.conversion.petrinet.PetriNetToBPMNConverter;
 import com.raffaeleconforti.wrappers.LogPreprocessing;
 import com.raffaeleconforti.wrappers.MiningAlgorithm;
-import com.raffaeleconforti.wrappers.settings.MiningSettings;
 import com.raffaeleconforti.wrappers.PetrinetWithMarking;
+import com.raffaeleconforti.wrappers.settings.MiningSettings;
 import org.deckfour.xes.classification.XEventClassifier;
 import org.deckfour.xes.classification.XEventNameClassifier;
 import org.deckfour.xes.model.XLog;
@@ -21,7 +21,10 @@ import org.processmining.plugins.InductiveMiner.plugins.IMPetriNet;
 import org.processmining.plugins.InductiveMiner.plugins.IMProcessTree;
 import org.processmining.processtree.ProcessTree;
 
-import java.io.*;
+import java.io.FileDescriptor;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
+import java.io.PrintStream;
 
 /**
  * Created by conforti on 20/02/15.
@@ -54,7 +57,7 @@ public class InductiveMinerIMfWrapper implements MiningAlgorithm {
 
         System.setOut(new PrintStream(new OutputStream() {
             @Override
-            public void write(int b) throws IOException {}
+            public void write(int b) {}
         }));
 
         IMProcessTree miner = new IMProcessTree();
@@ -68,7 +71,7 @@ public class InductiveMinerIMfWrapper implements MiningAlgorithm {
                 miningParameters.setNoiseThreshold((Float)params.getParam("noiseThresholdIMf"));
         }
 
-        ProcessTree result = miner.mineProcessTree(log, miningParameters);
+        ProcessTree result = IMProcessTree.mineProcessTree(log, miningParameters);
         logPreprocessing.removedAddedElements(result);
 
         System.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out)));
@@ -83,7 +86,7 @@ public class InductiveMinerIMfWrapper implements MiningAlgorithm {
 
         System.setOut(new PrintStream(new OutputStream() {
             @Override
-            public void write(int b) throws IOException {}
+            public void write(int b) {}
         }));
 
         IMPetriNet miner = new IMPetriNet();

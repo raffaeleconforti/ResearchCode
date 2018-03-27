@@ -4,10 +4,13 @@ import com.raffaeleconforti.bpmnminer.preprocessing.functionaldependencies.Disco
 import com.raffaeleconforti.foreignkeydiscovery.conceptualmodels.ConceptualModel;
 import com.raffaeleconforti.foreignkeydiscovery.functionaldependencies.Data;
 import com.raffaeleconforti.foreignkeydiscovery.functionaldependencies.NoEntityException;
-import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.deckfour.xes.model.XLog;
+import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Scanner;
+import java.util.Set;
 
 /**
  * Created by Raffaele Conforti (conforti.raffaele@gmail.com) on 10/03/2016.

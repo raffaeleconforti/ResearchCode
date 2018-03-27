@@ -2,7 +2,6 @@ package com.raffaeleconforti.bpmnminer.subprocessminer;
 
 import com.raffaeleconforti.bpmn.util.BPMNCleaner;
 import com.raffaeleconforti.bpmn.util.BPMNSimplifier;
-import com.raffaeleconforti.bpmnminer.exception.ExecutionCancelledException;
 import com.raffaeleconforti.bpmnminer.subprocessminer.selection.SelectMinerResult;
 import com.raffaeleconforti.wrappers.impl.ILPAlgorithmWrapper;
 import com.raffaeleconforti.wrappers.impl.SplitMinerWrapper;
@@ -21,7 +20,7 @@ import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
  */
 public class BPMNMiner {
 
-    public BPMNDiagram mineBPMNDiagram(UIPluginContext context, XLog log, String startEndEventPreName, int selectedAlgorithm, MiningSettings params, boolean clean, boolean commandline, XEventClassifier xEventClassifier) throws ExecutionCancelledException {
+    public BPMNDiagram mineBPMNDiagram(UIPluginContext context, XLog log, String startEndEventPreName, int selectedAlgorithm, MiningSettings params, boolean clean, boolean commandline, XEventClassifier xEventClassifier) {
         BPMNDiagram result = null;
 
         if (selectedAlgorithm == SelectMinerResult.ALPHAPOS) {

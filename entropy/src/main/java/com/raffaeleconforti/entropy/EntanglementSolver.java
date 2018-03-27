@@ -7,7 +7,6 @@ import com.raffaeleconforti.automaton.Node;
 import com.raffaeleconforti.log.util.LogImporter;
 import com.raffaeleconforti.log.util.LogModifier;
 import com.raffaeleconforti.log.util.LogOptimizer;
-import com.raffaeleconforti.noisefiltering.timestamp.TimeStampFilterChecker;
 import org.deckfour.xes.classification.XEventAndClassifier;
 import org.deckfour.xes.classification.XEventClassifier;
 import org.deckfour.xes.classification.XEventNameClassifier;
@@ -15,16 +14,10 @@ import org.deckfour.xes.extension.std.XConceptExtension;
 import org.deckfour.xes.extension.std.XTimeExtension;
 import org.deckfour.xes.factory.XFactory;
 import org.deckfour.xes.factory.XFactoryNaiveImpl;
-import org.deckfour.xes.model.XAttributeLiteral;
-import org.deckfour.xes.model.XEvent;
 import org.deckfour.xes.model.XLog;
-import org.deckfour.xes.model.XTrace;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.eclipse.collections.impl.map.mutable.primitive.IntObjectHashMap;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
-
-import java.io.PrintWriter;
-import java.util.*;
 
 /**
  * Created by Raffaele Conforti (conforti.raffaele@gmail.com) on 25/08/2016.

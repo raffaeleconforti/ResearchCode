@@ -8,7 +8,6 @@ import com.raffaeleconforti.ilpsolverwrapper.ILPSolver;
 import com.raffaeleconforti.ilpsolverwrapper.ILPSolverExpression;
 import com.raffaeleconforti.ilpsolverwrapper.ILPSolverVariable;
 import com.raffaeleconforti.ilpsolverwrapper.impl.gurobi.Gurobi_Solver;
-import com.raffaeleconforti.log.util.LogCloner;
 import com.raffaeleconforti.log.util.LogImporter;
 import com.raffaeleconforti.log.util.LogModifier;
 import com.raffaeleconforti.log.util.LogOptimizer;
@@ -34,7 +33,7 @@ public class WrapperLabelFilter<T> {
     private final Map<Node<T>, Double> drawbacks;
     private XEventClassifier classifier = new XEventNameClassifier();
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
 
         XLog log = LogImporter.importFromFile(new XFactoryNaiveImpl(), "/Volumes/Data/SharedFolder/Logs/BPI2012.xes.gz");
         LogModifier logModifier = new LogModifier(new XFactoryNaiveImpl(), XConceptExtension.instance(), XTimeExtension.instance(), new LogOptimizer());

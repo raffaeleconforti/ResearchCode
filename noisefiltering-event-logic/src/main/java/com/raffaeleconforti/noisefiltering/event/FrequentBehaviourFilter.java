@@ -4,7 +4,6 @@ import com.raffaeleconforti.automaton.Automaton;
 import com.raffaeleconforti.automaton.AutomatonFactory;
 import com.raffaeleconforti.automaton.Node;
 import com.raffaeleconforti.bpmn.util.BPMNDiagramMerger;
-import com.raffaeleconforti.bpmnminer.exception.ExecutionCancelledException;
 import com.raffaeleconforti.bpmnminer.subprocessminer.BPMNMiner;
 import com.raffaeleconforti.bpmnminer.subprocessminer.selection.SelectMinerResult;
 import com.raffaeleconforti.conversion.bpmn.BPMNToPetriNetConverter;
@@ -32,7 +31,7 @@ import org.processmining.models.graphbased.directed.bpmn.elements.Activity;
 import org.processmining.models.graphbased.directed.petrinet.Petrinet;
 
 import java.awt.*;
-import java.util.*;
+import java.util.Set;
 
 /**
  * Created by conforti on 7/02/15.
@@ -60,12 +59,7 @@ public class FrequentBehaviourFilter {
 
         BPMNMiner bpmnMiner = new BPMNMiner();
         BPMNDiagram diagram = null;
-        try {
-            diagram = bpmnMiner.mineBPMNDiagram(context, res, null, SelectMinerResult.IMPOS, null, false, false, xEventClassifier);
-        } catch (ExecutionCancelledException e) {
-            context.getFutureResult(0).cancel(true);
-            return null;
-        }
+        diagram = bpmnMiner.mineBPMNDiagram(context, res, null, SelectMinerResult.IMPOS, null, false, false, xEventClassifier);
         for(Activity activity : diagram.getActivities()) {
             if(activity.getLabel().startsWith("#N#")) {
                 activity.getAttributeMap().put(AttributeMap.LABEL, activity.getLabel().substring(3));
@@ -90,12 +84,7 @@ public class FrequentBehaviourFilter {
 
         BPMNMiner bpmnMiner = new BPMNMiner();
         BPMNDiagram diagram = null;
-        try {
-            diagram = bpmnMiner.mineBPMNDiagram(context, res, null, SelectMinerResult.IMPOS, null, false, false, xEventClassifier);
-        } catch (ExecutionCancelledException e) {
-            context.getFutureResult(0).cancel(true);
-            return null;
-        }
+        diagram = bpmnMiner.mineBPMNDiagram(context, res, null, SelectMinerResult.IMPOS, null, false, false, xEventClassifier);
 
         FrequencyAnalyser frequencyAnalyser = new FrequencyAnalyser((Petrinet) BPMNToPetriNetConverter.convert(diagram)[0], res, xEventClassifier, context);
         frequencyAnalyser.analyse();

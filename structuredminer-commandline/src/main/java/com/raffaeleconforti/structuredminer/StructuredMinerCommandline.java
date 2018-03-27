@@ -20,7 +20,7 @@ import java.io.File;
  */
 public class StructuredMinerCommandline  {
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
 
         System.out.println("This is the stand alone version of the structured miner proposed in:");
         System.out.println();
