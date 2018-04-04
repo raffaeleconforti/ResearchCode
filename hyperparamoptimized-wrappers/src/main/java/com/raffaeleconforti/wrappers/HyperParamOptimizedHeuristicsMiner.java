@@ -71,7 +71,7 @@ public class HyperParamOptimizedHeuristicsMiner implements MiningAlgorithm {
         Double fit;
         Double prec;
         Double score;
-        Double gen;
+        String gen;
         Measure complexity;
         Double size;
         Double cfc;
@@ -95,7 +95,7 @@ public class HyperParamOptimizedHeuristicsMiner implements MiningAlgorithm {
         PrintWriter writer;
         try {
             writer = new PrintWriter(fName);
-            writer.println("rtb_threshold,d_threshold,fitness,precision,fscore,generalization,size,cfc,struct,soundness,mining-time");
+            writer.println("f_threshold,p_threshold,fitness,precision,fscore,gf1,gf2,gf3,gen,size,cfc,struct,soundness,mining-time");
         } catch(Exception e) {
             writer = new PrintWriter(System.out);
             System.out.println("ERROR - impossible to create the file for storing the results: printing only on terminal.");
@@ -162,9 +162,10 @@ public class HyperParamOptimizedHeuristicsMiner implements MiningAlgorithm {
         return petrinet;
     }
 
-    private Double computeGeneralization(UIPluginContext context, Map<XLog, XLog> crossValidationLogs, XEventClassifier xEventClassifier, HeuristicsMinerSettings minerSettings) {
+    private String computeGeneralization(UIPluginContext context, Map<XLog, XLog> crossValidationLogs, XEventClassifier xEventClassifier, HeuristicsMinerSettings minerSettings) {
         PetrinetWithMarking petrinetWithMarking;
         int k = crossValidationLogs.size();
+        String comb = "";
 
         XLog evalLog;
         AlignmentBasedFitness alignmentBasedFitness = new AlignmentBasedFitness();
@@ -209,13 +210,16 @@ public class HyperParamOptimizedHeuristicsMiner implements MiningAlgorithm {
 //                precision += p;
 //                fscore += fs;
             } catch (Exception e) { }
+
+            comb += Double.toString(f) + ",";
         }
 
-        fitness = fitness / (double) k;
+        comb += Double.toString(fitness / (double) k);
+
 //        precision = precision/(double)k;
 //        fscore = fscore/(double)k;
 
-        return fitness;
+        return comb;
     }
 
 
