@@ -33,8 +33,8 @@ public class FakeProMPropertiesPanel extends ProMHeaderPanel {
     }
 
     public JCheckBox addCheckBox(String name, boolean value) {
-        JCheckBox checkBox = SlickerFactory.instance().createCheckBox((String)null, value);
-        return (JCheckBox)this.addProperty(name, checkBox);
+        JCheckBox checkBox = SlickerFactory.instance().createCheckBox(null, value);
+        return this.addProperty(name, checkBox);
     }
 
     public <E> ProMComboBox<E> addComboBox(String name, E[] values) {
@@ -63,7 +63,7 @@ public class FakeProMPropertiesPanel extends ProMHeaderPanel {
     public ProMTextField addTextField(String name, String value) {
         ProMTextField component = new ProMTextField();
         component.setText(value);
-        return (ProMTextField)this.addProperty(name, component);
+        return this.addProperty(name, component);
     }
 
     private Component findComponent(Component component) {

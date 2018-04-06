@@ -1,5 +1,6 @@
 package com.raffaeleconforti.foreignkeydiscovery.util;
 
+import com.raffaeleconforti.datastructures.Tree;
 import com.raffaeleconforti.foreignkeydiscovery.DatabaseCreator;
 import com.raffaeleconforti.foreignkeydiscovery.conceptualmodels.Attribute;
 import com.raffaeleconforti.foreignkeydiscovery.conceptualmodels.AttributeType;
@@ -7,11 +8,13 @@ import com.raffaeleconforti.foreignkeydiscovery.conceptualmodels.Entity;
 import com.raffaeleconforti.foreignkeydiscovery.databasestructure.Column;
 import com.raffaeleconforti.foreignkeydiscovery.databasestructure.ForeignKey;
 import com.raffaeleconforti.foreignkeydiscovery.databasestructure.PrimaryKey;
-import com.raffaeleconforti.datastructures.Tree;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeSet;
 
 /**
  * Created by conforti on 29/10/2014.

@@ -6,7 +6,10 @@ import org.deckfour.xes.model.XLog;
 import org.processmining.contexts.uitopia.UIPluginContext;
 import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
 
-import java.io.*;
+import java.io.FileDescriptor;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
+import java.io.PrintStream;
 
 /**
  * Created by Raffaele Conforti (conforti.raffaele@gmail.com) on 9/11/16.
@@ -29,7 +32,7 @@ public class InterruptingMiningAlgorithm {
             public void run() {
                 System.setOut(new PrintStream(new OutputStream() {
                     @Override
-                    public void write(int b) throws IOException {}
+                    public void write(int b) {}
                 }));
 
                 try {

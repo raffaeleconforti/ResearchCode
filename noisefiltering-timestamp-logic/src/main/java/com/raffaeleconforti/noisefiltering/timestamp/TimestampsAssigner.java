@@ -6,13 +6,13 @@ import com.raffaeleconforti.kernelestimation.distribution.impl.EventDurationDist
 import com.raffaeleconforti.log.util.NameExtractor;
 import com.raffaeleconforti.noisefiltering.event.InfrequentBehaviourFilter;
 import com.raffaeleconforti.noisefiltering.event.infrequentbehaviour.automaton.AutomatonInfrequentBehaviourDetector;
-import org.eclipse.collections.impl.map.mutable.UnifiedMap;
-import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 import org.deckfour.xes.classification.XEventClassifier;
 import org.deckfour.xes.extension.std.XTimeExtension;
 import org.deckfour.xes.model.XEvent;
 import org.deckfour.xes.model.XLog;
 import org.deckfour.xes.model.XTrace;
+import org.eclipse.collections.impl.map.mutable.UnifiedMap;
+import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -38,7 +38,7 @@ public class TimestampsAssigner {
         this.debug_mode = debug_mode;
 
         this.log = log;
-        this.nameExtractor = new NameExtractor(xEventClassifier);
+        nameExtractor = new NameExtractor(xEventClassifier);
         this.automatonFactory = new AutomatonFactory(xEventClassifier);
 
         this.dateFormatSeconds = dateFormatSeconds;

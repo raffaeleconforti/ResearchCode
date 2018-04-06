@@ -1,6 +1,5 @@
 package com.raffaeleconforti.bpmnminer.commandline.subprocessminer.ui;
 
-import com.raffaeleconforti.bpmnminer.exception.ExecutionCancelledException;
 import com.raffaeleconforti.bpmnminer.commandline.preprocessing.synchtracegeneration.ui.TraceGeneration_UI_other;
 import com.raffaeleconforti.bpmnminer.commandline.preprocessing.synchtracegeneration.ui.TraceGeneration_UI_subprocesses;
 import com.raffaeleconforti.bpmnminer.subprocessminer.EntityDiscoverer;
@@ -9,7 +8,10 @@ import com.raffaeleconforti.foreignkeydiscovery.conceptualmodels.Entity;
 import com.raffaeleconforti.foreignkeydiscovery.grouping.Group;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Created by Raffaele Conforti (conforti.raffaele@gmail.com) on 10/03/2016.
@@ -26,7 +28,7 @@ public class EntityDiscoverer_UI {
         return entityDiscoverer.discoverCandidatesEntities(concModel, groupEntities);
     }
 
-    public List<Entity> discoverGroupEntities(ConceptualModel concModel, boolean all) throws ExecutionCancelledException {
+    public List<Entity> discoverGroupEntities(ConceptualModel concModel, boolean all) {
         List<Entity> topEnt = entityDiscoverer.discoverTopEntities(concModel);
         List<Entity> nonTopEnt = entityDiscoverer.discoverNonTopEntities(concModel);
 

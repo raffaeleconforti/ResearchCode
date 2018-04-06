@@ -1,10 +1,5 @@
 package com.raffaeleconforti.benchmark;
 
-import java.io.File;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.*;
-
 import com.raffaeleconforti.benchmark.logic.Benchmark;
 import com.raffaeleconforti.benchmark.logic.MeasurementAlgorithmDiscoverer;
 import com.raffaeleconforti.benchmark.logic.MiningAlgorithmDiscoverer;
@@ -14,6 +9,11 @@ import com.raffaeleconforti.wrappers.MiningAlgorithm;
 import org.apache.commons.io.FileUtils;
 import org.apache.poi.util.IOUtils;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
+
+import java.io.File;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.*;
 
 
 /**
@@ -110,7 +110,7 @@ public class BenchmarkCommandline {
         }
     }
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         boolean defaultLogs = true;
         String extLoc = null;
         Set<String> packages = new UnifiedSet<>();

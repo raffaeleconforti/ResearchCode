@@ -44,7 +44,7 @@ public class Gurobi_Solver implements ILPSolver {
 
             System.setOut(new PrintStream(new OutputStream() {
                 @Override
-                public void write(int b) throws IOException {}
+                public void write(int b) {}
             }));
 
             env = new GRBEnv("qp.noisefiltering");

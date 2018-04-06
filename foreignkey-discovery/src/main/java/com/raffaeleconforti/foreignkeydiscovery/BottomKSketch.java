@@ -3,7 +3,10 @@ package com.raffaeleconforti.foreignkeydiscovery;
 import com.raffaeleconforti.foreignkeydiscovery.databasestructure.Column;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Set;
 
 /**
  * Created by Raffaele Conforti on 14/10/14.

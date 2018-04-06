@@ -1,7 +1,5 @@
 package com.raffaeleconforti.logic.solver.elements;
 
-import com.raffaeleconforti.logic.solver.exception.LogicElementValueNotAssigned;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,7 +10,7 @@ public class LogicSystem {
 
     List<LogicFunction> logicFunctions;
 
-    public static void main(String[] args) throws LogicElementValueNotAssigned {
+    public static void main(String[] args) {
         LogicExpression expression = new LogicExpression(new LogicFunctionBookmark("g()"), LogicOperator.AND, new AtomicElement("a"));
         LogicExpression expression1 = new LogicExpression(expression, LogicOperator.OR, new BooleanElement(true));
         LogicFunction function = new LogicFunction("f()", expression1);

@@ -13,13 +13,13 @@ import com.raffaeleconforti.wrappers.BPMNMinerAlgorithmWrapper;
 import com.raffaeleconforti.wrappers.MiningAlgorithm;
 import com.raffaeleconforti.wrappers.PetrinetWithMarking;
 import com.raffaeleconforti.wrappers.StructuredMinerAlgorithmWrapper;
-import com.raffaeleconforti.wrappers.impl.*;
+import com.raffaeleconforti.wrappers.impl.EvolutionaryTreeMinerWrapper;
+import com.raffaeleconforti.wrappers.impl.FodinaAlgorithmWrapper;
+import com.raffaeleconforti.wrappers.impl.ILPAlgorithmWrapper;
 import com.raffaeleconforti.wrappers.impl.alpha.AlphaAlgorithmWrapper;
 import com.raffaeleconforti.wrappers.impl.heuristics.Heuristics52AlgorithmWrapper;
 import com.raffaeleconforti.wrappers.impl.heuristics.HeuristicsAlgorithmWrapper;
 import com.raffaeleconforti.wrappers.impl.inductive.InductiveMinerIMWrapper;
-import org.deckfour.xes.factory.XFactoryNaiveImpl;
-import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import nl.tue.astar.AStarException;
 import org.deckfour.xes.classification.XEventClass;
 import org.deckfour.xes.classification.XEventClassifier;
@@ -27,12 +27,14 @@ import org.deckfour.xes.extension.std.XConceptExtension;
 import org.deckfour.xes.extension.std.XLifecycleExtension;
 import org.deckfour.xes.extension.std.XTimeExtension;
 import org.deckfour.xes.factory.XFactory;
+import org.deckfour.xes.factory.XFactoryNaiveImpl;
 import org.deckfour.xes.info.XLogInfo;
 import org.deckfour.xes.info.XLogInfoFactory;
 import org.deckfour.xes.info.impl.XLogInfoImpl;
 import org.deckfour.xes.model.XEvent;
 import org.deckfour.xes.model.XLog;
 import org.deckfour.xes.model.XTrace;
+import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.processmining.contexts.uitopia.UIPluginContext;
 import org.processmining.contexts.uitopia.annotations.UITopiaVariant;
 import org.processmining.framework.connections.ConnectionCannotBeObtained;
@@ -59,7 +61,10 @@ import org.processmining.plugins.petrinet.replayer.algorithms.costbasedcomplete.
 import org.processmining.plugins.petrinet.replayresult.PNRepResult;
 import org.processmining.plugins.replayer.replayresult.SyncReplayResult;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Map;
+import java.util.Random;
+import java.util.StringTokenizer;
 
 /**
  * Created by conforti on 20/02/15.

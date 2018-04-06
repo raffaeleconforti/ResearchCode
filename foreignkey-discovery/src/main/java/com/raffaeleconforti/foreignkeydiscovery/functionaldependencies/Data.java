@@ -2,10 +2,10 @@ package com.raffaeleconforti.foreignkeydiscovery.functionaldependencies;
 
 
 import org.deckfour.xes.model.XAttribute;
-
-import java.util.ArrayList;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
+
+import java.util.ArrayList;
 
 
 /**

@@ -3,8 +3,8 @@ package com.raffaeleconforti.foreignkeydiscovery.grouping;
 import com.raffaeleconforti.foreignkeydiscovery.conceptualmodels.Attribute;
 import com.raffaeleconforti.foreignkeydiscovery.conceptualmodels.Entity;
 import com.raffaeleconforti.foreignkeydiscovery.mapping.MappedObject;
-
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
+
 import java.util.Set;
 
 /**

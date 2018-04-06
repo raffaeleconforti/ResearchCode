@@ -26,9 +26,6 @@ import org.processmining.plugins.bpmn.plugins.BpmnExportPlugin;
 import org.processmining.processtree.ProcessTree;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 
 /**

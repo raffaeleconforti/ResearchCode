@@ -1,6 +1,7 @@
 package com.raffaeleconforti.foreignkeydiscovery;
 
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
+
 import java.util.Set;
 
 /**

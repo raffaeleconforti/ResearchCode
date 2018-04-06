@@ -54,9 +54,7 @@ public class Edge<T> {
         Edge edge = (Edge) o;
 
         if (source != null ? !source.equals(edge.source) : edge.source != null) return false;
-        if (target != null ? !target.equals(edge.target) : edge.target != null) return false;
-
-        return true;
+        return target != null ? target.equals(edge.target) : edge.target == null;
     }
 
     @Override

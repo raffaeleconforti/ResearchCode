@@ -1,11 +1,7 @@
 package com.raffaeleconforti.chinesewhispers;
 
-import gnu.trove.map.hash.THashMap;
-import gnu.trove.set.hash.THashSet;
 //import org.jgrapht.WeightedGraph;
 //import org.jgrapht.experimental.permutation.CollectionPermutationIter;
-
-import java.util.*;
 
 /**
  * Created by andreas on 2/25/17.

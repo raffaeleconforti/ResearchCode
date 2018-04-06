@@ -148,7 +148,7 @@ public abstract class ILPModelJavaILP {
                 if (m.isAnnotationPresent(ILPMinerStrategyExtensionImpl.class)) {
                     ILPMinerStrategyExtensionImpl a = m.getAnnotation(ILPMinerStrategyExtensionImpl.class);
                     try {
-                        m.invoke(extension.newInstance(), new Object[] { p, this });
+                        m.invoke(extension.newInstance(), p, this);
                     } catch (Exception e) {
                     }
                 }

@@ -29,6 +29,7 @@
                             *
                         </Import-Package>
                         <Export-Package>
+                            com.raffaeleconforti.automaton.*;
                             com.raffaeleconforti.spanningtree.*;
                             com.raffaeleconforti.keithshwarz.*;
                             de.vogella.algorithms.dijkstra.*;

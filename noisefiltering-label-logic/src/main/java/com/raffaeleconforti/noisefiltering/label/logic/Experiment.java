@@ -34,7 +34,6 @@ import org.processmining.processtree.ProcessTree;
 import org.processmining.processtree.conversion.ProcessTree2Petrinet;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
 
@@ -56,7 +55,7 @@ public class Experiment {
         experiment.performBenchmark();
     }
 
-    public Experiment() throws Exception {
+    public Experiment() {
         this.extLocation = "/Volumes/Data/SharedFolder/Logs/Label";
     }
 
@@ -67,16 +66,14 @@ public class Experiment {
     }
 
     private boolean isSelectedMeasurementAlgorithm(MeasurementAlgorithm measurementAlgorithm) {
-        if (measurementAlgorithm instanceof AlignmentBasedFMeasure) return true;
+        return measurementAlgorithm instanceof AlignmentBasedFMeasure;
 //        if (measurementAlgorithm instanceof ProjectedFMeasure) return true;
-        return false;
     }
 
     private boolean isSelectedMiningAlgorithm(MiningAlgorithm miningAlgorithm) {
 //        if(miningAlgorithm instanceof HeuristicsAlgorithmWrapper) return true;
-        if(miningAlgorithm instanceof InductiveMinerIMfWrapper) return true;
+        return miningAlgorithm instanceof InductiveMinerIMfWrapper;
 //        if(miningAlgorithm instanceof SplitMinerWrapper) return true;
-        return false;
     }
 
     private boolean isSelectedLog(String logName) {
@@ -93,15 +90,7 @@ public class Experiment {
 //        if(logName.contains("2013_i")) return false;
 //        if(logName.contains("2013_cp")) return false;
 //        if(!logName.contains("2012")) return false;
-        if(!logName.contains("(Python)")) return false;
-//        if(logName.contains("2011.x")) return false;
-//        if(logName.contains("(SimpleFilter 95")) return false;
-//        if(logName.contains("(SimpleFilter 90")) return false;
-//        if(logName.contains("(SimpleFilter 85")) return false;
-//        if(logName.contains("(SimpleFilter 80")) return false;
-//        if(logName.contains("(SimpleFilter 75")) return false;
-//        if(logName.contains("(SimpleFilter 70")) return false;
-        return true;
+        return logName.contains("(Python)");
     }
 
     private void performBenchmarkFromLogInput(Set<String> packages, Map<String, Object> logsInput) throws Exception {
@@ -190,7 +179,7 @@ public class Experiment {
         }
     }
 
-    private boolean isSound(AcceptingPetriNet acceptingPetriNet, boolean relaxedSoundness) throws JSONException, IOException, ConnectionCannotBeObtained {
+    private boolean isSound(AcceptingPetriNet acceptingPetriNet, boolean relaxedSoundness) throws JSONException, ConnectionCannotBeObtained {
         System.out.print("Checking Soundness...");
         SoundnessChecker checker = new SoundnessChecker(acceptingPetriNet.getNet());
         if(relaxedSoundness) {
@@ -258,7 +247,7 @@ public class Experiment {
         else return logName;
     }
 
-    private XLog retrieveRefLog(String original) throws Exception {
+    private XLog retrieveRefLog(String original) {
         String newRefLogName = extLocation + "/" + original;
         if(refLogName == null || !refLogName.equals(newRefLogName)) {
             this.refLog = LogImporter.importFromFile(new XFactoryNaiveImpl(), extLocation + "/" + original);

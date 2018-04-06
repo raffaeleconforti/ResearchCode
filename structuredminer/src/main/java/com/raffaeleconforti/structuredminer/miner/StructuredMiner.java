@@ -1,8 +1,8 @@
 package com.raffaeleconforti.structuredminer.miner;
 
-import au.edu.qut.promplugins.StructureDiagramPlugin;
 import au.edu.qut.bpmn.structuring.StructuringService;
 import au.edu.qut.bpmn.structuring.ui.iBPStructUIResult;
+import au.edu.qut.promplugins.StructureDiagramPlugin;
 import com.raffaeleconforti.bpmn.util.BPMNCleaner;
 import com.raffaeleconforti.context.FakePluginContext;
 import com.raffaeleconforti.structuredminer.ui.SettingsStructuredMiner;

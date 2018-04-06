@@ -1,8 +1,8 @@
 package com.raffaeleconforti.noisefiltering.event.noise.prom;
 
 import com.raffaeleconforti.noisefiltering.event.noise.NoiseGenerator;
-import com.raffaeleconforti.noisefiltering.event.noise.selection.NoiseResult;
 import com.raffaeleconforti.noisefiltering.event.noise.prom.ui.NoiseUI;
+import com.raffaeleconforti.noisefiltering.event.noise.selection.NoiseResult;
 import org.deckfour.xes.model.XLog;
 import org.processmining.contexts.uitopia.UIPluginContext;
 import org.processmining.contexts.uitopia.annotations.UITopiaVariant;

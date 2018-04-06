@@ -1,8 +1,6 @@
 package com.raffaeleconforti.measurements.impl;
 
 import au.edu.qut.petrinet.tools.SoundnessChecker;
-//import au.qut.apromore.ScalableConformanceChecker.DecomposingConformanceChecker;
-//import au.qut.apromore.importer.DecomposingConformanceImporter;
 import com.raffaeleconforti.measurements.Measure;
 import com.raffaeleconforti.measurements.MeasurementAlgorithm;
 import com.raffaeleconforti.wrappers.MiningAlgorithm;
@@ -28,8 +26,14 @@ import org.processmining.plugins.petrinet.replayresult.PNRepResult;
 import org.processmining.plugins.replayer.replayresult.SyncReplayResult;
 import org.processmining.processtree.ProcessTree;
 
-import java.io.*;
+import java.io.FileDescriptor;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
+import java.io.PrintStream;
 import java.util.Map;
+
+//import au.qut.apromore.ScalableConformanceChecker.DecomposingConformanceChecker;
+//import au.qut.apromore.importer.DecomposingConformanceImporter;
 
 /**
  * Created by Raffaele Conforti (conforti.raffaele@gmail.com) on 18/10/2016.
@@ -64,7 +68,7 @@ public class DAFSABasedFitness implements MeasurementAlgorithm {
 
         System.setOut(new PrintStream(new OutputStream() {
             @Override
-            public void write(int b) throws IOException {}
+            public void write(int b) {}
         }));
 
         Petrinet petrinet = petrinetWithMarking.getPetrinet();

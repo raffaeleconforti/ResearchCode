@@ -7,7 +7,6 @@ import com.raffaeleconforti.ilpsolverwrapper.impl.lpsolve.LPSolve_Solver;
 import com.raffaeleconforti.kernelestimation.distribution.EventDistributionCalculator;
 import com.raffaeleconforti.kernelestimation.distribution.impl.EventDistributionCalculatorImpl;
 import com.raffaeleconforti.noisefiltering.timestamp.permutation.PermutationTechnique;
-import gurobi.*;
 import org.deckfour.xes.classification.XEventAndClassifier;
 import org.deckfour.xes.classification.XEventClassifier;
 import org.deckfour.xes.classification.XEventLifeTransClassifier;

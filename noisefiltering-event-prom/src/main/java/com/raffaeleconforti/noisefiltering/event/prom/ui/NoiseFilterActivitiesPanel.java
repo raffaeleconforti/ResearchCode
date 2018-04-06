@@ -3,6 +3,7 @@ package com.raffaeleconforti.noisefiltering.event.prom.ui;
 import com.raffaeleconforti.automaton.Node;
 import com.raffaeleconforti.context.FakeProMPropertiesPanel;
 import com.raffaeleconforti.noisefiltering.event.selection.NoiseFilterResult;
+import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -10,7 +11,6 @@ import javax.swing.event.ChangeListener;
 import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.Comparator;
-import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 import java.util.Set;
 
 /**

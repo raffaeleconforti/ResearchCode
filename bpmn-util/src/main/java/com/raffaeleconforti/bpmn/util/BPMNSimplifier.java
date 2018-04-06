@@ -1,8 +1,8 @@
 package com.raffaeleconforti.bpmn.util;
 
+import org.deckfour.xes.extension.std.XConceptExtension;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
-import org.deckfour.xes.extension.std.XConceptExtension;
 import org.processmining.models.graphbased.AttributeMap;
 import org.processmining.models.graphbased.directed.ContainableDirectedGraphElement;
 import org.processmining.models.graphbased.directed.DirectedGraphNode;

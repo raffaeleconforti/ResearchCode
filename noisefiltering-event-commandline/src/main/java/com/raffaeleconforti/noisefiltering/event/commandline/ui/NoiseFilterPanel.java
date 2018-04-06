@@ -97,7 +97,7 @@ public class NoiseFilterPanel {
                     }
                 }
             }
-            result.setRepeated(repeated == 0 ? true : false);
+            result.setRepeated(repeated == 0);
 
             Integer fixed = null;
             while (fixed == null || (fixed != 0.0 && fixed != 1.0)) {
@@ -117,7 +117,7 @@ public class NoiseFilterPanel {
                     }
                 }
             }
-            result.setFixLevel(fixed == 0 ? true : false);
+            result.setFixLevel(fixed == 0);
 
             if(fixed == 0) {
                 Double noiseLevel = null;

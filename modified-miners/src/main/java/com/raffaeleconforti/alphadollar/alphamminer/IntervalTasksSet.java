@@ -1,5 +1,7 @@
 package com.raffaeleconforti.alphadollar.alphamminer;
 
+import org.eclipse.collections.impl.map.mutable.UnifiedMap;
+import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 import org.processmining.framework.log.AuditTrailEntryList;
 import org.processmining.framework.log.LogEvents;
 
@@ -7,9 +9,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Set;
-
-import org.eclipse.collections.impl.map.mutable.UnifiedMap;
-import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 
 class IntervalTasks {
 	Set<Set<Integer>> content;		//each integer means the interval tasks.

@@ -2,9 +2,9 @@ package com.raffaeleconforti.outliers.statistics;
 
 import com.raffaeleconforti.outliers.Outlier;
 import com.raffaeleconforti.outliers.OutlierIdentifier;
-
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
+
 import java.util.Map;
 import java.util.Set;
 

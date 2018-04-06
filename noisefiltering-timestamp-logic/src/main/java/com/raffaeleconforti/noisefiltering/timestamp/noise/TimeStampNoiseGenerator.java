@@ -3,7 +3,6 @@ package com.raffaeleconforti.noisefiltering.timestamp.noise;
 import com.raffaeleconforti.log.util.LogCloner;
 import com.raffaeleconforti.log.util.NameExtractor;
 import com.raffaeleconforti.log.util.TraceToString;
-import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.deckfour.xes.classification.XEventAndClassifier;
 import org.deckfour.xes.classification.XEventLifeTransClassifier;
 import org.deckfour.xes.classification.XEventNameClassifier;
@@ -13,6 +12,7 @@ import org.deckfour.xes.model.XLog;
 import org.deckfour.xes.model.XTrace;
 import org.deckfour.xes.model.impl.XAttributeBooleanImpl;
 import org.deckfour.xes.model.impl.XAttributeTimestampImpl;
+import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 
 import java.util.*;
 

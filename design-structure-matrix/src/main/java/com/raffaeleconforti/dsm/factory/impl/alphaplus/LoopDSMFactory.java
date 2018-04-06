@@ -4,8 +4,8 @@ import com.raffaeleconforti.datastructures.multilevelmap.impl.MultiLevelHashMap;
 import com.raffaeleconforti.dsm.DesignStructureMatrix;
 import com.raffaeleconforti.dsm.DesignStructureMatrixCell;
 import com.raffaeleconforti.dsm.dsmcells.alphaplus.Loop;
-
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
+
 import java.util.Set;
 
 /**

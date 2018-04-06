@@ -5,13 +5,16 @@ import com.raffaeleconforti.foreignkeydiscovery.conceptualmodels.ConceptualModel
 import com.raffaeleconforti.foreignkeydiscovery.conceptualmodels.Entity;
 import com.raffaeleconforti.foreignkeydiscovery.grouping.Group;
 import com.raffaeleconforti.foreignkeydiscovery.util.EntityNameExtractor;
-import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 import org.deckfour.xes.model.XAttribute;
 import org.deckfour.xes.model.XEvent;
 import org.deckfour.xes.model.XLog;
 import org.deckfour.xes.model.XTrace;
+import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Created by Raffaele Conforti on 20/02/14.

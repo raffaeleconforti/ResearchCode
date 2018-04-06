@@ -21,7 +21,10 @@ import org.processmining.models.graphbased.directed.petrinet.Petrinet;
 import org.processmining.models.semantics.petrinet.Marking;
 import org.processmining.processtree.ProcessTree;
 
-import java.io.*;
+import java.io.FileDescriptor;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
+import java.io.PrintStream;
 
 /**
  * Created by conforti on 20/02/15.
@@ -54,7 +57,7 @@ public class StructuredMinerAlgorithmWrapper implements MiningAlgorithm {
     public PetrinetWithMarking minePetrinet(UIPluginContext context, XLog log, boolean structure, MiningSettings params, XEventClassifier xEventClassifier) {
         System.setOut(new PrintStream(new OutputStream() {
             @Override
-            public void write(int b) throws IOException {}
+            public void write(int b) {}
         }));
 
         SettingsStructuredMinerUI settingsStructuredMinerUI = new SettingsStructuredMinerUI();

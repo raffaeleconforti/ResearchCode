@@ -9,16 +9,19 @@ import com.raffaeleconforti.foreignkeydiscovery.conceptualmodels.Relationship;
 import com.raffaeleconforti.foreignkeydiscovery.functionaldependencies.Data;
 import com.raffaeleconforti.foreignkeydiscovery.functionaldependencies.NoEntityException;
 import com.raffaeleconforti.foreignkeydiscovery.functionaldependencies.TANEjava;
-import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.deckfour.uitopia.api.event.TaskListener;
 import org.deckfour.xes.model.XLog;
+import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.processmining.contexts.uitopia.UIPluginContext;
 import org.processmining.framework.util.ui.widgets.ProMList;
 import org.processmining.framework.util.ui.widgets.ProMPropertiesPanel;
 import org.processmining.framework.util.ui.widgets.ProMTextField;
 
 import javax.swing.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by Raffaele Conforti (conforti.raffaele@gmail.com) on 10/03/2016.

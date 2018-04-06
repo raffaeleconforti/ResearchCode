@@ -1,9 +1,9 @@
 package com.raffaeleconforti.foreignkeydiscovery.conceptualmodels;
 
 import org.deckfour.xes.model.XAttribute;
+import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 
 import java.util.ArrayList;
-import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import java.util.List;
 
 /**

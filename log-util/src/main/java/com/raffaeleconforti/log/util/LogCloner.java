@@ -1,10 +1,9 @@
 package com.raffaeleconforti.log.util;
 
-import com.raffaeleconforti.memorylog.XFactoryMemoryImpl;
+import org.deckfour.xes.factory.XFactory;
 import org.deckfour.xes.factory.XFactoryNaiveImpl;
 import org.deckfour.xes.model.*;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
-import org.deckfour.xes.factory.XFactory;
 
 import java.util.Map;
 

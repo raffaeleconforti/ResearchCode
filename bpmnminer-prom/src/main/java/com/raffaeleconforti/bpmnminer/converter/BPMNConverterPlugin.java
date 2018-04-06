@@ -25,7 +25,7 @@ public class BPMNConverterPlugin {
             email = "raffaele.conforti@unimelb.edu.au",
             pack = "bpmnminer")
     @PluginVariant(variantLabel = "Convert Petrinet to BPMN", requiredParameterLabels = {0})
-    public BPMNDiagram convert(final UIPluginContext context, Petrinet net) throws Exception {
+    public BPMNDiagram convert(final UIPluginContext context, Petrinet net) {
         Marking initialMarking = MarkingDiscoverer.constructInitialMarking(context, net);
         Marking finalMarking = MarkingDiscoverer.constructFinalMarking(context, net);
         return PetriNetToBPMNConverter.convert(net, initialMarking, finalMarking, true);
@@ -36,7 +36,7 @@ public class BPMNConverterPlugin {
             email = "raffaele.conforti@unimelb.edu.au",
             pack = "bpmnminer")
     @PluginVariant(variantLabel = "Convert Petrinet to BPMN", requiredParameterLabels = {0, 1, 2})
-    public BPMNDiagram convert(final UIPluginContext context, Petrinet net, Marking initialMarking, Marking finalMarking) throws Exception {
+    public BPMNDiagram convert(final UIPluginContext context, Petrinet net, Marking initialMarking, Marking finalMarking) {
         return PetriNetToBPMNConverter.convert(net, initialMarking, finalMarking, true);
     }
 

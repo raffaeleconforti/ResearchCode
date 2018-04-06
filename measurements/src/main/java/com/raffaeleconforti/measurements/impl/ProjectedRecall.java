@@ -17,7 +17,10 @@ import org.processmining.projectedrecallandprecision.plugins.CompareLog2PetriNet
 import org.processmining.projectedrecallandprecision.plugins.CompareLog2ProcessTreePlugin;
 import org.processmining.projectedrecallandprecision.result.ProjectedRecallPrecisionResult;
 
-import java.io.*;
+import java.io.FileDescriptor;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
+import java.io.PrintStream;
 
 /**
  * Created by Raffaele Conforti (conforti.raffaele@gmail.com) on 2/12/16.
@@ -33,7 +36,7 @@ public class ProjectedRecall implements MeasurementAlgorithm {
 
         System.setOut(new PrintStream(new OutputStream() {
             @Override
-            public void write(int b) throws IOException {}
+            public void write(int b) {}
         }));
 
         try {
@@ -68,7 +71,7 @@ public class ProjectedRecall implements MeasurementAlgorithm {
 
         System.setOut(new PrintStream(new OutputStream() {
             @Override
-            public void write(int b) throws IOException {}
+            public void write(int b) {}
         }));
 
         if(petrinetWithMarking == null) return measure;

@@ -2,8 +2,8 @@ package com.raffaeleconforti.foreignkeydiscovery.util;
 
 import com.raffaeleconforti.foreignkeydiscovery.conceptualmodels.Attribute;
 import com.raffaeleconforti.foreignkeydiscovery.conceptualmodels.Entity;
-
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
+
 import java.util.List;
 import java.util.Set;
 import java.util.StringTokenizer;

@@ -25,7 +25,10 @@ import org.processmining.framework.log.*;
 import org.processmining.framework.log.rfb.AuditTrailEntryImpl;
 import org.processmining.framework.models.petrinet.PetriNet;
 import org.processmining.framework.models.petrinet.Transition;
-import org.processmining.mining.logabstraction.*;
+import org.processmining.mining.logabstraction.LogAbstraction;
+import org.processmining.mining.logabstraction.LogAbstractionImpl;
+import org.processmining.mining.logabstraction.LogRelations;
+import org.processmining.mining.logabstraction.LogRelationsImpl;
 
 import java.io.IOException;
 import java.util.*;
@@ -905,11 +908,8 @@ public class ModifiedAlphaSharpProcessMiner {
 		String taskNameY =  relations.getLogEvents().get(y).getModelElementName();
 		String taskNameB =  relations.getLogEvents().get(b).getModelElementName();
 		if (reachableTasks.get(taskNameB).contains(taskNameA) && !reachableTasks.get(taskNameY).contains(taskNameX))
-			return false;				
-		if (isAsequenceB && !isYcasualX)
-			return true;
-		else
 			return false;
+        return isAsequenceB && !isYcasualX;
     }
 
     boolean normalInvTag = true;
@@ -1354,10 +1354,8 @@ public class ModifiedAlphaSharpProcessMiner {
 				selectedInterfereTask.addAll(traceTask);
 			}							
 		}
-		if (selectedProcess.size()>0)
-			return true;
-		return false;
-	}       
+        return selectedProcess.size() > 0;
+    }
 
 	private boolean checkParallel(Set<Integer> misc, Set<Integer> betweenXY,
                                   int x, int y, Set<Set<Integer>> content) {
@@ -1376,10 +1374,7 @@ public class ModifiedAlphaSharpProcessMiner {
     	}
     	if (content == null)
     	{
-    		if (misc.size() == parallelTasks.size())
-    			return true;
-    		else
-    			return false;
+            return misc.size() == parallelTasks.size();
     	}
     	else
     	{

@@ -38,10 +38,8 @@ public class AXYB {
 			return false;
 		if (!this.x.equals(_a.x))
 			return false;
-		if (!this.y.equals(_a.y))
-			return false;
-		return true;		
-	}
+        return this.y.equals(_a.y);
+    }
 	
 	@Override
 	public String toString()

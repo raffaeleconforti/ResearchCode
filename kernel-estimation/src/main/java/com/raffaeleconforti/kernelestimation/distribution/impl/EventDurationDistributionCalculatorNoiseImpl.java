@@ -7,9 +7,10 @@ import com.raffaeleconforti.kernelestimation.distribution.EventDurationDistribut
 import com.raffaeleconforti.kernelestimation.distribution.mixturemodel.NormalMixtureDistribution;
 import com.raffaeleconforti.log.util.LogImporter;
 import com.raffaeleconforti.log.util.NameExtractor;
-import org.deckfour.xes.factory.XFactoryNaiveImpl;
-import org.eclipse.collections.impl.map.mutable.UnifiedMap;
-import org.apache.commons.math3.distribution.*;
+import org.apache.commons.math3.distribution.AbstractRealDistribution;
+import org.apache.commons.math3.distribution.ExponentialDistribution;
+import org.apache.commons.math3.distribution.NormalDistribution;
+import org.apache.commons.math3.distribution.UniformRealDistribution;
 import org.apache.commons.math3.exception.NotStrictlyPositiveException;
 import org.apache.commons.math3.exception.NumberIsTooLargeException;
 import org.apache.commons.math3.stat.inference.KolmogorovSmirnovTest;
@@ -17,9 +18,11 @@ import org.apache.commons.math3.stat.inference.MannWhitneyUTest;
 import org.deckfour.xes.classification.XEventClassifier;
 import org.deckfour.xes.classification.XEventNameClassifier;
 import org.deckfour.xes.extension.std.XTimeExtension;
+import org.deckfour.xes.factory.XFactoryNaiveImpl;
 import org.deckfour.xes.model.XEvent;
 import org.deckfour.xes.model.XLog;
 import org.deckfour.xes.model.XTrace;
+import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 
 import java.math.BigInteger;

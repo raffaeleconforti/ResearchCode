@@ -1,11 +1,11 @@
 package com.raffaeleconforti.log.util;
 
-import org.deckfour.xes.factory.XFactoryNaiveImpl;
-import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 import org.deckfour.xes.extension.std.XConceptExtension;
 import org.deckfour.xes.extension.std.XTimeExtension;
 import org.deckfour.xes.factory.XFactory;
+import org.deckfour.xes.factory.XFactoryNaiveImpl;
 import org.deckfour.xes.model.*;
+import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 
 import java.util.*;
 

@@ -2,11 +2,11 @@
 package com.raffaeleconforti.foreignkeydiscovery.functionaldependencies;
 
 import org.deckfour.xes.model.XAttribute;
+import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 
 import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import java.util.Hashtable;
 
 

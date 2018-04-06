@@ -1,8 +1,8 @@
 package com.raffaeleconforti.alphaminer;
 
 import org.deckfour.xes.classification.XEventClass;
-
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
+
 import java.util.Set;
 
 class Tuple {

@@ -1,9 +1,8 @@
 package com.raffaeleconforti.alphadollar.alphamminer;
 
+import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 import org.processmining.framework.models.petrinet.Place;
 import org.processmining.framework.models.petrinet.Transition;
-
-import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 
 import java.util.Set;
 

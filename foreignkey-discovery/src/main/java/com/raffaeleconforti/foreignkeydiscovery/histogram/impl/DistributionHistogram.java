@@ -7,7 +7,10 @@ import com.raffaeleconforti.foreignkeydiscovery.histogram.Histogram;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * Created by Raffaele Conforti on 17/10/14.

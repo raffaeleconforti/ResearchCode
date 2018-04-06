@@ -5,7 +5,10 @@ import com.raffaeleconforti.foreignkeydiscovery.functionaldependencies.NoEntityE
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Scanner;
+import java.util.Set;
 
 public class DiscoverERmodel_UI_primaryKeys {
 

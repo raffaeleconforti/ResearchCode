@@ -1,17 +1,7 @@
 package com.raffaeleconforti.noisefiltering.label.logic;
 
-import com.raffaeleconforti.log.util.*;
 import com.raffaeleconforti.noisefiltering.label.logic.clustering.AbstractClustering;
-import com.raffaeleconforti.noisefiltering.label.logic.clustering.centroid.*;
-import com.raffaeleconforti.noisefiltering.label.logic.clustering.connectivity.AGNESFiltering;
-import com.raffaeleconforti.noisefiltering.label.logic.clustering.connectivity.CLINKFiltering;
-import com.raffaeleconforti.noisefiltering.label.logic.clustering.connectivity.SLINKFiltering;
-import com.raffaeleconforti.noisefiltering.label.logic.clustering.density.FastOPTICSFiltering;
-import com.raffaeleconforti.noisefiltering.label.logic.clustering.density.OPTICSHeapFiltering;
-import com.raffaeleconforti.noisefiltering.label.logic.clustering.distribution.EMDiagonalGaussianModelFiltering;
-import com.raffaeleconforti.noisefiltering.label.logic.clustering.distribution.EMMultivariateGaussianModelFiltering;
-import com.raffaeleconforti.noisefiltering.label.logic.clustering.distribution.EMSphericalGaussianModelFiltering;
-import org.deckfour.xes.classification.*;
+import com.raffaeleconforti.noisefiltering.label.logic.clustering.centroid.KMedoidsEMFiltering;
 import org.deckfour.xes.extension.std.XConceptExtension;
 import org.deckfour.xes.factory.XFactory;
 import org.deckfour.xes.factory.XFactoryNaiveImpl;
@@ -19,7 +9,6 @@ import org.deckfour.xes.model.XEvent;
 import org.deckfour.xes.model.XLog;
 import org.deckfour.xes.model.XTrace;
 import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
-import org.eclipse.collections.impl.map.mutable.primitive.*;
 
 import java.util.*;
 
@@ -40,7 +29,7 @@ public class LabelFilter {
 
     private static String logName;
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         XFactory factory = new XFactoryNaiveImpl();
 //        String[] logNames = new String[] {"BPI2015-4"};
         String[] logNames = new String[] {"BPI2011", "BPI2012", "BPI2013_cp", "BPI2013_i", "BPI2014", "BPI2015-1", "BPI2015-2", "BPI2015-3", "BPI2015-4", "BPI2015-5", "BPI2017", "Road", "Sepsis"};

@@ -11,8 +11,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.*;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class DiscoverERmodel_UI_primaryKeys extends ProMPropertiesPanel {
 

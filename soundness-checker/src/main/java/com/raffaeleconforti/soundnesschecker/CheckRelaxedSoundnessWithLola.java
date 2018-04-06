@@ -3,11 +3,9 @@ package com.raffaeleconforti.soundnesschecker;
 /**
  * Created by Raffaele Conforti (conforti.raffaele@gmail.com) on 5/7/17.
  */
-import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
 
+import com.google.common.base.Function;
+import com.google.common.collect.FluentIterable;
 import com.raffaeleconforti.context.FakePluginContext;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
@@ -21,11 +19,13 @@ import org.processmining.models.semantics.petrinet.Marking;
 import org.processmining.plugins.petrinet.reduction.Murata;
 import org.processmining.plugins.petrinet.reduction.MurataParameters;
 
-import com.google.common.base.Function;
-import com.google.common.collect.FluentIterable;
+import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
 
 public class CheckRelaxedSoundnessWithLola {
-    public static void main(String... args) throws FileNotFoundException, Exception {
+    public static void main(String... args) throws Exception {
 
         AcceptingPetriNet net = AcceptingPetriNetFactory.createAcceptingPetriNet();
         net.importFromStream(
@@ -60,15 +60,11 @@ public class CheckRelaxedSoundnessWithLola {
         }
 
         String lolaFinalMarkingReachableFormula = getFinalMarkingReachableFormula(reducedNet);
-        if (!callLola(lolaPetriNet, lolaFinalMarkingReachableFormula, "")) {
-            return false;
-        }
-
-        return true;
+        return callLola(lolaPetriNet, lolaFinalMarkingReachableFormula, "");
     }
 
     public static boolean callLola(String lolaPetriNet, String lolaFormula, String commandLineOption)
-            throws IOException, UnsupportedEncodingException, JSONException {
+            throws IOException, JSONException {
         ProcessBuilder pb = new ProcessBuilder().command("/bin/bash", "-l", "-i", "-c", "/Volumes/Data/IdeaProjects/lola --json " + commandLineOption + "--markinglimit=100000000 --threads=12 --formula='" + lolaFormula + "'");
 
         pb.redirectErrorStream(true);

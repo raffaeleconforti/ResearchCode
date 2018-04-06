@@ -1,12 +1,12 @@
 package com.raffaeleconforti.bpmn.util;
 
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
+import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 import org.processmining.models.graphbased.AttributeMap;
 import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
 import org.processmining.models.graphbased.directed.bpmn.BPMNNode;
 import org.processmining.models.graphbased.directed.bpmn.elements.*;
 
-import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 import java.util.Map;
 import java.util.Set;
 

@@ -1,12 +1,12 @@
 package com.raffaeleconforti.automaton;
 
 import com.raffaeleconforti.log.util.NameExtractor;
-import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
-import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.deckfour.xes.classification.XEventClassifier;
 import org.deckfour.xes.model.XEvent;
 import org.deckfour.xes.model.XLog;
 import org.deckfour.xes.model.XTrace;
+import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
+import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 
 import java.util.List;
 import java.util.Map;

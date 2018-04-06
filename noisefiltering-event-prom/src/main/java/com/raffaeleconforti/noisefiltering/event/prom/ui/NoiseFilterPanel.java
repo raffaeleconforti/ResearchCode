@@ -3,8 +3,8 @@ package com.raffaeleconforti.noisefiltering.event.prom.ui;
 import com.fluxicon.slickerbox.components.NiceDoubleSlider;
 import com.fluxicon.slickerbox.components.NiceSlider;
 import com.fluxicon.slickerbox.factory.SlickerFactory;
-import com.raffaeleconforti.noisefiltering.event.prom.InfrequentBehaviourFilterPlugin;
 import com.raffaeleconforti.noisefiltering.event.infrequentbehaviour.automaton.AutomatonInfrequentBehaviourDetector;
+import com.raffaeleconforti.noisefiltering.event.prom.InfrequentBehaviourFilterPlugin;
 import com.raffaeleconforti.noisefiltering.event.selection.NoiseFilterResult;
 import org.processmining.framework.util.ui.widgets.ProMPropertiesPanel;
 

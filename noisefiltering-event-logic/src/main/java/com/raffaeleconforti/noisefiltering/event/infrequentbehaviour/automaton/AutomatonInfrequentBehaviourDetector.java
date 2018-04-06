@@ -6,9 +6,9 @@ import com.raffaeleconforti.automaton.Node;
 import com.raffaeleconforti.ilpsolverwrapper.ILPSolver;
 import com.raffaeleconforti.ilpsolverwrapper.impl.gurobi.Gurobi_Solver;
 import com.raffaeleconforti.ilpsolverwrapper.impl.lpsolve.LPSolve_Solver;
-
 import com.raffaeleconforti.noisefiltering.event.optimization.wrapper.WrapperInfrequentBehaviourSolver;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
+
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;

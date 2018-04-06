@@ -6,7 +6,7 @@ import org.deckfour.xes.factory.XFactory;
 import org.deckfour.xes.factory.XFactoryNaiveImpl;
 import org.deckfour.xes.model.XLog;
 
-import java.util.*;
+import java.util.Scanner;
 
 /**
  * Created by conforti on 7/02/15.

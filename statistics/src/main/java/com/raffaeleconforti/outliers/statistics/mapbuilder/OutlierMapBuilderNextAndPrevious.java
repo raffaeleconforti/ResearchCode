@@ -3,11 +3,11 @@ package com.raffaeleconforti.outliers.statistics.mapbuilder;
 import com.raffaeleconforti.outliers.Outlier;
 import com.raffaeleconforti.outliers.OutlierIdentifier;
 import com.raffaeleconforti.outliers.statistics.OutlierMap;
-import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.deckfour.xes.classification.XEventClassifier;
 import org.deckfour.xes.model.XEvent;
 import org.deckfour.xes.model.XLog;
 import org.deckfour.xes.model.XTrace;
+import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 
 import java.util.Map;
 import java.util.Set;

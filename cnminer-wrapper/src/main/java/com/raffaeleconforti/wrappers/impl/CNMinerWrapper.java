@@ -2,8 +2,8 @@ package com.raffaeleconforti.wrappers.impl;
 
 import com.raffaeleconforti.conversion.petrinet.PetriNetToBPMNConverter;
 import com.raffaeleconforti.wrappers.MiningAlgorithm;
-import com.raffaeleconforti.wrappers.settings.MiningSettings;
 import com.raffaeleconforti.wrappers.PetrinetWithMarking;
+import com.raffaeleconforti.wrappers.settings.MiningSettings;
 import org.deckfour.xes.classification.XEventClassifier;
 import org.deckfour.xes.model.XLog;
 import org.processmining.contexts.uitopia.UIPluginContext;
@@ -49,7 +49,7 @@ public class CNMinerWrapper implements MiningAlgorithm {
             Flex cnet;
             Object result[];
 
-            result = cnminer.startCNMining(context, log, s);
+            result = CNMining.startCNMining(context, log, s);
             System.out.println("ERROR - CN Miner: Got Result");
 
             if( result[0] instanceof Flex ) {

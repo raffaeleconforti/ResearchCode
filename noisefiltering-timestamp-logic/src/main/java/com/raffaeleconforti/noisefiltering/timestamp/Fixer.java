@@ -4,9 +4,8 @@ import com.raffaeleconforti.kernelestimation.distribution.impl.EventDistribution
 import com.raffaeleconforti.log.util.LogCloner;
 import com.raffaeleconforti.log.util.NameExtractor;
 import com.raffaeleconforti.log.util.TraceToString;
+import com.raffaeleconforti.memorylog.XFactoryMemoryImpl;
 import com.raffaeleconforti.noisefiltering.timestamp.check.TimeStampChecker;
-import org.eclipse.collections.impl.map.mutable.UnifiedMap;
-import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 import org.deckfour.xes.classification.XEventAndClassifier;
 import org.deckfour.xes.classification.XEventClassifier;
 import org.deckfour.xes.classification.XEventLifeTransClassifier;
@@ -14,11 +13,12 @@ import org.deckfour.xes.classification.XEventNameClassifier;
 import org.deckfour.xes.extension.std.XConceptExtension;
 import org.deckfour.xes.extension.std.XTimeExtension;
 import org.deckfour.xes.factory.XFactory;
-import com.raffaeleconforti.memorylog.XFactoryMemoryImpl;
 import org.deckfour.xes.model.XEvent;
 import org.deckfour.xes.model.XLog;
 import org.deckfour.xes.model.XTrace;
 import org.deckfour.xes.model.impl.XAttributeBooleanImpl;
+import org.eclipse.collections.impl.map.mutable.UnifiedMap;
+import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -393,7 +393,7 @@ public class Fixer {
                         int option = r.nextInt(2);
                         switch (option) {
                             case 1: swap2(trace.get(i-1), trace.get(i));
-                            case 0: ;
+                            case 0:
                         }
                         if(option == 1) {
                             System.out.println("k");

@@ -100,7 +100,7 @@ public class TimeStampNoise extends ProMPropertiesPanel {
                     case 1: percentageTraces.setEnabled(false);
                             percentageUniqueTraces.setEnabled(true);
                             break;
-                    case 2: ;
+                    case 2:
                 }
             }
         }

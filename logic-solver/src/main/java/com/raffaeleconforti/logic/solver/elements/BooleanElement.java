@@ -1,7 +1,5 @@
 package com.raffaeleconforti.logic.solver.elements;
 
-import com.raffaeleconforti.logic.solver.exception.LogicElementValueNotAssigned;
-
 /**
  * Created by conforti on 6/08/15.
  */
@@ -43,7 +41,7 @@ public class BooleanElement implements LogicElement {
     }
 
     @Override
-    public boolean isValue() throws LogicElementValueNotAssigned {
+    public boolean isValue() {
         return value;
     }
 

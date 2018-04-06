@@ -1,10 +1,10 @@
 package com.raffaeleconforti.bpmnminer.commandline;
 
 import au.edu.qut.bpmn.structuring.StructuringService;
-import com.raffaeleconforti.bpmnminer.exception.ExecutionCancelledException;
 import com.raffaeleconforti.bpmnminer.commandline.preprocessing.functionaldependencies.ui.DiscoverERModel_UI;
 import com.raffaeleconforti.bpmnminer.commandline.subprocessminer.ui.EntityDiscoverer_UI;
 import com.raffaeleconforti.bpmnminer.commandline.subprocessminer.ui.SelectMinerUI;
+import com.raffaeleconforti.bpmnminer.exception.ExecutionCancelledException;
 import com.raffaeleconforti.bpmnminer.subprocessminer.BPMNSubProcessMiner;
 import com.raffaeleconforti.bpmnminer.subprocessminer.EntityDiscoverer;
 import com.raffaeleconforti.bpmnminer.subprocessminer.selection.SelectMinerResult;

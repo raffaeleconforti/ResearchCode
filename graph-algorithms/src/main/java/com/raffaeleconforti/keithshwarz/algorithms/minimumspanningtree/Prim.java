@@ -52,11 +52,12 @@ package com.raffaeleconforti.keithshwarz.algorithms.minimumspanningtree;
  *
  *         http://keithschwarz.com/interesting/code/?dir=fibonacci-heap
  */
+
 import com.raffaeleconforti.keithshwarz.datastructure.fibonacciheap.FibonacciHeap;
 import com.raffaeleconforti.keithshwarz.datastructure.graph.undirectedgraph.kruskal.UndirectedGraphKruskal;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 
-import java.util.*; // For UnifiedMap
+import java.util.Map;
 
 public final class Prim {
     /**
@@ -209,4 +210,4 @@ public final class Prim {
             // Case 4 handled implicitly by doing nothing.
         }
     }
-};
+}

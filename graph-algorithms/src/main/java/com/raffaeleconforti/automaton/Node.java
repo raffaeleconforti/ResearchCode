@@ -31,9 +31,7 @@ public class Node<T> {
 
         Node node = (Node) o;
 
-        if (data != null ? !data.equals(node.data) : node.data != null) return false;
-
-        return true;
+        return data != null ? data.equals(node.data) : node.data == null;
     }
 
     @Override

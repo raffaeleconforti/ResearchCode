@@ -1,8 +1,5 @@
 package com.raffaeleconforti.foreignkeydiscovery.conceptualmodels;
 
-import com.raffaeleconforti.foreignkeydiscovery.conceptualmodels.Attribute;
-import com.raffaeleconforti.foreignkeydiscovery.conceptualmodels.ConceptualModel;
-import com.raffaeleconforti.foreignkeydiscovery.conceptualmodels.ForeignKey;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 import org.processmining.models.graphbased.AttributeMap;
 import org.processmining.models.graphbased.directed.AbstractDirectedGraphNode;

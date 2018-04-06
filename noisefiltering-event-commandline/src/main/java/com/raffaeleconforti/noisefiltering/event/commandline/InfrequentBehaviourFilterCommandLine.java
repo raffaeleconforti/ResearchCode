@@ -71,9 +71,9 @@ public class InfrequentBehaviourFilterCommandLine {
         Scanner console = new Scanner(System.in);
 
         System.out.println("Solve using GUROBI? (commercial ILP Solver)");
-        boolean useGurobi = (console.nextLine().toLowerCase().contains("y"))?true:false;
+        boolean useGurobi = console.nextLine().toLowerCase().contains("y");
         System.out.println("Solve using Arcs Frequency?");
-        boolean useArcsFrequency = (console.nextLine().toLowerCase().contains("y"))?true:false;
+        boolean useArcsFrequency = console.nextLine().toLowerCase().contains("y");
 
         System.out.println("Input file:");
         String name = console.nextLine();

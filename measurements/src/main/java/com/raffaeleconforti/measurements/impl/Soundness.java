@@ -10,7 +10,6 @@ import org.deckfour.xes.model.XLog;
 import org.processmining.acceptingpetrinet.models.AcceptingPetriNet;
 import org.processmining.acceptingpetrinet.models.impl.AcceptingPetriNetImpl;
 import org.processmining.contexts.uitopia.UIPluginContext;
-import org.processmining.models.graphbased.directed.petrinet.Petrinet;
 import org.processmining.processtree.ProcessTree;
 
 
@@ -55,13 +54,9 @@ public class Soundness implements MeasurementAlgorithm {
         try {
 //            System.out.print("DEBUG - checking soundness...");
             SoundnessChecker checker = new SoundnessChecker(acceptingPetriNet.getNet());
-            if( checker.isSound() ) {
-//                System.out.println("sound");
-                return true;
-            }else {
+            //                System.out.println("sound");
 //                System.out.println("unsound");
-                return false;
-            }
+            return checker.isSound();
         } catch( Exception e ) { return false; }
     }
 

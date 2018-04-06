@@ -1,13 +1,14 @@
 package com.raffaeleconforti.wrappers.impl;
 
 import com.raffaeleconforti.conversion.petrinet.PetriNetToBPMNConverter;
+import com.raffaeleconforti.marking.MarkingDiscoverer;
 import com.raffaeleconforti.wrappers.LogPreprocessing;
 import com.raffaeleconforti.wrappers.MiningAlgorithm;
-import com.raffaeleconforti.wrappers.settings.MiningSettings;
 import com.raffaeleconforti.wrappers.PetrinetWithMarking;
-import com.raffaeleconforti.marking.MarkingDiscoverer;
+import com.raffaeleconforti.wrappers.settings.MiningSettings;
 import nl.tue.astar.AStarThread.Canceller;
-import org.deckfour.xes.classification.*;
+import org.deckfour.xes.classification.XEventClassifier;
+import org.deckfour.xes.classification.XEventNameClassifier;
 import org.deckfour.xes.model.XLog;
 import org.processmining.contexts.uitopia.UIPluginContext;
 import org.processmining.contexts.uitopia.annotations.UITopiaVariant;
@@ -26,7 +27,9 @@ import org.processmining.plugins.etm.mutation.GuidedTreeMutationCoordinator;
 import org.processmining.plugins.etm.mutation.TreeCrossover;
 import org.processmining.plugins.etm.mutation.TreeMutationCoordinator;
 import org.processmining.plugins.etm.mutation.mutators.*;
-import org.processmining.plugins.etm.mutation.mutators.maikelvaneck.*;
+import org.processmining.plugins.etm.mutation.mutators.maikelvaneck.IntelligentTreeFactory;
+import org.processmining.plugins.etm.mutation.mutators.maikelvaneck.MutateSingleNodeGuided;
+import org.processmining.plugins.etm.mutation.mutators.maikelvaneck.ReplaceTreeBySequenceMutation;
 import org.processmining.plugins.etm.parameters.ETMParam;
 import org.processmining.plugins.etm.termination.ExternalTerminationCondition;
 import org.processmining.plugins.etm.termination.ProMCancelTerminationCondition;
@@ -36,7 +39,9 @@ import org.uncommons.maths.random.Probability;
 import org.uncommonseditedbyjoosbuijs.watchmaker.framework.TerminationCondition;
 import org.uncommonseditedbyjoosbuijs.watchmaker.framework.selection.SigmaScaling;
 
-import java.io.*;
+import java.io.FileDescriptor;
+import java.io.FileOutputStream;
+import java.io.PrintStream;
 import java.util.*;
 
 /**

@@ -6,7 +6,10 @@ import org.deckfour.xes.in.*;
 import org.deckfour.xes.model.XLog;
 import org.deckfour.xes.out.*;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.util.Collection;
 
 /**
@@ -28,7 +31,7 @@ public class LogImporter {
         return null;
     }
 
-    public static void exportToFile(String name, XLog log) throws Exception {
+    public static void exportToFile(String name, XLog log) {
         if(name.endsWith("mxml.gz")) {
             exportToInputStream(log, name, new XMxmlGZIPSerializer());
         }else if(name.endsWith("mxml")) {
@@ -42,7 +45,7 @@ public class LogImporter {
         }
     }
 
-    public static void exportToFile(String path, String name, XLog log) throws Exception {
+    public static void exportToFile(String path, String name, XLog log) {
         if(name.endsWith("mxml.gz")) {
             exportToInputStream(log, path + name, new XMxmlGZIPSerializer());
         }else if(name.endsWith("mxml")) {

@@ -2,11 +2,11 @@ package com.raffaeleconforti.wrappers.impl.heuristics;
 
 import com.raffaeleconforti.context.FakePluginContext;
 import com.raffaeleconforti.conversion.petrinet.PetriNetToBPMNConverter;
+import com.raffaeleconforti.marking.MarkingDiscoverer;
 import com.raffaeleconforti.wrappers.LogPreprocessing;
 import com.raffaeleconforti.wrappers.MiningAlgorithm;
-import com.raffaeleconforti.wrappers.settings.MiningSettings;
 import com.raffaeleconforti.wrappers.PetrinetWithMarking;
-import com.raffaeleconforti.marking.MarkingDiscoverer;
+import com.raffaeleconforti.wrappers.settings.MiningSettings;
 import org.deckfour.xes.classification.XEventClassifier;
 import org.deckfour.xes.classification.XEventNameClassifier;
 import org.deckfour.xes.model.XLog;
@@ -24,7 +24,10 @@ import org.processmining.plugins.heuristicsnet.miner.heuristics.miner.gui.Parame
 import org.processmining.plugins.heuristicsnet.miner.heuristics.miner.settings.HeuristicsMinerSettings;
 import org.processmining.processtree.ProcessTree;
 
-import java.io.*;
+import java.io.FileDescriptor;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
+import java.io.PrintStream;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -65,7 +68,7 @@ public class HeuristicsAlgorithmWrapper implements MiningAlgorithm {
 
         System.setOut(new PrintStream(new OutputStream() {
             @Override
-            public void write(int b) throws IOException {}
+            public void write(int b) {}
         }));
 
         if(context instanceof FakePluginContext) {

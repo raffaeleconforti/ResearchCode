@@ -1,9 +1,9 @@
 package com.raffaeleconforti.bpmnminer.preprocessing.inclusiondependencies;
 
 import com.raffaeleconforti.foreignkeydiscovery.conceptualmodels.*;
+import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 
 import java.util.ArrayList;
-import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import java.util.Iterator;
 import java.util.List;
 
