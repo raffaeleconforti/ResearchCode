@@ -28,9 +28,9 @@ import java.util.Map;
  */
 public class HyperParamOptimizedFodina implements MiningAlgorithm {
 
-    private static double d_STEP = 0.10D;
-    private static double d_MIN = 0.00D;
-    private static double d_MAX = 1.01D;
+    private static double d_STEP = 0.100D;
+    private static double d_MIN = 0.000D;
+    private static double d_MAX = 1.000D;
 
     public PetrinetWithMarking minePetrinet(UIPluginContext context, XLog log) {
         return minePetrinet(context, log, false, null, new XEventNameClassifier());
@@ -89,7 +89,7 @@ public class HyperParamOptimizedFodina implements MiningAlgorithm {
 
         try {
             writer = new PrintWriter(fName);
-            writer.println("f_threshold,p_threshold,fitness,precision,fscore,gf1,gf2,gf3,gen,size,cfc,struct,soundness,mining-time");
+            writer.println("long_distance,d_threshold,fitness,precision,fscore,gf1,gf2,gf3,gen,size,cfc,struct,soundness,mining-time");
         } catch(Exception e) {
             writer = new PrintWriter(System.out);
             System.out.println("ERROR - impossible to create the file for storing the results: printing only on terminal.");
@@ -118,7 +118,7 @@ public class HyperParamOptimizedFodina implements MiningAlgorithm {
 //            first parameter to optimize: long distance dependency > "longDistance"
             minerSettings.useLongDistanceDependency = longDistance;
 //            second parameter to optimize: dependency threshold > "d_threshold"
-            d_threshold = d_MIN;
+            d_threshold = d_MAX;
             do {
 
                 try {
@@ -165,8 +165,8 @@ public class HyperParamOptimizedFodina implements MiningAlgorithm {
                     System.out.println("ERROR - Fodina output model broken @ " + longDistance + " : " + d_threshold);
                 }
 
-                d_threshold += d_STEP;
-            } while (d_threshold <= d_MAX);
+                d_threshold -= d_STEP;
+            } while (d_threshold >= d_MIN);
 
             if(longDistance) break;
             else longDistance = true;

@@ -31,7 +31,7 @@ public class HyperParamOptimizedHeuristicsMiner implements MiningAlgorithm {
 
     private static double STEP = 0.10D;
     private static double MIN = 0.00D;
-    private static double MAX = 1.01D;
+    private static double MAX = 1.00D;
 
     public PetrinetWithMarking minePetrinet(UIPluginContext context, XLog log) {
         return minePetrinet(context, log, false, null, new XEventNameClassifier());
@@ -94,7 +94,7 @@ public class HyperParamOptimizedHeuristicsMiner implements MiningAlgorithm {
         PrintWriter writer;
         try {
             writer = new PrintWriter(fName);
-            writer.println("f_threshold,p_threshold,fitness,precision,fscore,gf1,gf2,gf3,gen,size,cfc,struct,soundness,mining-time");
+            writer.println("rtb_threshold,d_threshold,fitness,precision,fscore,gf1,gf2,gf3,gen,size,cfc,struct,soundness,mining-time");
         } catch(Exception e) {
             writer = new PrintWriter(System.out);
             System.out.println("ERROR - impossible to create the file for storing the results: printing only on terminal.");

@@ -97,7 +97,7 @@ public class HyperParamOptimizedStructuredHeuristicsMiner implements MiningAlgor
         PrintWriter writer;
         try {
             writer = new PrintWriter(fName);
-            writer.println("f_threshold,p_threshold,fitness,precision,fscore,gf1,gf2,gf3,gen,size,cfc,struct,soundness,mining-time");
+            writer.println("rtb_threshold,d_threshold,fitness,precision,fscore,gf1,gf2,gf3,gen,size,cfc,struct,soundness,mining-time");
         } catch(Exception e) {
             writer = new PrintWriter(System.out);
             System.out.println("ERROR - impossible to create the file for storing the results: printing only on terminal.");

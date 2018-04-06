@@ -114,6 +114,12 @@ public class HyperParamOptimizedSplitMiner implements MiningAlgorithm {
             p_threshold = p_MIN;
             do {
                 try {
+
+                    System.setOut(new PrintStream(new OutputStream() {
+                        @Override
+                        public void write(int b) throws IOException {}
+                    }));
+
                     eTime = System.currentTimeMillis();
                     bpmn = yam.mineBPMNModel(log, xEventClassifier, f_threshold, p_threshold, DFGPUIResult.FilterType.WTH, true, true, false, SplitMinerUIResult.StructuringTime.NONE);
                     eTime = System.currentTimeMillis() - eTime;
