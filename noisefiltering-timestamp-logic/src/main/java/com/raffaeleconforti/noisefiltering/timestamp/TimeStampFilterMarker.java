@@ -1,8 +1,11 @@
 package com.raffaeleconforti.noisefiltering.timestamp;
 
+import org.deckfour.xes.classification.XEventClassifier;
 import org.deckfour.xes.extension.std.XConceptExtension;
+import org.deckfour.xes.model.XEvent;
 import org.deckfour.xes.model.XLog;
 import org.deckfour.xes.model.XTrace;
+import org.deckfour.xes.model.XVisitor;
 import org.deckfour.xes.model.impl.XAttributeBooleanImpl;
 
 /**
@@ -30,6 +33,7 @@ public class TimeStampFilterMarker {
 
                     if (!matches) {
                         trace1.getAttributes().put("change", new XAttributeBooleanImpl("change", true));
+
                     }
                     break;
                 }

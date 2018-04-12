@@ -12,6 +12,8 @@ import com.raffaeleconforti.noisefiltering.event.infrequentbehaviour.automaton.A
 import com.raffaeleconforti.noisefiltering.event.infrequentbehaviour.automaton.AutomatonInfrequentBehaviourRemover;
 import com.raffaeleconforti.noisefiltering.event.selection.NoiseFilterResult;
 import com.raffaeleconforti.statistics.percentile.Percentile;
+import org.deckfour.xes.classification.XEventAndClassifier;
+import org.deckfour.xes.classification.XEventAttributeClassifier;
 import org.deckfour.xes.classification.XEventClassifier;
 import org.deckfour.xes.extension.std.XConceptExtension;
 import org.deckfour.xes.extension.std.XTimeExtension;
