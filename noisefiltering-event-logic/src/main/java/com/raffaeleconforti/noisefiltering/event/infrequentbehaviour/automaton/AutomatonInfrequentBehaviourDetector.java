@@ -30,6 +30,8 @@ public class AutomatonInfrequentBehaviourDetector {
     public final static int AVE = 0;
     public final static int MAX = 1;
     public final static int MIN = 2;
+    public final static int SOURCE = 3;
+    public final static int TARGET = 4;
 
     private int approach = 0;
 
@@ -81,14 +83,20 @@ public class AutomatonInfrequentBehaviourDetector {
     }
 
     public double getFrequency(Automaton<String> automaton, Edge<String> edge) {
+        double freq = 0.0;
         if(approach == MIN) {
-            return automaton.getEdgeFrequency(edge) / (Math.min(automaton.getNodeFrequency(edge.getSource()), automaton.getNodeFrequency(edge.getTarget())));
+            freq = automaton.getEdgeFrequency(edge) / (Math.min(automaton.getNodeFrequency(edge.getSource()), automaton.getNodeFrequency(edge.getTarget())));
         }else if(approach == MAX) {
-            return automaton.getEdgeFrequency(edge) / (Math.max(automaton.getNodeFrequency(edge.getSource()), automaton.getNodeFrequency(edge.getTarget())));
+            freq = automaton.getEdgeFrequency(edge) / (Math.max(automaton.getNodeFrequency(edge.getSource()), automaton.getNodeFrequency(edge.getTarget())));
         }else if(approach == AVE) {
-            return automaton.getEdgeFrequency(edge) / ((automaton.getNodeFrequency(edge.getSource()) + automaton.getNodeFrequency(edge.getTarget()))/2);
+            freq = automaton.getEdgeFrequency(edge) / ((automaton.getNodeFrequency(edge.getSource()) + automaton.getNodeFrequency(edge.getTarget())) / 2);
+        } else if (approach == SOURCE) {
+            freq = automaton.getEdgeFrequency(edge) / automaton.getNodeFrequency(edge.getSource());
+        } else if (approach == TARGET) {
+            freq = automaton.getEdgeFrequency(edge) / automaton.getNodeFrequency(edge.getTarget());
         }
-        return 0.0;
+//        System.out.println(edge.toString() + " " + freq);
+        return freq;
     }
 
     private Automaton<String> remove(Automaton<String> automaton, Edge<String> edge) {

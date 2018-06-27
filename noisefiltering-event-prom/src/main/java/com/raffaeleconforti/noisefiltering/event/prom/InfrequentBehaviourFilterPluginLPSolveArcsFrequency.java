@@ -52,11 +52,15 @@ public class InfrequentBehaviourFilterPluginLPSolveArcsFrequency extends Infrequ
 
         Automaton<String> automatonOriginal = automatonFactory.generate(log);
 
-        InfrequentBehaviourFilter infrequentBehaviourFilter = new InfrequentBehaviourFilter(xEventClassifier, false, true, debug_mode);
+        InfrequentBehaviourFilter infrequentBehaviourFilter = new InfrequentBehaviourFilter(xEventClassifier, false, true, debug_mode, true, false, 0.125, 0.5, false, -1);
         double[] arcs = infrequentBehaviourFilter.discoverArcs(automatonOriginal, 1.0);
 
         NoiseFilterUI noiseUI = new NoiseFilterUI();
         NoiseFilterResult result = noiseUI.showGUI(context, this, arcs, automatonOriginal.getNodes());
+
+        if (!result.isRemoveTraces() || result.isRemoveNodes()) {
+            infrequentBehaviourFilter = new InfrequentBehaviourFilter(xEventClassifier, false, true, debug_mode, result.isRemoveTraces(), result.isRemoveNodes(), 0.125, 0.5, false, -1);
+        }
 
         return infrequentBehaviourFilter.filterLog(context, rawlog, result);
     }

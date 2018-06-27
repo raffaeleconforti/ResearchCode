@@ -374,27 +374,30 @@ public class Automaton<T> implements Cloneable{
             petrinet.addArc(t, nodeStartPlace.get(target));
         }
 
-        int source = 1;
-        int sink = 1;
-        for(Place p : petrinet.getPlaces()) {
-            int input = 0;
-            int output = 0;
+//        int source = 1;
+//        int sink = 1;
+//        for(Place p : petrinet.getPlaces()) {
+//            int input = 0;
+//            int output = 0;
+//
+//            for(PetrinetEdge e : petrinet.getEdges()) {
+//                if(e.getTarget().equals(p)) {
+//                    input++;
+//                }
+//                if(e.getSource().equals(p)) {
+//                    output++;
+//                }
+//            }
+//            if(input == 0) {
+//                p.getAttributeMap().put(AttributeMap.LABEL, "source" + source++);
+//            }
+//            if(output == 0) {
+//                p.getAttributeMap().put(AttributeMap.LABEL, "sink" + sink++);
+//            }
+//        }
+        nodeStartPlace.get(start.toArray()[0]).getAttributeMap().put(AttributeMap.LABEL, "source" + 1);
+        nodeEndPlace.get(end.toArray()[0]).getAttributeMap().put(AttributeMap.LABEL, "sink" + 1);
 
-            for(PetrinetEdge e : petrinet.getEdges()) {
-                if(e.getTarget().equals(p)) {
-                    input++;
-                }
-                if(e.getSource().equals(p)) {
-                    output++;
-                }
-            }
-            if(input == 0) {
-                p.getAttributeMap().put(AttributeMap.LABEL, "source" + source++);
-            }
-            if(output == 0) {
-                p.getAttributeMap().put(AttributeMap.LABEL, "sink" + sink++);
-            }
-        }
 
 
         while (removeUselessTauTransitions(petrinet));

@@ -13,12 +13,12 @@ import org.deckfour.xes.model.XEvent;
 import org.deckfour.xes.model.XLog;
 import org.deckfour.xes.model.XTrace;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
+import org.processmining.alignment.plugin.AStarPlugin;
 import org.processmining.framework.plugin.PluginContext;
 import org.processmining.models.graphbased.directed.petrinet.Petrinet;
 import org.processmining.models.graphbased.directed.petrinet.elements.Place;
 import org.processmining.models.graphbased.directed.petrinet.elements.Transition;
 import org.processmining.models.semantics.petrinet.Marking;
-import org.processmining.plugins.astar.petrinet.PetrinetReplayerWithILP;
 import org.processmining.plugins.connectionfactories.logpetrinet.TransEvClassMapping;
 import org.processmining.plugins.petrinet.replayer.algorithms.IPNReplayParameter;
 import org.processmining.plugins.petrinet.replayer.algorithms.costbasedcomplete.CostBasedCompleteParam;
@@ -36,17 +36,17 @@ public class AutomatonInfrequentBehaviourRemover {
 
     private static final XFactory factory = new XFactoryNaiveImpl();
 
-    public static XLog removeInfrequentBehaviour(PluginContext context, XEventClassifier xEventClassifier, XLog log, Automaton<String> automaton, double lowerbound, double upperbound, boolean exception, boolean excludeTraces) throws HighThresholdException {
+    public static XLog removeInfrequentBehaviour(PluginContext context, XEventClassifier xEventClassifier, XLog log, Automaton<String> automaton, double lowerbound, double upperbound, double exception, boolean excludeTraces, boolean deviance) throws HighThresholdException {
 
         double originalEvents = countEvents(log);
 
-        XLog result = filter(context, xEventClassifier, log, automaton, excludeTraces);
+        XLog result = filter(context, xEventClassifier, log, automaton, excludeTraces, deviance);
 //        XLog result = filter(context, xEventClassifier, log, automaton, false);
         double resultEvents = countEvents(result);
 
-        if(exception) {
+        if (exception > 0.0) {
             if (resultEvents > 0.0) {
-                if (resultEvents / originalEvents < 0.5 && lowerbound < upperbound) {
+                if (resultEvents / originalEvents < exception && lowerbound < upperbound) {
                     System.out.println("error1");
                     throw new HighThresholdException();
                 }
@@ -70,8 +70,9 @@ public class AutomatonInfrequentBehaviourRemover {
         return count;
     }
 
-    private static XLog filter(PluginContext context, XEventClassifier xEventClassifier, XLog log, Automaton<String> automaton, boolean excludeTraces) {
-        PetrinetReplayerWithILP replayer = new PetrinetReplayerWithILP();
+    private static XLog filter(PluginContext context, XEventClassifier xEventClassifier, XLog log, Automaton<String> automaton, boolean excludeTraces, boolean deviance) {
+//        PetrinetReplayerWithILP replayer = new PetrinetReplayerWithILP();
+        AStarPlugin replayer = new AStarPlugin();
 
         Petrinet petrinet = automaton.getPetrinet();
 
@@ -116,10 +117,10 @@ public class AutomatonInfrequentBehaviourRemover {
         do {
             loop = false;
             try {
-                System.out.println("Starting alignment...");
+//                System.out.println("Starting alignment...");
                 replayResults = replayer.replayLog(context, petrinet, log, constructMapping(petrinet, log, dummyEvClass, eventClassifier), parameters);
-                System.out.println(replayResults.getInfo());
-                System.out.println("Alignment completed");
+//                System.out.println(replayResults.getInfo());
+//                System.out.println("Alignment completed");
             } catch (AStarException e) {
                 e.printStackTrace();
             }
@@ -132,7 +133,7 @@ public class AutomatonInfrequentBehaviourRemover {
                 boolean tryAll = false;
                 for (int i = 0; i < nodeInstance.size(); i++) {
                     StepTypes type = stepTypes.get(i);
-                    if (type == StepTypes.MREAL) {
+                    if (type == StepTypes.MREAL || (deviance && type == StepTypes.L)) {
                         tryAll = true;
                         break;
                     }

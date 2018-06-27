@@ -243,7 +243,7 @@ public class Experiment {
     }
 
     private String retrieveLogOriginalName(String logName) {
-        if(logName.contains(" ")) return logName.substring(0, logName.indexOf(" ")) + ".xes.gz";
+        if (logName.contains(" ")) return logName.substring(0, logName.indexOf(" ")) + "" + file_ext;
         else return logName;
     }
 

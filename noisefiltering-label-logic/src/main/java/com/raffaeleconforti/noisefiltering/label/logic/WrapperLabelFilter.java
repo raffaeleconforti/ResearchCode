@@ -35,7 +35,7 @@ public class WrapperLabelFilter<T> {
 
     public static void main(String[] args) {
 
-        XLog log = LogImporter.importFromFile(new XFactoryNaiveImpl(), "/Volumes/Data/SharedFolder/Logs/BPI2012.xes.gz");
+        XLog log = LogImporter.importFromFile(new XFactoryNaiveImpl(), "/Volumes/Data/SharedFolder/Logs/BPI2012" + file_ext);
         LogModifier logModifier = new LogModifier(new XFactoryNaiveImpl(), XConceptExtension.instance(), XTimeExtension.instance(), new LogOptimizer());
         log = logModifier.insertArtificialStartAndEndEvent(log);
 
@@ -67,7 +67,7 @@ public class WrapperLabelFilter<T> {
 
         log = logModifier.removeArtificialStartAndEndEvent(log);
 
-        LogImporter.exportToFile("/Volumes/Data/SharedFolder/Logs/BPI2012 (SimpleFiltered)2.xes.gz", log);
+        LogImporter.exportToFile("/Volumes/Data/SharedFolder/Logs/BPI2012 (SimpleFiltered)2" + file_ext, log);
     }
 
     public WrapperLabelFilter(Automaton<T> automaton, XLog log) {

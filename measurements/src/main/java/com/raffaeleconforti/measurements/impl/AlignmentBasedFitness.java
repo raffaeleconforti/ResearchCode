@@ -11,13 +11,13 @@ import org.deckfour.xes.info.XLogInfo;
 import org.deckfour.xes.info.XLogInfoFactory;
 import org.deckfour.xes.model.XLog;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
+import org.processmining.alignment.plugin.AStarPlugin;
 import org.processmining.contexts.uitopia.UIPluginContext;
 import org.processmining.framework.plugin.PluginContext;
 import org.processmining.models.connections.petrinets.behavioral.FinalMarkingConnection;
 import org.processmining.models.graphbased.directed.petrinet.Petrinet;
 import org.processmining.models.graphbased.directed.petrinet.elements.Transition;
 import org.processmining.models.semantics.petrinet.Marking;
-import org.processmining.plugins.astar.petrinet.PetrinetReplayerWithILP;
 import org.processmining.plugins.connectionfactories.logpetrinet.TransEvClassMapping;
 import org.processmining.plugins.petrinet.replayer.algorithms.IPNReplayParameter;
 import org.processmining.plugins.petrinet.replayer.algorithms.costbasedcomplete.CostBasedCompleteParam;
@@ -72,7 +72,8 @@ public class AlignmentBasedFitness implements MeasurementAlgorithm {
 
         pluginContext.addConnection(new FinalMarkingConnection(petrinet, finalMarking));
 
-        PetrinetReplayerWithILP replayer = new PetrinetReplayerWithILP();
+//        PetrinetReplayerWithILP replayer = new PetrinetReplayerWithILP();
+        AStarPlugin replayer = new AStarPlugin();
 
         XEventClass dummyEvClass = new XEventClass("DUMMY",99999);
 

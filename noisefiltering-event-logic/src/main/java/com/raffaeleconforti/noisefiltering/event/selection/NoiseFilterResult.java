@@ -14,6 +14,8 @@ public class NoiseFilterResult {
     private double noiseLevel;
     private double percentile;
     private boolean repeated;
+    private boolean removeTraces;
+    private boolean removeNodes;
     private Set<Node<String>> requiredStates;
 
     public int getApproach() {
@@ -54,6 +56,22 @@ public class NoiseFilterResult {
 
     public void setRepeated(boolean repeated) {
         this.repeated = repeated;
+    }
+
+    public boolean isRemoveTraces() {
+        return removeTraces;
+    }
+
+    public void setRemoveTraces(boolean removeTraces) {
+        this.removeTraces = removeTraces;
+    }
+
+    public boolean isRemoveNodes() {
+        return removeNodes;
+    }
+
+    public void setRemoveNodes(boolean removeNodes) {
+        this.removeNodes = removeNodes;
     }
 
     public Set<Node<String>> getRequiredStates() {

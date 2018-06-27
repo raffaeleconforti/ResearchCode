@@ -1,22 +1,162 @@
 package com.raffaeleconforti.log.util;
 
+import com.google.common.collect.ImmutableList;
+import com.raffaeleconforti.singletonlog.XFactorySingletonImpl;
+import org.apache.commons.cli.*;
 import org.deckfour.xes.extension.std.XConceptExtension;
 import org.deckfour.xes.factory.XFactory;
 import org.deckfour.xes.in.*;
+import org.deckfour.xes.model.XEvent;
 import org.deckfour.xes.model.XLog;
+import org.deckfour.xes.model.XTrace;
 import org.deckfour.xes.out.*;
+import org.processmining.log.csv.CSVFile;
+import org.processmining.log.csv.CSVFileReferenceUnivocityImpl;
+import org.processmining.log.csv.config.CSVConfig;
+import org.processmining.log.csvimport.CSVConversion;
+import org.processmining.log.csvimport.config.CSVConversionConfig;
+import org.processmining.log.csvimport.exception.CSVConversionConfigException;
+import org.processmining.log.csvimport.exception.CSVConversionException;
+import org.processmining.log.utils.XUtils;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.InputStream;
+import java.io.*;
 import java.util.Collection;
+import java.util.Iterator;
 
 /**
  * Created by Raffaele Conforti (conforti.raffaele@gmail.com) on 16/02/15.
  */
 
 public class LogImporter {
+
+    private static final class ProgressListenerPrintStreamImpl extends CSVConversion.NoOpProgressListenerImpl {
+
+        private final PrintStream out;
+
+        public ProgressListenerPrintStreamImpl(PrintStream out) {
+            this.out = out;
+        }
+
+        public void log(String message) {
+            out.println(message);
+        }
+
+    }
+
+    private static final Options OPTIONS = new Options();
+
+    private static final Option HELP = OptionBuilder.withDescription("help").create('h');
+    private static final Option LINKEDLIST = OptionBuilder.withDescription("useLinkedList").create("linkedlist");
+    private static final Option XES = OptionBuilder.hasArg().withArgName("filename").create("xes");
+    private static final Option TRACE = OptionBuilder.hasArg().withArgName("traceColumn").create("trace");
+    private static final Option EVENT = OptionBuilder.hasArg().withArgName("eventColumn").create("event");
+    private static final Option START = OptionBuilder.hasArg().withArgName("startColumn").create("start");
+    private static final Option COMPLETE = OptionBuilder.hasArg().withArgName("completionColumn").create("complete");
+
+    static {
+        OPTIONS.addOption(HELP);
+        OPTIONS.addOption(LINKEDLIST);
+        OPTIONS.addOption(XES);
+        OPTIONS.addOption(TRACE);
+        OPTIONS.addOption(EVENT);
+        OPTIONS.addOption(START);
+        OPTIONS.addOption(COMPLETE);
+    }
+
+    public static void main(String[] args) {
+
+        try {
+            CommandLineParser parser = new PosixParser();
+            CommandLine commandLine = parser.parse(OPTIONS, args);
+
+            if (commandLine.hasOption(HELP.getOpt())) {
+                printUsage();
+                return;
+            }
+
+            if (commandLine.getArgs().length != 1) {
+                printUsage();
+                System.err.println("Missing filename of the CSV file!");
+                return;
+            }
+
+            File logFile = new File(commandLine.getArgs()[0]);
+
+            try {
+                XLog log = parseCSV(logFile, commandLine);
+
+                XUtils.saveLogGzip(log, new File(logFile.getAbsolutePath() + ".xes.gz"));
+
+                for (XTrace trace : log) {
+                    Iterator<XEvent> eventIterator = trace.iterator();
+                    while (eventIterator.hasNext()) {
+                        XEvent event = eventIterator.next();
+                        if (event.getAttributes().get("OK").toString().equals("NO")) {
+                            eventIterator.remove();
+                        }
+                    }
+                }
+                XUtils.saveLogGzip(log, new File(logFile.getAbsolutePath() + "_tracking.xes.gz"));
+            } catch (CSVConversionException | IOException e) {
+                if (e.getMessage() != null) {
+                    System.err.println(e.getMessage());
+                }
+                e.printStackTrace();
+            }
+
+            System.out.println("Log converted successfully!");
+
+        } catch (ParseException e) {
+            printUsage();
+            if (e.getMessage() != null) {
+                System.err.println(e.getMessage());
+            }
+        }
+
+        System.exit(0);
+
+    }
+
+    private static XLog parseCSV(File inputFile, CommandLine commandLine) throws CSVConversionException, CSVConversionConfigException {
+        CSVConversion conversion = new CSVConversion();
+        CSVFile csvFile = new CSVFileReferenceUnivocityImpl(inputFile.toPath());
+        CSVConfig importConfig = new CSVConfig(csvFile);
+        CSVConversionConfig conversionConfig = new CSVConversionConfig(csvFile, importConfig);
+        conversionConfig.autoDetect();
+
+        if (commandLine.hasOption(LINKEDLIST.getOpt())) {
+            conversionConfig.setFactory(new XFactorySingletonImpl(true));
+        } else {
+            conversionConfig.setFactory(new XFactorySingletonImpl());
+        }
+
+        if (commandLine.hasOption(TRACE.getOpt())) {
+            conversionConfig.setCaseColumns(ImmutableList.of(commandLine.getOptionValue(TRACE.getOpt())));
+        }
+
+        if (commandLine.hasOption(EVENT.getOpt())) {
+            conversionConfig.setEventNameColumns(ImmutableList.of(commandLine.getOptionValue(EVENT.getOpt())));
+        }
+
+        if (commandLine.hasOption(START.getOpt())) {
+            conversionConfig.setStartTimeColumn(commandLine.getOptionValue(START.getOpt()));
+        }
+
+        if (commandLine.hasOption(COMPLETE.getOpt())) {
+            conversionConfig.setCompletionTimeColumn(commandLine.getOptionValue(COMPLETE.getOpt()));
+        }
+
+        CSVConversion.ProgressListener cmdLineProgressListener = new ProgressListenerPrintStreamImpl(System.out);
+        CSVConversion.ConversionResult<XLog> result = conversion.doConvertCSVToXES(cmdLineProgressListener, csvFile, importConfig,
+                conversionConfig);
+        return result.getResult();
+    }
+
+    private static void printUsage() {
+        HelpFormatter helpFormatter = new HelpFormatter();
+        helpFormatter.printHelp("mpe [CSVFILE]", OPTIONS, true);
+        return;
+    }
 
     public static XLog importFromFile(XFactory factory, String location) throws Exception {
         if(location.endsWith("mxml.gz")) {

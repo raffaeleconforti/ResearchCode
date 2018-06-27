@@ -5,7 +5,6 @@ import com.raffaeleconforti.automaton.Edge;
 import com.raffaeleconforti.automaton.Node;
 import com.raffaeleconforti.kernelestimation.distribution.EventDurationDistributionCalculator;
 import com.raffaeleconforti.kernelestimation.distribution.mixturemodel.NormalMixtureDistribution;
-import com.raffaeleconforti.log.util.LogImporter;
 import com.raffaeleconforti.log.util.NameExtractor;
 import org.apache.commons.math3.distribution.AbstractRealDistribution;
 import org.apache.commons.math3.distribution.ExponentialDistribution;
@@ -16,9 +15,7 @@ import org.apache.commons.math3.exception.NumberIsTooLargeException;
 import org.apache.commons.math3.stat.inference.KolmogorovSmirnovTest;
 import org.apache.commons.math3.stat.inference.MannWhitneyUTest;
 import org.deckfour.xes.classification.XEventClassifier;
-import org.deckfour.xes.classification.XEventNameClassifier;
 import org.deckfour.xes.extension.std.XTimeExtension;
-import org.deckfour.xes.factory.XFactoryNaiveImpl;
 import org.deckfour.xes.model.XEvent;
 import org.deckfour.xes.model.XLog;
 import org.deckfour.xes.model.XTrace;
@@ -42,12 +39,12 @@ public class EventDurationDistributionCalculatorNoiseImpl implements EventDurati
     private final XTimeExtension xte = XTimeExtension.instance();
     private final boolean debug_mode;
 
-    public static void main(String[] args) throws Exception {
-        XLog log = LogImporter.importFromFile(new XFactoryNaiveImpl(), "/Volumes/Data/SharedFolder/Logs/TimeNoise/LoanApplication.xes.gz");
-        EventDistributionCalculatorNoiseImpl dc = new EventDistributionCalculatorNoiseImpl(log, new XEventNameClassifier(), null, false);
-        dc.analyseLog();
-        System.out.println(dc.computeLikelihood(log.get(100)));
-    }
+//    public static void main(String[] args) throws Exception {
+//        XLog log = LogImporter.importFromFile(new XFactoryNaiveImpl(), "/Volumes/Data/SharedFolder/Logs/TimeNoise/LoanApplication.xes.gz");
+//        EventDistributionCalculatorNoiseImpl dc = new EventDistributionCalculatorNoiseImpl(log, new XEventNameClassifier(), null, false);
+//        dc.analyseLog();
+//        System.out.println(dc.computeLikelihood(log.get(100)));
+//    }
 
     public EventDurationDistributionCalculatorNoiseImpl(XLog log, Map<String, Set<String>> duplicatedEvents, XEventClassifier xEventClassifier, boolean debug_mode) {
         this.log = log;

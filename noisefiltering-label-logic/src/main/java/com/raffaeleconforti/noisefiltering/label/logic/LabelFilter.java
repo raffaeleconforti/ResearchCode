@@ -37,7 +37,7 @@ public class LabelFilter {
 
         for(int i = logNames.length - 1; i >= 0; i--) {
             logName = logNames[i];
-            XLog log = LogImporter.importFromFile(factory, "/Volumes/Data/SharedFolder/Logs/Label/" + logName + ".xes.gz");
+            XLog log = LogImporter.importFromFile(factory, "/Volumes/Data/SharedFolder/Logs/Label/" + logName + "" + file_ext);
 //            LogModifier logModifier = new LogModifier(factory, XConceptExtension.instance(), XTimeExtension.instance(), new LogOptimizer());
 //            logModifier.insertArtificialStartAndEndEvent(log);
 
@@ -51,7 +51,7 @@ public class LabelFilter {
 
 //            if (labelFilter.label_removed > 0) {
 //                log = logModifier.removeArtificialStartAndEndEvent(log);
-                LogImporter.exportToFile("/Volumes/Data/SharedFolder/Logs/Label/" + logName + " " + testName + ".xes.gz", log);
+            LogImporter.exportToFile("/Volumes/Data/SharedFolder/Logs/Label/" + logName + " " + testName + "" + file_ext, log);
 //            }
         }
     }

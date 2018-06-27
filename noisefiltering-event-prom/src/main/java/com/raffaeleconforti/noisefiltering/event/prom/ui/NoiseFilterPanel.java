@@ -31,6 +31,8 @@ public class NoiseFilterPanel extends ProMPropertiesPanel {
     private final NiceDoubleSlider noiseLevel;
     private final JCheckBox repeated;
     private final JCheckBox fix;
+    private final JCheckBox removeTraces;
+    private final JCheckBox removeNodes;
 
     public NoiseFilterPanel(InfrequentBehaviourFilterPlugin infrequentBehaviourFilterPlugin, double[] arcs) {
         super(DIALOG_NAME);
@@ -56,6 +58,12 @@ public class NoiseFilterPanel extends ProMPropertiesPanel {
 
         fix = addCheckBox("Use fix noise level", false);
         fix.addChangeListener(udl);
+
+        removeTraces = addCheckBox("Remove unfitting traces", true);
+        removeTraces.addChangeListener(udl);
+
+        removeNodes = addCheckBox("Remove infrequent nodes", false);
+        removeNodes.addChangeListener(udl);
 
         noiseLevel = SlickerFactory.instance().createNiceDoubleSlider("Noise Threshold", 0.0, 1.0, noiseLevelValue, NiceSlider.Orientation.HORIZONTAL);
         noiseLevel.setEnabled(false);
@@ -86,8 +94,12 @@ public class NoiseFilterPanel extends ProMPropertiesPanel {
                         percentile.setEnabled(true);
                         noiseLevel.setEnabled(false);
                     }
-                }else {
+                } else if (box == repeated) {
                     result.setRepeated(box.isSelected());
+                } else if (box == removeTraces) {
+                    result.setRemoveTraces(box.isSelected());
+                } else if (box == removeNodes) {
+                    result.setRemoveNodes(box.isSelected());
                 }
             }else if(e.getSource() instanceof JSlider) {
                 JSlider slider = (JSlider) e.getSource();

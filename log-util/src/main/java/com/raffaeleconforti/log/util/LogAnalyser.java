@@ -11,6 +11,7 @@ import org.deckfour.xes.model.XTrace;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 
+import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 
@@ -23,6 +24,59 @@ public class LogAnalyser {
     private static final XLifecycleExtension xle = XLifecycleExtension.instance();
     private static final XOrganizationalExtension xoe = XOrganizationalExtension.instance();
     private static final XTimeExtension xte = XTimeExtension.instance();
+
+    public static final int SECONDS = 0;
+    public static final int MINUTES = 1;
+    public static final int HOURS = 2;
+    public static final int DAYS = 3;
+    public static final int WEEKS = 4;
+    public static final int MONTHS = 5;
+    public static final int YEARS = 6;
+
+    public static double[] measureTimePerformance(Collection<XTrace> traces, int scale) {
+        double[] performance = new double[traces.size()];
+
+        int pos = 0;
+        for (XTrace trace : traces) {
+            long start = Long.MAX_VALUE;
+            long end = Long.MIN_VALUE;
+
+//            for(XEvent event : trace) {
+            start = Math.min(start, xte.extractTimestamp(trace.get(0)).getTime());
+            end = Math.max(end, xte.extractTimestamp(trace.get(trace.size() - 1)).getTime());
+//            }
+
+            performance[pos] = scale(end - start, scale);
+            pos++;
+        }
+
+        return performance;
+    }
+
+    public static String getScale(int scale) {
+        if (scale == SECONDS) return "seconds";
+        else if (scale == MINUTES) return "minutes";
+        else if (scale == HOURS) return "hours";
+        else if (scale == DAYS) return "days";
+        else if (scale == WEEKS) return "weeks";
+        else if (scale == MONTHS) return "months";
+        else if (scale == YEARS) return "years";
+        return "";
+    }
+
+    private static double scale(long l, int scale) {
+        double scaling = 1;
+
+        if (scale == SECONDS) scaling = 1000;
+        else if (scale == MINUTES) scaling = 60 * 1000;
+        else if (scale == HOURS) scaling = 60 * 60 * 1000;
+        else if (scale == DAYS) scaling = 24 * 60 * 60 * 1000;
+        else if (scale == WEEKS) scaling = 7 * 24 * 60 * 60 * 1000;
+        else if (scale == MONTHS) scaling = 4 * 7 * 24 * 60 * 60 * 1000;
+        else if (scale == YEARS) scaling = 12 * 4 * 7 * 24 * 60 * 60 * 1000;
+
+        return l / scaling;
+    }
 
     public static int countEvents(XLog log) {
         int events = 0;

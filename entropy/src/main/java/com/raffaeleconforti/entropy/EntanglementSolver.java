@@ -42,7 +42,7 @@ public class EntanglementSolver {
     private Set<EntanglementState> signatureStates = new UnifiedSet<>();
 
 //    public static void main(String[] args) throws Exception {
-//        XLog original = LogImporter.importFromFile(new XFactoryNaiveImpl(), "/Volumes/Data/Dropbox/LaTex/2016/Timestamp Repair/Logs/Experiments/TimeExperimentSimulation.xes.gz");
+//        XLog original = LogImporter.importFromFile(new XFactoryNaiveImpl(), "/Volumes/Data/Dropbox/LaTex/2016/Timestamp Repair/Logs/Experiments/TimeExperimentSimulation" + file_ext);
 //        String[] types = new String[] {"Event", "Trace", "UniqueTrace"};
 //        String[] levels = new String[] {"05", "10", "15", "20", "25", "30", "35", "40"};
 //        String[] names = new String[] {"", "BNN", "D", " ILP", "R"};
@@ -51,9 +51,9 @@ public class EntanglementSolver {
 //        TimeStampFilterChecker timeStampFilterChecker = new TimeStampFilterChecker();
 //        for(int t = 0; t < types.length; t++) {
 //            for (int l = 0; l < levels.length; l++) {
-//                XLog noise = LogImporter.importFromFile(new XFactoryNaiveImpl(), "/Volumes/Data/Dropbox/LaTex/2016/Timestamp Repair/Logs/Experiments/" + types[t] + "/" + types[t] + "0." + levels[l] + ".xes.gz");
+//                XLog noise = LogImporter.importFromFile(new XFactoryNaiveImpl(), "/Volumes/Data/Dropbox/LaTex/2016/Timestamp Repair/Logs/Experiments/" + types[t] + "/" + types[t] + "0." + levels[l] + "" + file_ext);
 //                for (int n = 0; n < names.length; n++) {
-//                    XLog fix = LogImporter.importFromFile(new XFactoryNaiveImpl(), "/Volumes/Data/Dropbox/LaTex/2016/Timestamp Repair/Logs/Experiments/" + types[t] + "/" + types[t] + "0." + levels[l] + names[n] + ".xes.gz");
+//                    XLog fix = LogImporter.importFromFile(new XFactoryNaiveImpl(), "/Volumes/Data/Dropbox/LaTex/2016/Timestamp Repair/Logs/Experiments/" + types[t] + "/" + types[t] + "0." + levels[l] + names[n] + "" + file_ext);
 //                    PrintWriter out = new PrintWriter("/Volumes/Data/Dropbox/LaTex/2016/Timestamp Repair/Logs/Experiments/" + types[t] + "/" + types[t] + "0." + levels[l] + names[n] + ".txt");
 //                    String s = timeStampFilterChecker.check(fix, noise, original);
 //                    s = s.replace("<html><table width=\"400\"><tr><td width=\"33%\"></td><td width=\"33%\"><table>", "");
@@ -76,7 +76,7 @@ public class EntanglementSolver {
 //    }
 
 //    public static void main(String[] args) throws Exception {
-//        XLog log = LogImporter.importFromFile(new XFactoryNaiveImpl(), "/Volumes/Data/SharedFolder/Logs/BPI2014 (Incident Activity).xes.gz");
+//        XLog log = LogImporter.importFromFile(new XFactoryNaiveImpl(), "/Volumes/Data/SharedFolder/Logs/BPI2014 (Incident Activity)" + file_ext);
 //
 //        for (XTrace trace : log) {
 //            Collections.sort(trace, new Comparator<XEvent>() {
@@ -90,7 +90,7 @@ public class EntanglementSolver {
 //            });
 //        }
 //
-//        LogImporter.exportToFile("/Volumes/Data/SharedFolder/Logs/", "BPI2014 (Incident Activity) - Sorted.xes.gz", log);
+//        LogImporter.exportToFile("/Volumes/Data/SharedFolder/Logs/", "BPI2014 (Incident Activity) - Sorted" + file_ext, log);
 //        if (true) return;
 //    }
 
@@ -98,9 +98,9 @@ public class EntanglementSolver {
         XFactory factory = new XFactoryNaiveImpl();
         LogOptimizer logOptimizer = new LogOptimizer();
 //        XLog log = LogImporter.importFromFile(factory, "/Volumes/Data/SharedFolder/Logs/repairExample_complete_lifecycle_only.xes");
-        XLog log = LogImporter.importFromFile(new XFactoryNaiveImpl(), "/Volumes/Data/SharedFolder/Logs/BPI2012 (SimpleFiltered).xes.gz");
-//        XLog log = LogImporter.importFromFile(new XFactoryNaiveImpl(), "/Volumes/Data/SharedFolder/Logs/Windscreen-GIOManual.xes.gz");
-//        XLog log = LogImporter.importFromFile(new XFactoryNaiveImpl(), "/Volumes/Data/SharedFolder/Logs/Commercial-Subprocesses.xes.gz");
+        XLog log = LogImporter.importFromFile(new XFactoryNaiveImpl(), "/Volumes/Data/SharedFolder/Logs/BPI2012 (SimpleFiltered)" + file_ext);
+//        XLog log = LogImporter.importFromFile(new XFactoryNaiveImpl(), "/Volumes/Data/SharedFolder/Logs/Windscreen-GIOManual" + file_ext);
+//        XLog log = LogImporter.importFromFile(new XFactoryNaiveImpl(), "/Volumes/Data/SharedFolder/Logs/Commercial-Subprocesses" + file_ext);
         LogModifier logModifier = new LogModifier(factory, XConceptExtension.instance(), XTimeExtension.instance(), logOptimizer);
         log = logModifier.insertArtificialStartAndEndEvent(log);
         EntanglementSolver entanglementSolver = new EntanglementSolver(log);

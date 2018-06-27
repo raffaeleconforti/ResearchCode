@@ -55,7 +55,7 @@ public class TimestampFixerExperiments {
         Marking finalMarking = MarkingDiscoverer.constructFinalMarking(context, petrinet);
         PetrinetWithMarking petrinetWithMarking = new PetrinetWithMarking(petrinet, initialMarking, finalMarking);
 
-        XLog correctLog = LogImporter.importFromFile(new XFactoryNaiveImpl(), path + "TimeExperimentSimulation.xes.gz");
+        XLog correctLog = LogImporter.importFromFile(new XFactoryNaiveImpl(), path + "TimeExperimentSimulation" + logExtension);
         for(String typeLog : typeLogs) {
             Set<String> done = new HashSet<>();
             for(String typeExperiment : typeExperiments) {

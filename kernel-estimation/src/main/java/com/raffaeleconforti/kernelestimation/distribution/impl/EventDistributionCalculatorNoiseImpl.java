@@ -17,7 +17,7 @@ public class EventDistributionCalculatorNoiseImpl extends EventDistributionCalcu
     private final Map<String, Set<String>> duplicatedEvents;
 
 //    public static void main(String[] args) throws Exception {
-//        XLog log = LogImporter.importFromFile(new XFactoryMemoryImpl(), "/Volumes/Data/SharedFolder/Logs/TimeNoise/LoanApplication.xes.gz");
+//        XLog log = LogImporter.importFromFile(new XFactoryMemoryImpl(), "/Volumes/Data/SharedFolder/Logs/TimeNoise/LoanApplication" + file_ext);
 //        EventDistributionCalculatorNoiseImpl dc = new EventDistributionCalculatorNoiseImpl(log, new XEventNameClassifier(), null);
 //        dc.analyseLog();
 //        System.out.println(dc.computeLikelihood(log.get(100)));

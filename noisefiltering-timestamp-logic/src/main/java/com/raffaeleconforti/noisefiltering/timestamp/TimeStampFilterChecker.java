@@ -83,7 +83,7 @@ public class TimeStampFilterChecker {
 
         TimeStampFilterChecker timeStampFilterChecker = new TimeStampFilterChecker();
 
-        XLog correctLog = LogImporter.importFromFile(new XFactoryNaiveImpl(), path + "BPI2014 (Incident Activity Sorted).xes.gz");
+        XLog correctLog = LogImporter.importFromFile(new XFactoryNaiveImpl(), path + "BPI2014 (Incident Activity Sorted)" + logExtension);
         for(String typeLog : typeLogs) {
             Set<String> done = new HashSet<>();
             for(String typeFilter : typeFilters) {
@@ -158,7 +158,7 @@ public class TimeStampFilterChecker {
 
         TimeStampFilterChecker timeStampFilterChecker = new TimeStampFilterChecker();
 
-        XLog correctLog = LogImporter.importFromFile(new XFactoryNaiveImpl(), path + "TimeExperimentSimulation.xes.gz");
+        XLog correctLog = LogImporter.importFromFile(new XFactoryNaiveImpl(), path + "TimeExperimentSimulation" + logExtension);
         for(String typeLog : typeLogs) {
             Set<String> done = new HashSet<>();
             for(String typeExperiment : typeExperiments) {
@@ -239,7 +239,7 @@ public class TimeStampFilterChecker {
 
         TimeStampFilterChecker timeStampFilterChecker = new TimeStampFilterChecker();
 
-        XLog correctLog = LogImporter.importFromFile(new XFactoryNaiveImpl(), path + "TimeExperimentSimulation.xes.gz");
+        XLog correctLog = LogImporter.importFromFile(new XFactoryNaiveImpl(), path + "TimeExperimentSimulation" + logExtension);
         for(String typeLog : typeLogs) {
             Set<String> done = new HashSet<>();
             for(String typeExperiment : typeExperiments) {
