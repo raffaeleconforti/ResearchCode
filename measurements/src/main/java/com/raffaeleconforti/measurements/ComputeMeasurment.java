@@ -35,7 +35,6 @@ import org.deckfour.xes.model.XEvent;
 import org.deckfour.xes.model.XLog;
 import org.deckfour.xes.model.XTrace;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
-import org.processmining.alignment.plugin.AStarPlugin;
 import org.processmining.contexts.uitopia.UIPluginContext;
 import org.processmining.contexts.uitopia.annotations.UITopiaVariant;
 import org.processmining.framework.connections.ConnectionCannotBeObtained;
@@ -51,6 +50,7 @@ import org.processmining.models.graphbased.directed.petrinet.PetrinetNode;
 import org.processmining.models.graphbased.directed.petrinet.elements.Place;
 import org.processmining.models.graphbased.directed.petrinet.elements.Transition;
 import org.processmining.models.semantics.petrinet.Marking;
+import org.processmining.plugins.astar.petrinet.PetrinetReplayerWithILP;
 import org.processmining.plugins.connectionfactories.logpetrinet.TransEvClassMapping;
 import org.processmining.plugins.multietc.plugins.MultiETCPlugin;
 import org.processmining.plugins.multietc.res.MultiETCResult;
@@ -608,8 +608,8 @@ public class ComputeMeasurment {
 
         context.addConnection(new FinalMarkingConnection(petrinet, finalMarking));
 
-//        PetrinetReplayerWithILP replayer = new PetrinetReplayerWithILP();
-        AStarPlugin replayer = new AStarPlugin();
+        PetrinetReplayerWithILP replayer = new PetrinetReplayerWithILP();
+//        AStarPlugin replayer = new AStarPlugin();
 
         XEventClass dummyEvClass = new XEventClass("DUMMY",99999);
 

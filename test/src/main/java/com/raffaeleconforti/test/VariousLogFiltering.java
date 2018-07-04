@@ -15,9 +15,10 @@ import java.util.Iterator;
 
 public class VariousLogFiltering {
 
-    private static String dir = "/Volumes/MobileData/Logs/Consultancies/Unipol/Analysis2/";
-    private static String file_base = "Unipol";
+    private static String dir = "/Volumes/MobileData/Logs/Consultancies/Unipol/Analysis3/";
+    private static String file_base = "Unipol - 85";
     private static String file_ext = ".xes.gz";
+    private static XTimeExtension xte = XTimeExtension.instance();
 
     private static XLog log;
     private static String file;
@@ -25,27 +26,25 @@ public class VariousLogFiltering {
     private static String[] loc = new String[]{"04 LOM", "12 LAZ"};
     private static String[] liq = new String[]{"APB", "LIQ", "PD"};
 
-    public static void main(String[] args) throws Exception {
+    public static void main5(String[] args) throws Exception {
         String[] files = new String[]{
-                "3 - General Process 85",
-                "5 - Unipol - LAZ 80",
-                "5 - Unipol - LOM 90",
-                "6 - Unipol - <=30 93",
-                "6 - Unipol - >30 80",
-                "7 - Unipol - <=30 - LAZ 91",
-                "7 - Unipol - <=30 - LOM 95",
-                "7 - Unipol - >30 - LAZ 75",
-                "7 - Unipol - >30 - LOM 85"
+                "3 - General Process (85%)",
+                "g30",
+                "LAZ g30",
+                "LAZ le30",
+                "LAZ",
+                "le30",
+                "LOM g30",
+                "LOM le30",
+                "LOM"
         };
 
         for (String file : files) {
-            String log_name = dir + "Filter/" + file;
+            String log_name = dir + "Logs Top15/" + file;
             log = LogImporter.importFromFile(new XFactorySingletonImpl(), log_name + "" + file_ext);
             for (XTrace trace : log) {
                 for (XEvent event : trace) {
-                    Iterator<String> iterator = event.getAttributes().keySet().iterator();
-                    while (iterator.hasNext()) {
-                        String attributeName = iterator.next();
+                    for (String attributeName : event.getAttributes().keySet().toArray(new String[12])) {
                         if (!(("concept:name").equals(attributeName) ||
                                 ("lifecycle:transition").equals(attributeName) ||
                                 ("time:timestamp").equals(attributeName))) {
@@ -90,22 +89,104 @@ public class VariousLogFiltering {
         }
     }
 
-    public static void main33(String[] args) throws Exception {
-        String file = "procmin20180612_F2_tracking_reduced" + file_ext;
-        log = LogImporter.importFromFile(new XFactorySingletonImpl(), dir + file);
-        Iterator<XTrace> traceIterator = log.iterator();
-        while (traceIterator.hasNext()) {
-            XTrace trace = traceIterator.next();
-            boolean keep = true;
-            for (XEvent event : trace) {
-                if (!event.getAttributes().get("REGIONE_ACCADIMENTO").toString().equals("04 LOM")) {
-                    keep = false;
-                    break;
+    public static void main(String[] args) throws Exception {
+        String[] files = new String[]{
+                "1 - General Process (85%)"
+        };
+
+        for (String l : loc) {
+            for (String file : files) {
+                String log_name = dir + "Logs Top16/" + file;
+                log = LogImporter.importFromFile(new XFactorySingletonImpl(), log_name + "" + file_ext);
+                traceIterator = log.iterator();
+                while (traceIterator.hasNext()) {
+                    XTrace trace = traceIterator.next();
+                    boolean keep = true;
+                    for (XEvent event : trace) {
+                        if (!event.getAttributes().get("REGIONE_ACCADIMENTO").toString().equals(l)) {
+                            keep = false;
+                            break;
+                        }
+                    }
+                    if (!keep) traceIterator.remove();
                 }
+                LogImporter.exportToFile(dir + "Logs Top16/", l.substring(3) + file_ext, log);
             }
-            if (!keep) traceIterator.remove();
         }
-        LogImporter.exportToFile(dir, "procmin20180612_F2_tracking_reduced_LOM" + file_ext, log);
+
+        for (String file : files) {
+            String log_name = dir + "Logs Top16/" + file;
+            log = LogImporter.importFromFile(new XFactorySingletonImpl(), log_name + "" + file_ext);
+            traceIterator = log.iterator();
+            while (traceIterator.hasNext()) {
+                XTrace trace = traceIterator.next();
+                Calendar a = getCalendar(xte.extractTimestamp(trace.get(0)));
+                Calendar b = getCalendar(xte.extractTimestamp(trace.get(trace.size() - 1)));
+                if (!greater(a, b, 30)) traceIterator.remove();
+            }
+            LogImporter.exportToFile(dir + "Logs Top16/", "g30" + file_ext, log);
+        }
+
+        for (String file : files) {
+            String log_name = dir + "Logs Top16/" + file;
+            log = LogImporter.importFromFile(new XFactorySingletonImpl(), log_name + "" + file_ext);
+            traceIterator = log.iterator();
+            while (traceIterator.hasNext()) {
+                XTrace trace = traceIterator.next();
+                Calendar a = getCalendar(xte.extractTimestamp(trace.get(0)));
+                Calendar b = getCalendar(xte.extractTimestamp(trace.get(trace.size() - 1)));
+                if (greater(a, b, 30)) traceIterator.remove();
+            }
+            LogImporter.exportToFile(dir + "Logs Top16/", "le30" + file_ext, log);
+        }
+
+        for (String l : loc) {
+            for (String file : files) {
+                String log_name = dir + "Logs Top16/" + file;
+                log = LogImporter.importFromFile(new XFactorySingletonImpl(), log_name + "" + file_ext);
+                traceIterator = log.iterator();
+                while (traceIterator.hasNext()) {
+                    XTrace trace = traceIterator.next();
+                    boolean keep = true;
+                    for (XEvent event : trace) {
+                        if (!event.getAttributes().get("REGIONE_ACCADIMENTO").toString().equals(l)) {
+                            keep = false;
+                            break;
+                        }
+                    }
+                    if (!keep) traceIterator.remove();
+                    else {
+                        Calendar a = getCalendar(xte.extractTimestamp(trace.get(0)));
+                        Calendar b = getCalendar(xte.extractTimestamp(trace.get(trace.size() - 1)));
+                        if (!greater(a, b, 30)) traceIterator.remove();
+                    }
+                }
+                LogImporter.exportToFile(dir + "Logs Top16/", l.substring(3) + " g30" + file_ext, log);
+            }
+
+            for (String file : files) {
+                String log_name = dir + "Logs Top16/" + file;
+                log = LogImporter.importFromFile(new XFactorySingletonImpl(), log_name + "" + file_ext);
+                traceIterator = log.iterator();
+                while (traceIterator.hasNext()) {
+                    XTrace trace = traceIterator.next();
+                    boolean keep = true;
+                    for (XEvent event : trace) {
+                        if (!event.getAttributes().get("REGIONE_ACCADIMENTO").toString().equals(l)) {
+                            keep = false;
+                            break;
+                        }
+                    }
+                    if (!keep) traceIterator.remove();
+                    else {
+                        Calendar a = getCalendar(xte.extractTimestamp(trace.get(0)));
+                        Calendar b = getCalendar(xte.extractTimestamp(trace.get(trace.size() - 1)));
+                        if (greater(a, b, 30)) traceIterator.remove();
+                    }
+                }
+                LogImporter.exportToFile(dir + "Logs Top16/", l.substring(3) + " le30" + file_ext, log);
+            }
+        }
     }
 
     public static void main1(String[] args) throws Exception {
@@ -215,14 +296,6 @@ public class VariousLogFiltering {
         while (traceIterator.hasNext()) {
             XTrace trace = traceIterator.next();
             Calendar a = getCalendar(xte.extractTimestamp(trace.get(0)));
-            Date max = null;
-            for (XEvent event : trace) {
-                if (max == null) max = xte.extractTimestamp(event);
-                else if (max.before(xte.extractTimestamp(event))) max = xte.extractTimestamp(event);
-            }
-            if (!max.equals(xte.extractTimestamp(trace.get(trace.size() - 1)))) {
-                System.out.println();
-            }
             Calendar b = getCalendar(xte.extractTimestamp(trace.get(trace.size() - 1)));
             if (!greater(a, b, 30)) {
                 traceIterator.remove();

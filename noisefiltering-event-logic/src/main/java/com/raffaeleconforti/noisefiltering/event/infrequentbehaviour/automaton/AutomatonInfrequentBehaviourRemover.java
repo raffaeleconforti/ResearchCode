@@ -13,12 +13,12 @@ import org.deckfour.xes.model.XEvent;
 import org.deckfour.xes.model.XLog;
 import org.deckfour.xes.model.XTrace;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
-import org.processmining.alignment.plugin.AStarPlugin;
 import org.processmining.framework.plugin.PluginContext;
 import org.processmining.models.graphbased.directed.petrinet.Petrinet;
 import org.processmining.models.graphbased.directed.petrinet.elements.Place;
 import org.processmining.models.graphbased.directed.petrinet.elements.Transition;
 import org.processmining.models.semantics.petrinet.Marking;
+import org.processmining.plugins.astar.petrinet.PetrinetReplayerWithILP;
 import org.processmining.plugins.connectionfactories.logpetrinet.TransEvClassMapping;
 import org.processmining.plugins.petrinet.replayer.algorithms.IPNReplayParameter;
 import org.processmining.plugins.petrinet.replayer.algorithms.costbasedcomplete.CostBasedCompleteParam;
@@ -71,8 +71,8 @@ public class AutomatonInfrequentBehaviourRemover {
     }
 
     private static XLog filter(PluginContext context, XEventClassifier xEventClassifier, XLog log, Automaton<String> automaton, boolean excludeTraces, boolean deviance) {
-//        PetrinetReplayerWithILP replayer = new PetrinetReplayerWithILP();
-        AStarPlugin replayer = new AStarPlugin();
+        PetrinetReplayerWithILP replayer = new PetrinetReplayerWithILP();
+//        AStarPlugin replayer = new AStarPlugin();
 
         Petrinet petrinet = automaton.getPetrinet();
 

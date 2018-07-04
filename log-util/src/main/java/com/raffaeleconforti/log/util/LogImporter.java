@@ -6,9 +6,7 @@ import org.apache.commons.cli.*;
 import org.deckfour.xes.extension.std.XConceptExtension;
 import org.deckfour.xes.factory.XFactory;
 import org.deckfour.xes.in.*;
-import org.deckfour.xes.model.XEvent;
 import org.deckfour.xes.model.XLog;
-import org.deckfour.xes.model.XTrace;
 import org.deckfour.xes.out.*;
 import org.processmining.log.csv.CSVFile;
 import org.processmining.log.csv.CSVFileReferenceUnivocityImpl;
@@ -21,7 +19,6 @@ import org.processmining.log.utils.XUtils;
 
 import java.io.*;
 import java.util.Collection;
-import java.util.Iterator;
 
 /**
  * Created by Raffaele Conforti (conforti.raffaele@gmail.com) on 16/02/15.
@@ -86,17 +83,6 @@ public class LogImporter {
                 XLog log = parseCSV(logFile, commandLine);
 
                 XUtils.saveLogGzip(log, new File(logFile.getAbsolutePath() + ".xes.gz"));
-
-                for (XTrace trace : log) {
-                    Iterator<XEvent> eventIterator = trace.iterator();
-                    while (eventIterator.hasNext()) {
-                        XEvent event = eventIterator.next();
-                        if (event.getAttributes().get("OK").toString().equals("NO")) {
-                            eventIterator.remove();
-                        }
-                    }
-                }
-                XUtils.saveLogGzip(log, new File(logFile.getAbsolutePath() + "_tracking.xes.gz"));
             } catch (CSVConversionException | IOException e) {
                 if (e.getMessage() != null) {
                     System.err.println(e.getMessage());

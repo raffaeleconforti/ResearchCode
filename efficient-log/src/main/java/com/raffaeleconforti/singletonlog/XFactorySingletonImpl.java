@@ -28,13 +28,13 @@ public class XFactorySingletonImpl implements XFactory {
 //    private Table<String, Double, XAttributeContinuous> attributeContinuousMap = HashBasedTable.create();
 //    private Table<String, Long, XAttributeDiscrete> attributeDiscreteMap = HashBasedTable.create();
 
-    private UnifiedMap<String, UnifiedMap<String, XAttributeLiteral>> attributeLiteralMap = new UnifiedMap();
-    private UnifiedMap<String, DoubleObjectHashMap<XAttributeContinuous>> attributeContinuousMap = new UnifiedMap();
-    private UnifiedMap<String, LongObjectHashMap<XAttributeDiscrete>> attributeDiscreteMap = new UnifiedMap();
-
-    private UnifiedMap<String, XAttributeLiteral> mapLiteral;
-    private DoubleObjectHashMap<XAttributeContinuous> mapContinuous;
-    private LongObjectHashMap<XAttributeDiscrete> mapDiscrete;
+//    private UnifiedMap<String, UnifiedMap<String, XAttributeLiteral>> attributeLiteralMap = new UnifiedMap();
+//    private UnifiedMap<String, DoubleObjectHashMap<XAttributeContinuous>> attributeContinuousMap = new UnifiedMap();
+//    private UnifiedMap<String, LongObjectHashMap<XAttributeDiscrete>> attributeDiscreteMap = new UnifiedMap();
+//
+//    private UnifiedMap<String, XAttributeLiteral> mapLiteral;
+//    private DoubleObjectHashMap<XAttributeContinuous> mapContinuous;
+//    private LongObjectHashMap<XAttributeDiscrete> mapDiscrete;
 
     private boolean useLinkedList = false;
 
@@ -187,47 +187,47 @@ public class XFactorySingletonImpl implements XFactory {
 
     private XAttributeLiteral getAttributeLiteralMap(String key1, String key2) {
 //        return attributeLiteralMap.get(key1, key2);
-        if ((mapLiteral = attributeLiteralMap.get(key1)) != null) return mapLiteral.get(key2);
+//        if ((mapLiteral = attributeLiteralMap.get(key1)) != null) return mapLiteral.get(key2);
         return null;
     }
 
     private void putAttributeLiteralMap(String key1, String key2, XAttributeLiteral value) {
 //        attributeLiteralMap.put(key1, key2, value);
-        if ((mapLiteral = attributeLiteralMap.get(key1)) == null) {
-            mapLiteral = new UnifiedMap<>();
-            attributeLiteralMap.put(key1, mapLiteral);
-        }
-        mapLiteral.put(key2, value);
+//        if ((mapLiteral = attributeLiteralMap.get(key1)) == null) {
+//            mapLiteral = new UnifiedMap<>();
+//            attributeLiteralMap.put(key1, mapLiteral);
+//        }
+//        mapLiteral.put(key2, value);
     }
 
     private XAttributeContinuous getAttributeContinuousMap(String key1, Double key2) {
 //        return attributeContinuousMap.get(key1, key2);
-        if ((mapContinuous = attributeContinuousMap.get(key1)) != null) return mapContinuous.get(key2);
+//        if ((mapContinuous = attributeContinuousMap.get(key1)) != null) return mapContinuous.get(key2);
         return null;
     }
 
     private void putAttributeContinuousMap(String key1, Double key2, XAttributeContinuous value) {
 //        attributeContinuousMap.put(key1, key2, value);
-        if ((mapContinuous = attributeContinuousMap.get(key1)) == null) {
-            mapContinuous = new DoubleObjectHashMap<>();
-            attributeContinuousMap.put(key1, mapContinuous);
-        }
-        mapContinuous.put(key2, value);
+//        if ((mapContinuous = attributeContinuousMap.get(key1)) == null) {
+//            mapContinuous = new DoubleObjectHashMap<>();
+//            attributeContinuousMap.put(key1, mapContinuous);
+//        }
+//        mapContinuous.put(key2, value);
     }
 
     private XAttributeDiscrete getAttributeDiscreteMap(String key1, Long key2) {
 //        return attributeDiscreteMap.get(key1, key2);
-        if ((mapDiscrete = attributeDiscreteMap.get(key1)) != null) return mapDiscrete.get(key2);
+//        if ((mapDiscrete = attributeDiscreteMap.get(key1)) != null) return mapDiscrete.get(key2);
         return null;
     }
 
     private void putAttributeDiscreteMap(String key1, Long key2, XAttributeDiscrete value) {
 //        attributeDiscreteMap.put(key1, key2, value);
-        if ((mapDiscrete = attributeDiscreteMap.get(key1)) == null) {
-            mapDiscrete = new LongObjectHashMap<>();
-            attributeDiscreteMap.put(key1, mapDiscrete);
-        }
-        mapDiscrete.put(key2, value);
+//        if ((mapDiscrete = attributeDiscreteMap.get(key1)) == null) {
+//            mapDiscrete = new LongObjectHashMap<>();
+//            attributeDiscreteMap.put(key1, mapDiscrete);
+//        }
+//        mapDiscrete.put(key2, value);
     }
 
 }
