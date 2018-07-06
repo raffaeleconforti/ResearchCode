@@ -5,7 +5,9 @@ import com.raffaeleconforti.log.util.LogImporter;
 import com.raffaeleconforti.statistics.StatisticsSelector;
 import org.apache.commons.math3.exception.NumberIsTooSmallException;
 import org.apache.commons.math3.stat.inference.TTest;
+import org.deckfour.xes.extension.std.XConceptExtension;
 import org.deckfour.xes.factory.XFactoryNaiveImpl;
+import org.deckfour.xes.model.XEvent;
 import org.deckfour.xes.model.XLog;
 import org.deckfour.xes.model.XTrace;
 
@@ -18,8 +20,6 @@ public class Deviance implements Comparable<Deviance> {
     private final String file_ext = ".xes.gz";
 
     public enum Type {POSITIVE, NEUTRAL, NEGATIVE}
-
-    ;
 
     private StatisticsSelector statisticsSelector = new StatisticsSelector();
     private int scale = -1;
@@ -42,8 +42,9 @@ public class Deviance implements Comparable<Deviance> {
     private int original_log_size;
     private Type type;
     private String assessment;
+    private int cost;
 
-    public Deviance(String statement, String normal_behaviour_name, Set<XTrace> normal_traces, String deviant_behaviour_name, Set<XTrace> deviant_traces, int original_log_size) {
+    public Deviance(String statement, String normal_behaviour_name, Set<XTrace> normal_traces, String deviant_behaviour_name, Set<XTrace> deviant_traces, int original_log_size, int cost) {
         this.original_log_size = original_log_size;
         this.statement = statement;
 
@@ -52,6 +53,8 @@ public class Deviance implements Comparable<Deviance> {
 
         this.deviant_behaviour_name = deviant_behaviour_name;
         this.deviant_traces = deviant_traces;
+
+        this.cost = cost;
 
         consequent = new HashSet<>();
         caused = new HashSet<>();
@@ -65,10 +68,46 @@ public class Deviance implements Comparable<Deviance> {
         deviant_statement = single_statements[0].contains(normal_behaviour_name) ?
                 single_statements[1].substring(deviant_behaviour_name.length() + 1) :
                 single_statements[0].substring(deviant_behaviour_name.length() + 1);
+
+        if (!normal_statement.equals("") && !normal_statement.equals("does not"))
+            clean(false, normal_statement, normal_traces);
+        else clean(true, deviant_statement, normal_traces);
+
+        if (!deviant_statement.equals("") && !deviant_statement.equals("does not"))
+            clean(false, deviant_statement, deviant_traces);
+        clean(true, normal_statement, deviant_traces);
+    }
+
+    public String getNormal_statement() {
+        return normal_statement;
+    }
+
+    public String getDeviant_statement() {
+        return deviant_statement;
+    }
+
+    public void setOriginalLogSize(int original_log_size) {
+        this.original_log_size = original_log_size;
     }
 
     public double getRelevance() {
 //        double perc1 = (double) normal_traces.size() / original_log_size;
+        double avg1 = 0;
+        double avg2 = 0;
+        for (XTrace trace : normal_traces) {
+            avg1 += trace.size();
+        }
+        for (XTrace trace : deviant_traces) {
+            avg2 += trace.size();
+        }
+        avg1 /= normal_traces.size();
+        avg2 /= deviant_traces.size();
+        if (cost >= avg1) {
+            return 0;
+        }
+        if (cost >= avg2) {
+            return 0;
+        }
         double perc2 = (double) deviant_traces.size() / original_log_size;
 //        return Math.min(perc1, perc2);
         return perc2;
@@ -294,22 +333,23 @@ public class Deviance implements Comparable<Deviance> {
         return reformulateFromDeviantPointOfView();
     }
 
-    public String toFullString(double relevance_threshold) {
-        return toString("", relevance_threshold);
+    public String toFullString(int level, double relevance_threshold) {
+        return toString("", level, relevance_threshold);
     }
 
-    private String toString(String indent, double relevance_threshold) {
+    private String toString(String indent, int level, double relevance_threshold) {
         StringBuilder stringBuilder = new StringBuilder();
+        assessDifferenceInPerformance();
         stringBuilder.append(indent + getType() + " affecting " + format(getRelevance() * 100) + "% of the log");
         if (type != Type.NEUTRAL) stringBuilder.append("\n" + indent + assessDifferenceInPerformance());
         stringBuilder.append("\n" + indent + reformulateFromDeviantPointOfView() + " [" + deviant_traces.size() + " / " + normal_traces.size() + " (deviant traces / normal traces)]");
-        if (consequent.size() > 0) {
+        if (consequent.size() > 0 && level > 1) {
             List<Deviance> list = new ArrayList<>(consequent);
             Collections.sort(list);
             StringBuilder stringBuilder2 = new StringBuilder();
             for (Deviance deviance : list) {
                 if (deviance.getRelevance() >= relevance_threshold) {
-                    stringBuilder2.append("\n" + deviance.toString(indent + "   ", relevance_threshold));
+                    stringBuilder2.append("\n" + deviance.toString(indent + "   ", level - 1, relevance_threshold));
                 }
             }
             if (stringBuilder2.length() > 0) {
@@ -318,5 +358,104 @@ public class Deviance implements Comparable<Deviance> {
             }
         }
         return stringBuilder.toString();
+    }
+
+    private void clean(boolean reverse, String statement, Set<XTrace> traces) {
+        boolean allows = statement.contains("allows");
+        if (statement.contains("to be skipped")) {
+            if (reverse) allows = !allows;
+            String activity = statement.substring(statement.indexOf("[") + 1, statement.indexOf("]"));
+            Iterator<XTrace> traceIterator = traces.iterator();
+            while (traceIterator.hasNext()) {
+                boolean found = false;
+                for (XEvent event : traceIterator.next()) {
+                    if (XConceptExtension.instance().extractName(event).equals(activity)) {
+                        found = true;
+                        break;
+                    }
+                }
+                if (allows && found) traceIterator.remove();
+                else if (!allows && !found) traceIterator.remove();
+            }
+        } else if (statement.contains("to occur after")) {
+            if (reverse) allows = !allows;
+            String activity1 = statement.substring(statement.indexOf("[") + 1, statement.indexOf("]"));
+            String[] activities1 = activity1.split(", ");
+            String s = statement.substring(statement.indexOf("]") + 1);
+            String activity2 = s.substring(s.indexOf("[") + 1, s.indexOf("]"));
+            String[] activities2 = activity2.split(", ");
+            List<String> list = new ArrayList<>();
+            Collections.addAll(list, activities2);
+            Collections.addAll(list, activities1);
+            removeTrace(allows, list, traces);
+        } else if (statement.contains("to be substituted by")) {
+            String activity1 = statement.substring(statement.indexOf("[") + 1, statement.indexOf("]"));
+            String[] activities1 = activity1.split(", ");
+            String s = statement.substring(statement.indexOf("]") + 1);
+            String activity2 = s.substring(s.indexOf("[") + 1, s.indexOf("]"));
+            String[] activities2 = activity2.split(", ");
+            List<String> list1 = new ArrayList<>();
+            List<String> list2 = new ArrayList<>();
+            if (statement.contains("after the occurrence of")) {
+                s = s.substring(s.indexOf("]") + 1);
+                String activity3 = s.substring(s.indexOf("[") + 1, s.indexOf("]"));
+                String[] activities3 = activity3.split(", ");
+                Collections.addAll(list1, activities3);
+                Collections.addAll(list2, activities3);
+            }
+            Collections.addAll(list1, activities1);
+            Collections.addAll(list2, activities2);
+            if (reverse) removeTrace(allows, list1, traces);
+            else removeTrace(allows, list2, traces);
+        } else if (statement.contains("to occur in the same run with")) {
+            if (reverse) allows = !allows;
+            String activity1 = statement.substring(statement.indexOf("[") + 1, statement.indexOf("]"));
+            String[] activities1 = activity1.split(", ");
+            String s = statement.substring(statement.indexOf("]") + 1);
+            String activity2 = s.substring(s.indexOf("[") + 1, s.indexOf("]"));
+            String[] activities2 = activity2.split(", ");
+            Set<String> set = new HashSet<>();
+            Collections.addAll(set, activities2);
+            Collections.addAll(set, activities1);
+
+            Iterator<XTrace> traceIterator = traces.iterator();
+            while (traceIterator.hasNext()) {
+                int i = 0;
+                boolean found = false;
+                XTrace trace = traceIterator.next();
+                for (String a : set) {
+                    for (XEvent event : trace) {
+                        if (XConceptExtension.instance().extractName(event).equals(a)) {
+                            i++;
+                            if (i == set.size()) found = true;
+                            break;
+                        }
+                    }
+                }
+                if (allows && !found) traceIterator.remove();
+                else if (!allows && found) traceIterator.remove();
+            }
+        }
+    }
+
+    private void removeTrace(boolean allows, List<String> list, Set<XTrace> traces) {
+        Iterator<XTrace> traceIterator = traces.iterator();
+        while (traceIterator.hasNext()) {
+            int i = 0;
+            boolean found = false;
+            for (XEvent event : traceIterator.next()) {
+                if (XConceptExtension.instance().extractName(event).equals(list.get(i))) {
+                    i++;
+                    if (i == list.size()) {
+                        found = true;
+                        break;
+                    }
+                } else {
+                    i = 0;
+                }
+            }
+            if (allows && !found) traceIterator.remove();
+            else if (!allows && found) traceIterator.remove();
+        }
     }
 }

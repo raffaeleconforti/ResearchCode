@@ -1621,9 +1621,9 @@
                         <configuration>
                             <groupId>org.apromore</groupId>
                             <artifactId>eventstr-confchecking-osgi</artifactId>
-                            <version>20180519</version>
+                            <version>20180705</version>
                             <packaging>jar</packaging>
-                            <file>src/main/java/eventstr-confchecking-osgi-20180519.jar</file>
+                            <file>src/main/java/eventstr-confchecking-osgi-20180705.jar</file>
                             <generatePom>true</generatePom>
                         </configuration>
                     </execution>

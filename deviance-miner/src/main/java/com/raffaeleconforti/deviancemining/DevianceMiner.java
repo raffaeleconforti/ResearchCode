@@ -5,7 +5,7 @@ import com.raffaeleconforti.log.util.NameExtractor;
 import com.raffaeleconforti.log.util.TraceToString;
 import com.raffaeleconforti.noisefiltering.event.InfrequentBehaviourFilter;
 import ee.ut.eventstr.comparison.ApromoreCompareLL;
-import ee.ut.utilities.Triplet;
+import ee.ut.utilities.Quadruplet;
 import org.deckfour.xes.classification.XEventNameClassifier;
 import org.deckfour.xes.factory.XFactoryNaiveImpl;
 import org.deckfour.xes.model.XEvent;
@@ -43,6 +43,7 @@ public class DevianceMiner {
         LogCloner logCloner = new LogCloner();
         int lowest = 0;
         int highest = 100;
+        int best = 21;
         while (highest - lowest > 1) {
             XLog original = logCloner.cloneLog(log);
             int current = (lowest + highest) / 2;
@@ -51,13 +52,15 @@ public class DevianceMiner {
             if (logs1[0].size() > logs1[1].size()) lowest = current;
             else highest = current;
         }
+        best = (lowest + highest) / 2;
 //        for(int i = 1; i < 101; i++) {
 //            XLog original = logCloner.cloneLog(log);
 //            threshold = ((double) i / 100.0);
 //            XLog[] logs1 = splitLogInStandardAndDeviant(original);
 //            if(logs1[0].size() > logs1[1].size()) bestI = i;
 //        }
-        int best = (lowest + highest) / 2;
+
+
         threshold = ((double) best / 100.0);
         System.out.println(threshold);
         XLog[] logs1 = splitLogInStandardAndDeviant(log);
@@ -73,11 +76,13 @@ public class DevianceMiner {
 //        LogImporter.exportToFile("/Users/raffaele/Downloads/Deviance Mining - SEPSIS Correct" + file_ext, normal_log);
 //        LogImporter.exportToFile("/Users/raffaele/Downloads/Deviance Mining - SEPSIS Deviant" + file_ext, deviant_log);
 
-        Set<Deviance> deviances = generateStatementsFromTriples(normalLog, "normal behaviour", deviantLog, "deviant behaviour");
-        List<Deviance> relevant_deviances = retainRelevantDeviances(deviances, original_log_size);
-        determineCausalityBetweenDeviances(relevant_deviances);
-
-        return relevant_deviances;
+        if (normalLog.size() > 0 && deviantLog.size() > 0) {
+            Set<Deviance> deviances = generateStatementsFromTriples(normalLog, "normal behaviour", deviantLog, "deviant behaviour");
+            List<Deviance> relevant_deviances = retainRelevantDeviances(deviances, original_log_size);
+            determineCausalityBetweenDeviances(relevant_deviances);
+            return relevant_deviances;
+        }
+        return new ArrayList<>();
     }
 
     public XLog getNormalLog() {
@@ -88,7 +93,7 @@ public class DevianceMiner {
         return deviant_log;
     }
 
-    private void determineCausalityBetweenDeviances(List<Deviance> deviances) {
+    public void determineCausalityBetweenDeviances(List<Deviance> deviances) {
         for (int i = 0; i < deviances.size(); i++) {
             for (int j = 0; j < deviances.size(); j++) {
                 if (i != j) {
@@ -103,6 +108,7 @@ public class DevianceMiner {
                     Set<XTrace> statement2DeviantTraces = deviance2.getDeviantTraces();
 
                     if (statement2DeviantTraces.size() > 0 &&
+                            statement1NormalTraces.containsAll(statement2NormalTraces) &&
                             statement1DeviantTraces.containsAll(statement2DeviantTraces) &&
                             checkOrder(statement2DeviantTraces, statement1, statement2)) {
                         deviance1.addConsequentDeviation(deviance2);
@@ -136,7 +142,7 @@ public class DevianceMiner {
         }
     }
 
-    private List<Deviance> retainRelevantDeviances(Set<Deviance> deviances, double original_log_size) {
+    public List<Deviance> retainRelevantDeviances(Set<Deviance> deviances, double original_log_size) {
         List<Deviance> list_deviances = new ArrayList<>(deviances);
         Collections.sort(list_deviances);
         List<Deviance> relevant_deviances = new ArrayList<>();
@@ -146,10 +152,14 @@ public class DevianceMiner {
 //            if((perc1 > relevance_threshold || deviance.getNormalTraces().size() == 0) &&
 //                    (perc2 > relevance_threshold || deviance.getDeviantTraces().size() == 0) &&
 //                    (deviance.getNormalTraces().size() > 0 || deviance.getDeviantTraces().size() > 0)) {
-            if (deviance.getRelevance() > 0.005 && deviance.getDeviantTraces().size() > 1) {
+            if (deviance.getRelevance() > 0.01 && deviance.getDeviantTraces().size() > 100) {
                 relevant_deviances.add(deviance);
             }
         }
+
+//        for (Deviance deviance : list_deviances) {
+//            relevant_deviances.add(deviance);
+//        }
         return relevant_deviances;
     }
 
@@ -183,7 +193,7 @@ public class DevianceMiner {
         double position1 = checkPosition(traces, activities1);
         double position2 = checkPosition(traces, activities2);
 
-        return position1 > 0 && position2 > 0 && position1 < position2;
+        return position1 > 0 && position2 > 0 && position1 <= position2;
     }
 
     private double checkPosition(Set<XTrace> traces, List<String> activities1) {
@@ -265,10 +275,10 @@ public class DevianceMiner {
         return deviantLogs;
     }
 
-    private Set<Deviance> generateStatementsFromTriples(XLog log1, String nameLog1, XLog log2, String nameLog2) {
+    public Set<Deviance> generateStatementsFromTriples(XLog log1, String nameLog1, XLog log2, String nameLog2) {
         int original_log_size = (log1.size() + log2.size());
         ApromoreCompareLL apromoreCompareLL = new ApromoreCompareLL();
-        Set<Triplet<String, Set<XTrace>, Set<XTrace>>> differences = apromoreCompareLL.getDifferencesTripletsAStar(log1, nameLog1, log2, nameLog2);
+        Set<Quadruplet<String, Set<XTrace>, Set<XTrace>, Integer>> differences = apromoreCompareLL.getDifferencesQuadrupletsAStar(log1, nameLog1, log2, nameLog2);
 
         List<String> lhses = new ArrayList<>();
         List<String> rhses = new ArrayList<>();
@@ -277,10 +287,11 @@ public class DevianceMiner {
         Map<String, Integer> toBeRepeatedStatementsMax = new HashMap<>();
         Map<String, String> toBeRepeatedFullStatements = new HashMap<>();
         Map<String, Set<XTrace>[]> toBeRepeatedTraces = new HashMap<>();
+        Map<String, Integer> toBeRepeatedCost = new HashMap<>();
         Set<Deviance> deviances = new HashSet<>();
 
-        for (Triplet<String, Set<XTrace>, Set<XTrace>> differenceTriplet : differences) {
-            String difference = getDifferenceInNormalForm(differenceTriplet.getA(), nameLog1, nameLog2);
+        for (Quadruplet<String, Set<XTrace>, Set<XTrace>, Integer> differenceQuadruplet : differences) {
+            String difference = getDifferenceInNormalForm(differenceQuadruplet.getA(), nameLog1, nameLog2);
             boolean startWithCorrect = difference.startsWith("The " + nameLog1);
 
             String[] hses = startWithCorrect ? splitLHSandRHS(difference, nameLog1, nameLog2) : splitLHSandRHS(difference, nameLog2, nameLog1);
@@ -333,10 +344,11 @@ public class DevianceMiner {
                 toBeRepeatedFullStatements.put(lhs, difference);
                 Set[] traces = toBeRepeatedTraces.get(lhs);
                 if (traces == null) {
-                    toBeRepeatedTraces.put(lhs, new Set[]{differenceTriplet.getB(), differenceTriplet.getC()});
+                    toBeRepeatedTraces.put(lhs, new Set[]{differenceQuadruplet.getB(), differenceQuadruplet.getC()});
+                    toBeRepeatedCost.put(lhs, differenceQuadruplet.getD());
                 } else {
-                    traces[0].addAll(differenceTriplet.getB());
-                    traces[1].addAll(differenceTriplet.getC());
+                    traces[0].addAll(differenceQuadruplet.getB());
+                    traces[1].addAll(differenceQuadruplet.getC());
                 }
             }
 
@@ -349,21 +361,21 @@ public class DevianceMiner {
                 rhses.add(rhs);
 
                 if (!lhs.equals(rhs) && !difference.contains("to be repeated")) {
-                    Set<XTrace> normal_traces = differenceTriplet.getB();
+                    Set<XTrace> normal_traces = differenceQuadruplet.getB();
                     if (normal_traces == null || normal_traces.isEmpty()) normal_traces = new HashSet<>(log1);
-                    Set<XTrace> deviant_traces = differenceTriplet.getC();
+                    Set<XTrace> deviant_traces = differenceQuadruplet.getC();
                     if (deviant_traces == null || deviant_traces.isEmpty()) deviant_traces = new HashSet<>(log2);
 
                     int order;
                     if (!isConcurrently(difference) || (order = checkConcurrence(difference, nameLog1, normal_traces, nameLog2, deviant_traces)) == 0) {
-                        deviances.add(new Deviance(difference, nameLog1, normal_traces, nameLog2, deviant_traces, original_log_size));
+                        deviances.add(new Deviance(difference, nameLog1, normal_traces, nameLog2, deviant_traces, original_log_size, differenceQuadruplet.getD()));
                     } else if (order > 0) {
                         String correct_difference = fixDifference(difference, nameLog1, nameLog2, order);
                         hses = startWithCorrect ? splitLHSandRHS(correct_difference, nameLog1, nameLog2) : splitLHSandRHS(correct_difference, nameLog2, nameLog1);
                         lhs = hses[0];
                         rhs = hses[1];
                         if (!lhs.equals(rhs)) {
-                            deviances.add(new Deviance(difference, nameLog1, normal_traces, nameLog2, deviant_traces, original_log_size));
+                            deviances.add(new Deviance(difference, nameLog1, normal_traces, nameLog2, deviant_traces, original_log_size, differenceQuadruplet.getD()));
                         }
                     }
                 }
@@ -376,7 +388,28 @@ public class DevianceMiner {
             Set<XTrace> deviant_traces = toBeRepeatedTraces.get(sentence)[1];
             if (deviant_traces == null || deviant_traces.isEmpty()) deviant_traces = new HashSet<>(log2);
 
-            deviances.add(new Deviance(toBeRepeatedFullStatements.get(sentence), nameLog1, normal_traces, nameLog2, deviant_traces, original_log_size));
+            deviances.add(new Deviance(toBeRepeatedFullStatements.get(sentence), nameLog1, normal_traces, nameLog2, deviant_traces, original_log_size, toBeRepeatedCost.get(sentence)));
+        }
+
+        boolean cycle = true;
+        while (cycle) {
+            cycle = false;
+            loop:
+            for (Deviance deviance1 : deviances) {
+                String lhs1 = deviance1.getNormal_statement();
+                String rhs1 = deviance1.getDeviant_statement();
+                for (Deviance deviance2 : deviances) {
+                    if (!deviance1.equals(deviance2)) {
+                        String lhs2 = deviance2.getNormal_statement();
+                        String rhs2 = deviance2.getDeviant_statement();
+                        if (checkInclusion(lhs1, lhs2, rhs1, rhs2)) {
+                            deviances.remove(deviance2);
+                            cycle = true;
+                            break loop;
+                        }
+                    }
+                }
+            }
         }
 
         return deviances;
@@ -493,6 +526,48 @@ public class DevianceMiner {
         return new String[]{lhs, rhs};
     }
 
+    public boolean checkInclusion(String lhs, String old_lhs, String rhs, String old_rhs) {
+        String[] lsplit1 = splitHS(lhs);
+        String[] lsplit2 = splitHS(old_lhs);
+        String[] rsplit1 = splitHS(rhs);
+        String[] rsplit2 = splitHS(old_rhs);
+
+        if (lsplit1.length > 0 && lsplit2.length > 0 && rsplit1.length > 0 && rsplit2.length > 0) {
+            if (lsplit1[0].equals(lsplit2[0]) && lsplit1[3].equals(lsplit2[3]) &&
+                    rsplit1[0].equals(rsplit2[0]) && rsplit1[3].equals(rsplit2[3])) {
+                if (lsplit1[2].equals(lsplit1[2]) &&
+                        ((rsplit1[2].equals("concurrently to") && rsplit2[2].equals("after")) ||
+                                rsplit1[2].equals("concurrently to") && rsplit2[2].equals("before")) ||
+                        rsplit1[2].equals(rsplit2[2])) {
+                    return true;
+                }
+                if (rsplit1[2].equals(rsplit2[2]) &&
+                        ((lsplit1[2].equals("concurrently to") && lsplit2[2].equals("after")) ||
+                                lsplit1[2].equals("concurrently to") && lsplit2[2].equals("before")) ||
+                        lsplit1[2].equals(lsplit2[2])) {
+                    return true;
+                }
+            }
+        } else if (lsplit1.length > 0 && lsplit2.length > 0) {
+            if (lsplit1[0].equals(lsplit2[0]) && lsplit1[3].equals(lsplit2[3])) {
+                if (((lsplit1[2].equals("concurrently to") && lsplit2[2].equals("after")) ||
+                        lsplit1[2].equals("concurrently to") && lsplit2[2].equals("before")) ||
+                        lsplit1[2].equals(lsplit2[2])) {
+                    return true;
+                }
+            }
+        } else if (rsplit1.length > 0 && rsplit2.length > 0) {
+            if (rsplit1[0].equals(rsplit2[0]) && rsplit1[3].equals(rsplit2[3])) {
+                if (((rsplit1[2].equals("concurrently to") && rsplit2[2].equals("after")) ||
+                        rsplit1[2].equals("concurrently to") && rsplit2[2].equals("before")) ||
+                        rsplit1[2].equals(rsplit2[2])) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     private boolean checkDuplicate(String hs, String old_hs) {
         String[] split1 = splitHS(hs);
         String[] split2 = splitHS(old_hs);
@@ -504,8 +579,6 @@ public class DevianceMiner {
                             (split2[2].equals("concurrently to") && split1[2].equals("concurrently to")))) {
                 return true;
             }
-        }
-        if (split1.length > 0 && split2.length > 0) {
             if (split1[0].equals(split2[0]) && split1[3].equals(split2[3]) &&
                     ((split1[2].equals("after") && split2[2].equals("after")) ||
                             (split1[2].equals("before") && split2[2].equals("before")) ||
