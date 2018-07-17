@@ -69,7 +69,7 @@ public class TimeStampFixerDummyExecutor {
             System.out.println("Permutations ended");
 
 //            try {
-//                LogImporter.exportToFile("", "PermutedDummyLog" + count + ".xes.gz", permutedLog);
+//                LogImporter.exportToFile("", "PermutedDummyLog" + count + "" + file_ext, permutedLog);
 //            } catch (Exception e) {
 //                e.printStackTrace();
 //            }

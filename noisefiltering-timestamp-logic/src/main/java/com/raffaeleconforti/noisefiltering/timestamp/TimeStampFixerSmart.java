@@ -57,6 +57,24 @@ public class TimeStampFixerSmart implements TimeStampFixer {
     private int approach;
     private boolean self_cleaning;
 
+    public TimeStampFixerSmart(Automaton<String> automaton, XFactory factory, LogCloner logCloner, XLog rawlog, XEventClassifier xEventClassifier, SimpleDateFormat dateFormatSeconds, int limitExtensive, int approach, boolean useGurobi, boolean useArcsFrequency, boolean debug_mode, boolean self_cleaning) {
+        this.debug_mode = debug_mode;
+        this.factory = factory;
+        this.logCloner = logCloner;
+        log = rawlog;
+        this.approach = approach;
+        this.useGurobi = useGurobi;
+        this.useArcsFrequency = useArcsFrequency;
+
+        this.xEventClassifier = xEventClassifier;
+        this.automatonFactory = new AutomatonFactory(xEventClassifier);
+        this.nameExtractor = new NameExtractor(xEventClassifier);
+        this.timeStampChecker = new TimeStampChecker(xEventClassifier, dateFormatSeconds);
+
+        this.self_cleaning = self_cleaning;
+        initialize(limitExtensive, automaton);
+    }
+
     public TimeStampFixerSmart(XFactory factory, LogCloner logCloner, XLog rawlog, XEventClassifier xEventClassifier, SimpleDateFormat dateFormatSeconds, int limitExtensive, int approach, boolean useGurobi, boolean useArcsFrequency, boolean debug_mode, boolean self_cleaning) {
         this.debug_mode = debug_mode;
         this.factory = factory;
@@ -81,6 +99,35 @@ public class TimeStampFixerSmart implements TimeStampFixer {
 
     private String getTraceName(XTrace trace) {
         return nameExtractor.getTraceName(trace);
+    }
+
+    private void initialize(int limitExtensive, Automaton<String> automaton) {
+        noiseFreeLog = factory.createLog(log.getAttributes());
+        discoverSequences();
+
+        for (XTrace t : log) {
+            if (!timeStampChecker.containsSameTimestamps(t)) {
+                noiseFreeLog.add(logCloner.getXTrace(t));
+            } else {
+                Set<Set<XEvent>> setXEvents = timeStampChecker.findEventsSameTimeStamp(t);
+                Set<String> stringSet = new UnifiedSet<>();
+                for (Set<XEvent> set : setXEvents) {
+                    for (XEvent e : set) {
+                        stringSet.add(getEventName(e));
+                    }
+                    faultyEvents.put(getTraceName(t), stringSet);
+                }
+            }
+        }
+
+
+        eventDistributionCalculator = new EventDistributionCalculatorNoiseImpl(log, xEventClassifier, faultyEvents, self_cleaning);
+        eventDistributionCalculator.analyseLog();
+        eventPermutator = new EventPermutatorSmart(logCloner, factory, xEventClassifier, eventDistributionCalculator, timeStampChecker, sequences, patternsMap, limitExtensive, approach, debug_mode);
+
+        if (true) {
+            eventDistributionCalculator.filter(automaton);
+        }
     }
 
     private void initialize(int limitExtensive) {

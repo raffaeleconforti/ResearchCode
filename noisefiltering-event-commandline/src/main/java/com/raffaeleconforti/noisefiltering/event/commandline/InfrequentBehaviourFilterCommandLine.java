@@ -85,7 +85,7 @@ public class InfrequentBehaviourFilterCommandLine {
         XFactory factory = new XFactoryNaiveImpl();
         XLog log = LogImporter.importFromFile(factory, name);
 
-        InfrequentBehaviourFilterCommandLine ibfcl = new InfrequentBehaviourFilterCommandLine(useGurobi, useArcsFrequency, false);
+        InfrequentBehaviourFilterCommandLine ibfcl = new InfrequentBehaviourFilterCommandLine(useGurobi, useArcsFrequency, false, true, false);
         XLog filteredlog = ibfcl.filterLog(log);
 
         System.out.println("Output file: ");
@@ -144,8 +144,8 @@ public class InfrequentBehaviourFilterCommandLine {
         }
     }
 
-    public InfrequentBehaviourFilterCommandLine(boolean useGurobi, boolean useArcsFrequency, boolean debug_mode) {
-         infrequentBehaviourFilter = new InfrequentBehaviourFilter(xEventClassifier, useGurobi, useArcsFrequency, debug_mode);
+    public InfrequentBehaviourFilterCommandLine(boolean useGurobi, boolean useArcsFrequency, boolean debug_mode, boolean removeTraces, boolean removeNodes) {
+        infrequentBehaviourFilter = new InfrequentBehaviourFilter(xEventClassifier, useGurobi, useArcsFrequency, debug_mode, removeTraces, removeNodes, 0.125, 0.5, false, -1);
     }
 
     public XLog filterLog(XLog rawlog) {

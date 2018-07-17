@@ -18,6 +18,7 @@ import org.processmining.models.connections.petrinets.behavioral.FinalMarkingCon
 import org.processmining.models.graphbased.directed.petrinet.Petrinet;
 import org.processmining.models.graphbased.directed.petrinet.elements.Transition;
 import org.processmining.models.semantics.petrinet.Marking;
+import org.processmining.alignment.plugin.AStarPlugin;
 import org.processmining.plugins.astar.petrinet.PetrinetReplayerWithILP;
 import org.processmining.plugins.connectionfactories.logpetrinet.TransEvClassMapping;
 import org.processmining.plugins.petrinet.replayer.algorithms.IPNReplayParameter;
@@ -78,6 +79,7 @@ public class DAFSABasedFitness implements MeasurementAlgorithm {
         pluginContext.addConnection(new FinalMarkingConnection(petrinet, finalMarking));
 
         PetrinetReplayerWithILP replayer = new PetrinetReplayerWithILP();
+//        AStarPlugin replayer = new AStarPlugin();
 
         XEventClass dummyEvClass = new XEventClass("DUMMY",99999);
 
@@ -89,7 +91,7 @@ public class DAFSABasedFitness implements MeasurementAlgorithm {
 
 //        DecomposingConformanceImporter decomposer = new DecomposingConformanceImporter();
 
-//        decomposer.importAndDecomposeModelAndLogForConformanceChecking("/Users/daniel/Documents/workspace/paper_tests/BPIC2012/", "RecomposingConformanceBPIC2012PNet.pnml", "BPIC12.xes.gz");
+//        decomposer.importAndDecomposeModelAndLogForConformanceChecking("/Users/daniel/Documents/workspace/paper_tests/BPIC2012/", "RecomposingConformanceBPIC2012PNet.pnml", "BPIC12" + file_ext);
 //        DecomposingConformanceChecker checker = new DecomposingConformanceChecker(decomposer);
 //        checker.printAlignmentResults(alignmentStatisticsFileName, caseTypeAlignmentResultsFileName);
 

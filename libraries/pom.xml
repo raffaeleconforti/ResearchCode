@@ -2,12 +2,10 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-
-
     <parent>
         <artifactId>research-code</artifactId>
         <groupId>com.raffaeleconforti</groupId>
-        <version>1.0.20180320</version>
+        <version>1.0.20180622</version>
         <relativePath>../</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -201,6 +199,19 @@
                         <configuration>
                             <url>https://svn.win.tue.nl/repos/prom/Releases/Packages/PetriNets/PetriNets.jar</url>
                             <outputFileName>petrinets.jar</outputFileName>
+                            <outputDirectory>${project.build.directory}</outputDirectory>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>download-alignment</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>wget</goal>
+                        </goals>
+                        <configuration>
+                            <url>https://svn.win.tue.nl/repos/prom/Releases/Packages/Alignment/Alignment.jar</url>
+                            <outputFileName>alignment.jar</outputFileName>
                             <outputDirectory>${project.build.directory}</outputDirectory>
                         </configuration>
                     </execution>
@@ -1298,6 +1309,22 @@
                     </execution>
 
                     <execution>
+                        <id>install-alignment</id>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                        <configuration>
+                            <groupId>org.processmining</groupId>
+                            <artifactId>alignment</artifactId>
+                            <version>${prom.version}</version>
+                            <packaging>jar</packaging>
+                            <file>${project.build.directory}/alignment.jar</file>
+                            <generatePom>true</generatePom>
+                        </configuration>
+                    </execution>
+
+                    <execution>
                         <id>install-pnetreplayer</id>
                         <phase>install</phase>
                         <goals>
@@ -1562,9 +1589,9 @@
                         <configuration>
                             <groupId>com.gurobi</groupId>
                             <artifactId>gurobi</artifactId>
-                            <version>7.52</version>
+                            <version>8.00</version>
                             <packaging>jar</packaging>
-                            <file>${project.build.sourceDirectory}/gurobi-752.jar</file>
+                            <file>${project.build.sourceDirectory}/gurobi-800.jar</file>
                             <generatePom>true</generatePom>
                         </configuration>
                     </execution>
@@ -1580,6 +1607,23 @@
                             <artifactId>bpmntk-osgi</artifactId>
                             <version>20180717</version>
                             <packaging>jar</packaging>
+                            <file>src/main/java/bpmntk-osgi-20180415.jar</file>
+                            <generatePom>true</generatePom>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>install-eventstr-confchecking-osgi</id>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                        <configuration>
+                            <groupId>org.apromore</groupId>
+                            <artifactId>eventstr-confchecking-osgi</artifactId>
+                            <version>20180705</version>
+                            <packaging>jar</packaging>
+                            <file>src/main/java/eventstr-confchecking-osgi-20180705.jar</file>
                             <file>src/main/java/bpmntk-osgi-20180717.jar</file>
                             <generatePom>true</generatePom>
                         </configuration>

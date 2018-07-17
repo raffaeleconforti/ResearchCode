@@ -12,10 +12,10 @@ import org.deckfour.xes.model.XTrace;
 public class InfrequentBehaviourTest {
 
     public static void main(String[] args) throws Exception {
-        XLog log = LogImporter.importFromFile(new XFactoryNaiveImpl(), "/Volumes/Data/SharedFolder/Logs/ArtificialLess.xes.gz");
+        XLog log = LogImporter.importFromFile(new XFactoryNaiveImpl(), "/Users/raffaele/Downloads/Deviance Mining.xes");
 
-        XLog filtered1 = test(log, false, false, false);
-        LogImporter.exportToFile("/Volumes/Data/SharedFolder/Logs/ArtificialLess1.xes.gz", filtered1);
+        XLog filtered1 = test(log, false, true, false);
+        LogImporter.exportToFile("/Users/raffaele/Downloads/Deviance Mining Filtered1.xes.gz", filtered1);
 //        test(log, false);
 
 //        Node<String> a = new Node<>("A");
@@ -60,8 +60,8 @@ public class InfrequentBehaviourTest {
 
     private static XLog test(XLog log, boolean useGurobi, boolean useArcsFrequency, boolean debug_mode) {
         System.out.println(count(log));
-        InfrequentBehaviourFilter filter = new InfrequentBehaviourFilter(new XEventNameClassifier(), useGurobi, useArcsFrequency, debug_mode);
-        XLog filtered = filter.filterLog(log);
+        InfrequentBehaviourFilter filter = new InfrequentBehaviourFilter(new XEventNameClassifier(), useGurobi, useArcsFrequency, debug_mode, true, true, 0.5, 0.5, true, 0.075);
+        XLog filtered = filter.filterDeviances(log);
         System.out.println(count(filtered));
         return filtered;
     }

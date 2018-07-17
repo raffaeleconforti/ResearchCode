@@ -36,7 +36,13 @@ public class InfrequentBehaviourFilter {
     private final boolean useGurobi;
     private final boolean useArcsFrequency;
     private final boolean debug_mode;
+    private final boolean removeTraces;
+    private final boolean removeNodes;
+    private final double thresholdLimit;
+    private final boolean deviance;
+    private final double inputNoiseThreshold;
 
+    private final double percentile;
     private Percentile percentileC = new Percentile();
     private double finalThreshold = 0.0;
     private XLog finalLog = null;
@@ -46,15 +52,25 @@ public class InfrequentBehaviourFilter {
     private AutomatonInfrequentBehaviourDetector automatonInfrequentBehaviourDetector = new AutomatonInfrequentBehaviourDetector(AutomatonInfrequentBehaviourDetector.MAX);
 
     public InfrequentBehaviourFilter(XEventClassifier xEventClassifier) {
-        this(xEventClassifier, false, false, false);
+        this(xEventClassifier, false, false, false, true, false, 0.125, 0.5, false, -1);
     }
 
-    public InfrequentBehaviourFilter(XEventClassifier xEventClassifier, boolean useGurobi, boolean useArcsFrequency, boolean debug_mode) {
+    public InfrequentBehaviourFilter(XEventClassifier xEventClassifier, boolean removeNodes) {
+        this(xEventClassifier, false, false, false, true, removeNodes, 0.125, 0.5, false, -1);
+    }
+
+    public InfrequentBehaviourFilter(XEventClassifier xEventClassifier, boolean useGurobi, boolean useArcsFrequency, boolean debug_mode, boolean removeTraces, boolean removeNodes, double percentile, double thresholdLimit, boolean deviance, double inputNoiseThreshold) {
         this.xEventClassifier = xEventClassifier;
         automatonFactory = new AutomatonFactory(xEventClassifier);
         this.useGurobi = useGurobi;
         this.useArcsFrequency = useArcsFrequency;
         this.debug_mode = debug_mode;
+        this.removeTraces = removeTraces;
+        this.removeNodes = removeNodes;
+        this.percentile = percentile;
+        this.thresholdLimit = thresholdLimit;
+        this.deviance = deviance;
+        this.inputNoiseThreshold = inputNoiseThreshold;
     }
 
     public double[] discoverArcs(Automaton<String> automatonOriginal, double finalUpperBound) {
@@ -113,24 +129,26 @@ public class InfrequentBehaviourFilter {
         LogOptimizer logOptimizer = new LogOptimizer();
         log = logOptimizer.optimizeLog(log);
 
+        if (removeNodes) result.setRequiredStates(new HashSet<>());
+
         LogModifier logModifier = new LogModifier(new XFactoryNaiveImpl(), XConceptExtension.instance(), XTimeExtension.instance(), logOptimizer);
         logModifier.insertArtificialStartAndEndEvent(log);
 
         automatonInfrequentBehaviourDetector = new AutomatonInfrequentBehaviourDetector(result.getApproach());
         boolean repeated = result.isRepeated();
-        XLog log2 = rawlog;
+
         int events;
-        int newEvents = countEvents(log2);
+        int newEvents = countEvents(log);
         do {
             events = newEvents;
-            XLog log3 = filter(context, log2, result.getRequiredStates(), result.isFixLevel(), result.getNoiseLevel(), true, result.getPercentile());
+            XLog log3 = filter(context, log, result.getRequiredStates(), result.isFixLevel(), result.getNoiseLevel(), removeTraces, result.getPercentile());
             newEvents = countEvents(log3);
-            if(newEvents == 0) return log2;
-            else log2 = log3;
+            if (newEvents == 0) return log;
+            else log = log3;
             System.out.println("Removed " + (countEvents(rawlog) - newEvents) + " events");
         }while (newEvents < events && repeated);
 
-        return log2;
+        return log;
     }
 
     private XLog filter(final UIPluginContext context, XLog rawlog, Set<Node<String>> requiredStates, boolean isFixLevel, double noiseLevel, boolean excludeTraces, double percentile) {
@@ -143,6 +161,8 @@ public class InfrequentBehaviourFilter {
 
         LogModifier logModifier = new LogModifier(factory, XConceptExtension.instance(), XTimeExtension.instance(), logOptimizer);
         logModifier.insertArtificialStartAndEndEvent(log);
+
+        if (removeNodes) requiredStates = new HashSet<>();
 
         Automaton<String> automatonOriginal = automatonFactory.generate(log);
         Automaton<String> lastAutomaton = null;
@@ -158,7 +178,7 @@ public class InfrequentBehaviourFilter {
             try {
                 noiseThreshold = noiseLevel;
                 automaton = getFilteredAutomaton(automatonOriginal, requiredStates, noiseThreshold);
-                log2 = AutomatonInfrequentBehaviourRemover.removeInfrequentBehaviour(context, xEventClassifier, log, automaton, lowerbound, upperbound, false, excludeTraces);
+                log2 = AutomatonInfrequentBehaviourRemover.removeInfrequentBehaviour(context, xEventClassifier, log, automaton, lowerbound, upperbound, -1, excludeTraces, deviance);
             }catch(HighThresholdException hte) {
                 log.clear();
                 return log;
@@ -170,7 +190,7 @@ public class InfrequentBehaviourFilter {
             System.out.println("Automaton " + lastAutomaton);
             if (lastAutomaton == null || !automaton.equals(lastAutomaton)) {
                 try {
-                    finalLog = AutomatonInfrequentBehaviourRemover.removeInfrequentBehaviour(context, xEventClassifier, log, automaton, lowerbound, upperbound, true, excludeTraces);
+                    finalLog = AutomatonInfrequentBehaviourRemover.removeInfrequentBehaviour(context, xEventClassifier, log, automaton, lowerbound, upperbound, 0.5, excludeTraces, deviance);
                     finalThreshold = noiseThreshold;
                 } catch (HighThresholdException e) {
                     System.out.println("Identifying best upperbound...");
@@ -184,7 +204,7 @@ public class InfrequentBehaviourFilter {
             }else {
                 try {
                     automaton = getFilteredAutomaton(automatonOriginal, requiredStates, noiseThreshold);
-                    log2 = AutomatonInfrequentBehaviourRemover.removeInfrequentBehaviour(context, xEventClassifier, log, automaton, 0, noiseThreshold, true, excludeTraces);
+                    log2 = AutomatonInfrequentBehaviourRemover.removeInfrequentBehaviour(context, xEventClassifier, log, automaton, 0, noiseThreshold, 0.5, excludeTraces, deviance);
                 } catch (HighThresholdException hte) {
                     log.clear();
                     return log;
@@ -224,7 +244,7 @@ public class InfrequentBehaviourFilter {
                         if(!upperbounds.containsKey(noiseThreshold)) {
                             lastAutomaton = automaton;
                             upperbounds.put(noiseThreshold, false);
-                            finalLog = AutomatonInfrequentBehaviourRemover.removeInfrequentBehaviour(context, xEventClassifier, log, automaton, upperbound, oldUpperbound, true, excludeTraces);
+                            finalLog = AutomatonInfrequentBehaviourRemover.removeInfrequentBehaviour(context, xEventClassifier, log, automaton, upperbound, oldUpperbound, 0.5, excludeTraces, deviance);
                             finalThreshold = noiseThreshold;
                             upperbounds.put(noiseThreshold, true);
                         }else {
@@ -285,13 +305,13 @@ public class InfrequentBehaviourFilter {
         Automaton<String> automaton;
 
         double[] arcs = discoverArcs(automatonOriginal, 1.0);
-        double noiseThreshold = discoverThreshold(arcs, 0.125);
+        double noiseThreshold = discoverThreshold(arcs, percentile);
         Set<Node<String>> requiredStates = automatonOriginal.getNodes();
 
         double lowerbound = 0.0;
         double upperbound = noiseThreshold;
 
-        XLog log2 = rawlog;
+        XLog log2 = log;
         int events;
         int newEvents = countEvents(log2);
 
@@ -301,10 +321,10 @@ public class InfrequentBehaviourFilter {
 
             if (lastAutomaton == null || !automaton.equals(lastAutomaton)) {
                 try {
-                    finalLog = AutomatonInfrequentBehaviourRemover.removeInfrequentBehaviour(context, xEventClassifier, log, automaton, lowerbound, upperbound, true, true);
+                    finalLog = AutomatonInfrequentBehaviourRemover.removeInfrequentBehaviour(context, xEventClassifier, log2, automaton, lowerbound, upperbound, 0.5, true, false);
                     finalThreshold = noiseThreshold;
                 } catch (HighThresholdException e) {
-                    noiseThreshold = roundNumber(findBestUpperbound(context, log, requiredStates, upperbound/2, upperbound, true));
+                    noiseThreshold = roundNumber(findBestUpperbound(context, log2, requiredStates, upperbound / 2, upperbound, true));
                 }
             }
 
@@ -313,10 +333,9 @@ public class InfrequentBehaviourFilter {
             }else {
                 try {
                     automaton = getFilteredAutomaton(automatonOriginal, requiredStates, noiseThreshold);
-                    log2 = AutomatonInfrequentBehaviourRemover.removeInfrequentBehaviour(context, xEventClassifier, log, automaton, 0, noiseThreshold, true, true);
+                    log2 = AutomatonInfrequentBehaviourRemover.removeInfrequentBehaviour(context, xEventClassifier, log2, automaton, 0, noiseThreshold, 0.5, true, false);
                 } catch (HighThresholdException hte) {
-                    log.clear();
-                    return log;
+                    return log2;
                 }
             }
             events = newEvents;
@@ -326,6 +345,79 @@ public class InfrequentBehaviourFilter {
         logModifier.removeArtificialStartAndEndEvent(log2);
 
         return log2;
+    }
+
+    public XLog filterDeviances(XLog rawlog) {
+
+        XFactory factory = new XFactoryNaiveImpl();
+        LogOptimizer logOptimizer = new LogOptimizer();
+        XLog log = logOptimizer.optimizeLog(rawlog);
+
+        LogModifier logModifier = new LogModifier(factory, XConceptExtension.instance(), XTimeExtension.instance(), logOptimizer);
+        logModifier.insertArtificialStartAndEndEvent(log);
+
+        Automaton<String> automatonOriginal = automatonFactory.generate(log);
+        Automaton<String> lastAutomaton = null;
+        Automaton<String> automaton;
+
+        double[] arcs = discoverArcs(automatonOriginal, 1.0);
+
+        double noiseThreshold;
+        if (inputNoiseThreshold > 0) noiseThreshold = inputNoiseThreshold;
+        else noiseThreshold = discoverThreshold(arcs, percentile);
+
+        Set<Node<String>> requiredStates = automatonOriginal.getNodes();
+
+        if (removeNodes) requiredStates = new HashSet<>();
+
+//        double lowerbound = 0.0;
+//        double upperbound = noiseThreshold;
+//
+//        int events;
+//        int newEvents = countEvents(log);
+//
+//        UIPluginContext context = new FakePluginContext();
+//        do {
+//            if (lastAutomaton == null) automaton = getFilteredAutomaton(automatonOriginal, requiredStates, noiseThreshold);
+//            else automaton = getFilteredAutomaton(lastAutomaton, requiredStates, noiseThreshold);
+//
+//            if (lastAutomaton == null || !automaton.equals(lastAutomaton)) {
+//                try {
+//                    finalLog = AutomatonInfrequentBehaviourRemover.removeInfrequentBehaviour(context, xEventClassifier, log, automaton, lowerbound, upperbound, thresholdLimit, true, deviance);
+//                    finalThreshold = noiseThreshold;
+//                } catch (HighThresholdException e) {
+//                    noiseThreshold = roundNumber(findBestUpperbound(context, log, requiredStates, upperbound/2, upperbound, true));
+//                }
+//            }
+//
+//            if(finalThreshold == noiseThreshold && finalLog != null) {
+//                log = finalLog;
+//            }else {
+//                try {
+//                    if (lastAutomaton == null) automaton = getFilteredAutomaton(automatonOriginal, requiredStates, noiseThreshold);
+//                    else automaton = getFilteredAutomaton(lastAutomaton, requiredStates, noiseThreshold);
+//                    log = AutomatonInfrequentBehaviourRemover.removeInfrequentBehaviour(context, xEventClassifier, log, automaton, 0, noiseThreshold, 0.5, true, deviance);
+//                } catch (HighThresholdException hte) {
+//                    return log;
+//                }
+//            }
+//            events = newEvents;
+//            newEvents = countEvents(log);
+////            lastAutomaton = automaton;
+//            lastAutomaton = automatonFactory.generate(log);
+//        }while (newEvents < events);
+
+        UIPluginContext context = new FakePluginContext();
+        automaton = getFilteredAutomaton(automatonOriginal, requiredStates, noiseThreshold);
+        try {
+            log = AutomatonInfrequentBehaviourRemover.removeInfrequentBehaviour(context, xEventClassifier, log, automaton, 0, noiseThreshold, 0, true, deviance);
+        } catch (HighThresholdException e) {
+            e.printStackTrace();
+        }
+
+        logModifier.removeArtificialStartAndEndEvent(log);
+
+        return log;
     }
 
     private static int countEvents(XLog log) {

@@ -15,6 +15,7 @@ import org.processmining.models.graphbased.directed.petrinet.PetrinetEdge;
 import org.processmining.models.graphbased.directed.petrinet.elements.Place;
 import org.processmining.models.graphbased.directed.petrinet.elements.Transition;
 import org.processmining.models.semantics.petrinet.Marking;
+import org.processmining.alignment.plugin.AStarPlugin;
 import org.processmining.plugins.astar.petrinet.PetrinetReplayerWithILP;
 import org.processmining.plugins.connectionfactories.logpetrinet.TransEvClassMapping;
 import org.processmining.plugins.petrinet.replayer.algorithms.IPNReplayParameter;
@@ -57,6 +58,7 @@ public class FrequencyAnalyser {
 
     public void analyse() {
         PetrinetReplayerWithILP replayer = new PetrinetReplayerWithILP();
+//        AStarPlugin replayer = new AStarPlugin();
 
         Map<Transition, Integer> transitions2costs = new UnifiedMap<>();
         for(Transition t : petrinet.getTransitions()) {

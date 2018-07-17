@@ -19,6 +19,7 @@ import org.processmining.models.graphbased.directed.petrinet.Petrinet;
 import org.processmining.models.graphbased.directed.petrinet.elements.Place;
 import org.processmining.models.graphbased.directed.petrinet.elements.Transition;
 import org.processmining.models.semantics.petrinet.Marking;
+import org.processmining.alignment.plugin.AStarPlugin;
 import org.processmining.plugins.astar.petrinet.PetrinetReplayerWithILP;
 import org.processmining.plugins.connectionfactories.logpetrinet.TransEvClassMapping;
 import org.processmining.plugins.petrinet.replayer.algorithms.IPNReplayParameter;
@@ -45,7 +46,7 @@ public class AutomatonFrequentBehaviourRemover {
 
     public static XLog filter1(PluginContext context, XLog log, Automaton<String> automaton, String label) {
         PetrinetReplayerWithILP replayer = new PetrinetReplayerWithILP();
-
+//        AStarPlugin replayer = new AStarPlugin();
         Petrinet petrinet = automaton.getPetrinet();
 
         Map<Transition, Integer> transitions2costs = new UnifiedMap<Transition, Integer>();
@@ -90,6 +91,12 @@ public class AutomatonFrequentBehaviourRemover {
         Map<String, String> map = new UnifiedMap<String, String>();
 
         try {
+//            XLogInfo logInfo = XLogInfoFactory.createLogInfo(log, eventClassifier);
+//            TransEvClassMapping transEvClassMapping = constructMapping(petrinet, log, dummyEvClass, eventClassifier);
+//            ReplayerParameters parameters1 = new ReplayerParameters.Default((int) Math.ceil(Runtime.getRuntime().availableProcessors() / 2), ReplayAlgorithm.Debug.NONE);
+//            Replayer replayer = new Replayer(parameters1, petrinet, initialMarking, finalMarking, log, logInfo.getEventClasses(), transitions2costs, events2costs, transEvClassMapping);
+//            replayResults = replayer.computePNRepResult(new Progress() {
+//            });
             replayResults = replayer.replayLog(context, petrinet, log, constructMapping(petrinet, log, dummyEvClass, eventClassifier), parameters);
         } catch (AStarException e) {
             e.printStackTrace();
@@ -177,6 +184,7 @@ public class AutomatonFrequentBehaviourRemover {
 
     private static XLog filter(PluginContext context, XLog log, Automaton<String> automaton, boolean excludeTraces) {
         PetrinetReplayerWithILP replayer = new PetrinetReplayerWithILP();
+//        AStarPlugin replayer = new AStarPlugin();
 
         Petrinet petrinet = automaton.getPetrinet();
 
