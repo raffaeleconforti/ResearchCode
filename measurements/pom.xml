@@ -78,6 +78,10 @@
             <artifactId>bpmntk-osgi</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>mprec</artifactId>
+        </dependency>
+        <dependency>
             <groupId>au.edu.qut</groupId>
             <artifactId>pntk</artifactId>
         </dependency>

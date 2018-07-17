@@ -111,7 +111,8 @@
         <flanagan.version>20151114</flanagan.version>
 
         <commons-math3.version>3.6.1</commons-math3.version>
-        <bpmntk-osgi.version>20180328</bpmntk-osgi.version>
+        <bpmntk-osgi.version>20180717</bpmntk-osgi.version>
+        <mprec.version>20180717</mprec.version>
         <bpstruct.version>0.1.117</bpstruct.version>
         <jbpt.version>0.2.77</jbpt.version>
 
@@ -449,6 +450,11 @@
             </dependency>
 
             <!-- Apromore -->
+            <dependency>
+                <groupId>org.apromore</groupId>
+                <artifactId>mprec</artifactId>
+                <version>${mprec.version}</version>
+            </dependency>
             <dependency>
                 <groupId>org.apromore</groupId>
                 <artifactId>bpmntk-osgi</artifactId>
