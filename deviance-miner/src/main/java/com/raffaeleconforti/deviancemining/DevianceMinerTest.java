@@ -193,7 +193,7 @@ public class DevianceMinerTest {
         dev = 0;
         for (Deviance deviance : list) {
             dev++;
-            messages.add(dev + " - " + deviance.toFullString(2, 0.01));
+            messages.add(dev + " - " + deviance.toFullString(2, 0.005));
 
             XLog log = new XFactoryNaiveImpl().createLog();
             log.addAll(deviance.getNormalTraces());

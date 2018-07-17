@@ -5,7 +5,7 @@
     <parent>
         <artifactId>research-code</artifactId>
         <groupId>com.raffaeleconforti</groupId>
-        <version>1.0.20180622</version>
+        <version>1.0.20180712</version>
         <relativePath>../</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -1605,9 +1605,9 @@
                         <configuration>
                             <groupId>org.apromore</groupId>
                             <artifactId>bpmntk-osgi</artifactId>
-                            <version>20180415</version>
+                            <version>20180712</version>
                             <packaging>jar</packaging>
-                            <file>src/main/java/bpmntk-osgi-20180415.jar</file>
+                            <file>src/main/java/bpmntk-osgi-20180712.jar</file>
                             <generatePom>true</generatePom>
                         </configuration>
                     </execution>

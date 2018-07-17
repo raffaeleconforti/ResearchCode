@@ -7,103 +7,125 @@
     <parent>
         <artifactId>research-code</artifactId>
         <groupId>com.raffaeleconforti</groupId>
-        <version>1.0.20180622</version>
+        <version>1.0.20180712</version>
         <relativePath>../</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>assembly</artifactId>
-    <packaging>pom</packaging>
+    <packaging>jar</packaging>
     <name>Assembly</name>
 
     <dependencies>
         <dependency>
             <groupId>com.raffaeleconforti</groupId>
             <artifactId>hyperparamoptimized-wrappers</artifactId>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.raffaeleconforti</groupId>
             <artifactId>java-util</artifactId>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.raffaeleconforti</groupId>
             <artifactId>benchmark-logic</artifactId>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.raffaeleconforti</groupId>
             <artifactId>benchmark-commandline</artifactId>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.raffaeleconforti</groupId>
             <artifactId>fake-context</artifactId>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.raffaeleconforti</groupId>
             <artifactId>graph-algorithms</artifactId>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.raffaeleconforti</groupId>
             <artifactId>bpmn-util</artifactId>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.raffaeleconforti</groupId>
             <artifactId>conversion</artifactId>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.raffaeleconforti</groupId>
             <artifactId>log-util</artifactId>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.raffaeleconforti</groupId>
             <artifactId>foreignkey-discovery</artifactId>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.raffaeleconforti</groupId>
             <artifactId>data-structures</artifactId>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.raffaeleconforti</groupId>
             <artifactId>modified-miners</artifactId>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.raffaeleconforti</groupId>
             <artifactId>bpmnminer-logic</artifactId>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.raffaeleconforti</groupId>
             <artifactId>bpmnminer-commandline</artifactId>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.raffaeleconforti</groupId>
             <artifactId>bpmnminer-prom</artifactId>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.raffaeleconforti</groupId>
             <artifactId>wrappers</artifactId>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.raffaeleconforti</groupId>
             <artifactId>structuredminer</artifactId>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.raffaeleconforti</groupId>
             <artifactId>structuredminer-commandline</artifactId>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.raffaeleconforti</groupId>
             <artifactId>noisefiltering-event-logic</artifactId>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.raffaeleconforti</groupId>
             <artifactId>noisefiltering-event-commandline</artifactId>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.raffaeleconforti</groupId>
             <artifactId>noisefiltering-event-prom</artifactId>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.raffaeleconforti</groupId>
             <artifactId>measurements</artifactId>
+            <scope>compile</scope>
         </dependency>
         <!--<dependency>-->
             <!--<groupId>com.raffaeleconforti</groupId>-->
@@ -112,40 +134,49 @@
         <dependency>
             <groupId>com.raffaeleconforti</groupId>
             <artifactId>noisefiltering-timestamp-logic</artifactId>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.raffaeleconforti</groupId>
             <artifactId>noisefiltering-timestamp-commandline</artifactId>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.raffaeleconforti</groupId>
             <artifactId>noisefiltering-timestamp-prom</artifactId>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.raffaeleconforti</groupId>
             <artifactId>prom-util</artifactId>
+            <scope>compile</scope>
         </dependency>
 
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-math3</artifactId>
             <version>3.6</version>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.processmining</groupId>
             <artifactId>fodina</artifactId>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.apromore</groupId>
             <artifactId>bpmntk-osgi</artifactId>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.apromore</groupId>
             <artifactId>bpstruct</artifactId>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.apromore</groupId>
             <artifactId>jbpt</artifactId>
+            <scope>compile</scope>
         </dependency>
 
         <dependency>
@@ -153,12 +184,14 @@
             <artifactId>liblpsolvej</artifactId>
             <version>55j</version>
             <type>jnilib</type>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.sourceforge</groupId>
             <artifactId>liblpsolve</artifactId>
             <version>55</version>
             <type>jnilib</type>
+            <scope>compile</scope>
         </dependency>
 
         <dependency>
@@ -166,6 +199,7 @@
             <artifactId>liblpsolve55</artifactId>
             <version>55</version>
             <type>lib</type>
+            <scope>compile</scope>
         </dependency>
 
         <dependency>
@@ -173,6 +207,7 @@
             <artifactId>liblpsolve55d</artifactId>
             <version>55d</version>
             <type>lib</type>
+            <scope>compile</scope>
         </dependency>
 
         <dependency>
@@ -180,6 +215,7 @@
             <artifactId>lpsolve55</artifactId>
             <version>55</version>
             <type>lib</type>
+            <scope>compile</scope>
         </dependency>
 
         <dependency>
@@ -187,6 +223,7 @@
             <artifactId>lpsolve55</artifactId>
             <version>55</version>
             <type>dll</type>
+            <scope>compile</scope>
         </dependency>
 
         <dependency>
@@ -194,6 +231,7 @@
             <artifactId>lpsolve55j</artifactId>
             <version>55j</version>
             <type>dll</type>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 
@@ -299,6 +337,49 @@
                         <configuration>
                             <sourceFile>${project.build.directory}/lpsolve55j-55j.dll</sourceFile>
                             <destinationFile>${project.build.directory}/lpsolve55j.dll</destinationFile>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.1.1</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <artifactSet>
+                                <includes>
+                                    <include>com.raffaeleconforti:*</include>
+                                </includes>
+                            </artifactSet>
+                            <filters>
+                                <filter>
+                                    <artifact>*:*</artifact>
+                                    <excludes>
+                                        <exclude>*.class</exclude>
+                                        <exclude>META-INF/*.SF</exclude>
+                                        <exclude>META-INF/*.DSA</exclude>
+                                        <exclude>META-INF/*.RSA</exclude>
+                                        <exclude>**/*.html</exclude>
+                                        <exclude>**/*.java</exclude>
+                                        <exclude>**/*.svn-base</exclude>
+                                        <exclude>**/*.gif</exclude>
+                                        <exclude>**/*.css</exclude>
+                                        <exclude>**/*.png</exclude>
+                                        <exclude>**/*.pdf</exclude>
+                                        <exclude>**/*.project</exclude>
+                                        <exclude>**/*.jnilib</exclude>
+                                        <exclude>**/.svn/**</exclude>
+                                    </excludes>
+                                </filter>
+                            </filters>
+                            <!--<minimizeJar>true</minimizeJar>-->
                         </configuration>
                     </execution>
                 </executions>

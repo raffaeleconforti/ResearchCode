@@ -43,7 +43,7 @@ public class DevianceMiner {
         LogCloner logCloner = new LogCloner();
         int lowest = 0;
         int highest = 100;
-        int best = 21;
+        int best = 10;
         while (highest - lowest > 1) {
             XLog original = logCloner.cloneLog(log);
             int current = (lowest + highest) / 2;
@@ -152,7 +152,7 @@ public class DevianceMiner {
 //            if((perc1 > relevance_threshold || deviance.getNormalTraces().size() == 0) &&
 //                    (perc2 > relevance_threshold || deviance.getDeviantTraces().size() == 0) &&
 //                    (deviance.getNormalTraces().size() > 0 || deviance.getDeviantTraces().size() > 0)) {
-            if (deviance.getRelevance() > 0.01 && deviance.getDeviantTraces().size() > 100) {
+            if (deviance.getRelevance() > 0.005 && deviance.getDeviantTraces().size() > 100) {
                 relevant_deviances.add(deviance);
             }
         }

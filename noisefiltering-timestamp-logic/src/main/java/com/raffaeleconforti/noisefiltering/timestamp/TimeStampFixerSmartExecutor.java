@@ -83,7 +83,7 @@ public class TimeStampFixerSmartExecutor {
         for (Edge<String> edge : a.getEdges()) {
             a.addEdge(edge, 1);
         }
-        XLog log = LogImporter.importFromFile(new XFactoryNaiveImpl(), dir + "UoM3.xes.gz");
+        XLog log = LogImporter.importFromFile(new XFactoryNaiveImpl(), dir + "Version 4/UoM1.xes.gz");
         for (XTrace trace : log) {
             for (XEvent event : trace) {
                 XAttributeTimestamp time = (XAttributeTimestamp) event.getAttributes().remove("time:timestamp");
@@ -111,7 +111,7 @@ public class TimeStampFixerSmartExecutor {
         XLog filtered = t.filterLog(log, a, 11, PermutationTechnique.ILP_GUROBI, true, false, false);
         for (XTrace trace : filtered) {
             for (XEvent event : trace) {
-                xce.assignName(event, event.getAttributes().get("REP_LEVEL_2").toString());
+                xce.assignName(event, event.getAttributes().get("Rep_level_2_Mod").toString());
             }
         }
         filtered = t.filterLog(filtered, a, 11, PermutationTechnique.ILP_GUROBI, true, false, false);
@@ -121,7 +121,7 @@ public class TimeStampFixerSmartExecutor {
                 xte.assignTimestamp(event, timestamp.getValue());
             }
         }
-        LogImporter.exportToFile(dir + "UoM4.xes.gz", filtered);
+        LogImporter.exportToFile(dir + "Version 4/UoM2.xes.gz", filtered);
     }
 
     public Automaton<String> convertToAutomaton(BPMNDiagram bpmnDiagram) {
