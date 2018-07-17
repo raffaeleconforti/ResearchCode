@@ -15,6 +15,7 @@ public class SMMiningSettings extends MiningSettings {
             settingLabels.add("epsilonSM");
             settingLabels.add("etaSM");
             settingLabels.add("replaceORsSM");
+            settingLabels.add("parallelismsFirst");
         }
 
         public Set<String> getSettingLabels() { return new HashSet<String>(settingLabels); }

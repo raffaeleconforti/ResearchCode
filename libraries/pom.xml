@@ -1605,7 +1605,7 @@
                         <configuration>
                             <groupId>org.apromore</groupId>
                             <artifactId>bpmntk-osgi</artifactId>
-                            <version>20180712</version>
+                            <version>20180717</version>
                             <packaging>jar</packaging>
                             <file>src/main/java/bpmntk-osgi-20180712.jar</file>
                             <generatePom>true</generatePom>
@@ -1624,6 +1624,23 @@
                             <version>20180705</version>
                             <packaging>jar</packaging>
                             <file>src/main/java/eventstr-confchecking-osgi-20180705.jar</file>
+                            <file>src/main/java/bpmntk-osgi-20180717.jar</file>
+                            <generatePom>true</generatePom>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>install-mprec</id>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                        <configuration>
+                            <groupId>org.apromore</groupId>
+                            <artifactId>mprec</artifactId>
+                            <version>20180717</version>
+                            <packaging>jar</packaging>
+                            <file>src/main/java/mprec-20180717.jar</file>
                             <generatePom>true</generatePom>
                         </configuration>
                     </execution>

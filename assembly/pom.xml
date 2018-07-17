@@ -170,6 +170,10 @@
         </dependency>
         <dependency>
             <groupId>org.apromore</groupId>
+            <artifactId>mprec</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apromore</groupId>
             <artifactId>bpstruct</artifactId>
             <scope>compile</scope>
         </dependency>

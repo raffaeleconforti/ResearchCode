@@ -112,7 +112,8 @@
         <flanagan.version>20151114</flanagan.version>
 
         <commons-math3.version>3.6.1</commons-math3.version>
-        <bpmntk-osgi.version>20180712</bpmntk-osgi.version>
+        <bpmntk-osgi.version>20180717</bpmntk-osgi.version>
+        <mprec.version>20180717</mprec.version>
         <eventstr-osgi.version>20180705</eventstr-osgi.version>
         <bpstruct.version>0.1.117</bpstruct.version>
         <jbpt.version>0.2.77</jbpt.version>
@@ -491,6 +492,11 @@
                 <groupId>org.apromore</groupId>
                 <artifactId>eventstr-confchecking-osgi</artifactId>
                 <version>${eventstr-osgi.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apromore</groupId>
+                <artifactId>mprec</artifactId>
+                <version>${mprec.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.apromore</groupId>

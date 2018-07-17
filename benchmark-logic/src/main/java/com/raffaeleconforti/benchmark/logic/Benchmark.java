@@ -163,10 +163,11 @@ public class Benchmark {
                     measures.get(miningAlgorithmName).get(logName).put("mining-time", Long.toString(eTime));
                     System.out.println("DEBUG - mining time: " + eTime + "ms");
 
-                    String bpmnpath = "./results/" + miningAlgorithmName + "/" + logName + "_" + Long.toString(System.currentTimeMillis()) + ".bpmn";
+                    String bpmnPath = "./results/" + miningAlgorithmName + "/" + logName + "_" + Long.toString(System.currentTimeMillis()) + ".bpmn";
+                    String petrinetPath = "./results/" + miningAlgorithmName + "/" + logName + "_" + Long.toString(System.currentTimeMillis()) + ".pnml";
                     BPMNDiagram bpmnModel = PetriNetToBPMNConverter.convert(petrinetWithMarking.getPetrinet(), petrinetWithMarking.getInitialMarking(), petrinetWithMarking.getFinalMarking(), false);
-                    exportBPMN(bpmnModel, bpmnpath);
-
+                    exportBPMN(bpmnModel, bpmnPath);
+//                    exportPetrinet(fakePluginContext, petrinetWithMarking, petrinetPath);
 
                     Measure measure;
                     // computing metrics on the output petrinet
@@ -182,8 +183,7 @@ public class Benchmark {
                                 measure = ((BPMNComplexity) measurementAlgorithm).computeMeasurementBPMN(diagram);
                             } else measure = measurementAlgorithm.computeMeasurement(fakePluginContext, xEventClassifier, petrinetWithMarking, miningAlgorithm, measuringLog);
 
-                            eTime = System.currentTimeMillis() - eTime;
-                            if (measurementAlgorithm.isMultimetrics()) {
+                            if( measurementAlgorithm.isMultimetrics() ) {
                                 for (String metric : measure.getMetrics()) {
                                     measures.get(miningAlgorithmName).get(logName).put(metric, measure.getMetricValue(metric));
                                     System.out.println("DEBUG - " + metric + " : " + measure.getMetricValue(metric));
@@ -194,6 +194,7 @@ public class Benchmark {
                             }
 
 //                            if( execTime > MAX_TIME)
+                            eTime = System.currentTimeMillis() - eTime;
                                 measures.get(miningAlgorithmName).get(logName).put(measurementAlgorithmName + "-time", Long.toString(eTime));
                         } catch (Error e) {
                             System.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out)));
@@ -366,13 +367,87 @@ public class Benchmark {
         }
     }
 
+    public static void computeFitnessFromPetrinet(String modelPath, String logPath) {
+        FakePluginContext fakePluginContext = new FakePluginContext();
+        Petrinet net = null;
+
+        AlignmentBasedFitness alignmentBasedFitness = new AlignmentBasedFitness();
+        Benchmark benchmark = new Benchmark();
+        PnmlImportNet pnmli = new PnmlImportNet();
+
+        try {
+            Object o = pnmli.importFile(fakePluginContext, modelPath);
+            if(o instanceof Object[] && (((Object[])o)[0] instanceof Petrinet) ) net = (Petrinet)((Object[])o)[0];
+            else {
+                System.out.println("DEBUG - class: " + o.getClass().getSimpleName());
+                return;
+            }
+
+            Marking initMarking = MarkingDiscoverer.constructInitialMarking(fakePluginContext, net);
+            Marking finalMarking = MarkingDiscoverer.constructFinalMarking(fakePluginContext, net);
+            PetrinetWithMarking petrinet = new PetrinetWithMarking(net, initMarking, finalMarking);
+            XLog log = benchmark.loadLog(logPath);
+
+            Measure measure = alignmentBasedFitness.computeMeasurement(fakePluginContext, xEventClassifier, petrinet, null, log);
+            for( String metric : measure.getMetrics() ) System.out.println("RESULT - fitness (a) : " + measure.getMetricValue(metric));
+        } catch ( Exception e ) {
+            System.out.println("ERROR - " + e.getMessage());
+            e.printStackTrace();
+            return;
+        }
+    }
+
+    public static void computePrecisionFromPetrinet(String modelPath, String logPath) {
+        FakePluginContext fakePluginContext = new FakePluginContext();
+        Petrinet net = null;
+
+        AlignmentBasedPrecision alignmentBasedPrecision = new AlignmentBasedPrecision();
+        Benchmark benchmark = new Benchmark();
+        PnmlImportNet pnmli = new PnmlImportNet();
+        long eTime;
+        String model;
+        String log;
+
+        for(int i = 1; i<13; i++) {
+            model = modelPath + "\\" + i +".pnml";
+            log = ".\\" + i +".xes.gz";
+//            if( i ==2 || i == 5 || i == 8 ) continue;
+            System.out.println("INFO - " + log);
+            eTime = System.currentTimeMillis();
+            try {
+                Object o = pnmli.importFile(fakePluginContext, model);
+                if (o instanceof Object[] && (((Object[]) o)[0] instanceof Petrinet))
+                    net = (Petrinet) ((Object[]) o)[0];
+                else {
+                    System.out.println("DEBUG - class: " + o.getClass().getSimpleName());
+                    return;
+                }
+
+                Marking initMarking = MarkingDiscoverer.constructInitialMarking(fakePluginContext, net);
+                Marking finalMarking = MarkingDiscoverer.constructFinalMarking(fakePluginContext, net);
+                PetrinetWithMarking petrinet = new PetrinetWithMarking(net, initMarking, finalMarking);
+                XLog xlog = benchmark.loadLog(log);
+
+                Measure measure = alignmentBasedPrecision.computeMeasurement(fakePluginContext, xEventClassifier, petrinet, null, xlog);
+                for (String metric : measure.getMetrics())
+                    System.out.println("RESULT - precision(a) : " + measure.getMetricValue(metric));
+            } catch (Exception e) {
+                System.out.println("ERROR - " + e.getMessage());
+                e.printStackTrace();
+                return;
+            }
+            eTime = System.currentTimeMillis() - eTime;
+            System.out.println("TIME - " + (double) eTime / 1000.00 + "s");
+        }
+    }
+
     public static void computeFScoreFromPetrinet(String modelPath, String logPath) {
         FakePluginContext fakePluginContext = new FakePluginContext();
         Petrinet net = null;
 
         AlignmentBasedFMeasure alignmentBasedFMeasure = new AlignmentBasedFMeasure();
         AlignmentBasedPrecision alignmentBasedPrecision = new AlignmentBasedPrecision();
-        ProjectedPrecision projprecision = new ProjectedPrecision();
+//        ProjectedPrecision projprecision = new ProjectedPrecision();
         Benchmark benchmark = new Benchmark();
         PnmlImportNet pnmli = new PnmlImportNet();
 
@@ -391,7 +466,7 @@ public class Benchmark {
 
             Measure measure = alignmentBasedPrecision.computeMeasurement(fakePluginContext, xEventClassifier, petrinet, null, log);
             for( String metric : measure.getMetrics() ) System.out.println("RESULT - " + metric + " : " + measure.getMetricValue(metric));
-            measure = projprecision.computeMeasurement(fakePluginContext, xEventClassifier, petrinet, null, log);
+//            measure = projprecision.computeMeasurement(fakePluginContext, xEventClassifier, petrinet, null, log);
             for( String metric : measure.getMetrics() ) System.out.println("RESULT - " + metric + " : " + measure.getMetricValue(metric));
         } catch ( Exception e ) {
             System.out.println("ERROR - " + e.getMessage());
@@ -433,6 +508,110 @@ public class Benchmark {
             return;
         }
 
+    }
+
+    public static void one2manyFitness(String modelsDir, String logPath) {
+        FakePluginContext fakePluginContext = new FakePluginContext();
+        Petrinet net = null;
+        String modelPath;
+
+        AlignmentBasedFitness alignmentBasedFitness = new AlignmentBasedFitness();
+        Benchmark benchmark = new Benchmark();
+        PnmlImportNet pnmli = new PnmlImportNet();
+        XLog log = benchmark.loadLog(logPath);
+
+        PrintWriter writer = null;
+        try {
+            writer = new PrintWriter(".\\afit_results__" + System.currentTimeMillis() + ".csv");
+            writer.println("log,fitness");
+        } catch(Exception e) { System.out.println("ERROR - impossible to print the markovian abstraction."); }
+
+        try {
+            File dir = new File(modelsDir);
+            File[] directoryListing = dir.listFiles();
+            if( directoryListing != null ) {
+                for( File model : directoryListing ) {
+                    modelPath = model.getCanonicalPath();
+                    if( modelPath.endsWith(".pnml") ){
+                        Object o = pnmli.importFile(fakePluginContext, modelPath);
+
+                        if (o instanceof Object[] && (((Object[]) o)[0] instanceof Petrinet))
+                            net = (Petrinet) ((Object[]) o)[0];
+                        else {
+                            System.out.println("DEBUG - class: " + o.getClass().getSimpleName());
+                            return;
+                        }
+
+                        Marking initMarking = MarkingDiscoverer.constructInitialMarking(fakePluginContext, net);
+                        Marking finalMarking = MarkingDiscoverer.constructFinalMarking(fakePluginContext, net);
+                        PetrinetWithMarking petrinet = new PetrinetWithMarking(net, initMarking, finalMarking);
+                        Measure measure = alignmentBasedFitness.computeMeasurement(fakePluginContext, xEventClassifier, petrinet, null, log);
+
+                        writer.println(modelPath + "," + measure.getValue());
+                        writer.flush();
+                    }
+                }
+            } else {
+                System.out.println("ERROR - input path not a directory.");
+                return;
+            }
+        } catch ( Exception e ) {
+            System.out.println("ERROR - " + e.getMessage());
+            e.printStackTrace();
+            return;
+        }
+    }
+
+    public static void one2manyPrecision(String modelsDir, String logPath) {
+        FakePluginContext fakePluginContext = new FakePluginContext();
+        Petrinet net = null;
+        String modelPath;
+
+        AlignmentBasedPrecision alignmentBasedPrecision = new AlignmentBasedPrecision();
+        Benchmark benchmark = new Benchmark();
+        PnmlImportNet pnmli = new PnmlImportNet();
+        XLog log = benchmark.loadLog(logPath);
+
+        PrintWriter writer = null;
+        try {
+            writer = new PrintWriter(".\\aprec_results_" + System.currentTimeMillis() + ".csv");
+            writer.println("log,precision");
+        } catch(Exception e) { System.out.println("ERROR - impossible to print the markovian abstraction."); }
+
+        try {
+            File dir = new File(modelsDir);
+            File[] directoryListing = dir.listFiles();
+            if( directoryListing != null ) {
+                for( File model : directoryListing ) {
+                    modelPath = model.getCanonicalPath();
+                    if( modelPath.endsWith(".pnml") ){
+                        Object o = pnmli.importFile(fakePluginContext, modelPath);
+
+                        if (o instanceof Object[] && (((Object[]) o)[0] instanceof Petrinet))
+                            net = (Petrinet) ((Object[]) o)[0];
+                        else {
+                            System.out.println("DEBUG - class: " + o.getClass().getSimpleName());
+                            return;
+                        }
+
+                        Marking initMarking = MarkingDiscoverer.constructInitialMarking(fakePluginContext, net);
+                        Marking finalMarking = MarkingDiscoverer.constructFinalMarking(fakePluginContext, net);
+                        PetrinetWithMarking petrinet = new PetrinetWithMarking(net, initMarking, finalMarking);
+                        Measure measure = alignmentBasedPrecision.computeMeasurement(fakePluginContext, xEventClassifier, petrinet, null, log);
+
+                        writer.println(modelPath + "," + measure.getValue());
+                        writer.flush();
+                    }
+                }
+            } else {
+                System.out.println("ERROR - input path not a directory.");
+                return;
+            }
+        } catch ( Exception e ) {
+            System.out.println("ERROR - " + e.getMessage());
+            e.printStackTrace();
+            return;
+        }
     }
 
     public static void logsAnalysis(String path) {
