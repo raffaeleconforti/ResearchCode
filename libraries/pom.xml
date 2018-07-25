@@ -5,7 +5,7 @@
     <parent>
         <artifactId>research-code</artifactId>
         <groupId>com.raffaeleconforti</groupId>
-        <version>1.0.20180712</version>
+        <version>1.0.20180719</version>
         <relativePath>../</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -1605,9 +1605,9 @@
                         <configuration>
                             <groupId>org.apromore</groupId>
                             <artifactId>bpmntk-osgi</artifactId>
-                            <version>20180717</version>
+                            <version>20180718</version>
                             <packaging>jar</packaging>
-                            <file>src/main/java/bpmntk-osgi-20180712.jar</file>
+                            <file>src/main/java/bpmntk-osgi-20180718.jar</file>
                             <generatePom>true</generatePom>
                         </configuration>
                     </execution>
@@ -1624,7 +1624,6 @@
                             <version>20180705</version>
                             <packaging>jar</packaging>
                             <file>src/main/java/eventstr-confchecking-osgi-20180705.jar</file>
-                            <file>src/main/java/bpmntk-osgi-20180717.jar</file>
                             <generatePom>true</generatePom>
                         </configuration>
                     </execution>
@@ -1638,9 +1637,9 @@
                         <configuration>
                             <groupId>org.apromore</groupId>
                             <artifactId>mprec</artifactId>
-                            <version>20180717</version>
+                            <version>20180718</version>
                             <packaging>jar</packaging>
-                            <file>src/main/java/mprec-20180717.jar</file>
+                            <file>src/main/java/mprec-20180718.jar</file>
                             <generatePom>true</generatePom>
                         </configuration>
                     </execution>

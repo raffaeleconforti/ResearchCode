@@ -24,7 +24,9 @@ public class MarkovianPrecision implements MeasurementAlgorithm {
 
 
     @Override
-    public boolean isMultimetrics() { return false; }
+    public boolean isMultimetrics() {
+        return false;
+    }
 
     @Override
     public Measure computeMeasurement(UIPluginContext pluginContext, XEventClassifier xEventClassifier, ProcessTree processTree, MiningAlgorithm miningAlgorithm, XLog log) {
@@ -36,11 +38,12 @@ public class MarkovianPrecision implements MeasurementAlgorithm {
         Measure measure = new Measure();
         double m3prec;
 
-        if( !Soundness.isSound(petrinetWithMarking) ) return new Measure(getAcronym(), "-");
+        if (!Soundness.isSound(petrinetWithMarking)) return new Measure(getAcronym(), "-");
 
         System.setOut(new PrintStream(new OutputStream() {
             @Override
-            public void write(int b) {}
+            public void write(int b) {
+            }
         }));
         System.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out)));
 
@@ -59,5 +62,7 @@ public class MarkovianPrecision implements MeasurementAlgorithm {
     }
 
     @Override
-    public String getAcronym() {return "(m3)precision";}
+    public String getAcronym() {
+        return "(m3)precision";
+    }
 }

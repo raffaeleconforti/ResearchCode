@@ -168,28 +168,28 @@ public class BenchmarkCommandline {
             return;
         }
 
-        if( (args.length == 3) && (args[0].equalsIgnoreCase("-fitness"))) {
+        if ((args.length == 3) && (args[0].equalsIgnoreCase("-fitness"))) {
             Benchmark.computeFitnessFromPetrinet(args[2], args[1]);
             return;
         }
 
-        if( (args.length == 3) && (args[0].equalsIgnoreCase("-precision"))) {
+        if ((args.length == 3) && (args[0].equalsIgnoreCase("-precision"))) {
             Benchmark.computePrecisionFromPetrinet(args[2], args[1]);
             return;
         }
 
-        if( (args.length == 3) && (args[0].equalsIgnoreCase("-12Mprecision"))) {
+        if ((args.length == 3) && (args[0].equalsIgnoreCase("-12Mprecision"))) {
             Benchmark.one2manyPrecision(args[1], args[2]);
             return;
         }
 
 
-        if( (args.length == 3) && (args[0].equalsIgnoreCase("-12Mfitness"))) {
+        if ((args.length == 3) && (args[0].equalsIgnoreCase("-12Mfitness"))) {
             Benchmark.one2manyFitness(args[1], args[2]);
             return;
         }
 
-        if( (args.length != 0) && (args[icmd].equalsIgnoreCase("-splitminer"))) {
+        if ((args.length != 0) && (args[icmd].equalsIgnoreCase("-splitminer"))) {
             showHelp();
             return;
         }

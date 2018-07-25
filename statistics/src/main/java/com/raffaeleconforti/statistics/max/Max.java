@@ -1,11 +1,11 @@
 package com.raffaeleconforti.statistics.max;
 
-import com.raffaeleconforti.statistics.StatisticsMeasure;
+import com.raffaeleconforti.statistics.StatisticsMeasureAbstract;
 
 /**
  * Created by Raffaele Conforti (conforti.raffaele@gmail.com) on 14/11/16.
  */
-public class Max implements StatisticsMeasure {
+public class Max extends StatisticsMeasureAbstract {
 
     @Override
     public double evaluate(Double val, double... values) {

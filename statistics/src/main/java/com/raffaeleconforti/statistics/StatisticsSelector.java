@@ -58,6 +58,22 @@ public class StatisticsSelector {
     private final RightQn rqn = new RightQn();
 
     public double evaluate(StatisticsMeasures measure, Double val, double... values) {
+        return retrieveMeasure(measure).evaluate(val, values);
+    }
+
+    public double evaluate(StatisticsMeasures measure, Float val, float... values) {
+        return retrieveMeasure(measure).evaluate(val, values);
+    }
+
+    public double evaluate(StatisticsMeasures measure, Long val, long... values) {
+        return retrieveMeasure(measure).evaluate(val, values);
+    }
+
+    public double evaluate(StatisticsMeasures measure, Integer val, int... values) {
+        return retrieveMeasure(measure).evaluate(val, values);
+    }
+
+    private StatisticsMeasure retrieveMeasure(StatisticsMeasures measure) {
         StatisticsMeasure statisticsMeasure = null;
         switch (measure) {
             case MIN       : statisticsMeasure = min;
@@ -67,34 +83,34 @@ public class StatisticsSelector {
                 break;
 
             case MEAN       : statisticsMeasure = mean;
-                            break;
+                break;
 
             case MEDIAN     : statisticsMeasure = median;
-                            break;
+                break;
 
             case MODE       : statisticsMeasure = mode;
-                            break;
+                break;
 
             case PERCENTILE : statisticsMeasure = percentile;
-                            break;
+                break;
 
             case SD         : statisticsMeasure = sd;
-                            break;
+                break;
 
             case LEFT_SD    : statisticsMeasure = lsd;
-                            break;
+                break;
 
             case RIGHT_SD   : statisticsMeasure = rsd;
-                            break;
+                break;
 
             case MAD        : statisticsMeasure = mad;
-                            break;
+                break;
 
             case LEFT_MAD   : statisticsMeasure = lmad;
-                            break;
+                break;
 
             case RIGHT_MAD  : statisticsMeasure = rmad;
-                            break;
+                break;
 
             case MoAD        : statisticsMeasure = moad;
                 break;
@@ -106,24 +122,24 @@ public class StatisticsSelector {
                 break;
 
             case SN         : statisticsMeasure = sn;
-                            break;
+                break;
 
             case LEFT_SN    : statisticsMeasure = lsn;
-                            break;
+                break;
 
             case RIGHT_SN   : statisticsMeasure = rsn;
-                            break;
+                break;
 
             case QN         : statisticsMeasure = qn;
-                            break;
+                break;
 
             case LEFT_QN    : statisticsMeasure = lqn;
-                            break;
+                break;
 
             case RIGHT_QN   : statisticsMeasure = rqn;
-                            break;
+                break;
         }
 
-        return statisticsMeasure.evaluate(val, values);
+        return statisticsMeasure;
     }
 }

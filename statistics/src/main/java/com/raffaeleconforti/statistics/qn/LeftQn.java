@@ -1,6 +1,6 @@
 package com.raffaeleconforti.statistics.qn;
 
-import com.raffaeleconforti.statistics.StatisticsMeasure;
+import com.raffaeleconforti.statistics.StatisticsMeasureAbstract;
 import org.eclipse.collections.impl.map.mutable.primitive.DoubleIntHashMap;
 
 import java.util.Arrays;
@@ -8,7 +8,7 @@ import java.util.Arrays;
 /**
  * Created by Raffaele Conforti (conforti.raffaele@gmail.com) on 22/11/16.
  */
-public class LeftQn implements StatisticsMeasure {
+public class LeftQn extends StatisticsMeasureAbstract {
 
     @Override
     public double evaluate(Double val, double... values) {

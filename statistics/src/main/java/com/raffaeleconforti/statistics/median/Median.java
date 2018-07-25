@@ -1,13 +1,13 @@
 package com.raffaeleconforti.statistics.median;
 
-import com.raffaeleconforti.statistics.StatisticsMeasure;
+import com.raffaeleconforti.statistics.StatisticsMeasureAbstract;
 
 import java.util.Arrays;
 
 /**
  * Created by Raffaele Conforti (conforti.raffaele@gmail.com) on 14/11/16.
  */
-public class Median implements StatisticsMeasure {
+public class Median extends StatisticsMeasureAbstract {
 
     @Override
     public double evaluate(Double val, double... values) {

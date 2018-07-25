@@ -1,6 +1,6 @@
 package com.raffaeleconforti.statistics.sn;
 
-import com.raffaeleconforti.statistics.StatisticsMeasure;
+import com.raffaeleconforti.statistics.StatisticsMeasureAbstract;
 import com.raffaeleconforti.statistics.median.Median;
 import org.eclipse.collections.impl.list.mutable.primitive.DoubleArrayList;
 
@@ -9,7 +9,7 @@ import java.util.Arrays;
 /**
  * Created by Raffaele Conforti (conforti.raffaele@gmail.com) on 22/11/16.
  */
-public class RightSn implements StatisticsMeasure {
+public class RightSn extends StatisticsMeasureAbstract {
 
     private Median median = new Median();
 

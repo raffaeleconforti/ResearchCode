@@ -1,12 +1,12 @@
 package com.raffaeleconforti.statistics.standarddeviation;
 
-import com.raffaeleconforti.statistics.StatisticsMeasure;
+import com.raffaeleconforti.statistics.StatisticsMeasureAbstract;
 import com.raffaeleconforti.statistics.mean.Mean;
 
 /**
  * Created by Raffaele Conforti (conforti.raffaele@gmail.com) on 14/11/16.
  */
-public class RightStandardDeviation implements StatisticsMeasure {
+public class RightStandardDeviation extends StatisticsMeasureAbstract {
 
     private Mean mean = new Mean();
 

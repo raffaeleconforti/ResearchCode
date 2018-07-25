@@ -1,6 +1,6 @@
 package com.raffaeleconforti.statistics.medianabsolutedeviation;
 
-import com.raffaeleconforti.statistics.StatisticsMeasure;
+import com.raffaeleconforti.statistics.StatisticsMeasureAbstract;
 import com.raffaeleconforti.statistics.median.Median;
 import org.eclipse.collections.impl.list.mutable.primitive.DoubleArrayList;
 
@@ -9,7 +9,7 @@ import java.util.Arrays;
 /**
  * Created by Raffaele Conforti (conforti.raffaele@gmail.com) on 14/11/16.
  */
-public class RightMedianAbsoluteDeviation implements StatisticsMeasure {
+public class RightMedianAbsoluteDeviation extends StatisticsMeasureAbstract {
 
     private Median median = new Median();
 

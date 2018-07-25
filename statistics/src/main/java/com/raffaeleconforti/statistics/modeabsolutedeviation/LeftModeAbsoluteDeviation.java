@@ -1,6 +1,6 @@
 package com.raffaeleconforti.statistics.modeabsolutedeviation;
 
-import com.raffaeleconforti.statistics.StatisticsMeasure;
+import com.raffaeleconforti.statistics.StatisticsMeasureAbstract;
 import com.raffaeleconforti.statistics.mode.Mode;
 import org.eclipse.collections.impl.list.mutable.primitive.DoubleArrayList;
 
@@ -9,7 +9,7 @@ import java.util.Arrays;
 /**
  * Created by Raffaele Conforti (conforti.raffaele@gmail.com) on 14/11/16.
  */
-public class LeftModeAbsoluteDeviation implements StatisticsMeasure {
+public class LeftModeAbsoluteDeviation extends StatisticsMeasureAbstract {
 
     private Mode mode = new Mode();
 

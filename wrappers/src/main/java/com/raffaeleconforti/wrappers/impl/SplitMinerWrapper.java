@@ -94,7 +94,7 @@ public class SplitMinerWrapper implements MiningAlgorithm {
                 replaceORs = (Boolean) params.getParam("replaceORsSM");
             if( params.containsParam("removeSelfLoops") && params.getParam("removeSelfLoops") instanceof Boolean )
                 removeSelfLoops = (Boolean) params.getParam("removeSelfLoops");
-            if( params.containsParam("parallelismsFirst") && params.getParam("parallelismsFirst") instanceof Boolean )
+            if (params.containsParam("parallelismsFirst") && params.getParam("parallelismsFirst") instanceof Boolean)
                 removeSelfLoops = (Boolean) params.getParam("parallelismsFirst");
         }
 

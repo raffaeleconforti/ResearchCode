@@ -1,13 +1,13 @@
 package com.raffaeleconforti.statistics.percentile;
 
-import com.raffaeleconforti.statistics.StatisticsMeasure;
+import com.raffaeleconforti.statistics.StatisticsMeasureAbstract;
 
 import java.util.Arrays;
 
 /**
  * Created by conforti on 11/02/15.
  */
-public class Percentile implements StatisticsMeasure {
+public class Percentile extends StatisticsMeasureAbstract {
 
     @Override
     public double evaluate(Double percentile, double... values) {
