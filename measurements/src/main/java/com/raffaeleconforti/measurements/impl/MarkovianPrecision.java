@@ -46,7 +46,7 @@ public class MarkovianPrecision implements MeasurementAlgorithm {
 
         long start = System.currentTimeMillis();
         MarkovianAccuracyCalculator mac = new MarkovianAccuracyCalculator();
-        m3prec = mac.accuracy(Abs.MARK, Opd.GRD, log, petrinetWithMarking.getPetrinet(), petrinetWithMarking.getInitialMarking(), 3)[1];
+        m3prec = mac.precision(Abs.STA, Opd.HUN, "", "", 3);
         long time = System.currentTimeMillis() - start;
 
         measure.addMeasure(this.getAcronym(), m3prec);

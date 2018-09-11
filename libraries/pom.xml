@@ -1607,7 +1607,7 @@
                             <artifactId>bpmntk-osgi</artifactId>
                             <version>20180717</version>
                             <packaging>jar</packaging>
-                            <file>src/main/java/bpmntk-osgi-20180415.jar</file>
+                            <file>src/main/java/bpmntk-osgi-20180717.jar</file>
                             <generatePom>true</generatePom>
                         </configuration>
                     </execution>

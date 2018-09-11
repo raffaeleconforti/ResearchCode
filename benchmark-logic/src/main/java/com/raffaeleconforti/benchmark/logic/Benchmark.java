@@ -370,6 +370,7 @@ public class Benchmark {
     public static void computeFitnessFromPetrinet(String modelPath, String logPath) {
         FakePluginContext fakePluginContext = new FakePluginContext();
         Petrinet net = null;
+        long etime = System.currentTimeMillis();
 
         AlignmentBasedFitness alignmentBasedFitness = new AlignmentBasedFitness();
         Benchmark benchmark = new Benchmark();
@@ -389,7 +390,9 @@ public class Benchmark {
             XLog log = benchmark.loadLog(logPath);
 
             Measure measure = alignmentBasedFitness.computeMeasurement(fakePluginContext, xEventClassifier, petrinet, null, log);
+            etime = System.currentTimeMillis() - etime;
             for( String metric : measure.getMetrics() ) System.out.println("RESULT - fitness (a) : " + measure.getMetricValue(metric));
+            System.out.println("RESULT - eTime(ms) : " + etime);
         } catch ( Exception e ) {
             System.out.println("ERROR - " + e.getMessage());
             e.printStackTrace();
@@ -411,7 +414,6 @@ public class Benchmark {
         for(int i = 1; i<13; i++) {
             model = modelPath + "\\" + i +".pnml";
             log = ".\\" + i +".xes.gz";
-//            if( i ==2 || i == 5 || i == 8 ) continue;
             System.out.println("INFO - " + log);
             eTime = System.currentTimeMillis();
             try {
@@ -464,10 +466,10 @@ public class Benchmark {
             PetrinetWithMarking petrinet = new PetrinetWithMarking(net, initMarking, finalMarking);
             XLog log = benchmark.loadLog(logPath);
 
-            Measure measure = alignmentBasedPrecision.computeMeasurement(fakePluginContext, xEventClassifier, petrinet, null, log);
+            Measure measure = alignmentBasedFMeasure.computeMeasurement(fakePluginContext, xEventClassifier, petrinet, null, log);
             for( String metric : measure.getMetrics() ) System.out.println("RESULT - " + metric + " : " + measure.getMetricValue(metric));
 //            measure = projprecision.computeMeasurement(fakePluginContext, xEventClassifier, petrinet, null, log);
-            for( String metric : measure.getMetrics() ) System.out.println("RESULT - " + metric + " : " + measure.getMetricValue(metric));
+//            for( String metric : measure.getMetrics() ) System.out.println("RESULT - " + metric + " : " + measure.getMetricValue(metric));
         } catch ( Exception e ) {
             System.out.println("ERROR - " + e.getMessage());
             e.printStackTrace();
