@@ -82,7 +82,7 @@ public class SplitMinerWrapper implements MiningAlgorithm {
         Double eta = SplitMinerUIResult.FREQUENCY_THRESHOLD;
         Double epsilon = SplitMinerUIResult.PARALLELISMS_THRESHOLD;
         Boolean replaceORs = true;
-        Boolean removeSelfLoops = false;
+        Boolean removeLoopActivities = false;
         Boolean parallelismsFirst = false;
 
         if( params != null ) {
@@ -93,14 +93,14 @@ public class SplitMinerWrapper implements MiningAlgorithm {
             if( params.containsParam("replaceORsSM") && params.getParam("replaceORsSM") instanceof Boolean )
                 replaceORs = (Boolean) params.getParam("replaceORsSM");
             if( params.containsParam("removeSelfLoops") && params.getParam("removeSelfLoops") instanceof Boolean )
-                removeSelfLoops = (Boolean) params.getParam("removeSelfLoops");
+                removeLoopActivities = (Boolean) params.getParam("removeSelfLoops");
             if( params.containsParam("parallelismsFirst") && params.getParam("parallelismsFirst") instanceof Boolean )
-                removeSelfLoops = (Boolean) params.getParam("parallelismsFirst");
+                removeLoopActivities = (Boolean) params.getParam("parallelismsFirst");
         }
 
         if(context instanceof FakePluginContext) {
             SplitMiner yam = new SplitMiner();
-            output = yam.mineBPMNModel(log, xEventClassifier, eta, epsilon, DFGPUIResult.FilterType.WTH, parallelismsFirst, replaceORs, removeSelfLoops, SplitMinerUIResult.StructuringTime.NONE);
+            output = yam.mineBPMNModel(log, xEventClassifier, eta, epsilon, DFGPUIResult.FilterType.WTH, parallelismsFirst, replaceORs, removeLoopActivities, SplitMinerUIResult.StructuringTime.NONE);
 //            export(output, "log_"+System.currentTimeMillis());
         } else {
             output = SplitMinerPlugin.discoverBPMNModelWithSplitMiner(context, log);
