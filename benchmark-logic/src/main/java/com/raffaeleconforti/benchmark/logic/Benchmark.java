@@ -1,3 +1,20 @@
+/*
+ *  Copyright (C) 2018 Raffaele Conforti (www.raffaeleconforti.com)
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU Lesser General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU Lesser General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Lesser General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.raffaeleconforti.benchmark.logic;
 
 import au.edu.qut.processmining.log.LogParser;
@@ -183,7 +200,7 @@ public class Benchmark {
                                 measure = ((BPMNComplexity) measurementAlgorithm).computeMeasurementBPMN(diagram);
                             } else measure = measurementAlgorithm.computeMeasurement(fakePluginContext, xEventClassifier, petrinetWithMarking, miningAlgorithm, measuringLog);
 
-                            if( measurementAlgorithm.isMultimetrics() ) {
+                            if (measurementAlgorithm.isMultimetrics()) {
                                 for (String metric : measure.getMetrics()) {
                                     measures.get(miningAlgorithmName).get(logName).put(metric, measure.getMetricValue(metric));
                                     System.out.println("DEBUG - " + metric + " : " + measure.getMetricValue(metric));
@@ -377,7 +394,7 @@ public class Benchmark {
 
         try {
             Object o = pnmli.importFile(fakePluginContext, modelPath);
-            if(o instanceof Object[] && (((Object[])o)[0] instanceof Petrinet) ) net = (Petrinet)((Object[])o)[0];
+            if (o instanceof Object[] && (((Object[]) o)[0] instanceof Petrinet)) net = (Petrinet) ((Object[]) o)[0];
             else {
                 System.out.println("DEBUG - class: " + o.getClass().getSimpleName());
                 return;
@@ -389,10 +406,9 @@ public class Benchmark {
             XLog log = benchmark.loadLog(logPath);
 
             Measure measure = alignmentBasedFitness.computeMeasurement(fakePluginContext, xEventClassifier, petrinet, null, log);
-            etime = System.currentTimeMillis() - etime;
-            for( String metric : measure.getMetrics() ) System.out.println("RESULT - fitness (a) : " + measure.getMetricValue(metric));
-            System.out.println("RESULT - eTime(ms) : " + etime);
-        } catch ( Exception e ) {
+            for (String metric : measure.getMetrics())
+                System.out.println("RESULT - fitness (a) : " + measure.getMetricValue(metric));
+        } catch (Exception e) {
             System.out.println("ERROR - " + e.getMessage());
             e.printStackTrace();
             return;
@@ -410,9 +426,9 @@ public class Benchmark {
         String model;
         String log;
 
-        for(int i = 1; i<13; i++) {
-            model = modelPath + "\\" + i +".pnml";
-            log = ".\\" + i +".xes.gz";
+        for (int i = 1; i < 13; i++) {
+            model = modelPath + "\\" + i + ".pnml";
+            log = ".\\" + i + ".xes.gz";
             System.out.println("INFO - " + log);
             eTime = System.currentTimeMillis();
             try {
@@ -525,15 +541,17 @@ public class Benchmark {
         try {
             writer = new PrintWriter(".\\afit_results__" + System.currentTimeMillis() + ".csv");
             writer.println("log,fitness");
-        } catch(Exception e) { System.out.println("ERROR - impossible to print the markovian abstraction."); }
+        } catch (Exception e) {
+            System.out.println("ERROR - impossible to print the markovian abstraction.");
+        }
 
         try {
             File dir = new File(modelsDir);
             File[] directoryListing = dir.listFiles();
-            if( directoryListing != null ) {
-                for( File model : directoryListing ) {
+            if (directoryListing != null) {
+                for (File model : directoryListing) {
                     modelPath = model.getCanonicalPath();
-                    if( modelPath.endsWith(".pnml") ){
+                    if (modelPath.endsWith(".pnml")) {
                         Object o = pnmli.importFile(fakePluginContext, modelPath);
 
                         if (o instanceof Object[] && (((Object[]) o)[0] instanceof Petrinet))
@@ -556,7 +574,7 @@ public class Benchmark {
                 System.out.println("ERROR - input path not a directory.");
                 return;
             }
-        } catch ( Exception e ) {
+        } catch (Exception e) {
             System.out.println("ERROR - " + e.getMessage());
             e.printStackTrace();
             return;
@@ -577,15 +595,17 @@ public class Benchmark {
         try {
             writer = new PrintWriter(".\\aprec_results_" + System.currentTimeMillis() + ".csv");
             writer.println("log,precision");
-        } catch(Exception e) { System.out.println("ERROR - impossible to print the markovian abstraction."); }
+        } catch (Exception e) {
+            System.out.println("ERROR - impossible to print the markovian abstraction.");
+        }
 
         try {
             File dir = new File(modelsDir);
             File[] directoryListing = dir.listFiles();
-            if( directoryListing != null ) {
-                for( File model : directoryListing ) {
+            if (directoryListing != null) {
+                for (File model : directoryListing) {
                     modelPath = model.getCanonicalPath();
-                    if( modelPath.endsWith(".pnml") ){
+                    if (modelPath.endsWith(".pnml")) {
                         Object o = pnmli.importFile(fakePluginContext, modelPath);
 
                         if (o instanceof Object[] && (((Object[]) o)[0] instanceof Petrinet))
@@ -608,7 +628,7 @@ public class Benchmark {
                 System.out.println("ERROR - input path not a directory.");
                 return;
             }
-        } catch ( Exception e ) {
+        } catch (Exception e) {
             System.out.println("ERROR - " + e.getMessage());
             e.printStackTrace();
             return;
