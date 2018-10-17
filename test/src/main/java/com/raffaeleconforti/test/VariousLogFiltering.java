@@ -1,23 +1,24 @@
 package com.raffaeleconforti.test;
 
 import com.raffaeleconforti.log.util.LogImporter;
+import com.raffaeleconforti.memorylog.XAttributeLiteralImpl;
 import com.raffaeleconforti.singletonlog.XFactorySingletonImpl;
 import org.deckfour.xes.extension.std.XConceptExtension;
+import org.deckfour.xes.extension.std.XLifecycleExtension;
+import org.deckfour.xes.extension.std.XOrganizationalExtension;
 import org.deckfour.xes.extension.std.XTimeExtension;
 import org.deckfour.xes.factory.XFactory;
 import org.deckfour.xes.factory.XFactoryNaiveImpl;
-import org.deckfour.xes.model.XAttributeTimestamp;
-import org.deckfour.xes.model.XEvent;
-import org.deckfour.xes.model.XLog;
-import org.deckfour.xes.model.XTrace;
+import org.deckfour.xes.model.*;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class VariousLogFiltering {
 
-    private static String dir = "/Volumes/MobileData/Logs/Consultancies/Unipol/Analysis5/";
-    private static String file_base = "APB";
+    //    private static String dir = "/Volumes/MobileData/Logs/Consultancies/Unipol/Analysis5/";
+    private static String dir = "/Volumes/MobileData/Logs/Consultancies/UoM/Version 5/";
+    private static String file_base = "UoM";
     private static String file_ext = ".xes.gz";
     private static XFactory factory = new XFactoryNaiveImpl();
     private static XTimeExtension xte = XTimeExtension.instance();
@@ -35,7 +36,247 @@ public class VariousLogFiltering {
     private static String[] forfait_values = new String[]{"FF_RECUPERATO_TUTTO"};
     private static int time = 30;
 
+    private static int[] means = {
+            5,
+            5,
+            10 * 60,
+            5,
+            5 * 60,
+            30 * 60,
+            5 * 60,
+            30 * 60,
+            10 * 60,
+            10 * 60,
+            5 * 60,
+            5 * 60,
+            5 * 60,
+            10 * 60,
+            10 * 60,
+            5 * 60,
+            10 * 60,
+            30 * 60,
+            5 * 60,
+    };
+
+    private static String[] activities = {
+            "Cancel Application", //0
+            "Cancel Offer", //1
+            "Check Documentation", //2
+            "Close Application", //3
+            "Contact Customer", //4
+            "Create Offer", //5
+            "Decline Application", //6
+            "Disburse Loan", //7
+            "Enquire Interest For New Offer", //8
+            "Perform Preliminary Assessment", //9
+            "Receive Application", //10
+            "Receive Application Cancellation", //11
+            "Receive Reviewed Offer", //12
+            "Record Application", //13
+            "Record Offer Acceptance", //14
+            "Record Offer Decline", //15
+            "Request Missing Files", //16
+            "Send Offer by email", //17
+            "Send Offer by post", //18
+    };
+
+    private static String[] loan_officers = {
+            "Mary Smith",
+            "Elizabeth Jones",
+            "Sarah Williams",
+            "Ann Taylor",
+            "John Brown",
+            "William Davies",
+            "Thomas Evans",
+    };
+
+    private static String[] senior_loan_officers = {
+            "Jane Thomas",
+            "George Johnson",
+    };
+
+    private static String accounting_officer = "James Wilson";
+
+    private static double getNext(Random r, double lambda) {
+        return Math.log(1 - r.nextDouble()) / (-lambda);
+    }
+
     public static void main(String[] args) throws Exception {
+        XLog log1 = LogImporter.importFromFile(factory, "/Volumes/MobileData/Logs/Consultancies/UoM/Version 6/DID_Science Data v4.xes.gz");
+        String[] ids = {"67726", "68036", "68939", "70550", "71420", "72958", "73180", "73761", "73914", "73990", "74297", "74556", "74686", "74835", "75461", "75462", "75486", "75648", "75740", "75817", "75934", "76053", "76063", "76103", "76135", "76184", "76245", "76483", "76598", "76631", "76665", "76711", "76744", "76974", "77013", "77047", "77069", "77125", "77227", "77281", "77300", "77491", "77530", "77531", "77535", "77541", "77602", "77608", "77632", "77657", "77733", "77779", "77782", "77798", "77802", "77926", "77927", "77928", "77953", "77974", "77985", "77997", "78015", "78040", "78082", "78112", "78113", "78125", "78136", "78140", "78142", "78143", "78170", "78223", "78284", "78285", "78297", "78307", "78313", "78320", "78327", "78351", "78374", "78383", "78397", "78400", "78483", "78505", "78512", "78526", "78560", "78584", "78594", "78620", "78621", "78632", "78667", "78668", "78674", "78705", "78711", "78787", "78797", "78807", "78809", "78959", "78960", "79110", "79229", "79235", "79254", "79273", "79318", "79357", "79358", "79366", "79371", "79378", "79379", "79386", "79391", "79408", "79418", "79433", "79434", "79445", "79482", "79497", "79524", "79551", "79561", "79597", "79606", "79625", "79634", "79635", "79644", "79675", "79678", "79700", "79703", "79724", "79728", "79745", "79791", "79809", "79813", "79817", "79830", "79835", "79850", "79856", "79857", "79874", "79876", "80000", "80006", "80020", "80023", "80030", "80042", "80045", "80046", "80056", "80081", "80098", "80104", "80118", "80129", "80144", "80206", "80210", "80288", "80307", "80316", "80327", "80336", "80347", "80366", "80373", "80378", "80400", "80417", "80425", "80454", "80469", "80479", "80507", "80536", "80547", "80550", "80593", "80636", "80639", "80647", "80688", "80696", "80713", "80737", "80784", "80820", "80823", "80887", "80894", "80901", "80908", "80920", "80928", "80932", "80943", "80959", "80989", "81010", "81019", "81025", "81027", "81039", "81076", "81093", "81101", "81112", "81130", "81154", "81157", "81158", "81166", "81167", "81182", "81188", "81206", "81224", "81228", "81243", "81251", "81254", "81257", "81260", "81266", "81275", "81277", "81295", "81300", "81315", "81326", "81352", "81356", "81366", "81373", "81405", "81406", "81408", "81415", "81419", "81426", "81432", "81441", "81450", "81452", "81456", "81459", "81466", "81468", "81475", "81476", "81488", "81490", "81495", "81500", "81501", "81511", "81512", "81518", "81521", "81525", "81531", "81556", "81562", "81566", "81587", "81595", "81621", "81629", "81652", "81656", "81661", "81670", "81687", "81688", "81700", "81712", "81811", "81820", "81825", "81837", "81885", "81892", "81915", "81932", "81972", "81980", "81987", "81989", "81990", "81993", "81994", "81999", "82026", "82035", "82071", "82073", "82109", "82115", "82135", "82136", "82137", "82154", "82160", "82164", "82169", "82171", "82172", "82202", "82222", "82234", "82258", "82281", "82302", "82311", "82327", "82328", "82331", "82345", "82404", "82426", "82469", "82473", "82477", "82482", "82490", "82513", "82538", "82541", "82552", "82559"};
+        Iterator<XTrace> iterator = log1.iterator();
+        while (iterator.hasNext()) {
+            XTrace trace = iterator.next();
+            String id = XConceptExtension.instance().extractName(trace);
+            if (Arrays.binarySearch(ids, id) > -1) {
+                iterator.remove();
+            }
+        }
+        LogImporter.exportToFile("/Volumes/MobileData/Logs/Consultancies/UoM/Version 6/", "Log.xes.gz", log1);
+    }
+
+    public static void maina(String[] args) throws Exception {
+        XLog log1 = LogImporter.importFromFile(factory, "/Users/raffaele/Downloads/simulation_logs.xes.gz");
+        XLog log2 = LogImporter.importFromFile(factory, "/Users/raffaele/Downloads/simulation_logs (1).xes.gz");
+
+        XLog log3 = factory.createLog(log1.getAttributes());
+        XConceptExtension xce = XConceptExtension.instance();
+        XOrganizationalExtension xoe = XOrganizationalExtension.instance();
+        XTimeExtension xte = XTimeExtension.instance();
+        XLifecycleExtension xle = XLifecycleExtension.instance();
+
+        Random r = new Random(1000);
+        int process_id = 1;
+        int subprocess_id = 0;
+        for (XTrace trace : log1) {
+            XTrace t = factory.createTrace(trace.getAttributes());
+
+            int loan_amount = ((int) (Math.abs(r.nextGaussian()) * 19)) * 5000 + 5000;
+            String risk = (loan_amount < 50000) ? "Low" : (loan_amount < 250000) ? "Medium" : "High";
+            int interest = r.nextInt(10) + 5;
+
+            String loan_officer = loan_officers[r.nextInt(7)];
+            String senior_loan_officer = senior_loan_officers[r.nextInt(2)];
+
+            xce.assignName(trace, "" + process_id);
+            process_id++;
+            for (XEvent event : trace) {
+                String event_name = xce.extractName(event);
+                int pos = Arrays.binarySearch(activities, event_name);
+                int mean = means[pos];
+                double duration = getNext(r, (1.0 / mean));
+
+                if (pos < 5 || pos == 8 || pos > 9) {
+                    xoe.assignGroup(event, "Loan Officer");
+                    xoe.assignResource(event, loan_officer);
+                } else if (pos == 5 || pos == 6 || pos == 9) {
+                    xoe.assignGroup(event, "Senior Loan Officer");
+                    xoe.assignResource(event, senior_loan_officer);
+                } else {
+                    xoe.assignGroup(event, "Accounting Officer");
+                    xoe.assignResource(event, accounting_officer);
+                }
+                XEvent prev = factory.createEvent((XAttributeMap) event.getAttributes().clone());
+                xle.assignTransition(prev, "start");
+                xte.assignTimestamp(prev, xte.extractTimestamp(event).getTime() - (long) (duration * 1000));
+
+                XAttribute application = new XAttributeLiteralImpl("Application_ID", "" + process_id);
+                event.getAttributes().put("Application_ID", application);
+                XAttribute loan_amount_v = new XAttributeLiteralImpl("Loan Amount", "" + loan_amount);
+                event.getAttributes().put("Loan Amount", loan_amount_v);
+                XAttribute risk_v = new XAttributeLiteralImpl("Risk Level", "" + risk);
+                event.getAttributes().put("Risk Level", risk_v);
+
+                if (event_name.equals("Create Offer")) {
+                    subprocess_id++;
+                    interest--;
+                }
+                if (event_name.equals("Create Offer") ||
+                        event_name.equals("Send Offer by email") ||
+                        event_name.equals("Send Offer by post") ||
+                        event_name.equals("Contact Customer")) {
+                    XAttribute offer = new XAttributeLiteralImpl("Offer_ID", "" + subprocess_id);
+                    event.getAttributes().put("Offer_ID", offer);
+                    XAttribute interest_v = new XAttributeLiteralImpl("Interest", interest + "%");
+                    event.getAttributes().put("Interest", interest_v);
+                }
+                t.add(prev);
+                t.add(event);
+            }
+            log3.add(t);
+        }
+        for (XTrace trace : log2) {
+            XTrace t = factory.createTrace(trace.getAttributes());
+
+            int loan_amount = ((int) (Math.abs(r.nextGaussian()) * 19)) * 5000 + 5000;
+            String risk = (loan_amount < 50000) ? "Low" : (loan_amount < 250000) ? "Medium" : "High";
+            int interest = r.nextInt(10) + 5;
+
+            String loan_officer = loan_officers[r.nextInt(7)];
+            String senior_loan_officer = senior_loan_officers[r.nextInt(2)];
+
+            xce.assignName(trace, "" + process_id);
+            process_id++;
+            for (XEvent event : trace) {
+                String event_name = xce.extractName(event);
+                int pos = Arrays.binarySearch(activities, event_name);
+                int mean = means[pos];
+                double duration = getNext(r, (1.0 / mean));
+
+                if (pos < 5 || pos == 8 || pos > 9) {
+                    xoe.assignGroup(event, "Loan Officer");
+                    xoe.assignResource(event, loan_officer);
+                } else if (pos == 5 || pos == 6 || pos == 9) {
+                    xoe.assignGroup(event, "Senior Loan Officer");
+                    xoe.assignResource(event, senior_loan_officer);
+                } else {
+                    xoe.assignGroup(event, "Accounting Officer");
+                    xoe.assignResource(event, accounting_officer);
+                }
+                XEvent prev = factory.createEvent((XAttributeMap) event.getAttributes().clone());
+                xle.assignTransition(prev, "start");
+                xte.assignTimestamp(prev, xte.extractTimestamp(event).getTime() - (long) (duration * 1000));
+
+                XAttribute application = new XAttributeLiteralImpl("Application_ID", "" + process_id);
+                event.getAttributes().put("Application_ID", application);
+                XAttribute loan_amount_v = new XAttributeLiteralImpl("Loan Amount", "" + loan_amount);
+                event.getAttributes().put("Loan Amount", loan_amount_v);
+                XAttribute risk_v = new XAttributeLiteralImpl("Risk Level", "" + risk);
+                event.getAttributes().put("Risk Level", risk_v);
+
+                if (event_name.equals("Create Offer")) {
+                    subprocess_id++;
+                    interest--;
+                }
+                if (event_name.equals("Create Offer") ||
+                        event_name.equals("Send Offer by email") ||
+                        event_name.equals("Send Offer by post") ||
+                        event_name.equals("Contact Customer")) {
+                    XAttribute offer = new XAttributeLiteralImpl("Offer_ID", "" + subprocess_id);
+                    event.getAttributes().put("Offer_ID", offer);
+                    XAttribute interest_v = new XAttributeLiteralImpl("Interest", interest + "%");
+                    event.getAttributes().put("Interest", interest_v);
+                }
+                t.add(prev);
+                t.add(event);
+            }
+            log3.add(t);
+        }
+        log3 = removeDiscoDetails(log3);
+        LogImporter.exportToFile("/Users/raffaele/Downloads/", "tutorial.xes.gz", log3);
+    }
+
+    public static void maine(String[] args) throws Exception {
+        String log_name = file_base;
+        log = LogImporter.importFromFile(factory, dir + log_name + "2" + file_ext);
+
+        for (XTrace trace : log) {
+            Iterator<XEvent> iterator = trace.iterator();
+            String name = null;
+            Date time = null;
+            while (iterator.hasNext()) {
+                XEvent event = iterator.next();
+                if (name == null) {
+                    name = XConceptExtension.instance().extractName(event);
+                    time = XTimeExtension.instance().extractTimestamp(event);
+                } else {
+                    String name1 = XConceptExtension.instance().extractName(event);
+                    Date time1 = XTimeExtension.instance().extractTimestamp(event);
+                    long diff = time1.getTime() - time.getTime();
+                    if (name.equals(name1) && diff < 60000) {
+                        iterator.remove();
+                        time = time1;
+                    } else {
+                        name = name1;
+                        time = time1;
+                    }
+                }
+            }
+        }
+        LogImporter.exportToFile(dir, file_base + "3" + file_ext, log);
+    }
+
+    public static void main2(String[] args) throws Exception {
         String log_name = file_base;
         log = LogImporter.importFromFile(factory, dir + "/" + log_name + file_ext);
 

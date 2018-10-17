@@ -22,7 +22,7 @@ public class RightStandardDeviation extends StatisticsMeasureAbstract {
                     count++;
                 }
             }
-            return Math.sqrt(sd / count);
+            return Math.sqrt(sd / (count - 1));
         }catch (ArrayIndexOutOfBoundsException e) {
 
         }

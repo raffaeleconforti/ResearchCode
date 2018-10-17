@@ -5,7 +5,7 @@
     <parent>
         <artifactId>research-code</artifactId>
         <groupId>com.raffaeleconforti</groupId>
-        <version>1.0.20180719</version>
+        <version>1.0.20180831</version>
         <relativePath>../</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -567,7 +567,7 @@
                                     -XX:+CMSParallelRemarkEnabled
                                     -XX:GCTimeRatio=19
                                     -XX:MaxGCPauseMillis=500
-                                    -Djava.library.path=/Users/raffaele/.ProM67/packages/lpsolve-5.5.4/LpSolve_mac/mac:/Library/gurobi752/mac64/lib:${project.build.directory}/lib:${project.build.directory}/../../assembly/target
+                                    -Djava.library.path=/Users/raffaele/.ProM/packages/lpsolve-5.5.4/LpSolve_mac/mac:/Library/gurobi752/mac64/lib:${project.build.directory}/lib:${project.build.directory}/../../assembly/target
                                     -cp ${project.build.directory}/*:${project.build.directory}/lib/*:${project.build.directory}/../../assembly/target/* org.processmining.contexts.uitopia.UI" />
                                 </exec>
                                 <exec executable="cmd" osfamily="windows">

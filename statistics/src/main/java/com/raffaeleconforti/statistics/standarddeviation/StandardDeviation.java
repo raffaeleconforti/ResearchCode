@@ -18,7 +18,7 @@ public class StandardDeviation extends StatisticsMeasureAbstract {
             for(int i = 0; i < values.length; i++) {
                 sd += Math.pow((values[i] - avg), 2);
             }
-            return Math.sqrt(sd / values.length);
+            return Math.sqrt(sd / (values.length - 1));
         }catch (ArrayIndexOutOfBoundsException e) {
 
         }

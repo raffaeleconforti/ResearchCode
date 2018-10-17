@@ -83,17 +83,17 @@ public class TimeStampFixerSmartExecutor {
         for (Edge<String> edge : a.getEdges()) {
             a.addEdge(edge, 1);
         }
-        XLog log = LogImporter.importFromFile(new XFactoryNaiveImpl(), dir + "Version 4/UoM1.xes.gz");
+        XLog log = LogImporter.importFromFile(new XFactoryNaiveImpl(), dir + "Version 5/UoM1.xes.gz");
         for (XTrace trace : log) {
             for (XEvent event : trace) {
-                XAttributeTimestamp time = (XAttributeTimestamp) event.getAttributes().remove("time:timestamp");
-                event.getAttributes().put("time", new XAttributeTimestampImpl("time", time.getValue()));
-                Calendar calendar = Calendar.getInstance();
-                calendar.setTime(time.getValue());
-                calendar.set(Calendar.HOUR_OF_DAY, 0);
-                calendar.set(Calendar.MINUTE, 0);
-                calendar.set(Calendar.SECOND, 0);
-                xte.assignTimestamp(event, calendar.getTime());
+//                XAttributeTimestamp time = (XAttributeTimestamp) event.getAttributes().remove("time:timestamp");
+//                event.getAttributes().put("time", new XAttributeTimestampImpl("time", time.getValue()));
+//                Calendar calendar = Calendar.getInstance();
+//                calendar.setTime(time.getValue());
+//                calendar.set(Calendar.HOUR_OF_DAY, 0);
+//                calendar.set(Calendar.MINUTE, 0);
+//                calendar.set(Calendar.SECOND, 0);
+//                xte.assignTimestamp(event, calendar.getTime());
                 xce.assignName(event, event.getAttributes().get("REP_LEVEL_1").toString());
                 Iterator<String> iterator = event.getAttributes().keySet().iterator();
                 Set<String> remove = new HashSet<>();
@@ -115,13 +115,13 @@ public class TimeStampFixerSmartExecutor {
             }
         }
         filtered = t.filterLog(filtered, a, 11, PermutationTechnique.ILP_GUROBI, true, false, false);
-        for (XTrace trace : filtered) {
-            for (XEvent event : trace) {
-                XAttributeTimestamp timestamp = (XAttributeTimestamp) event.getAttributes().remove("time");
-                xte.assignTimestamp(event, timestamp.getValue());
-            }
-        }
-        LogImporter.exportToFile(dir + "Version 4/UoM2.xes.gz", filtered);
+//        for (XTrace trace : filtered) {
+//            for (XEvent event : trace) {
+//                XAttributeTimestamp timestamp = (XAttributeTimestamp) event.getAttributes().remove("time");
+//                xte.assignTimestamp(event, timestamp.getValue());
+//            }
+//        }
+        LogImporter.exportToFile(dir + "Version 5/UoM2.xes.gz", filtered);
     }
 
     public Automaton<String> convertToAutomaton(BPMNDiagram bpmnDiagram) {
